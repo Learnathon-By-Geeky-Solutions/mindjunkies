@@ -1,12 +1,12 @@
 # mindjunkies
 
 ## Team Members
-- shafayetsadi  (Team Leader)
-- md-tonmoy007
-- SaimaLearnathon
+- [shafayetsadi](https://github.com/Shafayetsadi/)  (Team Leader)
+- [md-tonmoy007](https://github.com/md-tonmoy007)
+- [SaimaLearnathon](https://github.com/SaimaLearnathon)
 
 ## Mentor
-- MDJhalak
+- [Md. Redwanuzzaman](https://github.com/redwanuzzaman)
 
 ## Project Description
 Add your project description here.
