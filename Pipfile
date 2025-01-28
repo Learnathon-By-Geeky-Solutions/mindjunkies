@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+django-tailwind = {extras = ["reload"], version = "*"}
+django-crispy-forms = "*"
+crispy-tailwind = "*"
+pillow = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"
