@@ -1,0 +1,24 @@
+<header class="navbar bg-base-100 shadow-sm">
+    <div class="flex-none">
+        <a href="{% url 'home' %}" class="btn btn-ghost normal-case text-xl">MindJunkies</a>
+    </div>
+    <div class="flex-1 justify-center">
+        <div class="form-control w-full max-w-md">
+            <input type="text" placeholder="Search for anything" class="input input-bordered w-full"/>
+        </div>
+    </div>
+    <div class="flex-none">
+        <ul class="menu menu-horizontal gap-4">
+            <li><a href="#" class="btn">Features</a></li>
+            <li><a href="#" class="btn">Courses</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'account_change_password' %}" class="btn btn-secondary">Change Password</a></li>
+                <li><a href="{% url 'account_logout' %}" class="btn btn-error">Logout</a></li>
+                <li><a href="{% url 'account_email' %}" class="btn btn-primary">Email</a></li>
+            {% else %}
+                <li><a href="{% url 'account_login' %}" class="btn btn-outline">Login</a></li>
+                <li><a href="{% url 'account_signup' %}" class="btn btn-primary">Sign Up</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</header>
