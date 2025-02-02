@@ -9,6 +9,8 @@ django-tailwind = {extras = ["reload"], version = "*"}
 django-crispy-forms = "*"
 crispy-tailwind = "*"
 pillow = "*"
+camelcase = "*"
+setuptools = "*"
 
 [dev-packages]
 
