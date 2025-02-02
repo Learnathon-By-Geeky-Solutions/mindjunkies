@@ -1,29 +1,33 @@
 {% load static tailwind_tags %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-    <title>{% block title %}LMS{% endblock %}</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block head_title %}
+            LMS
+        {% endblock head_title %}
+    </title>
+    {% block extra_head %}
+    {% endblock extra_head %}
     {% tailwind_css %}
 </head>
-
-<body class="bg-gray-50 font-serif leading-normal tracking-normal">
-<header>
-    <nav class="flex space-x-4 my-2 justify-center">
-        {% if user.is_authenticated %}
-        <a class="btn btn-error mx-2" href="{% url 'account_logout' %}">Logout</a>
-        {% else %}
-        <a class="btn btn-primary mx-2" href="{% url 'account_login' %}">Login</a>
-        <a class="btn btn-outline mx-2" href="{% url 'account_signup' %}">Signup</a>
-        {% endif %}
-    </nav>
-</header>
-<main class="container mx-auto">
-    {% block content %}{% endblock %}
+<body class="min-h-screen flex flex-col bg-base-200">
+{% include 'includes/header.html' %}
+{% if messages %}
+    <div class="mx-auto">
+        {% for message in messages %}
+            <div role="alert" class="alert alert-info">
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+<main class="flex-grow">
+    {% block main_content %}
+    {% endblock main_content %}
 </main>
-<footer>
-    <p>&copy; 2025 MindJunkies</p>
-</footer>
+{% include 'includes/footer.html' %}
 </body>
 </html>

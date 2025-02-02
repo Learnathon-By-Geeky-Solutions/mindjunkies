@@ -41,17 +41,17 @@ Follow these steps to set up the project locally:
     ```sh
     pip install pipenv
     pipenv install
-    npm install
     ```
 3. Start development:
     ```sh
     pipenv shell
+    cp .env.example .env
     python manage.py migrate
     python manage.py tailwind install
     python manage.py runserver
     python manage.py tailwind start
     ```
-4. Open http://localhost:8000 in your browser.
+4. Open [http://localhost:8000](http://localhost:8000) in your browser.
 
 ## Development Guidelines
 1. Create feature branches:
@@ -77,7 +77,7 @@ Follow these steps to set up the project locally:
 
 ## Project Structure
 
-```
+```plaintext
 mindjunkies/
 ├── accounts/       # User authentication and profile management
 ├── classrooms/     # Classroom creation, management, and participation
