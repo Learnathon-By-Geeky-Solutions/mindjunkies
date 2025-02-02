@@ -1,0 +1,32 @@
+{% extends "account/base_manage.html" %}
+{% load allauth i18n %}
+{% block head_title %}
+    {% trans "Sign Out" %}
+{% endblock head_title %}
+{% block content %}
+    <div class="card w-96 bg-base-100 shadow-xl">
+        <div class="card-body items-center text-center">
+            <h2 class="card-title text-2xl mb-4">
+                {% trans "Confirm Sign Out" %}
+            </h2>
+            <p class="mb-6">
+                {% trans 'Are you sure you want to sign out?' %}
+            </p>
+            {% url 'account_logout' as action_url %}
+            <div class="card-actions justify-end">
+                <a href="/" class="btn btn-ghost">Cancel</a>
+            {% element form method="post" action=action_url no_visible_fields=True %}
+                {% slot body %}
+                    {% csrf_token %}
+                    {{ redirect_field }}
+                {% endslot %}
+                {% slot actions %}
+                    {% element button type="submit" class="btn-error" %}
+                        {% trans 'Yes, Sign Out' %}
+                    {% endelement %}
+                {% endslot %}
+            {% endelement %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

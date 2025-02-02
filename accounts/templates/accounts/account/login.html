@@ -1,0 +1,61 @@
+{% extends "accounts/account/base_entrance.html" %}
+{% load crispy_forms_filters %}
+{% load i18n %}
+{% load allauth account %}
+
+{% block head_title %}
+    {% trans "Sign In" %}
+{% endblock head_title %}
+
+{% block content %}
+    <div class="card w-96 bg-base-100 shadow-xl">
+    <div class="card-body">
+    <h2 class="card-title text-2xl font-bold text-center mb-6">Sign In to MindJunkies</h2>
+    {% if not SOCIALACCOUNT_ONLY %}
+        {% url 'account_login' as login_url %}
+        {% element form form=form method="post" action=login_url tags="entrance,login" %}
+            {% slot body %}
+                {% csrf_token %}
+                {{ form|crispy }}
+                {{ redirect_field }}
+            {% endslot %}
+            {% slot actions %}
+                <div class="form-control mt-6">
+                    {% element button type="submit" tags="prominent,login" class="btn-accent" %}
+                        {% trans "Sign In" %}
+                    {% endelement %}
+                </div>
+            {% endslot %}
+        {% endelement %}
+        <div class="text-center mt-6">
+            <p>Don't have an account? <a href="{{ signup_url }}" class="link link-primary">Sign up</a></p>
+        </div>
+    {% endif %}
+    {% if LOGIN_BY_CODE_ENABLED or PASSKEY_LOGIN_ENABLED %}
+        {% element hr %}
+        {% endelement %}
+        {% element button_group vertical=True %}
+            {% if PASSKEY_LOGIN_ENABLED %}
+                {% element button type="submit" form="mfa_login" id="passkey_login" tags="prominent,login,outline,primary" %}
+                    {% trans "Sign in with a passkey" %}
+                {% endelement %}
+            {% endif %}
+            {% if LOGIN_BY_CODE_ENABLED %}
+                {% element button href=request_login_code_url tags="prominent,login,outline,primary" %}
+                    {% trans "Mail me a sign-in code" %}
+                {% endelement %}
+            {% endif %}
+        {% endelement %}
+    {% endif %}
+    {% if SOCIALACCOUNT_ENABLED %}
+        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+    {% endif %}
+{% endblock content %}
+{% block extra_body %}
+    {{ block.super }}
+    {% if PASSKEY_LOGIN_ENABLED %}
+        {% include "mfa/webauthn/snippets/login_script.html" with button_id="passkey_login" %}
+    {% endif %}
+    </div>
+    </div>
+{% endblock %}
