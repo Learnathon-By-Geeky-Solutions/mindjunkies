@@ -1,0 +1,34 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block head_title %}
+            LMS
+        {% endblock head_title %}
+    </title>
+    {% block extra_head %}
+    {% endblock extra_head %}
+    {% tailwind_css %}
+</head>
+<body class="min-h-screen flex flex-col ">
+{% include 'includes/header.html' %}
+{% if messages %}
+    <div class="mx-auto">
+        {% for message in messages %}
+            <div role="alert" class="alert alert-info">
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+<main class="flex-grow">
+    {% block main_content %}
+    {% endblock main_content %}
+  
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>
