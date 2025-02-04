@@ -76,5 +76,8 @@ class Enrollment(BaseModel):
     )
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
 
+    class Meta:
+        unique_together = ['classroom', 'student']
+
     def __str__(self):
         return f"{self.student.name} enrolled in {self.classroom.name}"

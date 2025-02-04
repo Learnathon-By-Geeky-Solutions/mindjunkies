@@ -6,7 +6,7 @@ from .models import Classroom, ClassroomTeacher
 @admin.register(Classroom)
 class ClassroomAdmin(admin.ModelAdmin):
     model = Classroom
-    list_display = ("title", "published", "upcoming", "published_on", "paid_course", "course_price")
+    list_display = ("title", "published", "published_on", "paid_course", "course_price")
 
 
 @admin.register(ClassroomTeacher)
