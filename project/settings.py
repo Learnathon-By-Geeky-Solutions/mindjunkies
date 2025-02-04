@@ -149,6 +149,9 @@ STATICFILES_DIRS = [
     BASE_DIR / "theme" / "static",  # Correct path to the static directory inside the theme app
 ]
 
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / "media"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -158,6 +161,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 LOGIN_REDIRECT_URL = "/"
+
+AUTH_USER_MODEL = 'accounts.User'
 
 # allauth settings
 SITE_ID = 1
