@@ -8,9 +8,11 @@ class CustomUserAdmin(UserAdmin):
     model = User
     list_display = ('username', 'email', 'role', 'is_staff')
     fieldsets = UserAdmin.fieldsets + (
-        ('User Type', {
+        ('Additional Details', {
             'fields': [
                 'role',
+                'uuid'
             ],
         }),
     )
+    readonly_fields = ('uuid',)
