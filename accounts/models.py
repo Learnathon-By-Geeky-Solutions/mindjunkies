@@ -1,3 +1,35 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+import uuid
 
-# Create your models here.
+from core.models import BaseModel
+
+
+class User(AbstractUser):
+    ROLE_CHOICES = [
+        ('student', 'Student'),
+        ('teacher', 'Teacher'),
+        ('moderator', 'Moderator'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    email = models.EmailField("email address", unique=True, blank=False)
+
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='student')
+
+    REQUIRED_FIELDS = ["first_name", "last_name"]
+
+    def __str__(self):
+        return f"{self.username} - {self.email}"
+
+
+class Profile(BaseModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    birthday = models.DateField(null=True, blank=True)
+    bio = models.TextField()
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    phone_number = models.CharField(max_length=15, null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s profile"
