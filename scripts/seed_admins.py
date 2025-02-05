@@ -7,7 +7,7 @@ def run() -> None:
 
     # Define superusers
     superusers = [
-        {"username": config("U_SHAFAYET"), "email": "E_SHAFAYET", "password": config("P_SHAFAYET")},
+        {"username": config("U_SHAFAYET"), "email": config("E_SHAFAYET"), "password": config("P_SHAFAYET")},
         {"username": config("U_JIFAT"), "email": "E_JIFAT", "password": config("P_JIFAT")},
         {"username": config("U_FARHANA"), "email": "E_FARHANA", "password": config("P_FARHANA")},
     ]
