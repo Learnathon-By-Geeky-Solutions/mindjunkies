@@ -1,14 +1,15 @@
 from django.contrib.auth import get_user_model
+from decouple import config
 
 
-def run():
+def run() -> None:
     user = get_user_model()
 
     # Define superusers
     superusers = [
-        {"username": "admin_shafayet", "email": "shafayet@example.com", "password": "12shafayet09"},
-        {"username": "admin_tonmay", "email": "tonmay@example.com", "password": "12tonmay09"},
-        {"username": "admin_farhana", "email": "farhana@example.com", "password": "12farhana09"},
+        {"username": config("U_SHAFAYET"), "email": "E_SHAFAYET", "password": config("P_SHAFAYET")},
+        {"username": config("U_JIFAT"), "email": "E_JIFAT", "password": config("P_JIFAT")},
+        {"username": config("U_FARHANA"), "email": "E_FARHANA", "password": config("P_FARHANA")},
     ]
 
     for user_data in superusers:

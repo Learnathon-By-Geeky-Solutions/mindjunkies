@@ -1,22 +1,17 @@
 import json
 import os
 from django.utils import timezone
+from django.db import transaction
 
 from accounts.models import User, Profile
 from classrooms.models import Classroom, ClassroomTeacher, Enrollment
 
 
-def run():
-    # Get the absolute path to the dummy_data.json file
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(base_dir, 'dummy_data.json')
-
-    with open(file_path, 'r') as file:
-        data = json.load(file)
-
+@transaction.atomic
+def create_entities(data):
     # Create users
     for user_data in data['users']:
-        user, _created = User.objects.get_or_create(
+        _user, _created = User.objects.get_or_create(
             uuid=user_data['uuid'],
             defaults={
                 'username': user_data['username'],
@@ -92,4 +87,23 @@ def run():
         )
     print("✅ Enrollment created successfully.")
 
-    print("🎉 Data loaded successfully")
+
+def run() -> None:
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(base_dir, 'dummy_data.json')
+
+    try:
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        print(f"❌ Error: {file_path} not found")
+        return
+    except json.JSONDecodeError:
+        print(f"❌ Error: Invalid JSON format in {file_path}")
+        return
+
+    try:
+        create_entities(data)
+        print("🎉 Data loaded successfully")
+    except Exception as e:
+        print(f"❌ Error during data seeding: {str(e)}")
