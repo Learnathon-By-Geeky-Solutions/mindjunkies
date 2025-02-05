@@ -8,7 +8,7 @@ from classrooms.models import Classroom, ClassroomTeacher, Enrollment
 
 
 @transaction.atomic
-def create_entities(data):
+def create_entities(data: dict) -> None:
     # Create users
     for user_data in data['users']:
         _user, _created = User.objects.get_or_create(
@@ -105,5 +105,11 @@ def run() -> None:
     try:
         create_entities(data)
         print("🎉 Data loaded successfully")
+    except (User.DoesNotExist, Classroom.DoesNotExist) as e:
+        print(f"❌ Entity not found: {str(e)}")
+    except KeyError as e:
+        print(f"❌ Missing required field: {str(e)}")
+    except ValueError as e:
+        print(f"❌ Invalid data format: {str(e)}")
     except Exception as e:
         print(f"❌ Error during data seeding: {str(e)}")
