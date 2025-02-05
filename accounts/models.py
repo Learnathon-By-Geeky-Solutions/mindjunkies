@@ -9,15 +9,12 @@ class User(AbstractUser):
     ROLE_CHOICES = [
         ('student', 'Student'),
         ('teacher', 'Teacher'),
-        ('moderator', 'Moderator'),
     ]
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    email = models.EmailField("email address", unique=True, blank=False)
-
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='student')
 
-    REQUIRED_FIELDS = ["first_name", "last_name"]
+    REQUIRED_FIELDS = ["email", "first_name", "last_name"]
 
     def __str__(self):
         return f"{self.username} - {self.email}"

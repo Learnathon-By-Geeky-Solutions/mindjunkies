@@ -50,7 +50,11 @@
                     {% endif %}
                     <div class="form-control mt-4">
                         <label class="label" for="form.email.auto_id">
+                            {% if not emailaddress %}
+                                <span class="label-text">{% trans "Add Email" %}</span>
+                            {% else %}
                             <span class="label-text">{% trans "Change To" %}</span>
+                            {% endif %}
                         </label>
                         <input type="email" id="form.email.auto_id" name="email"
                                placeholder="{% trans 'Enter new e-mail address' %}"
