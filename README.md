@@ -45,8 +45,10 @@ Follow these steps to set up the project locally:
 3. Start development:
     ```sh
     pipenv shell
-    cp .env.example .env
+    cp .env.example .env # Modify the environment variables
     python manage.py migrate
+    python manage.py runscript seed_data # Seed initial data (optional)
+    python manage.py runscript seed_admins # Seed admin users (optional)
     python manage.py tailwind install
     python manage.py runserver
     python manage.py tailwind start
