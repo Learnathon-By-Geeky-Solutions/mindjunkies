@@ -6,16 +6,16 @@
 
 {% block main_content %}
 
-<div class="flex items-center justify-center  bg-base-200">
-    <div class="card w-full max-w-lg bg-white shadow-xl p-6">
-        <h3 class="text-2xl font-semibold text-center text-gray-700 mb-4">Create Classroom</h3>
+<div class="flex items-center justify-center  w-full bg-base-200">
+    <div class="card w-full  bg-white shadow-xl p-6">
+        <h3 class="text-2xl font-semibold text-center text-gray-700 mb-4">Edit Classroom</h3>
         <form method="post" enctype="multipart/form-data" novalidate>
             {% csrf_token %}
             {{ forms|crispy }}  <!-- Crispy handles error display after submission -->
         
             <!-- Submit Button -->
             <div class="form-control mt-4">
-                <button type="submit" class="btn btn-primary w-full">Create Classroom</button>
+                <button type="submit" class="btn btn-primary w-full">Edit Classroom</button>
             </div>
         </form>
     </div>

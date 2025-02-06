@@ -1,10 +1,11 @@
+{% load static %}
 <div class="card bg-base-100 shadow-xl">
-    <figure><img src="https://placeimg.com/400/225/tech" alt="Course Cover" /></figure>
+    <figure><img src="{{classroom.course_image}}" alt="Course Cover" /></figure>
     <div class="card-body">
-        <h3 class="card-title">Web Development Fundamentals</h3>
-        <p>Learn the basics of HTML, CSS, and JavaScript to kickstart your web development journey.</p>
+        <h3 class="card-title">{{classroom.title}}</h3>
+        <p>{{classroom.short_introduction}}</p>
         <div class="card-actions justify-end">
-            <a href="{% url 'classroom_details' %}"><button class="btn btn-primary">Enroll Now</button></a>
+            <a href="{% url 'classroom_details' classroom.slug%}"><button class="btn btn-primary">Enroll Now</button></a>
         </div>
     </div>
 </div>
