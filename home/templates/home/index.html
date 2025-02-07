@@ -52,36 +52,12 @@
     <div class="container mx-auto px-4">
         <h2 class="text-3xl font-bold text-center mb-8">Popular Courses</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="card bg-base-100 shadow-xl">
-                <figure><img src="https://placeimg.com/400/225/tech" alt="Course Cover" /></figure>
-                <div class="card-body">
-                    <h3 class="card-title">Web Development Fundamentals</h3>
-                    <p>Learn the basics of HTML, CSS, and JavaScript to kickstart your web development journey.</p>
-                    <div class="card-actions justify-end">
-                        <button class="btn btn-primary">Enroll Now</button>
-                    </div>
-                </div>
-            </div>
-            <div class="card bg-base-100 shadow-xl">
-                <figure><img src="https://placeimg.com/400/225/arch" alt="Course Cover" /></figure>
-                <div class="card-body">
-                    <h3 class="card-title">Data Science Essentials</h3>
-                    <p>Dive into the world of data analysis, machine learning, and statistical modeling.</p>
-                    <div class="card-actions justify-end">
-                        <button class="btn btn-primary">Enroll Now</button>
-                    </div>
-                </div>
-            </div>
-            <div class="card bg-base-100 shadow-xl">
-                <figure><img src="https://placeimg.com/400/225/people" alt="Course Cover" /></figure>
-                <div class="card-body">
-                    <h3 class="card-title">Digital Marketing Mastery</h3>
-                    <p>Master the art of online marketing, SEO, social media strategies, and more.</p>
-                    <div class="card-actions justify-end">
-                        <button class="btn btn-primary">Enroll Now</button>
-                    </div>
-                </div>
-            </div>
+           {% for classroom in classroom_list %}
+          
+            {%include 'home/card.html' %}
+              
+            
+           {% endfor %}
         </div>
     </div>
 </section>
