@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils.text import slugify
-
 from core.models import BaseModel
 from accounts.models import User
 
@@ -81,3 +80,4 @@ class Enrollment(BaseModel):
 
     def __str__(self):
         return f"{self.student.name} enrolled in {self.classroom.name}"
+
