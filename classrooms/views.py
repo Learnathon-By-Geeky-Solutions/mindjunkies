@@ -1,44 +1,43 @@
-
-from .forms import ClassroomForm
-from django.shortcuts import render, redirect,get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.urls import reverse
 from .models import Classroom
+from .forms import ClassroomForm
+from django.http import HttpRequest, HttpResponse
 
-# Create your views here.
+def handle_classroom_form(request: HttpRequest, classroom: Classroom = None) -> HttpResponse:
+    """Handles both classroom creation and editing logic to reduce redundancy."""
+    if request.method == "POST":
+        form = ClassroomForm(request.POST, request.FILES, instance=classroom)
+        if form.is_valid():
+            saved_classroom = form.save()
+            messages.success(request, "Classroom saved successfully!")
+            return redirect(reverse("classroom_details", kwargs={"slug": saved_classroom.slug}))
+        messages.error(request, "There was an error processing the form.")
+    else:
+        form = ClassroomForm(instance=classroom)
+
+    return render(request, "classrooms/classroom_form.html", {"form": form, "classroom": classroom})
+
+
 @login_required
-def createClassroom(request):
-    if request.method=='POST':
-        forms=ClassroomForm(request.POST, request.FILES)
-        
-        if forms.is_valid():
-            forms.save()
-            return redirect('home')
-    else:
-        forms=ClassroomForm()
-    return render(request,'classrooms/create_classroom.html',{'forms':forms})        
+def create_classroom(request: HttpRequest) -> HttpResponse:
+    """View to create a new classroom."""
+    return handle_classroom_form(request)
 
 
-def classroom_details(request,slug):
-    classroom_detail=get_object_or_404(Classroom,slug=slug)
-    return render(request, 'classrooms/classroom.html',{'classroom_detail':classroom_detail})
+@login_required
+def edit_classroom(request: HttpRequest) -> HttpResponse:
+    """View to edit an existing classroom."""
+    slug = request.GET.get("slug")
+    classroom = get_object_or_404(Classroom, slug=slug)
+    return handle_classroom_form(request, classroom)
 
 
-
-
-def edit_classroom(request):
-    slug = request.GET.get('slug')
-    classroom_detail = get_object_or_404(Classroom, slug=slug)
-    
-    if request.method == 'POST':
-        forms = ClassroomForm(request.POST, request.FILES, instance=classroom_detail)
-        if forms.is_valid():
-            forms.save()
-            # After saving, redirect to a success page or classroom details page
-            return redirect('classroom_details', slug=classroom_detail.slug)
-    else:
-        forms = ClassroomForm(instance=classroom_detail)
-    
-    return render(request, 'classrooms/edit_classroom.html', {'forms': forms, 'classroom_detail': classroom_detail})
-
-
+def classroom_details(request: HttpRequest, slug: str) -> HttpResponse:
+    """View to show classroom details."""
+    print(f"Received slug: {slug}")  # Debugging print statement
+    classroom = get_object_or_404(Classroom, slug=slug)
+    return render(request, "classrooms/classroom.html", {"classroom_detail": classroom})
 
