@@ -1,6 +1,6 @@
 {% load static tailwind_tags %}
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +13,7 @@
     {% endblock extra_head %}
     {% tailwind_css %}
 </head>
-<body class="min-h-screen flex flex-col bg-base-200">
+<body class="min-h-screen flex flex-col ">
 {% include 'includes/header.html' %}
 {% if messages %}
     <div class="mx-auto">
@@ -27,6 +27,7 @@
 <main class="flex-grow">
     {% block main_content %}
     {% endblock main_content %}
+  
 </main>
 {% include 'includes/footer.html' %}
 </body>
