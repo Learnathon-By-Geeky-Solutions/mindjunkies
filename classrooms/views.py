@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.urls import reverse
 from .models import Classroom
 from .forms import ClassroomForm
+from django.views.decorators.http import require_http_methods
 from django.http import HttpRequest, HttpResponse
 
 def handle_classroom_form(request: HttpRequest, classroom: Classroom = None) -> HttpResponse:
@@ -22,6 +23,7 @@ def handle_classroom_form(request: HttpRequest, classroom: Classroom = None) -> 
 
 
 @login_required
+@require_http_methods(["GET", "POST"]) 
 def create_classroom(request: HttpRequest) -> HttpResponse:
     """View to create a new classroom."""
     return handle_classroom_form(request)
