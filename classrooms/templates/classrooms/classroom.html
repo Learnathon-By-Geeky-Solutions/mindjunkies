@@ -32,15 +32,15 @@
         {% if classroom_detail.preview_video_link %}
     
         <iframe 
-        class="rounded-lg h-40 w-full" 
-        src="{{ classroom_detail.preview_video_link }}" 
-        frameborder="0" 
-        allow="autoplay; encrypted-media" 
-        allowfullscreen 
-        title="Course Preview Video">
+    class="rounded-lg h-40 w-full border-0" 
+    src="{{ classroom_detail.preview_video_link }}"  
+    allow="autoplay; encrypted-media" 
+    allowfullscreen 
+    title="Course Preview Video">
     </iframe>
+
         {% else %}
-        <img src="/static/images/course.jpg" alt="Course Image" class="rounded-lg h-40 object-cover w-full" />
+        <img src="/static/images/course.jpg" alt="Course Thumbnail" class="rounded-lg h-40 object-cover w-full" />
         {% endif %}
       </figure>
       <p class="text-sm text-gray-600"><strong>Published on:</strong> {{ classroom_detail.published_on|date:"F j, Y" }}</p>
