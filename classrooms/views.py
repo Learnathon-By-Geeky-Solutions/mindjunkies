@@ -6,6 +6,7 @@ from .models import Classroom
 from .forms import ClassroomForm
 from django.views.decorators.http import require_http_methods
 from django.http import HttpRequest, HttpResponse
+from django.http import HttpResponseNotAllowed
 
 def handle_classroom_form(request: HttpRequest, classroom: Classroom = None) -> HttpResponse:
     """Handles both classroom creation and editing logic to reduce redundancy."""
@@ -31,16 +32,39 @@ def create_classroom(request: HttpRequest) -> HttpResponse:
 
 
 @login_required
+@require_http_methods(["GET", "POST"]) 
 def edit_classroom(request: HttpRequest) -> HttpResponse:
     """View to edit an existing classroom."""
     slug = request.GET.get("slug")
     classroom = get_object_or_404(Classroom, slug=slug)
+
+    if request.method == "GET":
+        # Handle the GET request for fetching the form
+        return render(request, "classrooms/edit_classroom.html", {"classroom": classroom})
     
-    if request.method == "POST":
+    elif request.method == "POST":
+        # Handle the POST request for updating the classroom
         return handle_classroom_form(request, classroom)
     
-    # Handle GET request (or any other safe method if necessary)
-    return render(request, "classrooms/edit_classroom.html", {"classroom": classroom})
+    else:
+        # If the method is neither GET nor POST, return Method Not Allowed (405)
+        return HttpResponseNotAllowed(["GET", "POST"])
+def edit_classroom(request: HttpRequest) -> HttpResponse:
+    """View to edit an existing classroom."""
+    slug = request.GET.get("slug")
+    classroom = get_object_or_404(Classroom, slug=slug)
+
+    if request.method == "GET":
+        # Handle the GET request for fetching the form
+        return render(request, "classrooms/edit_classroom.html", {"classroom": classroom})
+    
+    elif request.method == "POST":
+        # Handle the POST request for updating the classroom
+        return handle_classroom_form(request, classroom)
+    
+    else:
+        # If the method is neither GET nor POST, return Method Not Allowed (405)
+        return HttpResponseNotAllowed(["GET", "POST"])
 
 
 @require_http_methods(["GET"])
