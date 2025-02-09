@@ -11,6 +11,7 @@ crispy-tailwind = "*"
 pillow = "*"
 django-allauth = "*"
 python-decouple = "*"
+django-extensions = "*"
 
 [dev-packages]
 
