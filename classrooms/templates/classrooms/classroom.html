@@ -30,7 +30,15 @@
       <!-- If preview video link exists, show the video, else show the image -->
       <figure class="mt-3">
         {% if classroom_detail.preview_video_link %}
-        <iframe class="rounded-lg h-40 w-full" src="{{ classroom_detail.preview_video_link }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    
+        <iframe 
+        class="rounded-lg h-40 w-full" 
+        src="{{ classroom_detail.preview_video_link }}" 
+        frameborder="0" 
+        allow="autoplay; encrypted-media" 
+        allowfullscreen 
+        title="Course Preview Video">
+    </iframe>
         {% else %}
         <img src="/static/images/course.jpg" alt="Course Image" class="rounded-lg h-40 object-cover w-full" />
         {% endif %}
