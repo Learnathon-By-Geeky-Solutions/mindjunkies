@@ -23,20 +23,21 @@ def handle_classroom_form(request: HttpRequest, classroom: Classroom = None) -> 
 
 
 @login_required
-@require_http_methods(["GET", "POST"]) 
+@require_http_methods([ "POST"]) 
 def create_classroom(request: HttpRequest) -> HttpResponse:
     """View to create a new classroom."""
     return handle_classroom_form(request)
 
 
 @login_required
+@require_http_methods(["GET", "POST"])
 def edit_classroom(request: HttpRequest) -> HttpResponse:
     """View to edit an existing classroom."""
     slug = request.GET.get("slug")
     classroom = get_object_or_404(Classroom, slug=slug)
     return handle_classroom_form(request, classroom)
 
-
+@require_http_methods(["GET"])
 def classroom_details(request: HttpRequest, slug: str) -> HttpResponse:
     """View to show classroom details."""
     print(f"Received slug: {slug}")  # Debugging print statement
