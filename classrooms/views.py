@@ -29,13 +29,19 @@ def create_classroom(request: HttpRequest) -> HttpResponse:
     return handle_classroom_form(request)
 
 
+
 @login_required
-@require_http_methods(["GET", "POST"])
 def edit_classroom(request: HttpRequest) -> HttpResponse:
     """View to edit an existing classroom."""
     slug = request.GET.get("slug")
     classroom = get_object_or_404(Classroom, slug=slug)
-    return handle_classroom_form(request, classroom)
+    
+    if request.method == "POST":
+        return handle_classroom_form(request, classroom)
+    
+    # Handle GET request (or any other safe method if necessary)
+    return render(request, "classrooms/edit_classroom.html", {"classroom": classroom})
+
 
 @require_http_methods(["GET"])
 def classroom_details(request: HttpRequest, slug: str) -> HttpResponse:
