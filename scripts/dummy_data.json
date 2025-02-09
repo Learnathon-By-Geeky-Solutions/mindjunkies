@@ -1,0 +1,213 @@
+{
+  "users": [
+    {
+      "uuid": "550e8400-e29b-41d4-a716-446655440000",
+      "username": "john_doe",
+      "email": "john.doe@example.com",
+      "first_name": "John",
+      "last_name": "Doe",
+      "role": "student"
+    },
+    {
+      "uuid": "550e8400-e29b-41d4-a716-446655440001",
+      "username": "jane_smith",
+      "email": "jane.smith@example.com",
+      "first_name": "Jane",
+      "last_name": "Smith",
+      "role": "teacher"
+    },
+    {
+      "uuid": "550e8400-e29b-41d4-a716-446655440002",
+      "username": "alice_wang",
+      "email": "alice.wang@example.com",
+      "first_name": "Alice",
+      "last_name": "Wang",
+      "role": "student"
+    },
+    {
+      "uuid": "550e8400-e29b-41d4-a716-446655440003",
+      "username": "bob_jones",
+      "email": "bob.jones@example.com",
+      "first_name": "Bob",
+      "last_name": "Jones",
+      "role": "student"
+    },
+    {
+      "uuid": "550e8400-e29b-41d4-a716-446655440004",
+      "username": "emily_davis",
+      "email": "emily.davis@example.com",
+      "first_name": "Emily",
+      "last_name": "Davis",
+      "role": "teacher"
+    },
+    {
+      "uuid": "550e8400-e29b-41d4-a716-446655440005",
+      "username": "michael_brown",
+      "email": "michael.brown@example.com",
+      "first_name": "Michael",
+      "last_name": "Brown",
+      "role": "student"
+    }
+  ],
+  "profiles": [
+    {
+      "user": "550e8400-e29b-41d4-a716-446655440000",
+      "birthday": "1995-05-15",
+      "bio": "A passionate learner interested in web development.",
+      "avatar": "avatars/john_doe.jpg",
+      "phone_number": "+1234567890",
+      "address": "123 Main St, Springfield, IL"
+    },
+    {
+      "user": "550e8400-e29b-41d4-a716-446655440001",
+      "birthday": "1985-08-25",
+      "bio": "Experienced software engineer and educator.",
+      "avatar": "avatars/jane_smith.jpg",
+      "phone_number": "+0987654321",
+      "address": "456 Elm St, Metropolis, NY"
+    },
+    {
+      "user": "550e8400-e29b-41d4-a716-446655440002",
+      "birthday": "2000-02-10",
+      "bio": "Aspiring data scientist and Python enthusiast.",
+      "avatar": "avatars/alice_wang.jpg",
+      "phone_number": "+1122334455",
+      "address": "789 Oak St, Gotham, NJ"
+    },
+    {
+      "user": "550e8400-e29b-41d4-a716-446655440003",
+      "birthday": "1998-11-30",
+      "bio": "Frontend developer with a love for React and JavaScript.",
+      "avatar": "avatars/bob_jones.jpg",
+      "phone_number": "+9988776655",
+      "address": "321 Pine St, Star City, CA"
+    },
+    {
+      "user": "550e8400-e29b-41d4-a716-446655440004",
+      "birthday": "1980-07-20",
+      "bio": "Senior full-stack developer and mentor.",
+      "avatar": "avatars/emily_davis.jpg",
+      "phone_number": "+5544332211",
+      "address": "654 Maple St, Central City, TX"
+    },
+    {
+      "user": "550e8400-e29b-41d4-a716-446655440005",
+      "birthday": "1992-03-12",
+      "bio": "Backend developer specializing in Django and PostgreSQL.",
+      "avatar": "avatars/michael_brown.jpg",
+      "phone_number": "+6677889900",
+      "address": "987 Birch St, Coast City, FL"
+    }
+  ],
+  "classrooms": [
+    {
+      "title": "Introduction to Python",
+      "short_introduction": "Learn Python from scratch.",
+      "course_description": "This course covers the basics of Python programming.",
+      "course_image": "course_images/python_intro.jpg",
+      "preview_video_link": "https://www.youtube.com/watch?v=example1",
+      "published": true,
+      "upcoming": false,
+      "published_on": "2023-09-01T10:00:00Z",
+      "paid_course": false,
+      "course_price": 0.0,
+      "slug": "introduction-to-python",
+      "total_rating": 4.5,
+      "number_of_ratings": 120
+    },
+    {
+      "title": "Advanced Django Development",
+      "short_introduction": "Master Django for web development.",
+      "course_description": "This course dives deep into Django framework.",
+      "course_image": "course_images/advanced_django.jpg",
+      "preview_video_link": "https://www.youtube.com/watch?v=example2",
+      "published": true,
+      "upcoming": false,
+      "published_on": "2023-10-01T10:00:00Z",
+      "paid_course": true,
+      "course_price": 99.99,
+      "slug": "advanced-django-development",
+      "total_rating": 4.8,
+      "number_of_ratings": 85
+    },
+    {
+      "title": "JavaScript for Beginners",
+      "short_introduction": "Learn JavaScript fundamentals.",
+      "course_description": "This course teaches the basics of JavaScript programming.",
+      "course_image": "course_images/javascript_basics.jpg",
+      "preview_video_link": "https://www.youtube.com/watch?v=example3",
+      "published": true,
+      "upcoming": false,
+      "published_on": "2023-08-15T10:00:00Z",
+      "paid_course": false,
+      "course_price": 0.0,
+      "slug": "javascript-for-beginners",
+      "total_rating": 4.7,
+      "number_of_ratings": 95
+    },
+    {
+      "title": "Machine Learning with Python",
+      "short_introduction": "Explore machine learning concepts using Python.",
+      "course_description": "This course introduces machine learning algorithms and techniques.",
+      "course_image": "course_images/ml_python.jpg",
+      "preview_video_link": "https://www.youtube.com/watch?v=example4",
+      "published": false,
+      "upcoming": true,
+      "published_on": null,
+      "paid_course": true,
+      "course_price": 149.99,
+      "slug": "machine-learning-with-python",
+      "total_rating": 0.0,
+      "number_of_ratings": 0
+    }
+  ],
+  "classroom_teachers": [
+    {
+      "classroom": "Introduction to Python",
+      "teacher": "550e8400-e29b-41d4-a716-446655440001",
+      "role": "teacher"
+    },
+    {
+      "classroom": "Advanced Django Development",
+      "teacher": "550e8400-e29b-41d4-a716-446655440001",
+      "role": "teacher"
+    },
+    {
+      "classroom": "JavaScript for Beginners",
+      "teacher": "550e8400-e29b-41d4-a716-446655440004",
+      "role": "teacher"
+    },
+    {
+      "classroom": "Machine Learning with Python",
+      "teacher": "550e8400-e29b-41d4-a716-446655440004",
+      "role": "teacher"
+    }
+  ],
+  "enrollments": [
+    {
+      "classroom": "Introduction to Python",
+      "student": "550e8400-e29b-41d4-a716-446655440000",
+      "status": "active"
+    },
+    {
+      "classroom": "Advanced Django Development",
+      "student": "550e8400-e29b-41d4-a716-446655440002",
+      "status": "pending"
+    },
+    {
+      "classroom": "JavaScript for Beginners",
+      "student": "550e8400-e29b-41d4-a716-446655440003",
+      "status": "active"
+    },
+    {
+      "classroom": "Machine Learning with Python",
+      "student": "550e8400-e29b-41d4-a716-446655440005",
+      "status": "pending"
+    },
+    {
+      "classroom": "Introduction to Python",
+      "student": "550e8400-e29b-41d4-a716-446655440005",
+      "status": "active"
+    }
+  ]
+}
