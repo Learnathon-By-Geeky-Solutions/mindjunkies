@@ -1,0 +1,31 @@
+{% extends 'base.html' %} {% block main_content %}
+<div class="w-[100%] flex">
+  
+  <div class="w-[85%] m-3">
+    <div class="collapse collapse-arrow m-2">
+      <input type="checkbox" />
+      <div class="collapse-title text-xl font-medium border">
+        Python-Intermidiate
+      </div>
+      <div class="collapse-content border p-6">
+        <p class="text-sm my-3">
+          Welcome to the Machine Learning Specialization! You're joining
+          millions of others who have taken either this or the original course,
+          which led to the founding of Coursera, and has helped millions of
+          other learners, like you, take a look at the exciting world of machine
+          learning!
+        </p>
+        <div class="collapse collapse-arrow">
+          <input type="checkbox" />
+          <div class="collapse-title text-xl font-medium border">
+            Python-Intermidiate
+          </div>
+          <div class="collapse-content border p-6"><p>hello</p></div>
+        </div>
+      </div>
+    </div>
+    <a href="{% url 'create_lecture' %}"><button class="btn btn-primary">Add Lecture</button></a>
+  </div>
+  
+</div>
+{% endblock main_content %}
