@@ -2,13 +2,6 @@ from django.db import models
 from classrooms.models import Classroom
 from django.utils.text import slugify
 
-# Predefined Lecture Titles
-class LectureTitle(models.Model):
-    title = models.CharField(max_length=255, unique=True)
-
-    def __str__(self):
-        return self.title
-
 # Model for storing multiple PDFs
 class LecturePDF(models.Model):
     lecture = models.ForeignKey('Lecture', on_delete=models.CASCADE, related_name='pdf_files')
@@ -17,17 +10,17 @@ class LecturePDF(models.Model):
     def __str__(self):
         return f"PDF for {self.lecture.title}"
 
-# Main Lecture Model
+# Main Lecture Model (direct title input)
 class Lecture(models.Model):
     classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, related_name='lectures')
-    title = models.ForeignKey(LectureTitle, on_delete=models.SET_NULL, null=True, blank=True)
+    title = models.CharField(max_length=255, unique=True)  # Direct input for title
     uploaded_on = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
 
     def __str__(self):
-        return self.title.title if self.title else "No Title"
+        return self.title
 
     def save(self, *args, **kwargs):
         if not self.slug and self.title:
-            self.slug = slugify(self.title.title)
+            self.slug = slugify(self.title)  # Auto-generate slug from title
         super().save(*args, **kwargs)

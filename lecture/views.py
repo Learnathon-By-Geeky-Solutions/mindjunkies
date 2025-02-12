@@ -8,43 +8,23 @@ from .models import Lecture
 from classrooms.models import Classroom
 from django.views.decorators.http import require_http_methods
 
-# @login_required
-# @require_http_methods(["GET", "POST"])
-# def handle_lecture_form(request: HttpRequest, slug: str) -> HttpResponse:
-#     """Handles both classroom creation and editing logic."""
-#     classroom = get_object_or_404(Classroom, slug=slug)
-#     print(f"Classroom: {classroom}")
 
-#     if request.method == "POST":
-#         form = LectureForm(request.POST, request.FILES)
-#         print(f"Form: {form}")
-#         print(f"Form data: {request.POST}")
-#         print(f"Files data: {request.FILES}")
+@login_required
+@require_http_methods(["GET", "POST"])
+def handle_lecture_form(request: HttpRequest, slug: str) -> HttpResponse:
+    """Handles both Lecture creation and editing logic."""
+    classroom = get_object_or_404(Classroom, slug=slug)
+    print(f"Classroom: {classroom}")
+    form = LectureForm()
+    if request.method == "POST":
+        form = LectureForm(request.POST)
+        print(f"Form: {form}")
+        print(f"Form data: {request.POST}")
+        print(f"Files data: {request.FILES}")
 
-#         if form.is_valid():
-#             # Create the lecture instance without saving it to the database
-#             lecture_instance = form.save(commit=False)
-#             print(f"Lecture instance before saving: {lecture_instance}")
 
-#             if lecture_instance:  # Make sure the instance is not None
-#                 # Set the classroom relation
-#                 lecture_instance.classroom = classroom
 
-#                 # Save the lecture instance to the database
-#                 lecture_instance.save()
-#                 messages.success(request, "Lecture saved successfully!")
-                
-#             else:
-#                 messages.error(request, "Failed to create a lecture instance.")
-#                 print("Lecture instance is None.")
-#         else:
-#             # Print form errors for debugging
-#             print("Form errors:", form.errors)
-#             messages.error(request, "There was an error with the form. Please check the inputs.")
-#     else:
-#         form = LectureForm()
-
-#     return render(request, "lecture/create_form.html", {"form": form})
+    return render(request, "lecture/create_topic.html", {"form": form})
 
 # @login_required
 # def create_lecture(request: HttpRequest) -> HttpResponse:
@@ -61,7 +41,17 @@ def lecture_home(request: HttpRequest) -> HttpResponse:
     
     slug = request.GET.get('slug')  # Get the slug from the query parameter
 
-    classroom=get_object_or_404(Classroom,slug=slug)
-    # lectures = Lecture.objects.filter(classroom=classroom)
+    
+    classroom = get_object_or_404(Classroom, slug=slug)
+    lectures = Lecture.objects.filter(classroom=classroom).prefetch_related('pdf_files')
 
-    return render(request, "lecture/index.html", {"classroom":classroom})
+    return render(request, 'lecture/index.html', {
+        'classroom': classroom,
+        'lectures': lectures
+    })
+def create_title(request):
+    slug = request.GET.get('slug')
+    return handle_lecture_form(request,slug)
+
+
+    # return render(request, "lecture/index.html", {"classroom":classroom})
