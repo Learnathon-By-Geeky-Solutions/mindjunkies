@@ -16,7 +16,7 @@ class Classroom(BaseModel):
     published_on = models.DateTimeField(null=True, blank=True)
     paid_course = models.BooleanField(default=False)
     course_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
-
+   
     slug = models.SlugField(max_length=255, unique=True)
     total_rating = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     number_of_ratings = models.PositiveIntegerField(default=0)

@@ -21,7 +21,9 @@ def handle_classroom_form(request: HttpRequest, slug: str = None) -> HttpRespons
             saved_classroom = form.save()
             messages.success(request, "Classroom saved successfully!")
             return redirect(reverse("classroom_details", kwargs={"slug": saved_classroom.slug}))
-        messages.error(request, "There was an error processing the form.")
+        else:
+            print("Form errors:", form.errors)  # Log the errors to the console
+            messages.error(request, f"There was an error processing the form: {form.errors}")
     else:
         form = ClassroomForm(instance=classroom)
 
@@ -29,7 +31,7 @@ def handle_classroom_form(request: HttpRequest, slug: str = None) -> HttpRespons
 
 
 @login_required
-@require_http_methods(["POST"])
+@require_http_methods(["POST","GET"])
 def create_classroom(request: HttpRequest) -> HttpResponse:
     """Redirects to the classroom form without a slug for creation."""
     return handle_classroom_form(request)

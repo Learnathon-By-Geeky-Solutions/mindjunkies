@@ -1,16 +1,20 @@
 from django import forms
-from .models import Lecture # Import your model
+from django.utils.text import slugify
+from .models import Lecture  # Import your model
 
 class LectureForm(forms.ModelForm):
     class Meta:
         model = Lecture
-        fields = ['title','pdf_file']
+        fields = ['title', 'pdf_file']
+
     def save(self, commit=True):
-        instance = super(LectureForm, self).save(commit=False)
-        instance.slug = instance.title.lower().replace(' ', '-')
+        # Save the instance without committing to the database immediately
+        instance = super().save(commit=False)
+        
+        # Generate a slug using slugify for better handling
+        instance.slug = slugify(instance.title)
+        
         if commit:
             instance.save()
-            return instance
         
-class RatingForm(forms.Form):
-    rating = forms.IntegerField(min_value=1, max_value=5)                
+        return instance
