@@ -1,27 +1,24 @@
 from django.contrib import admin
-from .models import Lecture, LectureTitle, LecturePDF
+from .models import Lecture, LecturePDF
 
 class LectureAdmin(admin.ModelAdmin):
-    list_display = ('get_title', 'classroom', 'uploaded_on', 'slug')  # Display the title from LectureTitle
-    search_fields = ('title__title', 'classroom__name')  # Search by title (from LectureTitle) and classroom
+    list_display = ('get_title', 'classroom', 'uploaded_on', 'slug')  # Display the title directly from the Lecture model
+    search_fields = ('title', 'classroom__name')  # Search by title and classroom name
     list_filter = ('classroom', 'uploaded_on')  # Filters for the list view
-    prepopulated_fields = {'slug': ('title',)}  # Slug will be auto-generated from the LectureTitle
+    prepopulated_fields = {'slug': ('title',)}  # Slug will be auto-generated from the title
 
     def get_title(self, obj):
-        return obj.title.title if obj.title else "No Title"  # Ensure title is displayed properly
-    get_title.admin_order_field = 'title__title'  # Allows sorting by title
+        return obj.title if obj.title else "No Title"  # Directly access the title field
+    get_title.admin_order_field = 'title'  # Allows sorting by title
     get_title.short_description = 'Lecture Title'  # Rename column header in admin
 
-# Register LectureTitle separately so titles can be managed
-class LectureTitleAdmin(admin.ModelAdmin):
-    list_display = ('title',)  # Show available titles in admin
-    search_fields = ('title',)
+# Remove the LectureTitleAdmin as it's no longer needed
 
 # Register LecturePDF to allow managing uploaded PDFs
 class LecturePDFAdmin(admin.ModelAdmin):
     list_display = ('lecture', 'pdf_file')
-    search_fields = ('lecture__title__title',)
+    search_fields = ('lecture__title',)  # Search by lecture title
 
+# Register models with the admin site
 admin.site.register(Lecture, LectureAdmin)
-admin.site.register(LectureTitle, LectureTitleAdmin)
 admin.site.register(LecturePDF, LecturePDFAdmin)
