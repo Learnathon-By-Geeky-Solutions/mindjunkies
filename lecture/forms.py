@@ -1,20 +1,20 @@
 from django import forms
-from django.utils.text import slugify
-from .models import Lecture  # Import your model
+from .models import Lecture, LecturePDF
 
 class LectureForm(forms.ModelForm):
     class Meta:
         model = Lecture
-        fields = ['title', 'pdf_file']
+        fields = ['title', 'classroom']
 
-    def save(self, commit=True):
-        # Save the instance without committing to the database immediately
+class LecturePDFForm(forms.ModelForm):
+    class Meta:
+        model = LecturePDF
+        fields = ['pdf_file']
+
+    def save(self, commit=True, lecture=None):
         instance = super().save(commit=False)
-        
-        # Generate a slug using slugify for better handling
-        instance.slug = slugify(instance.title)
-        
+        if lecture:
+            instance.lecture = lecture  # Link to the existing Lecture
         if commit:
             instance.save()
-        
         return instance
