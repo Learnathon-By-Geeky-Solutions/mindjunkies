@@ -9,7 +9,7 @@ class LectureForm(forms.ModelForm):
 class LecturePDFForm(forms.ModelForm):
     class Meta:
         model = LecturePDF
-        fields = ['pdf_file']
+        fields = ['pdf_file','lecture']
 
     def save(self, commit=True, lecture=None):
         instance = super().save(commit=False)
