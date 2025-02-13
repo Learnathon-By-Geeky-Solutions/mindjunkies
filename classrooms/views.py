@@ -79,7 +79,7 @@ def classroom_details(request: HttpRequest, slug: str) -> HttpResponse:
 @require_http_methods(["GET"])
 def user_classroom_list(request: HttpRequest) -> HttpResponse:
     user = request.user
-    classroom_teacher = ClassroomTeacher.objects.filter(teacher=user)
+    classroom_teacher = ClassroomTeacher.objects.filter(teacher=user).select_related('classroom')
     classrooms = [ct.classroom for ct in classroom_teacher]
     num_classrooms = len(classrooms)
 
