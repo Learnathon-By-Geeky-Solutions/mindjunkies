@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
-from .models import Classroom
+from .models import Classroom, ClassroomTeacher
 from .forms import ClassroomForm
 from django.views.decorators.http import require_http_methods
 from django.http import HttpRequest, HttpResponse
@@ -24,7 +24,7 @@ def handle_classroom_form(request: HttpRequest, classroom: Classroom = None) -> 
 
 
 @login_required
-@require_http_methods([ "POST"]) 
+@require_http_methods([ "POST", "GET"]) 
 def create_classroom(request: HttpRequest) -> HttpResponse:
     """View to create a new classroom."""
     return handle_classroom_form(request)
@@ -73,4 +73,24 @@ def classroom_details(request: HttpRequest, slug: str) -> HttpResponse:
     print(f"Received slug: {slug}")  # Debugging print statement
     classroom = get_object_or_404(Classroom, slug=slug)
     return render(request, "classrooms/classroom.html", {"classroom_detail": classroom})
+
+
+@login_required
+@require_http_methods(["GET"])
+def user_classroom_list(request):
+    user = request.user
+    print(user)
+    classroom_teacher = ClassroomTeacher.objects.filter(teacher=user)
+    classrooms = [ct.classroom for ct in classroom_teacher]
+    num_classrooms = len(classrooms)
+    print(classrooms)
+
+    context = {
+        "classrooms": classrooms,
+        "num_classrooms": num_classrooms,
+        "user": user,
+    }
+    return render(request, "classrooms/classroom_list.html", {"context": context})
+
+
 
