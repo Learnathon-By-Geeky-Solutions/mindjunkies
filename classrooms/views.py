@@ -24,7 +24,7 @@ def handle_classroom_form(request: HttpRequest, classroom: Classroom = None) -> 
 
 
 @login_required
-@require_http_methods([ "POST", "GET"]) 
+@require_http_methods([ "POST"]) 
 def create_classroom(request: HttpRequest) -> HttpResponse:
     """View to create a new classroom."""
     return handle_classroom_form(request)
@@ -77,20 +77,18 @@ def classroom_details(request: HttpRequest, slug: str) -> HttpResponse:
 
 @login_required
 @require_http_methods(["GET"])
-def user_classroom_list(request):
+def user_classroom_list(request: HttpRequest) -> HttpResponse:
     user = request.user
-    print(user)
     classroom_teacher = ClassroomTeacher.objects.filter(teacher=user)
     classrooms = [ct.classroom for ct in classroom_teacher]
     num_classrooms = len(classrooms)
-    print(classrooms)
 
     context = {
         "classrooms": classrooms,
         "num_classrooms": num_classrooms,
         "user": user,
     }
-    return render(request, "classrooms/classroom_list.html", {"context": context})
+    return render(request, "classrooms/classroom_list.html", context)
 
 
 
