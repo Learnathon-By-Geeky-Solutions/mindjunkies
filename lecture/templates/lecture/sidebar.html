@@ -1,41 +1,10 @@
 <div class="flex h-screen">
-    <!-- Sidebar (Large Screens) -->
-    <div class="hidden lg:block w-64 bg-gray-900 text-white p-4">
-        <h2 class="text-xl font-bold mb-4">Menu</h2>
-        <ul class="space-y-2">
-            <!-- Course Content with Sublist -->
-            <li>
-                <details class="group">
-                    <summary class="p-2 text-white hover:bg-gray-700 rounded-lg transition cursor-pointer flex items-center">
-                        📚 Course Content
-                    </summary>
-                    <ul class="pl-4 bg-gray-800 rounded-lg mt-2 hidden group-open:block">
-                        <li><a href="#" class="block p-2 hover:bg-gray-700 rounded-md">📖 Lectures</a></li>
-                        <li><a href="#" class="block p-2 hover:bg-gray-700 rounded-md">📝 Tutorials</a></li>
-                        <li><a href="#" class="block p-2 hover:bg-gray-700 rounded-md">🎥 Video Materials</a></li>
-                        <li><a href="#" class="block p-2 hover:bg-gray-700 rounded-md">📂 Additional Resources</a></li>
-                    </ul>
-                </details>
-            </li>
-            <!-- Grade -->
-            <li>
-                <a href="#" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-700 transition">
-                    🎯 Grade
-                </a>
-            </li>
-            <!-- Assignment -->
-            <li>
-                <a href="#" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-700 transition">
-                    ✍️ Assignment
-                </a>
-            </li>
-            <!-- Notes -->
-            <li>
-                <a href="#" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-700 transition">
-                    🗒 Notes
-                </a>
-            </li>
-        </ul>
+    <!-- Sidebar for Desktop (Large Screens) -->
+    <div class="hidden lg:block">
+        <div class="w-64 bg-gray-900 text-white">
+            <!-- Reuse the Sidebar Menu component here -->
+            {% include 'lecture/sidebarcontent.html' %}
+        </div>
     </div>
 
     <!-- Mobile Drawer (Toggled by Checkbox) -->
@@ -49,39 +18,8 @@
         <div class="drawer-side">
             <label for="drawer-toggle" class="drawer-overlay"></label>
             <ul class="menu p-4 w-64 min-h-full bg-gray-900 text-white">
-                <h2 class="text-xl font-bold mb-4">Menu</h2>
-                <!-- Reusable Course Content Section -->
-                <li>
-                    <details class="group">
-                        <summary class="p-2 text-white hover:bg-gray-700 rounded-lg transition cursor-pointer flex items-center">
-                            📚 Course Content
-                        </summary>
-                        <ul class="pl-4 bg-gray-800 rounded-lg mt-2 hidden group-open:block">
-                            <li><a href="#" class="block p-2 hover:bg-gray-700 rounded-md">📖 Lectures</a></li>
-                            <li><a href="#" class="block p-2 hover:bg-gray-700 rounded-md">📝 Tutorials</a></li>
-                            <li><a href="#" class="block p-2 hover:bg-gray-700 rounded-md">🎥 Video Materials</a></li>
-                            <li><a href="#" class="block p-2 hover:bg-gray-700 rounded-md">📂 Additional Resources</a></li>
-                        </ul>
-                    </details>
-                </li>
-                <!-- Grade -->
-                <li>
-                    <a href="#" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-700 transition">
-                        🎯 Grade
-                    </a>
-                </li>
-                <!-- Assignment -->
-                <li>
-                    <a href="#" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-700 transition">
-                        ✍️ Assignment
-                    </a>
-                </li>
-                <!-- Notes -->
-                <li>
-                    <a href="#" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-700 transition">
-                        🗒 Notes
-                    </a>
-                </li>
+                <!-- Reuse Sidebar Menu content for mobile -->
+                {% include 'lecture/sidebarcontent.html' %}
             </ul>
         </div>
     </div>
