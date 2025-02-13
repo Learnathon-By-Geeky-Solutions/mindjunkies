@@ -4,7 +4,8 @@ from django.contrib import messages
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.http import HttpRequest, HttpResponse, HttpResponseNotAllowed
-from .models import Classroom
+
+from .models import Classroom, ClassroomTeacher
 from .forms import ClassroomForm
 
 
@@ -50,3 +51,20 @@ def classroom_details(request: HttpRequest, slug: str) -> HttpResponse:
     """View to show classroom details."""
     classroom = get_object_or_404(Classroom, slug=slug)
     return render(request, "classrooms/classroom.html", {"classroom_detail": classroom})
+
+
+@login_required
+@require_http_methods(["GET"])
+def user_classroom_list(request: HttpRequest) -> HttpResponse:
+    user = request.user
+    classroom_teacher = ClassroomTeacher.objects.filter(teacher=user).select_related('classroom')
+    classrooms = [ct.classroom for ct in classroom_teacher]
+    num_classrooms = len(classrooms)
+
+    context = {
+        "classrooms": classrooms,
+        "num_classrooms": num_classrooms,
+        "user": user,
+    }
+    return render(request, "classrooms/classroom_list.html", context)
+
