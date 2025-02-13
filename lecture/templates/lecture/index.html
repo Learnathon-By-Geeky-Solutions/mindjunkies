@@ -16,7 +16,7 @@
             <input type="checkbox" />
             <div class="collapse-title text-xl font-medium border">
                 {% if lecture.title %}
-                    {{ lecture.title.title }}  <!-- Fetching title from LectureTitle -->
+                    {{ lecture.title }}  <!-- Fetching title from LectureTitle -->
                 {% else %}
                     No Title Available
                 {% endif %}
@@ -42,11 +42,12 @@
       </div>
     </div>
     <div class="flex gap-2">
-    <a href="">
-      <button class="btn btn-primary">Add Lecture</button>
+      <a href="{% url 'create_lecture' %}?slug={{ classroom.slug }}">
+        <button class="btn btn-primary">Add Title</button>
     </a>
-    <a href="{% url 'create_title'%}?slug={{classroom.slug }}">
-      <button class="btn btn-primary">Add Topic</button>
+    
+    <a href="{% url 'create_topic' %}?slug={{ classroom.slug }}">
+        <button class="btn btn-primary">Add Topic</button>
     </a>
   </div>
     
