@@ -1,5 +1,5 @@
 <div class="flex h-screen">
-    <!-- Sidebar / Drawer (Large Screens) -->
+    <!-- Sidebar (Large Screens) -->
     <div class="hidden lg:block w-64 bg-gray-900 text-white p-4">
         <h2 class="text-xl font-bold mb-4">Menu</h2>
         <ul class="space-y-2">
@@ -17,21 +17,18 @@
                     </ul>
                 </details>
             </li>
-
             <!-- Grade -->
             <li>
                 <a href="#" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-700 transition">
                     🎯 Grade
                 </a>
             </li>
-
             <!-- Assignment -->
             <li>
                 <a href="#" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-700 transition">
                     ✍️ Assignment
                 </a>
             </li>
-
             <!-- Notes -->
             <li>
                 <a href="#" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-700 transition">
@@ -41,21 +38,19 @@
         </ul>
     </div>
 
-    <!-- Mobile Drawer -->
+    <!-- Mobile Drawer (Toggled by Checkbox) -->
     <div class="drawer lg:hidden">
         <input id="drawer-toggle" type="checkbox" class="drawer-toggle" />
         <div class="drawer-content">
             <!-- Hamburger Button -->
             <label for="drawer-toggle" class="btn btn-primary m-4 drawer-button">☰</label>
         </div>
-
         <!-- Sidebar Menu (Mobile) -->
         <div class="drawer-side">
             <label for="drawer-toggle" class="drawer-overlay"></label>
             <ul class="menu p-4 w-64 min-h-full bg-gray-900 text-white">
                 <h2 class="text-xl font-bold mb-4">Menu</h2>
-
-                <!-- Course Content with Sublist -->
+                <!-- Reusable Course Content Section -->
                 <li>
                     <details class="group">
                         <summary class="p-2 text-white hover:bg-gray-700 rounded-lg transition cursor-pointer flex items-center">
@@ -69,21 +64,18 @@
                         </ul>
                     </details>
                 </li>
-
                 <!-- Grade -->
                 <li>
                     <a href="#" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-700 transition">
                         🎯 Grade
                     </a>
                 </li>
-
                 <!-- Assignment -->
                 <li>
                     <a href="#" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-700 transition">
                         ✍️ Assignment
                     </a>
                 </li>
-
                 <!-- Notes -->
                 <li>
                     <a href="#" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-700 transition">
