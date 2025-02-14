@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'classrooms',
     'videoConf',
     'theme',
+    'lecture',
     # third party apps
     'tailwind',
     "allauth",

@@ -88,7 +88,7 @@
   <!-- Edit Button -->
   <div class="p-4 flex gap-2">
     <a href="{% url 'edit_classroom' %}?slug={{ classroom_detail.slug }}" class="btn btn-primary">Edit Classroom</a>
-    <a href="{% url 'create_classroom' %}" class="btn btn-primary">Enroll</a>
+    <a href="{% url 'lecture_home' %}?slug={{ classroom_detail.slug }}" class="btn btn-primary">Enter Classroom</a>
   </div>
 </div>
 {% endblock main_content %}
