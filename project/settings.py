@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'home',
     'accounts',
     'classrooms',
+    'videoConf',
     'theme',
     # third party apps
     'tailwind',
