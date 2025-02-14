@@ -59,6 +59,10 @@ INSTALLED_APPS = [
     'django_extensions',
 ]
 
+JITSI_DOMAIN = config('JITSI_DOMAIN', default='meet.jit.si')
+JITSI_ROOM_PREFIX = config('JITSI_ROOM_PREFIX', default='myapp-')
+JITSI_MAGIC_COOKIE = config('JITSI_MAGIC_COOKIE')
+
 MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",  # allauth
     "django_browser_reload.middleware.BrowserReloadMiddleware",

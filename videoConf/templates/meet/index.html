@@ -2,13 +2,17 @@
     <!DOCTYPE html>
     <html>
       <head>
-        <script src='https://8x8.vc/vpaas-magic-cookie-587cf65901d144438c516e8a3ab72e0a/external_api.js' async></script>
+        <script src='https://8x8.vc/{{ JITSI_MAGIC_COOKIE }}/external_api.js' async></script>
         <style>html, body, #jaas-container { height: 100%; }</style>
         <script type="text/javascript">
           window.onload = () => {
             const api = new JitsiMeetExternalAPI("8x8.vc", {
-              roomName: "vpaas-magic-cookie-587cf65901d144438c516e8a3ab72e0a/LifeIsBeautiful",
+              roomName: "{{ JITSI_MAGIC_COOKIE }}/{{ room_name }}",
               parentNode: document.querySelector('#jaas-container'),
+               onError: (error) => {
++                console.error('Conference error:', error);
++                // Handle error appropriately
++              },
 							// Make sure to include a JWT if you intend to record,
 							// make outbound calls or use any other premium features!
 							// jwt: "eyJraWQiOiJ2cGFhcy1tYWdpYy1jb29raWUtNTg3Y2Y2NTkwMWQxNDQ0MzhjNTE2ZThhM2FiNzJlMGEvNjAxOGVjLVNBTVBMRV9BUFAiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJqaXRzaSIsImlzcyI6ImNoYXQiLCJpYXQiOjE3MzkxNDk4MTUsImV4cCI6MTczOTE1NzAxNSwibmJmIjoxNzM5MTQ5ODEwLCJzdWIiOiJ2cGFhcy1tYWdpYy1jb29raWUtNTg3Y2Y2NTkwMWQxNDQ0MzhjNTE2ZThhM2FiNzJlMGEiLCJjb250ZXh0Ijp7ImZlYXR1cmVzIjp7ImxpdmVzdHJlYW1pbmciOmZhbHNlLCJvdXRib3VuZC1jYWxsIjpmYWxzZSwic2lwLW91dGJvdW5kLWNhbGwiOmZhbHNlLCJ0cmFuc2NyaXB0aW9uIjpmYWxzZSwicmVjb3JkaW5nIjpmYWxzZX0sInVzZXIiOnsiaGlkZGVuLWZyb20tcmVjb3JkZXIiOmZhbHNlLCJtb2RlcmF0b3IiOnRydWUsIm5hbWUiOiJUZXN0IFVzZXIiLCJpZCI6Imdvb2dsZS1vYXV0aDJ8MTE2MDA0NzczOTg2MDUyNTY3NTI4IiwiYXZhdGFyIjoiIiwiZW1haWwiOiJ0ZXN0LnVzZXJAY29tcGFueS5jb20ifX0sInJvb20iOiIqIn0.bGk2KeYrTeyQYkpbyygMkeJGLpy901aCNuBGOGxSLDgpnVlEuJUWC0u21Kiwmma5HYmZIZgNQgRYVHO04rr8742PsfZ_t_ppJDS2qu6maAtokv9YqtqCk0HwIKEgEBt3Y8l7Il7Z4mT7n5V0S4V8BVNMqekaNadauJZ1XIq9oEc5DmEn4tiTZhLQodE9eYT9_Yh7oY7_990t6-59yiQQ7VDXwuWXkxa5UMPvQxHJcfK_3ZY3gDV_Vg7ICC8N4gCVofOWags_6W8oGq7E77FbRwh7m23iuMsoNALob831rixwmFe8aGal-wrZX1Gp_6C6pfoeb0LK3ha5RrO418fYwA"
