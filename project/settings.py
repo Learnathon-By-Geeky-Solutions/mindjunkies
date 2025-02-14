@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'home',
     'accounts',
     'classrooms',
+    'videoConf',
     'theme',
     'lecture',
     # third party apps
@@ -58,6 +59,23 @@ INSTALLED_APPS = [
     'crispy_tailwind',
     'django_extensions',
 ]
+
+# Domain for Jitsi video conferencing
+JITSI_DOMAIN = config('JITSI_DOMAIN', default='meet.jit.si')
+
+# Prefix for Jitsi room names
+JITSI_ROOM_PREFIX = config('JITSI_ROOM_PREFIX', default='myapp-')
+
+# Magic cookie for Jitsi authentication
+JITSI_MAGIC_COOKIE = config('JITSI_MAGIC_COOKIE', default=None)
+
+# Raise an error if the magic cookie is not set
+if JITSI_MAGIC_COOKIE is None:
+    raise ValueError("JITSI_MAGIC_COOKIE environment variable is required for video conferencing")
+
+# Subresource Integrity (SRI) hash for ensuring the integrity of external resources
+SRI_HASH = config('SRI_HASH')
+
 
 MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",  # allauth
