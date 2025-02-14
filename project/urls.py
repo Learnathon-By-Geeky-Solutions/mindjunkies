@@ -24,7 +24,6 @@ urlpatterns = [
     path('', include('home.urls')),
     path('accounts/', include('accounts.urls')),
     path('classroom/',include('classrooms.urls')),
-    path('meeting/', include('videoConf.urls')),
 ]
 
 if settings.DEBUG:
