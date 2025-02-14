@@ -40,6 +40,10 @@ class User(AbstractUser):
     def __str__(self):
         return f"{self.username} - {self.email}"
 
+    @property
+    def name(self):
+        return f"{self.first_name} {self.last_name}"
+
 
 class Profile(BaseModel):
     user = models.OneToOneField('accounts.User', on_delete=models.CASCADE, related_name='profile')

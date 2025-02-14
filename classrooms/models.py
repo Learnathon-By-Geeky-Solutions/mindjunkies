@@ -8,7 +8,7 @@ class Classroom(BaseModel):
     title = models.CharField(max_length=255)
     short_introduction = models.CharField(max_length=500)
     course_description = models.TextField()
-    course_image = models.ImageField(upload_to='course_images/')
+    course_image = models.ImageField(upload_to='course_images/', default='course_images/default.jpg', null=True, blank=True)
     preview_video_link = models.URLField(max_length=200, null=True, blank=True)
 
     published = models.BooleanField(default=False)
@@ -79,5 +79,4 @@ class Enrollment(BaseModel):
         unique_together = ['classroom', 'student']
 
     def __str__(self):
-        return f"{self.student.name} enrolled in {self.classroom.name}"
-
+        return f"{self.student.username} enrolled in {self.classroom.title}"

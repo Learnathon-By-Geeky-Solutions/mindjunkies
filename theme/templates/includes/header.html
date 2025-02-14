@@ -9,9 +9,11 @@
     </div>
     <div class="flex-none">
         <ul class="menu menu-horizontal gap-4">
-            <li><a href="{% url 'create_classroom'%}" class="btn">Features</a></li>
-            <li><a href="#" class="btn">Courses</a></li>
+            <li><a href="#" class="btn">Features</a></li>
+            <li><a href="{% url 'classroom_list' %}" class="btn">Courses</a></li>
             {% if user.is_authenticated %}
+                <li><a href="{% url 'my_classroom_list' %}" class="btn">My Classrooms</a></li>
+                <li><a href="{% url 'classroom_list' %}" class="btn">My Classrooms</a></li>
                 <li><a href="{% url 'account_change_password' %}" class="btn btn-secondary">Change Password</a></li>
                 <li><a href="{% url 'account_logout' %}" class="btn btn-error">Logout</a></li>
                 <li><a href="{% url 'account_email' %}" class="btn btn-primary">Email</a></li>
