@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Classroom, ClassroomTeacher
+from .models import Classroom, ClassroomTeacher, Enrollment
 
 
 @admin.register(Classroom)
@@ -15,3 +15,9 @@ class ClassroomTeacherAdmin(admin.ModelAdmin):
     list_display = ("classroom", "teacher", "role")
     list_filter = ("role",)
 
+
+@admin.register(Enrollment)
+class EnrollmentAdmin(admin.ModelAdmin):
+    model = Enrollment
+    list_display = ("classroom", "student", "status")
+    list_filter = ("classroom", "status")

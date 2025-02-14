@@ -9,6 +9,12 @@ from .models import Classroom, ClassroomTeacher
 from .forms import ClassroomForm
 
 
+def classroom_list(request: HttpRequest) -> HttpResponse:
+    """View to show all classrooms."""
+    classrooms = Classroom.objects.all()
+    return render(request, "classrooms/classroom_list.html", {"classrooms": classrooms})
+
+
 @login_required
 @require_http_methods(["GET", "POST"])
 def handle_classroom_form(request: HttpRequest, slug: str = None) -> HttpResponse:
@@ -28,11 +34,11 @@ def handle_classroom_form(request: HttpRequest, slug: str = None) -> HttpRespons
     else:
         form = ClassroomForm(instance=classroom)
 
-    return render(request, "classrooms/classroom_form.html", {"form": form, "classroom": classroom})
+    return render(request, "classrooms/create_classroom.html", {"form": form, "classroom": classroom})
 
 
 @login_required
-@require_http_methods(["POST","GET"])
+@require_http_methods(["POST", "GET"])
 def create_classroom(request: HttpRequest) -> HttpResponse:
     """Redirects to the classroom form without a slug for creation."""
     return handle_classroom_form(request)
@@ -50,21 +56,16 @@ def edit_classroom(request: HttpRequest) -> HttpResponse:
 def classroom_details(request: HttpRequest, slug: str) -> HttpResponse:
     """View to show classroom details."""
     classroom = get_object_or_404(Classroom, slug=slug)
-    return render(request, "classrooms/classroom.html", {"classroom_detail": classroom})
+    return render(request, "classrooms/classroom_details.html", {"classroom_detail": classroom})
 
 
 @login_required
 @require_http_methods(["GET"])
 def user_classroom_list(request: HttpRequest) -> HttpResponse:
-    user = request.user
-    classroom_teacher = ClassroomTeacher.objects.filter(teacher=user).select_related('classroom')
-    classrooms = [ct.classroom for ct in classroom_teacher]
-    num_classrooms = len(classrooms)
+    enrolled_classrooms = request.user.enrolled.all()
+    classrooms = [enrolled_classrooms.classroom for enrolled_classrooms in enrolled_classrooms]
 
     context = {
         "classrooms": classrooms,
-        "num_classrooms": num_classrooms,
-        "user": user,
     }
     return render(request, "classrooms/classroom_list.html", context)
-

@@ -18,7 +18,7 @@
         <div class="mx-auto">
             {% for message in messages %}
                 <div role="alert" class="alert alert-info">
-                    <span>{{ message }}</span>
+                    <span>{{ message | safe }}</span>
                 </div>
             {% endfor %}
         </div>
