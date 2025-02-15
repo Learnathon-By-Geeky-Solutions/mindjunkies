@@ -5,14 +5,32 @@ from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.http import HttpRequest, HttpResponse, HttpResponseNotAllowed
 
-from .models import Classroom, ClassroomTeacher
+from .models import Classroom, ClassroomTeacher, Enrollment
 from .forms import ClassroomForm
 
 
 def classroom_list(request: HttpRequest) -> HttpResponse:
     """View to show all classrooms."""
     classrooms = Classroom.objects.all()
-    return render(request, "classrooms/classroom_list.html", {"classrooms": classrooms})
+    enrolled_classes = []
+    teacher_classes = []
+    role = None
+    if request.user.is_authenticated:
+        role = request.user.role
+        enrolled = Enrollment.objects.filter(student=request.user)
+        enrolled_classes = [ec.classroom for ec in enrolled]
+        teaching = ClassroomTeacher.objects.filter(teacher=request.user)
+        teacher_classes = [ec.classroom for ec in teaching]
+
+    print(teacher_classes)
+
+    context = {
+        "classrooms": classrooms,
+        "enrolled_classes": enrolled_classes,
+        'teacher_classes': teacher_classes,
+        "role": role,
+    }
+    return render(request, "classrooms/classroom_list.html", context)
 
 
 @login_required
@@ -26,6 +44,8 @@ def handle_classroom_form(request: HttpRequest, slug: str = None) -> HttpRespons
         form = ClassroomForm(request.POST, request.FILES, instance=classroom)
         if form.is_valid():
             saved_classroom = form.save()
+            if request.user:
+                ClassroomTeacher.objects.create(classroom=saved_classroom, teacher=request.user)
             messages.success(request, "Classroom saved successfully!")
             return redirect(reverse("classroom_details", kwargs={"slug": saved_classroom.slug}))
         else:
@@ -56,7 +76,17 @@ def edit_classroom(request: HttpRequest) -> HttpResponse:
 def classroom_details(request: HttpRequest, slug: str) -> HttpResponse:
     """View to show classroom details."""
     classroom = get_object_or_404(Classroom, slug=slug)
-    return render(request, "classrooms/classroom_details.html", {"classroom_detail": classroom})
+    enrolled_classrooms = ClassroomTeacher.objects.filter(classroom=classroom)
+    teachers = [et.teacher for et in enrolled_classrooms]
+    print(teachers)
+    teacher = False
+    if request.user in teachers:
+        teacher = True
+    context = {
+        'classroom_detail': classroom,
+        'teacher': teacher,
+    }
+    return render(request, "classrooms/classroom_details.html", context)
 
 
 @login_required
@@ -65,7 +95,13 @@ def user_classroom_list(request: HttpRequest) -> HttpResponse:
     enrolled_classrooms = request.user.enrolled.all()
     classrooms = [enrolled_classrooms.classroom for enrolled_classrooms in enrolled_classrooms]
 
+    teaching = ClassroomTeacher.objects.filter(teacher=request.user)
+    teacher_classes = [ec.classroom for ec in teaching]
+
+    print(teacher_classes)
+
     context = {
         "classrooms": classrooms,
+        'teacher_classes': teacher_classes,
     }
     return render(request, "classrooms/classroom_list.html", context)
