@@ -21,8 +21,7 @@ class ClassroomForm(forms.ModelForm):
         instance.slug = slugify(instance.title)
         if commit:
             instance.save()
-            if self.user:
-                ClassroomTeacher.objects.create(classroom=instance, teacher=self.user, role='teacher')
+
         return instance
 
 
