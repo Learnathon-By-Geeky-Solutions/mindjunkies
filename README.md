@@ -9,7 +9,19 @@
 - [Md. Redwanuzzaman](https://github.com/redwanuzzaman)
 
 ## Project Description
-Add your project description here.
+We are building a Learning Management System (LMS) using Django. Our main goal is to
+create a feature-rich platform that can scale as per user increase. During this Learnathon 3.0, we
+want to develop and deploy the MVP (Minimum Viable Product). We want to ensure a welldesigned
+system for the core functionalities. After completing our MVP, we will adopt CI/CD
+(Continuous Integration & Continuous Deployment) workflows to integrate future features,
+improvements, and optimizations seamlessly.
+## Tech Stack 
+1.Backend: Django (Python)
+2.Frontend: HTML, CSS, JS (Bootstrap, Tailwind)
+3.Database: PostgreSQL
+4.Deployment: Heroku, AWS, or DigitalOcean
+5.Version Control: Git & GitHub
+6.CI/CD: GitHub Actions
 
 ## Getting Started
 1. Clone the repository
