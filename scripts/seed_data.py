@@ -51,7 +51,6 @@ def create_entities(data: dict) -> None:
             defaults={
                 'short_introduction': classroom_data['short_introduction'],
                 'course_description': classroom_data['course_description'],
-                'course_image': classroom_data['course_image'],
                 'preview_video_link': classroom_data['preview_video_link'],
                 'published': classroom_data['published'],
                 'upcoming': classroom_data['upcoming'],
