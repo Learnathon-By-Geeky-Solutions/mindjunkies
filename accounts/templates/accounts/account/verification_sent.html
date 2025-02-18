@@ -1,0 +1,24 @@
+{% extends "account/base_entrance.html" %}
+{% load i18n %}
+{% load allauth %}
+{% block head_title %}
+    {% trans "Verify Your Email Address" %}
+{% endblock head_title %}
+
+{% block content %}
+    <div class="card w-full max-w-md bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h1 class="card-title text-2xl font-bold text-center mb-4">{% trans "Verify Your Email Address" %}</h1>
+            <p class="text-center">
+                {% blocktrans %}We have emailed you for verification. Follow the link provided to finalize the
+                    signup process. If you do not see the verification email in your main inbox, check your spam folder.
+                    Please contact us if you do not receive the verification email within a few
+                    minutes.{% endblocktrans %}
+            </p>
+            <div class="text-center mt-4">
+                <a href=""
+                   class="btn btn-primary">{% trans "Resend Verification Email" %}</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

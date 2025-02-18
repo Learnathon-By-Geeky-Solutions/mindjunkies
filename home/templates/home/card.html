@@ -1,0 +1,14 @@
+{% load static %}
+<div class="card bg-base-100 shadow-xl">
+    <img src="{{ classroom.course_image.url }}" alt="Course Thumbnail"
+         class="rounded-lg w-full object-cover"/>
+    <div class="card-body">
+        <h3 class="card-title">{{ classroom.title }}</h3>
+        <p>{{ classroom.short_introduction }}</p>
+        <div class="card-actions justify-end">
+            <a href="{% url 'classroom_details' classroom.slug %}">
+                <button class="btn btn-primary">Enroll Now</button>
+            </a>
+        </div>
+    </div>
+</div>
