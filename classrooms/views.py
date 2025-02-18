@@ -35,13 +35,6 @@ def classroom_list(request: HttpRequest) -> HttpResponse:
 
 
 @login_required
-@require_http_methods(["GET", "POST"])
-def handle_classroom_form(request: HttpRequest, slug: str = None) -> HttpResponse:
-    """Handles both classroom creation and editing logic."""
-    
-
-
-@login_required
 @require_http_methods(["POST", "GET"])
 def create_classroom(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
@@ -56,30 +49,28 @@ def create_classroom(request: HttpRequest) -> HttpResponse:
             print("Form errors:", form.errors)  # Log the errors to the console
             messages.error(request, f"There was an error processing the form: {form.errors}")
     else:
-        classroom = get_object_or_404(Classroom, slug=request.GET.get("slug")) if request.GET.get("slug") else None
-        form = ClassroomForm(instance=classroom)
+        form = ClassroomForm()
 
-    return render(request, "classrooms/create_classroom.html", {"form": form, "classroom": classroom})
+    return render(request, "classrooms/create_classroom.html", {"form": form, "classroom": None})
 
 
 @login_required
 @require_http_methods(["GET", "POST"])
 def edit_classroom(request: HttpRequest) -> HttpResponse:
-    slug = request.GET.get("slug")
-    classroom = get_object_or_404(Classroom, slug=slug) if slug else None
-
     if request.method == "POST":
+        slug = request.GET.get("slug")
+        classroom = get_object_or_404(Classroom, slug=slug) if slug else None
         form = ClassroomForm(request.POST, request.FILES, instance=classroom)
         if form.is_valid():
-            saved_classroom = form.save()
-            if request.user:
-                ClassroomTeacher.objects.create(classroom=saved_classroom, teacher=request.user)
+            form.save()
             messages.success(request, "Classroom saved successfully!")
-            return redirect(reverse("classroom_details", kwargs={"slug": saved_classroom.slug}))
+            return redirect(reverse("classroom_details", kwargs={"slug": slug}))
         else:
             print("Form errors:", form.errors)  # Log the errors to the console
             messages.error(request, f"There was an error processing the form: {form.errors}")
     else:
+        slug = request.GET.get("slug")
+        classroom = get_object_or_404(Classroom, slug=slug) if slug else None
         form = ClassroomForm(instance=classroom)
 
     return render(request, "classrooms/create_classroom.html", {"form": form, "classroom": classroom})
