@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     # custom apps
     'home',
     'accounts',
-    'classrooms',
+    'courses',
     'videoConf',
     'theme',
     'lecture',

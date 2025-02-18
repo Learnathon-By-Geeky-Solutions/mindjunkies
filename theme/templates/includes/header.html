@@ -1,6 +1,6 @@
 <header class="navbar bg-base-100 shadow-sm">
     <div class="flex-none">
-        <a href="{% url 'home' %}" class="btn btn-ghost normal-case text-xl">MindJunkies</a>
+        <a href="{% url 'home' %}" class="btn btn-ghost normal-case text-xl">Nexora</a>
     </div>
     <div class="flex-1 justify-center">
         <div class="form-control w-full max-w-md">
@@ -10,9 +10,9 @@
     <div class="flex-none">
         <ul class="menu menu-horizontal gap-4">
             <li><a href="#" class="btn">Features</a></li>
-            <li><a href="{% url 'classroom_list' %}" class="btn">Courses</a></li>
+            <li><a href="{% url 'course_list' %}" class="btn">Courses</a></li>
             {% if user.is_authenticated %}
-                <li><a href="{% url 'my_classroom_list' %}" class="btn">My Classrooms</a></li>
+                <li><a href="{% url 'my_course_list' %}" class="btn">My Courses</a></li>
                 <li><a href="{% url 'account_change_password' %}" class="btn btn-secondary">Change Password</a></li>
                 <li><a href="{% url 'account_logout' %}" class="btn btn-error">Logout</a></li>
                 <li><a href="{% url 'account_email' %}" class="btn btn-primary">Email</a></li>

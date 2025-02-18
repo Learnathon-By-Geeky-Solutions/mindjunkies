@@ -1,12 +1,12 @@
 from django import forms
 from django.utils.text import slugify
 
-from .models import Classroom, ClassroomTeacher
+from .models import Courses, CourseTeacher
 
 
-class ClassroomForm(forms.ModelForm):
+class CourseForm(forms.ModelForm):
     class Meta:
-        model = Classroom
+        model = Courses
         fields = ['title', 'short_introduction', 'course_description', 
                   'course_image', 'preview_video_link',
                   'upcoming', 'paid_course',
@@ -14,10 +14,10 @@ class ClassroomForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
-        super(ClassroomForm, self).__init__(*args, **kwargs)
+        super(CourseForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
-        instance = super(ClassroomForm, self).save(commit=False)
+        instance = super(CourseForm, self).save(commit=False)
         instance.slug = slugify(instance.title)
         if commit:
             instance.save()

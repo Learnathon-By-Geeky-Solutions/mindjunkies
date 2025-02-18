@@ -1,15 +1,17 @@
 from django import forms
 from .models import Lecture, LecturePDF
 
+
 class LectureForm(forms.ModelForm):
     class Meta:
         model = Lecture
-        fields = ['title', 'classroom']
+        fields = ['title', 'course']
+
 
 class LecturePDFForm(forms.ModelForm):
     class Meta:
         model = LecturePDF
-        fields = ['pdf_file','lecture']
+        fields = ['pdf_file', 'lecture']
 
     def save(self, commit=True, lecture=None):
         instance = super().save(commit=False)
