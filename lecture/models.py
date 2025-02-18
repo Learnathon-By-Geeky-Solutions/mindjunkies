@@ -1,5 +1,5 @@
 from django.db import models
-from classrooms.models import Classroom
+from courses.models import Courses
 from django.utils.text import slugify
 
 # Model for storing multiple PDFs
@@ -12,7 +12,7 @@ class LecturePDF(models.Model):
 
 # Main Lecture Model (direct title input)
 class Lecture(models.Model):
-    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, related_name='lectures')
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE, related_name='lectures')
     title = models.CharField(max_length=255, unique=True)  # Direct input for title
     uploaded_on = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(max_length=255, unique=True, blank=True)

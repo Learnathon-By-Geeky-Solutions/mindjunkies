@@ -2,9 +2,9 @@ from django.contrib import admin
 from .models import Lecture, LecturePDF
 
 class LectureAdmin(admin.ModelAdmin):
-    list_display = ('get_title', 'classroom', 'uploaded_on', 'slug')  # Display the title directly from the Lecture model
-    search_fields = ('title', 'classroom__name')  # Search by title and classroom name
-    list_filter = ('classroom', 'uploaded_on')  # Filters for the list view
+    list_display = ('get_title', 'course', 'uploaded_on', 'slug')  # Display the title directly from the Lecture model
+    search_fields = ('title', 'course__name')  # Search by title and course name
+    list_filter = ('course', 'uploaded_on')  # Filters for the list view
     prepopulated_fields = {'slug': ('title',)}  # Slug will be auto-generated from the title
 
     def get_title(self, obj):

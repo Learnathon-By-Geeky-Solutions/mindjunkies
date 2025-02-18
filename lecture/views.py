@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.http import HttpRequest, HttpResponse
 from .forms import LectureForm, LecturePDFForm
 from .models import Lecture
-from classrooms.models import Classroom
+from courses.models import Courses
 from django.views.decorators.http import require_http_methods
 
 
@@ -26,11 +26,11 @@ def lecture_home(request: HttpRequest) -> HttpResponse:
 
     slug = request.GET.get('slug')  # Get the slug from the query parameter
 
-    classroom = get_object_or_404(Classroom, slug=slug)
-    lectures = Lecture.objects.filter(classroom=classroom).prefetch_related('pdf_files')
+    course = get_object_or_404(Courses, slug=slug)
+    lectures = Lecture.objects.filter(course=course).prefetch_related('pdf_files')
 
     return render(request, 'lecture/index.html', {
-        'classroom': classroom,
+        'course': course,
         'lectures': lectures
     })
 

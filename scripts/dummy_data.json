@@ -99,7 +99,7 @@
       "address": "987 Birch St, Coast City, FL"
     }
   ],
-  "classrooms": [
+  "courses": [
     {
       "title": "Introduction to Python",
       "short_introduction": "Learn Python from scratch.",
@@ -157,51 +157,51 @@
       "number_of_ratings": 0
     }
   ],
-  "classroom_teachers": [
+  "course_teachers": [
     {
-      "classroom": "Introduction to Python",
+      "course": "Introduction to Python",
       "teacher": "550e8400-e29b-41d4-a716-446655440001",
       "role": "teacher"
     },
     {
-      "classroom": "Advanced Django Development",
+      "course": "Advanced Django Development",
       "teacher": "550e8400-e29b-41d4-a716-446655440001",
       "role": "teacher"
     },
     {
-      "classroom": "JavaScript for Beginners",
+      "course": "JavaScript for Beginners",
       "teacher": "550e8400-e29b-41d4-a716-446655440004",
       "role": "teacher"
     },
     {
-      "classroom": "Machine Learning with Python",
+      "course": "Machine Learning with Python",
       "teacher": "550e8400-e29b-41d4-a716-446655440004",
       "role": "teacher"
     }
   ],
   "enrollments": [
     {
-      "classroom": "Introduction to Python",
+      "course": "Introduction to Python",
       "student": "550e8400-e29b-41d4-a716-446655440000",
       "status": "active"
     },
     {
-      "classroom": "Advanced Django Development",
+      "course": "Advanced Django Development",
       "student": "550e8400-e29b-41d4-a716-446655440002",
       "status": "pending"
     },
     {
-      "classroom": "JavaScript for Beginners",
+      "course": "JavaScript for Beginners",
       "student": "550e8400-e29b-41d4-a716-446655440003",
       "status": "active"
     },
     {
-      "classroom": "Machine Learning with Python",
+      "course": "Machine Learning with Python",
       "student": "550e8400-e29b-41d4-a716-446655440005",
       "status": "pending"
     },
     {
-      "classroom": "Introduction to Python",
+      "course": "Introduction to Python",
       "student": "550e8400-e29b-41d4-a716-446655440005",
       "status": "active"
     }
