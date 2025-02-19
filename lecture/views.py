@@ -11,13 +11,13 @@ from django.views.decorators.http import require_http_methods
 
 @login_required
 @require_http_methods(["POST", "GET"])  # Allow both GET & POST
-def create_lecture(request: HttpRequest) -> HttpResponse:
+def create_content(request: HttpRequest) -> HttpResponse:
     slug = request.GET.get('slug')
     form = LecturePDFForm(request.POST or None, request.FILES)
     if request.method == "POST" and form.is_valid():
         form.save()
         return redirect(f'{reverse("lecture_home")}?slug={slug}')
-    return render(request, "lecture/create_form.html", {"form": form, 'form_type': 'pdf'})
+    return render(request, "lecture/create_form.html", {"form": form, 'form_type': 'content'})
 
 
 @require_http_methods(["GET"])
@@ -37,13 +37,16 @@ def lecture_home(request: HttpRequest) -> HttpResponse:
 
 @login_required
 @require_http_methods(["POST", "GET"])
-def create_title(request: HttpRequest) -> HttpResponse:
+def create_module(request: HttpRequest) -> HttpResponse:
     """
-    Handles Lecture creation (title).
+    Handles module creation (title).
     """
     slug = request.GET.get('slug')
+    course_instance = Courses.objects.get(slug=slug)
     form = LectureForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
-        form.save()
+        module_instance=form.save(commit=False)
+        module_instance.course=course_instance
+        module_instance.save()
         return redirect(f'{reverse("lecture_home")}?slug={slug}')
-    return render(request, "lecture/create_form.html", {"form": form, 'form_type': 'lecture'})
+    return render(request, "lecture/create_form.html", {"form": form, 'form_type': 'module'})
