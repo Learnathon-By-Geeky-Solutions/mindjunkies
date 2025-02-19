@@ -1,0 +1,35 @@
+{% extends 'base.html' %} {% block main_content %}
+<div class="w-[100%] flex">
+  
+  <div class="w-[85%] m-3">
+    <div class="collapse collapse-arrow m-2">
+      <input type="checkbox" />
+      <div class="collapse-title text-xl font-medium border">
+       {{course.title}}
+      </div>
+      <div class="collapse-content border p-6">
+        <p class="text-sm my-3">
+         {{course.short_introduction}}
+        </p>
+        {% for element in lectures %}
+         {% include 'lecture/handlecontent.html' %}
+    {% empty %}
+        <p>No lectures found.</p>
+    {% endfor %}
+    
+      </div>
+    </div>
+    <div class="flex gap-2">
+      <a href="{% url 'create_content' %}?slug={{ course.slug }}">
+        <button class="btn btn-primary">Add Content</button>
+    </a>
+    
+    <a href="{% url 'create_module' %}?slug={{ course.slug }}">
+        <button class="btn btn-primary">Add Module</button>
+    </a>
+  </div>
+    
+  </div>
+  
+</div>
+{% endblock main_content %}
