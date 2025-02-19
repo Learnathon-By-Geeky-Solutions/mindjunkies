@@ -7,8 +7,8 @@
                 📚 Course Content
             </summary>
             <ul class="pl-4 bg-gray-800 rounded-lg mt-2 hidden group-open:block">
-                <li><a href="#" class="block p-2 hover:bg-gray-700 rounded-md">📖 Lectures</a></li>
-                <li><a href="#" class="block p-2 hover:bg-gray-700 rounded-md">📝 Tutorials</a></li>
+                <li><a href="{% url 'lecture_home' %}?slug={{ course.slug }}" class="block p-2 hover:bg-gray-700 rounded-md">📖 Lectures</a></li>
+                <li><a href="{% url 'video_content' %}?slug={{ course.slug }}" class="block p-2 hover:bg-gray-700 rounded-md">📝 Tutorials</a></li>
                 <li><a href="#" class="block p-2 hover:bg-gray-700 rounded-md">🎥 Video Materials</a></li>
                 <li><a href="#" class="block p-2 hover:bg-gray-700 rounded-md">📂 Additional Resources</a></li>
             </ul>

@@ -4,9 +4,10 @@ from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpRequest, HttpResponse
 from .forms import LectureForm, LecturePDFForm
-from .models import Lecture
+from .models import Lecture,LectureVideo
 from courses.models import Courses
 from django.views.decorators.http import require_http_methods
+from django.http import FileResponse
 
 
 @login_required
@@ -31,7 +32,8 @@ def lecture_home(request: HttpRequest) -> HttpResponse:
 
     return render(request, 'lecture/index.html', {
         'course': course,
-        'lectures': lectures
+        'lectures': lectures,
+        'type':"pdf"
     })
 
 
@@ -50,3 +52,26 @@ def create_module(request: HttpRequest) -> HttpResponse:
         module_instance.save()
         return redirect(f'{reverse("lecture_home")}?slug={slug}')
     return render(request, "lecture/create_form.html", {"form": form, 'form_type': 'module'})
+
+
+def lecture_video_content(request):
+    """View to show Lecture details."""
+    slug = request.GET.get('slug')  # Get the slug from the query parameter
+
+    course = get_object_or_404(Courses, slug=slug)
+    lectures = Lecture.objects.filter(course=course).prefetch_related('video_files')
+
+    return render(request, 'lecture/video_content.html', {
+        'course': course,
+        'lectures': lectures,
+        'type': "video"
+    })
+
+def stream_video(request, video_id):
+    """ Serve video files in-browser instead of forcing download """
+    video = get_object_or_404(LectureVideo, id=video_id)
+    response = FileResponse(video.video_file.open(), content_type='video/mp4')
+    response['Content-Disposition'] = 'inline'  # Forces browser to play instead of download
+    return response
+
+   
