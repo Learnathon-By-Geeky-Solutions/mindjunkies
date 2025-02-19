@@ -1,17 +1,26 @@
 from django import forms
 from .models import Lecture, LecturePDF
 
-
 class LectureForm(forms.ModelForm):
     class Meta:
         model = Lecture
-        fields = ['title', 'course']
-
+        fields = ['title']
+        widgets = {
+            'course': forms.Select(attrs={'class': 'form-select'})  # Fix select field styling
+        }
 
 class LecturePDFForm(forms.ModelForm):
     class Meta:
         model = LecturePDF
         fields = ['pdf_file', 'lecture']
+        widgets = {
+            'lecture': forms.Select(attrs={'class': 'form-select'}),  # Fix select field styling
+            'pdf_file': forms.FileInput(attrs={'class': 'form-control'})  # File input styling
+        }
+        labels = {
+            'lecture': 'Module',  # Custom label for the 'title' field
+             
+        }
 
     def save(self, commit=True, lecture=None):
         instance = super().save(commit=False)
