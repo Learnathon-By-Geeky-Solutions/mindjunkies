@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.db import transaction
 
 from accounts.models import User, Profile
-from classrooms.models import Classroom, ClassroomTeacher, Enrollment
+from courses.models import Courses, CourseTeacher, Enrollment
 
 
 @transaction.atomic
@@ -38,50 +38,49 @@ def create_entities(data: dict) -> None:
         )
     print("✅ Profile created successfully.")
 
-    # Create classrooms
-    for classroom_data in data['classrooms']:
-        published_on = classroom_data['published_on']
+    # Create courses
+    for course_data in data['courses']:
+        published_on = course_data['published_on']
         if published_on:
             published_on = timezone.datetime.fromisoformat(published_on)
             if timezone.is_naive(published_on):
                 published_on = timezone.make_aware(published_on)
 
-        Classroom.objects.get_or_create(
-            title=classroom_data['title'],
+        Courses.objects.get_or_create(
+            title=course_data['title'],
             defaults={
-                'short_introduction': classroom_data['short_introduction'],
-                'course_description': classroom_data['course_description'],
-                'course_image': classroom_data['course_image'],
-                'preview_video_link': classroom_data['preview_video_link'],
-                'published': classroom_data['published'],
-                'upcoming': classroom_data['upcoming'],
+                'short_introduction': course_data['short_introduction'],
+                'course_description': course_data['course_description'],
+                'preview_video_link': course_data['preview_video_link'],
+                'published': course_data['published'],
+                'upcoming': course_data['upcoming'],
                 'published_on': published_on,
-                'paid_course': classroom_data['paid_course'],
-                'course_price': classroom_data['course_price'],
-                'slug': classroom_data['slug'],
-                'total_rating': classroom_data['total_rating'],
-                'number_of_ratings': classroom_data['number_of_ratings'],
+                'paid_course': course_data['paid_course'],
+                'course_price': course_data['course_price'],
+                'slug': course_data['slug'],
+                'total_rating': course_data['total_rating'],
+                'number_of_ratings': course_data['number_of_ratings'],
             }
         )
-    print("✅ Classroom created successfully.")
+    print("✅ Course created successfully.")
 
-    # Create classroom teachers
-    for classroom_teacher_data in data['classroom_teachers']:
-        classroom = Classroom.objects.get(title=classroom_teacher_data['classroom'])
-        teacher = User.objects.get(uuid=classroom_teacher_data['teacher'])
-        ClassroomTeacher.objects.get_or_create(
-            classroom=classroom,
+    # Create course teachers
+    for course_teacher_data in data['course_teachers']:
+        course = Courses.objects.get(title=course_teacher_data['course'])
+        teacher = User.objects.get(uuid=course_teacher_data['teacher'])
+        CourseTeacher.objects.get_or_create(
+            course=course,
             teacher=teacher,
-            defaults={'role': classroom_teacher_data['role']}
+            defaults={'role': course_teacher_data['role']}
         )
-    print("✅ Classroom-teacher created successfully.")
+    print("✅ Course-teacher created successfully.")
 
     # Create enrollments
     for enrollment_data in data['enrollments']:
-        classroom = Classroom.objects.get(title=enrollment_data['classroom'])
+        course = Courses.objects.get(title=enrollment_data['course'])
         student = User.objects.get(uuid=enrollment_data['student'])
         Enrollment.objects.get_or_create(
-            classroom=classroom,
+            course=course,
             student=student,
             defaults={'status': enrollment_data['status']}
         )
@@ -105,7 +104,7 @@ def run() -> None:
     try:
         create_entities(data)
         print("🎉 Data loaded successfully")
-    except (User.DoesNotExist, Classroom.DoesNotExist) as e:
+    except (User.DoesNotExist, Courses.DoesNotExist) as e:
         print(f"❌ Entity not found: {str(e)}")
     except KeyError as e:
         print(f"❌ Missing required field: {str(e)}")

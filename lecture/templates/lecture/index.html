@@ -1,0 +1,57 @@
+{% extends 'base.html' %} {% block main_content %}
+<div class="w-[100%] flex">
+  
+  <div class="w-[85%] m-3">
+    <div class="collapse collapse-arrow m-2">
+      <input type="checkbox" />
+      <div class="collapse-title text-xl font-medium border">
+       {{course.title}}
+      </div>
+      <div class="collapse-content border p-6">
+        <p class="text-sm my-3">
+         {{course.short_introduction}}
+        </p>
+        {% for lecture in lectures %}
+        <div class="collapse collapse-arrow">
+            <input type="checkbox" />
+            <div class="collapse-title text-xl font-medium border">
+                {% if lecture.title %}
+                    {{ lecture.title }}  <!-- Fetching title from LectureTitle -->
+                {% else %}
+                    No Title Available
+                {% endif %}
+            </div>
+            <div class="collapse-content border p-6">
+                {% if lecture.pdf_files.all %}
+                    {% for pdf in lecture.pdf_files.all %}
+                        <p>
+                            <a href="{{ pdf.pdf_file.url }}" target="_blank" class="text-blue-500">
+                                📜 {{ pdf.pdf_file.name }}
+                            </a>
+                        </p>
+                    {% endfor %}
+                {% else %}
+                    <p>No PDFs available for this lecture.</p>
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <p>No lectures found.</p>
+    {% endfor %}
+    
+      </div>
+    </div>
+    <div class="flex gap-2">
+      <a href="{% url 'create_lecture' %}?slug={{ course.slug }}">
+        <button class="btn btn-primary">Add Title</button>
+    </a>
+    
+    <a href="{% url 'create_topic' %}?slug={{ course.slug }}">
+        <button class="btn btn-primary">Add Topic</button>
+    </a>
+  </div>
+    
+  </div>
+  
+</div>
+{% endblock main_content %}

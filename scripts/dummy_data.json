@@ -99,12 +99,11 @@
       "address": "987 Birch St, Coast City, FL"
     }
   ],
-  "classrooms": [
+  "courses": [
     {
       "title": "Introduction to Python",
       "short_introduction": "Learn Python from scratch.",
       "course_description": "This course covers the basics of Python programming.",
-      "course_image": "course_images/python_intro.jpg",
       "preview_video_link": "https://www.youtube.com/watch?v=example1",
       "published": true,
       "upcoming": false,
@@ -119,7 +118,6 @@
       "title": "Advanced Django Development",
       "short_introduction": "Master Django for web development.",
       "course_description": "This course dives deep into Django framework.",
-      "course_image": "course_images/advanced_django.jpg",
       "preview_video_link": "https://www.youtube.com/watch?v=example2",
       "published": true,
       "upcoming": false,
@@ -134,7 +132,6 @@
       "title": "JavaScript for Beginners",
       "short_introduction": "Learn JavaScript fundamentals.",
       "course_description": "This course teaches the basics of JavaScript programming.",
-      "course_image": "course_images/javascript_basics.jpg",
       "preview_video_link": "https://www.youtube.com/watch?v=example3",
       "published": true,
       "upcoming": false,
@@ -149,7 +146,6 @@
       "title": "Machine Learning with Python",
       "short_introduction": "Explore machine learning concepts using Python.",
       "course_description": "This course introduces machine learning algorithms and techniques.",
-      "course_image": "course_images/ml_python.jpg",
       "preview_video_link": "https://www.youtube.com/watch?v=example4",
       "published": false,
       "upcoming": true,
@@ -161,51 +157,51 @@
       "number_of_ratings": 0
     }
   ],
-  "classroom_teachers": [
+  "course_teachers": [
     {
-      "classroom": "Introduction to Python",
+      "course": "Introduction to Python",
       "teacher": "550e8400-e29b-41d4-a716-446655440001",
       "role": "teacher"
     },
     {
-      "classroom": "Advanced Django Development",
+      "course": "Advanced Django Development",
       "teacher": "550e8400-e29b-41d4-a716-446655440001",
       "role": "teacher"
     },
     {
-      "classroom": "JavaScript for Beginners",
+      "course": "JavaScript for Beginners",
       "teacher": "550e8400-e29b-41d4-a716-446655440004",
       "role": "teacher"
     },
     {
-      "classroom": "Machine Learning with Python",
+      "course": "Machine Learning with Python",
       "teacher": "550e8400-e29b-41d4-a716-446655440004",
       "role": "teacher"
     }
   ],
   "enrollments": [
     {
-      "classroom": "Introduction to Python",
+      "course": "Introduction to Python",
       "student": "550e8400-e29b-41d4-a716-446655440000",
       "status": "active"
     },
     {
-      "classroom": "Advanced Django Development",
+      "course": "Advanced Django Development",
       "student": "550e8400-e29b-41d4-a716-446655440002",
       "status": "pending"
     },
     {
-      "classroom": "JavaScript for Beginners",
+      "course": "JavaScript for Beginners",
       "student": "550e8400-e29b-41d4-a716-446655440003",
       "status": "active"
     },
     {
-      "classroom": "Machine Learning with Python",
+      "course": "Machine Learning with Python",
       "student": "550e8400-e29b-41d4-a716-446655440005",
       "status": "pending"
     },
     {
-      "classroom": "Introduction to Python",
+      "course": "Introduction to Python",
       "student": "550e8400-e29b-41d4-a716-446655440005",
       "status": "active"
     }
