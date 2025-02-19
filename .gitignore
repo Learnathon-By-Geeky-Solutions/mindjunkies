@@ -5,8 +5,8 @@
 __pycache__
 db.sqlite3
 # media
-/media/lecture_pdfs
-/media/lectur_videos
+/media
+
 
 # Backup files
 *.bak
