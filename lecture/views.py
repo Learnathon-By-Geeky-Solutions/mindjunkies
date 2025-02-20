@@ -3,22 +3,57 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpRequest, HttpResponse
-from .forms import LectureForm, LecturePDFForm
+from .forms import LectureForm, LecturePDFForm,LectureVideoForm
 from .models import Lecture,LectureVideo
 from courses.models import Courses
 from django.views.decorators.http import require_http_methods
 from django.http import FileResponse
+from django.core.exceptions import ValidationError
+from django.http import HttpResponseBadRequest
 
-
+def validate_file(file, type):
+    """Validate file based on slug type."""
+    if type == "video":
+        allowed_extensions = ['.mp4', '.avi', '.mov', '.mkv']
+        if not any(file.name.endswith(ext) for ext in allowed_extensions):
+            raise ValidationError("Only video files (MP4, AVI, MOV, MKV) are allowed.")
+    elif type == "pdf":
+        if not file.name.endswith('.pdf'):
+            raise ValidationError("Only PDF files are allowed.")
+    else:
+        raise ValidationError("Invalid upload type.")
+    
 @login_required
 @require_http_methods(["POST", "GET"])  # Allow both GET & POST
 def create_content(request: HttpRequest) -> HttpResponse:
+    type = request.GET.get('type')
     slug = request.GET.get('slug')
-    form = LecturePDFForm(request.POST or None, request.FILES)
+    print(type)
+    
+    # Select the appropriate form based on slug
+    form_class = LecturePDFForm if type == "pdf" else LectureVideoForm if type == "video" else None
+    
+    if not form_class:
+        return HttpResponseBadRequest("Invalid content type.")
+    
+    form = form_class(request.POST, request.FILES)
+    print(request.FILES)
+    
     if request.method == "POST" and form.is_valid():
-        form.save()
-        return redirect(f'{reverse("lecture_home")}?slug={slug}')
+        # Get the file based on type
+        file_field = 'pdf_file' if type == 'pdf' else 'video_file'
+        file = request.FILES.get(file_field)
+        
+        try:
+            validate_file(file, type)  # Validate file type
+            form.save()  # Save the form instance (assuming it saves the file as well)
+            return redirect(f'{reverse("lecture_home")}?slug={slug}')
+        except ValidationError as e:
+            form.add_error(file_field, e)  # Add validation error to the respective field
+    
     return render(request, "lecture/create_form.html", {"form": form, 'form_type': 'content'})
+
+
 
 
 @require_http_methods(["GET"])
