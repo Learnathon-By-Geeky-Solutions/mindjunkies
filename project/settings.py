@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'videoConf',
     'theme',
     'lecture',
+    'exam',
     # third party apps
     'tailwind',
     "allauth",
