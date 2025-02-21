@@ -1,0 +1,130 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{% trans "Edit Profile" %}{% endblock %}
+
+{% block content %}
+    <div class="min-h-screen bg-base-200 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h1 class="card-title text-2xl font-bold text-center mb-6">{% trans "Edit Profile" %}</h1>
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">{% trans "First Name" %}</span>
+                                    </label>
+                                    <input type="text" name="first_name" value="{{ user.first_name }}"
+                                           class="input input-bordered w-full"/>
+                                </div>
+
+                                <div class="form-control mt-4">
+                                    <label class="label">
+                                        <span class="label-text">{% trans "Last Name" %}</span>
+                                    </label>
+                                    <input type="text" name="last_name" value="{{ user.last_name }}"
+                                           class="input input-bordered w-full"/>
+                                </div>
+
+                                <div class="form-control mt-4">
+                                    <label class="label">
+                                        <span class="label-text">{% trans "Username" %}</span>
+                                    </label>
+                                    <input type="text" name="username" value="{{ user.username }}"
+                                           class="input input-bordered w-full"/>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">{% trans "Email" %}</span>
+                                    </label>
+                                    <input type="email" name="email" value="{{ user.email }}"
+                                           class="input input-bordered w-full" disabled/>
+                                    <label class="label">
+                                        <span class="label-text-alt">{% trans "To change your email, use the 'Change E-mail' option." %}</span>
+                                    </label>
+                                </div>
+
+                                <div class="form-control mt-4">
+                                    <label class="label">
+                                        <span class="label-text">{% trans "Avatar" %}</span>
+                                    </label>
+                                    <input type="file" name="avatar" class="file-input file-input-bordered w-full"/>
+                                    {% if user.profile.avatar %}
+                                        <label class="label">
+                                            <span class="label-text-alt">{% trans "Current avatar:" %} {{ user.profile.avatar.name }}</span>
+                                        </label>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-control mt-6">
+                            <label class="label">
+                                <span class="label-text">{% trans "Bio" %}</span>
+                            </label>
+                            <textarea name="bio" class="textarea textarea-bordered h-24"
+                                      placeholder="Tell us about yourself">{{ user.profile.bio }}</textarea>
+                        </div>
+
+                        <div class="form-control mt-6">
+                            <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
+                        </div>
+                    </form>
+
+                    <div class="divider">{% trans "or" %}</div>
+
+                    <div class="text-center">
+                        <a href="{% url 'profile' %}" class="btn btn-outline">{% trans "Cancel" %}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // This script adjusts form output to work better with DaisyUI
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add DaisyUI classes to form inputs
+            const inputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="file"], textarea');
+            inputs.forEach(input => {
+                if (input.type === 'file') {
+                    input.classList.add('file-input', 'file-input-bordered', 'w-full');
+                } else if (input.tagName === 'TEXTAREA') {
+                    input.classList.add('textarea', 'textarea-bordered', 'h-24', 'w-full');
+                } else {
+                    input.classList.add('input', 'input-bordered', 'w-full');
+                }
+            });
+
+            // Add DaisyUI classes to labels
+            const labels = document.querySelectorAll('label');
+            labels.forEach(label => {
+                if (!label.classList.contains('label')) {
+                    label.classList.add('label');
+                    const span = document.createElement('span');
+                    span.className = 'label-text';
+                    span.innerHTML = label.innerHTML;
+                    label.innerHTML = '';
+                    label.appendChild(span);
+                }
+            });
+
+            // Style error messages
+            const errorLists = document.querySelectorAll('.errorlist');
+            errorLists.forEach(list => {
+                list.classList.add('text-error', 'list-none', 'p-0', 'mt-1');
+            });
+        });
+    </script>
+{% endblock %}
+
