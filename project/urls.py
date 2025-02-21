@@ -26,6 +26,7 @@ urlpatterns = [
     path('course/', include('courses.urls')),
     path('lecture/', include('lecture.urls')),
     path('meet/', include('videoConf.urls')),
+    path('exam/', include('exam.urls')),
 ]
 
 if settings.DEBUG:

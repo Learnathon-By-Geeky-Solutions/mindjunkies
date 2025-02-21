@@ -9,7 +9,7 @@
     </div>
     <div class="collapse-content border p-6">
         {% if type == "pdf" %}
-        {% if element.video_files.all %}
+        {% if element.pdf_files.all %}
             {% for pdf in element.pdf_files.all %}
                 <p>
                     <a href="{{ pdf.pdf_file.url }}" target="_blank" class="text-blue-500">
