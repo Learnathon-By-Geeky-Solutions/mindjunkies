@@ -24,3 +24,7 @@ class Lecture(models.Model):
         if not self.slug and self.title:
             self.slug = slugify(self.title)  # Auto-generate slug from title
         super().save(*args, **kwargs)
+
+class LectureVideo(models.Model):
+    lecture=models.ForeignKey('Lecture',on_delete=models.CASCADE,related_name='video_files')
+    video_file=models.FileField(upload_to='lectur_videos/')

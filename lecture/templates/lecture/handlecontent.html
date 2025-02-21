@@ -1,0 +1,40 @@
+<div class="collapse collapse-arrow">
+    <input type="checkbox" />
+    <div class="collapse-title text-xl font-medium border">
+        {% if element.title %}
+            {{ element.title }}  <!-- Fetching title from LectureTitle -->
+        {% else %}
+            No Title Available
+        {% endif %}
+    </div>
+    <div class="collapse-content border p-6">
+        {% if type == "pdf" %}
+        {% if element.pdf_files.all %}
+            {% for pdf in element.pdf_files.all %}
+                <p>
+                    <a href="{{ pdf.pdf_file.url }}" target="_blank" class="text-blue-500">
+                        📜 {{ pdf.pdf_file.name}}
+                    </a>
+                </p>
+            {% endfor %}
+        {% else %}
+            <p>No PDFs available for this lecture.</p>
+        {% endif %}
+        {% endif %}
+        {% if type == "video" %}
+        {% if element.video_files.all  %}
+   
+        {% for video in element.video_files.all %}
+        <p>
+            <a href="{% url 'stream_video' video.id %}" target="_blank" class="text-blue-500 underline">
+                🎥{{video.video_file.name}}
+            </a>
+        </p>
+        {% endfor %}
+    {% else %}
+        <p>No videos available for this lecture.</p>
+    {% endif %}
+    {% endif %}
+    </div>
+
+</div>
