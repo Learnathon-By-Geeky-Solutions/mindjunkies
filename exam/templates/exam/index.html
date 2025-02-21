@@ -2,53 +2,68 @@
 
 {% block main_content %}
   <h2>MCQ Exam</h2>
-  
-  <!-- Form to submit answers and input text for question generation -->
+
+  <!-- Form for MCQ Generation -->
   <form method="POST">
     {% csrf_token %}
-
-    <!-- Textarea for user input text -->
     <div class="form-group">
       <label for="text">Enter Text for MCQ Generation:</label>
-      <form method="POST" >
-      <textarea id="text" name="text" class="form-control" rows="4" cols="50" required>{{ request.POST.text }}</textarea>
-      <button type="submit" class="primary" style="background-color: #4CAF50; color: white; border: none; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; cursor: pointer; border-radius: 5px; transition: background-color 0.3s;">
-        Submit Questions
+      <textarea id="text" name="text" class="form-control" rows="4" cols="50" required>{{ input_text }}</textarea>
+      <button type="submit" name="generate_questions" class="primary"
+              style="background-color: #4CAF50; color: white; border: none; padding: 10px 20px;
+                     text-align: center; text-decoration: none; display: inline-block; font-size: 16px;
+                     cursor: pointer; border-radius: 5px; transition: background-color 0.3s;">
+        Generate Questions
       </button>
-      
-     
-
-    </form>
     </div>
+  </form>
 
-    <br>
+  <br>
 
-    {% if mcqs %}
-      <h3>Generated Questions</h3>
+  {% if mcqs %}
+    <h3>Generated Questions</h3>
 
-      <!-- Loop through generated MCQs -->
+    <!-- Form for Answer Submission -->
+    <form method="POST">
+      {% csrf_token %}
+
       {% for mcq in mcqs %}
         <fieldset>
           <legend>{{ mcq.question }}</legend>
 
-          <!-- Loop through the options and display them as radio buttons -->
           {% for option, answer in mcq.options.items %}
             <label>
-              <input type="radio" name="answer_{{ forloop.parentloop.counter }}" value="{{ option }}">
+              <input type="radio" name="answer_{{ forloop.parentloop.counter }}" value="{{ answer }}">
               {{ option }}) {{ answer }}
             </label><br>
           {% endfor %}
-
-          <!-- Correct answer for debugging (you can remove this in production) -->
-          <p><strong>Correct Answer:</strong> {{ mcq.correct_answer }}</p>
         </fieldset>
         <br>
       {% endfor %}
-      
-      <button type="submit">Submit Answers</button>
+
+      <button type="submit" name="submit_answers" class="primary">Submit Answers</button>
+    </form>
+  {% else %}
+    <p>No MCQs generated. Please provide input text above to generate questions.</p>
+  {% endif %}
+
+  {% if show_results %}
+    <h3>Results</h3>
+    <p><strong>Final Score:</strong> {{ score }} / {{ mcqs|length }}</p>
+
+    {% for question, details in user_answers.items %}
+    <fieldset 
+    {% if details.is_correct %}
+      style="border: 2px solid green; padding: 10px; border-radius: 5px;"
     {% else %}
-      <p>No MCQs generated. Please provide input text above to generate questions.</p>
+      style="border: 2px solid red; padding: 10px; border-radius: 5px;"
     {% endif %}
-    
-  </form>
+  >
+        <legend>{{ question }}</legend>
+        <p><strong>Your Answer:</strong> {{ details.selected }}</p>
+        <p><strong>Correct Answer:</strong> {{ details.correct }}</p>
+      </fieldset>
+      <br>
+    {% endfor %}
+  {% endif %}
 {% endblock %}
