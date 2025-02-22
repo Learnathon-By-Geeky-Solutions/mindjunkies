@@ -1,69 +1,67 @@
 {% extends 'base.html' %}
 
 {% block main_content %}
-  <h2>MCQ Exam</h2>
-
-  <!-- Form for MCQ Generation -->
-  <form method="POST">
+  <h2 class="text-2xl font-bold mb-4">MCQ Exam</h2>
+  
+  <!-- Form for PDF Upload -->
+  <form method="POST" enctype="multipart/form-data" class="mb-6">
     {% csrf_token %}
-    <div class="form-group">
-      <label for="text">Enter Text for MCQ Generation:</label>
-      <textarea id="text" name="text" class="form-control" rows="4" cols="50" required>{{ input_text }}</textarea>
-      <button type="submit" name="generate_questions" class="primary"
-              style="background-color: #4CAF50; color: white; border: none; padding: 10px 20px;
-                     text-align: center; text-decoration: none; display: inline-block; font-size: 16px;
-                     cursor: pointer; border-radius: 5px; transition: background-color 0.3s;">
+
+    <div class="mb-4">
+      <label for="pdf_file" class="block font-semibold mb-2">Upload PDF for MCQ Generation:</label>
+      <input type="file" name="pdf_file" id="pdf_file" accept="application/pdf" class="border p-2 rounded w-full">
+      <button type="submit" name="generate_questions" class="bg-green-500 px-4 py-2 rounded hover:bg-green-600 transition">
         Generate Questions
       </button>
     </div>
   </form>
 
-  <br>
+  <!-- Display Error Message if any -->
+  {% if error %}
+    <div class="bg-red-100 text-red-700 p-4 mb-4 rounded">
+      <strong>Error:</strong> {{ error }}
+    </div>
+  {% endif %}
 
   {% if mcqs %}
-    <h3>Generated Questions</h3>
+    <h3 class="text-xl font-semibold mt-6">Generated Questions</h3>
 
     <!-- Form for Answer Submission -->
-    <form method="POST">
+    <form method="POST" class="mt-4">
       {% csrf_token %}
 
       {% for mcq in mcqs %}
-        <fieldset>
-          <legend>{{ mcq.question }}</legend>
+        <fieldset class="border border-gray-300 p-4 rounded-md mb-4">
+          <legend class="font-semibold">{{ mcq.question }}</legend>
 
           {% for option, answer in mcq.options.items %}
-            <label>
-              <input type="radio" name="answer_{{ forloop.parentloop.counter }}" value="{{ answer }}">
-              {{ option }}) {{ answer }}
-            </label><br>
+            <label class="block mt-2">
+              <input type="radio" name="answer_{{ forloop.parentloop.counter }}" value="{{ answer }}" class="mr-2">
+              <span class="font-medium">{{ option }}) {{ answer }}</span>
+            </label>
           {% endfor %}
         </fieldset>
-        <br>
       {% endfor %}
 
-      <button type="submit" name="submit_answers" class="primary">Submit Answers</button>
+      <button type="submit" name="submit_answers" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+        Submit Answers
+      </button>
     </form>
   {% else %}
-    <p>No MCQs generated. Please provide input text above to generate questions.</p>
+    <p class="text-gray-600">No MCQs generated. Upload a PDF to generate questions.</p>
   {% endif %}
 
   {% if show_results %}
-    <h3>Results</h3>
-    <p><strong>Final Score:</strong> {{ score }} / {{ mcqs|length }}</p>
+    <h3 class="text-xl font-semibold mt-6">Results</h3>
+    <p class="font-bold text-lg mb-4">Final Score: {{ score }} / {{ mcqs|length }}</p>
 
     {% for question, details in user_answers.items %}
-    <fieldset 
-    {% if details.is_correct %}
-      style="border: 2px solid green; padding: 10px; border-radius: 5px;"
-    {% else %}
-      style="border: 2px solid red; padding: 10px; border-radius: 5px;"
-    {% endif %}
-  >
-        <legend>{{ question }}</legend>
+      <fieldset class="p-4 rounded-md mb-4 
+        {% if details.is_correct %}border-2 border-green-500{% else %}border-2 border-red-500{% endif %}">
+        <legend class="font-semibold">{{ question }}</legend>
         <p><strong>Your Answer:</strong> {{ details.selected }}</p>
         <p><strong>Correct Answer:</strong> {{ details.correct }}</p>
       </fieldset>
-      <br>
     {% endfor %}
   {% endif %}
 {% endblock %}

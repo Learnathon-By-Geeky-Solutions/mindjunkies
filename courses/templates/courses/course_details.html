@@ -14,7 +14,15 @@
 
             <!-- Hidden on Large Screens, Visible on Small Screens -->
             <div class="sm:hidden mt-4 p-4 w-full block">
-                <p class="text-sm"><strong>Published on:</strong> {{ course_detail.published_on|date:"F j, Y" }}</p>
+                
+                <p class="text-sm">
+                    
+                    {% if course_detail.published_on %}
+                    <strong>Published on:</strong>    {{ course_detail.published_on|date:"F j, Y" }}
+                    {% else %}
+                        Upcoming
+                    {% endif %}
+                </p>
                 <p class="text-sm"><strong>Tags:</strong> Python, Beginner, Programming</p>
                 <p class="text-sm"><strong>Categories:</strong> Tech, Software Dev</p>
                 <p class="text-sm"><strong>Rating:</strong> ⭐ {{ course_detail.total_rating }}</p>
@@ -46,8 +54,13 @@
                              class="rounded-lg h-40 object-cover w-full"/>
                     {% endif %}
                 </figure>
-                <p class="text-sm text-gray-600"><strong>Published
-                    on:</strong> {{ course_detail.published_on|date:"F j, Y" }}</p>
+                
+                {% if course_detail.published_on %}
+                Published on:  {{ course_detail.published_on|date:"F j, Y" }}
+                {% else %}
+                    Upcoming
+                {% endif %}
+            </p>
                 <p class="text-sm text-gray-600"><strong>Tags:</strong> Python, Beginner, Programming</p>
                 <p class="text-sm text-gray-600"><strong>Categories:</strong> Tech, Software Dev</p>
                 <p class="text-sm text-gray-600"><strong>Rating:</strong> ⭐ {{ course_detail.total_rating }}</p>
@@ -65,8 +78,15 @@
                 <img src="/static/images/course.jpg" alt="Course Thumbnail"
                      class="w-12 h-12 rounded-full object-cover"/>
                 <div class="ml-4">
-                    <p class="font-semibold text-gray-800">{{ course_detail.title }}</p>
-                    <p class="text-sm text-gray-500">Published on: {{ course_detail.published_on|date:"F j, Y" }}</p>
+                    <p class="text-sm font-bold">{{ course_detail.title }}</p>
+                    <p class="text-sm text-gray-600 mt-1 flex items-center">
+                        <strong class="mr-1 text-gray-800">Published on:</strong> 
+                        {% if course_detail.published_on %}
+                            <span class="text-blue-600 font-medium">{{ course_detail.published_on|date:"F j, Y" }}</span>
+                        {% else %}
+                            <span class="text-red-500 font-medium">Upcoming</span>
+                        {% endif %}
+                    </p>
                 </div>
             </div>
             <div class="p-4">
