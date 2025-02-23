@@ -11,10 +11,10 @@ import time
 @login_required
 def meeting(request: HttpRequest) -> HttpResponse:
     context = { 
-        'room_name': f"{settings.JITSI_ROOM_PREFIX}{request.user.name}_{int(time.time())}",
-        'user_name': request.user.username,
+        'room_name': "unique-room-nameISINCOMING",
         'JITSI_MAGIC_COOKIE': settings.JITSI_MAGIC_COOKIE,
         'SRI_HASH': settings.SRI_HASH,
+        'jwt': settings.JWT,
         }
 
     response = render(request, 'meet/index.html', context)
