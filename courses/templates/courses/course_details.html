@@ -3,7 +3,7 @@
 {% load courses_tags %}
 
 {% block main_content %}
-    <div class="mx-auto">
+    <div class="mx-auto ">
         <!-- Banner -->
         <div class="h-[300px] bg-black text-white m-4 rounded-lg relative flex flex-col justify-center p-6">
             <div class="w-[400px] text-white font-bold hidden sm:block">
@@ -104,7 +104,23 @@
 
                 </div>
             </div>
+            <h1 class="font-extrabold text-2xl mx-4 text-gray-800">Instructors</h1>
+            {% include 'courses/instructor.html' %}
+            <div>
+                
+                <p class=" m-2 my-3 font-extrabold text-2xl text-gray-800"><span class="text-yellow-500">★</span> course rating | 1K ratings</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                 {% include 'courses/rating_card.html' %}
+                 {% include 'courses/rating_card.html' %}
+                </div>
+
+                </div>
+            </div>
+            
         </div>
+        
+     
     </div>
 
 
