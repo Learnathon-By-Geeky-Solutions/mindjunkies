@@ -106,3 +106,4 @@ def user_course_list(request: HttpRequest) -> HttpResponse:
         "enrolled_classes": courses,
     }
     return render(request, "courses/course_list.html", context)
+

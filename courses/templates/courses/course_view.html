@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ course.title }} - MindJunkies{% endblock %}
+
+{% block content %}
+<div class="bg-base-200 min-h-screen py-8">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Course Content -->
+            <div class="lg:col-span-2">
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h1 class="card-title text-3xl mb-4">{{ course.title }}</h1>
+                        <p class="text-base-content/70 mb-6">{{ course.description }}</p>
+
+                        <!-- Progress Bar -->
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold mb-2">Your Progress</h2>
+                            <progress class="progress progress-primary w-full" value="{{ progress_percentage }}" max="100"></progress>
+                            <p class="text-sm text-base-content/70 mt-2">{{ completed_lessons }} of {{ total_lessons }} lessons completed</p>
+                        </div>
+
+                        <!-- Course Modules -->
+                        <div class="space-y-4">
+                            {% for module in course.modules.all %}
+                            <div class="collapse collapse-arrow bg-base-200">
+                                <input type="checkbox" />
+                                <div class="collapse-title text-xl font-medium">
+                                    {{ module.title }}
+                                </div>
+                                <div class="collapse-content">
+                                    <ul class="menu bg-base-100 w-full rounded-box">
+                                        {% for lesson in module.lessons.all %}
+                                        <li>
+                                            <a href="{% url 'lesson_detail' course.id module.id lesson.id %}" class="flex justify-between">
+                                                <span>{{ lesson.title }}</span>
+                                                {% if lesson in completed_lessons_list %}
+                                                <span class="badge badge-success">Completed</span>
+                                                {% endif %}
+                                            </a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="card bg-base-100 shadow-xl sticky top-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-2xl mb-4">Course Information</h2>
+                        <ul class="space-y-2">
+                            <li><strong>Instructor:</strong> {{ course.instructor.get_full_name }}</li>
+                            <li><strong>Duration:</strong> {{ course.duration }} weeks</li>
+                            <li><strong>Level:</strong> {{ course.get_level_display }}</li>
+                            <li><strong>Enrolled:</strong> {{ course.enrolled_date|date:"F j, Y" }}</li>
+                        </ul>
+
+                        <div class="divider"></div>
+
+                        <h3 class="font-semibold text-lg mb-2">Next Lesson</h3>
+                        {% if next_lesson %}
+                        <a href="{% url 'lesson_detail' course.id next_lesson.module.id next_lesson.id %}" class="btn btn-primary w-full">
+                            Continue to: {{ next_lesson.title }}
+                        </a>
+                        {% else %}
+                        <p class="text-base-content/70">You've completed all lessons!</p>
+                        {% endif %}
+
+                        <div class="divider"></div>
+
+                        <h3 class="font-semibold text-lg mb-2">Resources</h3>
+                        <ul class="menu bg-base-200 w-full rounded-box">
+                            {% for resource in course.resources.all %}
+                            <li><a href="{{ resource.file.url }}" download>{{ resource.title }}</a></li>
+                            {% empty %}
+                            <li class="text-base-content/70">No resources available</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
