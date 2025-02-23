@@ -9,10 +9,10 @@ django-tailwind = {extras = ["reload"], version = "*"}
 django-crispy-forms = "*"
 crispy-tailwind = "*"
 pillow = "*"
-django-allauth = "*"
 python-decouple = "*"
 django-extensions = "*"
 markdown = "*"
+django-allauth = {extras = ["socialaccount"], version = "*"}
 
 [dev-packages]
 

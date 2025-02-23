@@ -63,7 +63,7 @@ def edit_course(request: HttpRequest) -> HttpResponse:
         if form.is_valid():
             form.save()
             messages.success(request, "Course saved successfully!")
-            return redirect(reverse("course_details", kwargs={"slug": slug}))
+            return redirect(reverse("course_details", kwargs={"slug": course.slug}))
         else:
             print("Form errors:", form.errors)  # Log the errors to the console
             messages.error(request, f"There was an error processing the form: {form.errors}")
