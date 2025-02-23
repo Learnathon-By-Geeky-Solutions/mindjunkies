@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{% trans "Edit Profile" %}{% endblock %}
+
+{% block main_content %}
+    <div class="min-h-screen bg-base-200 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h1 class="card-title text-2xl font-bold text-center mb-6">{% trans "Edit Profile" %}</h1>
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+
+                        <div class="form-control mt-6">
+                            <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
+                        </div>
+                    </form>
+
+                    <div class="divider">{% trans "or" %}</div>
+
+                    <div class="text-center">
+                        <a href="{% url 'profile' %}" class="btn btn-outline">{% trans "Cancel" %}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
