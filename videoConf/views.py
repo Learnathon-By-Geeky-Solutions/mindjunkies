@@ -16,9 +16,10 @@ def meeting(request: HttpRequest) -> HttpResponse:
         'JITSI_MAGIC_COOKIE': settings.JITSI_MAGIC_COOKIE,
         'SRI_HASH': settings.SRI_HASH,
         }
-    
+
     response = render(request, 'meet/index.html', context)
     response['Content-Security-Policy'] = "frame-ancestors 'self' 8x8.vc"
     response['X-Frame-Options'] = 'SAMEORIGIN'
     
     return response
+

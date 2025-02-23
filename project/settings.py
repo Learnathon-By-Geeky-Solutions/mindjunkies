@@ -76,6 +76,9 @@ if JITSI_MAGIC_COOKIE is None:
 # Subresource Integrity (SRI) hash for ensuring the integrity of external resources
 SRI_HASH = config('SRI_HASH')
 
+# JSON Web Token (JWT) for authenticating users in Jitsi
+JWT = config('JWT')
+
 
 MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",  # allauth
