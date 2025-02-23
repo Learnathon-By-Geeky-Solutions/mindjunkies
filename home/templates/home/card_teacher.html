@@ -4,7 +4,7 @@
          class="rounded-lg w-full object-cover"/>
     <div class="card-body">
         <h3 class="card-title">{{ course.title }}</h3>
-        <p>{{ course.short_introduction }}</p>
+        <p>{{ course.short_introduction|truncatewords:30 }}</p>
         <div class="card-actions justify-end">
             <a href="{% url 'edit_course' %}?slug={{ course.slug }}">
                 <button class="btn btn-primary">Edit course</button>

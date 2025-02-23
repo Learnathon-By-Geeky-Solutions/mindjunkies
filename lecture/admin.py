@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Lecture, LecturePDF
+from .models import Lecture, LecturePDF,LectureVideo
 
 class LectureAdmin(admin.ModelAdmin):
     list_display = ('get_title', 'course', 'uploaded_on', 'slug')  # Display the title directly from the Lecture model
@@ -19,6 +19,11 @@ class LecturePDFAdmin(admin.ModelAdmin):
     list_display = ('lecture', 'pdf_file')
     search_fields = ('lecture__title',)  # Search by lecture title
 
+class LectureVideoAdmin(admin.ModelAdmin):
+    list_display = ('lecture', 'video_file')
+    search_fields = ('lecture__title',)  # Search by lecture title    
+
 # Register models with the admin site
 admin.site.register(Lecture, LectureAdmin)
 admin.site.register(LecturePDF, LecturePDFAdmin)
+admin.site.register(LectureVideo,LectureVideoAdmin)
