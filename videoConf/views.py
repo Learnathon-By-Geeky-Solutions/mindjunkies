@@ -20,5 +20,5 @@ def meeting(request: HttpRequest) -> HttpResponse:
         'display_name': 'anonymous',
         'jwt': settings.JWT,
         }
-    
+
     return render(request, "meet/index.html", context)

@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     # custom apps
     'home',
     'accounts',
-    'classrooms',
+    'courses',
     'videoConf',
     'theme',
     'lecture',
@@ -192,7 +192,7 @@ SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_LOGIN_METHODS = {'username', 'email'}
 ACCOUNT_CHANGE_EMAIL = True
 ACCOUNT_EMAIL_NOTIFICATIONS = True
 
