@@ -12,36 +12,36 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-    {% include 'includes/header.html' %}
+{% include 'includes/header.html' %}
 
-    {% if messages %}
-        <div class="mx-auto">
-            {% for message in messages %}
-                <div role="alert" class="alert alert-info">
-                    <span>{{ message | safe }}</span>
-                </div>
-            {% endfor %}
-        </div>
+{% if messages %}
+    <div class="fixed top-24 right-12 max-w-xs w-full">
+        {% for message in messages %}
+            <div role="alert" class="alert alert-info">
+                <span>{{ message | safe }}</span>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<!-- Layout structure based on URL -->
+<div class="flex flex-grow">
+    {% if '/lecture' in request.path %}
+        <!-- Sidebar only for lecture pages -->
+        <aside class="sm:w-[20%] bg-gray-900 text-white p-4 min-h-screen">
+            {% include 'lecture/sidebar.html' %}
+        </aside>
+        <main class="w-[85%]">
+    {% else %}
+        <main class="w-full">
     {% endif %}
 
-    <!-- Layout structure based on URL -->
-    <div class="flex flex-grow">
-        {% if '/lecture' in request.path %}
-            <!-- Sidebar only for lecture pages -->
-            <aside class="sm:w-[20%] bg-gray-900 text-white p-4 min-h-screen">
-                {% include 'lecture/sidebar.html' %}
-            </aside>
-            <main class="w-[85%] p-4">
-        {% else %}
-            <main class="w-full p-4">
-        {% endif %}
+    {% block main_content %}{% endblock main_content %}
 
-            {% block main_content %}{% endblock main_content %}
+    </main>
+</div>
 
-        </main>
-    </div>
-
-    {% include 'includes/footer.html' %}
+{% include 'includes/footer.html' %}
 
 </body>
 </html>

@@ -52,12 +52,15 @@ INSTALLED_APPS = [
     'lecture',
     # third party apps
     'tailwind',
-    "allauth",
-    "allauth.account",
     'django_browser_reload',
     'crispy_forms',
     'crispy_tailwind',
     'django_extensions',
+    # allauth
+    "allauth",
+    "allauth.account",
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 # Domain for Jitsi video conferencing
@@ -211,6 +214,18 @@ ACCOUNT_FORMS = {
     'set_password': 'allauth.account.forms.SetPasswordForm',
     'signup': 'allauth.account.forms.SignupForm',
     'user_token': 'allauth.account.forms.UserTokenForm',
+}
+
+SOCIALACCOUNT_PROVIDERS = {
+  'google': {
+      'APP': {
+            'client_id': config('GOOGLE_CLIENT_ID'),
+            'secret': config('GOOGLE_CLIENT_SECRET'),
+            'key': config('GOOGLE_API_KEY'),
+      },
+      'EMAIL_AUTHENTICATION': True,
+      'FETCH_USERINFO': True,
+  }
 }
 
 # Tailwind settings
