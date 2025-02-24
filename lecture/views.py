@@ -26,7 +26,7 @@ def lecture_home(request: HttpRequest) -> HttpResponse:
 
     slug = request.GET.get('slug')  # Get the slug from the query parameter
 
-    course = get_object_or_404(Courses, slug=slug)
+    course = get_object_or_404(Course, slug=slug)
     lectures = Lecture.objects.filter(course=course).prefetch_related('pdf_files')
 
     return render(request, 'lecture/index.html', {

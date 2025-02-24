@@ -112,7 +112,7 @@ def user_course_list(request: HttpRequest) -> HttpResponse:
 @require_http_methods(["GET"])
 def course_view(request: HttpRequest, slug: str) -> HttpResponse:
     print(slug)
-    course = get_object_or_404(Courses, slug=slug)
+    course = get_object_or_404(Course, slug=slug)
     context = {
         "course": course,
     }
