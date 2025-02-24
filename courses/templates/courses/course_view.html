@@ -1,90 +1,205 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ course.title }} - MindJunkies{% endblock %}
+{% block head_title %}{{ course.title }} - MindJunkies{% endblock %}
 
-{% block content %}
-<div class="bg-base-200 min-h-screen py-8">
-    <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Course Content -->
-            <div class="lg:col-span-2">
-                <div class="card bg-base-100 shadow-xl">
-                    <div class="card-body">
-                        <h1 class="card-title text-3xl mb-4">{{ course.title }}</h1>
-                        <p class="text-base-content/70 mb-6">{{ course.description }}</p>
+{% block main_content %}
+<div class="min-h-screen bg-base-300 text-base-content">
+    <div class="flex">
+        <!-- Left Sidebar -->
+        <div class="w-64 min-h-screen bg-base-200 border-r border-base-content/10">
+            <!-- Course Title -->
+            <div class="p-4 border-b border-base-content/10">
+                <h1 class="text-lg font-semibold">{{ course.title }}</h1>
+                <p class="text-sm text-base-content/70">{{ course.institution }}</p>
+            </div>
 
-                        <!-- Progress Bar -->
-                        <div class="mb-6">
-                            <h2 class="text-xl font-semibold mb-2">Your Progress</h2>
-                            <progress class="progress progress-primary w-full" value="{{ progress_percentage }}" max="100"></progress>
-                            <p class="text-sm text-base-content/70 mt-2">{{ completed_lessons }} of {{ total_lessons }} lessons completed</p>
+            <!-- Navigation Menu -->
+            <nav class="p-2">
+                <div class="collapse collapse-arrow rounded-md px-2 mx-2 py-0 hover:bg-base-300">
+                    <input type="checkbox" checked />
+                    <div class="collapse-title font-medium text-lg">
+                        Course Content
+                    </div>
+                    <div class="collapse-content">
+                        <ul class="menu menu-compact">
+                            <li><a href="#" class="active"><div class="">Lecture 1</div></a></li>
+                            <li><a href="#" class=""><div class="">Lecture 2</div></a></li>
+                            <li><a href="#" class=""><div class="">Lecture 3</div></a></li>
+                            <li><a href="#" class=""><div class="">Lecture 4</div></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <ul class="menu menu-lg pt-2">
+                    <li><a class="" href="#assignments">Assignments</a></li>
+                    <li><a href="#grades">Grades</a></li>
+                    <li><a href="#notes">Notes</a></li>
+                    <li><a href="#discussion">Discussion Forums</a></li>
+                    <li><a href="#resources">Resources</a></li>
+                    <li><a href="#info">Course Info</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-y-auto">
+            <div class="container mx-auto p-6 max-w-5xl">
+                <!-- Module Header -->
+                <div class="bg-base-200 rounded-lg p-6 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-2xl font-bold">{{ current_module.title }}</h2>
+                        <button class="btn btn-sm btn-ghost">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="flex flex-wrap gap-6 text-sm">
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+                            </svg>
+                            {{ current_module.video_duration }} of videos left
                         </div>
-
-                        <!-- Course Modules -->
-                        <div class="space-y-4">
-                            {% for module in course.modules.all %}
-                            <div class="collapse collapse-arrow bg-base-200">
-                                <input type="checkbox" />
-                                <div class="collapse-title text-xl font-medium">
-                                    {{ module.title }}
-                                </div>
-                                <div class="collapse-content">
-                                    <ul class="menu bg-base-100 w-full rounded-box">
-                                        {% for lesson in module.lessons.all %}
-                                        <li>
-                                            <a href="{% url 'lesson_detail' course.id module.id lesson.id %}" class="flex justify-between">
-                                                <span>{{ lesson.title }}</span>
-                                                {% if lesson in completed_lessons_list %}
-                                                <span class="badge badge-success">Completed</span>
-                                                {% endif %}
-                                            </a>
-                                        </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            </div>
-                            {% endfor %}
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                            </svg>
+                            {{ current_module.reading_duration }} of readings left
+                        </div>
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" />
+                            </svg>
+                            {{ current_module.assessments_count }} graded assessment left
                         </div>
                     </div>
+
+                    <!-- Progress Bar -->
+                    <div class="mt-6">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span>Your Progress</span>
+                            <span>{{ progress_percentage }}%</span>
+                        </div>
+                        <progress class="progress progress-primary w-full" value="{{ progress_percentage }}" max="100"></progress>
+                        <p class="text-sm text-base-content/70 mt-2">{{ completed_lessons }} of {{ total_lessons }} lessons completed</p>
+                    </div>
+
+                    <div class="mt-4">
+                        <p class="text-base-content/70">{{ current_module.description }}</p>
+                        <button class="btn btn-link btn-sm px-0 mt-2">Show Learning Objectives</button>
+                    </div>
+                </div>
+
+                <!-- Course Materials Section -->
+                <div class="bg-base-200 rounded-lg p-6 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold">Course Materials</h3>
+                        {% if next_lesson %}
+                        <a href="{% url 'lesson_detail' course.id next_lesson.module.id next_lesson.id %}" class="btn btn-primary btn-sm">
+                            Continue Learning
+                        </a>
+                        {% else %}
+                        <span class="badge badge-success">Complete</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Lecture Materials -->
+                <div class="bg-base-200 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-4">Lecture Material</h3>
+                    <ul class="space-y-4">
+                        {% for lesson in current_module.lessons.all %}
+                        <li class="flex items-start gap-4">
+                            <div class="flex-shrink-0 mt-1">
+                                {% if lesson in completed_lessons %}
+                                <div class="w-5 h-5 rounded-full bg-success flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-success-content" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                {% else %}
+                                <div class="w-5 h-5 rounded-full border-2 border-base-content/30"></div>
+                                {% endif %}
+                            </div>
+                            <div class="flex-1">
+                                <a href="{% url 'lesson_detail' course.id current_module.id lesson.id %}" class="block hover:bg-base-300 rounded-lg p-2 -m-2 transition-colors">
+                                    <h4 class="font-medium">{{ lesson.title }}</h4>
+                                    <p class="text-sm text-base-content/70">
+                                        {% if lesson.video %}Video{% elif lesson.reading %}Reading{% else %}Assignment{% endif %} • {{ lesson.duration }}
+                                    </p>
+                                </a>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="w-80 min-h-screen bg-base-200 border-l border-base-content/10 p-4">
+            <!-- Weekly Progress Tracker -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-2">Weekly goal progress tracker</h3>
+                <p class="text-sm text-base-content/70 mb-4">I'm committed to learning 5 days a week on MindJunkies.</p>
+
+                <!-- Calendar Grid -->
+                <div class="grid grid-cols-7 gap-1 text-center text-sm">
+                    <div>M</div>
+                    <div>T</div>
+                    <div>W</div>
+                    <div>T</div>
+                    <div>F</div>
+                    <div>S</div>
+                    <div>S</div>
+                    {% for day in calendar_days %}
+                    <div class="w-8 h-8 flex items-center justify-center rounded-full {% if day.completed %}bg-success text-success-content{% elif day.today %}bg-primary text-primary-content{% else %}bg-base-300{% endif %}">
+                        {{ day.date.day }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="mt-4">
+                    <a href="#" class="btn btn-sm btn-outline w-full">Edit my goal</a>
                 </div>
             </div>
 
-            <!-- Sidebar -->
-            <div class="lg:col-span-1">
-                <div class="card bg-base-100 shadow-xl sticky top-8">
-                    <div class="card-body">
-                        <h2 class="card-title text-2xl mb-4">Course Information</h2>
-                        <ul class="space-y-2">
-                            <li><strong>Instructor:</strong> {{ course.instructor.get_full_name }}</li>
-                            <li><strong>Duration:</strong> {{ course.duration }} weeks</li>
-                            <li><strong>Level:</strong> {{ course.get_level_display }}</li>
-                            <li><strong>Enrolled:</strong> {{ course.enrolled_date|date:"F j, Y" }}</li>
-                        </ul>
+            <!-- Course Timeline -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-2">Course timeline</h3>
+                <div class="text-sm">
+                    <p class="mb-4">Start date: {{ course.start_date|date:"F j, Y" }}</p>
 
-                        <div class="divider"></div>
-
-                        <h3 class="font-semibold text-lg mb-2">Next Lesson</h3>
-                        {% if next_lesson %}
-                        <a href="{% url 'lesson_detail' course.id next_lesson.module.id next_lesson.id %}" class="btn btn-primary w-full">
-                            Continue to: {{ next_lesson.title }}
-                        </a>
-                        {% else %}
-                        <p class="text-base-content/70">You've completed all lessons!</p>
-                        {% endif %}
-
-                        <div class="divider"></div>
-
-                        <h3 class="font-semibold text-lg mb-2">Resources</h3>
-                        <ul class="menu bg-base-200 w-full rounded-box">
-                            {% for resource in course.resources.all %}
-                            <li><a href="{{ resource.file.url }}" download>{{ resource.title }}</a></li>
-                            {% empty %}
-                            <li class="text-base-content/70">No resources available</li>
-                            {% endfor %}
-                        </ul>
+                    <div class="mb-4">
+                        <h4 class="font-medium mb-2">Your next two deadlines</h4>
+                        {% for assignment in upcoming_assignments|slice:":2" %}
+                        <div class="mb-4">
+                            <a href="#" class="link link-primary">{{ assignment.title }}</a>
+                            <div class="flex items-center gap-2 text-sm mt-1">
+                                <span class="text-primary">Due in {{ assignment.days_until }} days</span>
+                                <span class="badge badge-sm">Graded App Item</span>
+                            </div>
+                        </div>
+                        {% endfor %}
                     </div>
+
+                    <p>Estimated end date: {{ course.end_date|date:"F j, Y" }}</p>
                 </div>
+            </div>
+
+            <!-- Resources -->
+            <div>
+                <h3 class="text-lg font-semibold mb-2">Resources</h3>
+                <ul class="menu bg-base-300 w-full rounded-box">
+                    {% for resource in course.resources.all %}
+                    <li><a href="{{ resource.file.url }}" download>{{ resource.title }}</a></li>
+                    {% empty %}
+                    <li class="text-base-content/70 p-4">No resources available</li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
     </div>

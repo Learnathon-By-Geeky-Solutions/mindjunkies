@@ -107,3 +107,13 @@ def user_course_list(request: HttpRequest) -> HttpResponse:
     }
     return render(request, "courses/course_list.html", context)
 
+
+@login_required
+@require_http_methods(["GET"])
+def course_view(request: HttpRequest, slug: str) -> HttpResponse:
+    print(slug)
+    course = get_object_or_404(Courses, slug=slug)
+    context = {
+        "course": course,
+    }
+    return render(request, "courses/course_view.html", context)
