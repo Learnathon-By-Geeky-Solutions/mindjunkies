@@ -4,10 +4,19 @@ from core.models import BaseModel
 from accounts.models import User
 
 
-class Courses(BaseModel):
+class Course(BaseModel):
+    LEVEL_CHOICES = [
+        ('beginner', 'Beginner'),
+        ('intermediate', 'Intermediate'),
+        ('advanced', 'Advanced'),
+    ]
     title = models.CharField(max_length=255)
     short_introduction = models.CharField(max_length=500)
     course_description = models.TextField()
+    requirements = models.TextField()
+    learnings = models.TextField()
+    level = models.CharField(max_length=15, choices=LEVEL_CHOICES, default='beginner')
+
     course_image = models.ImageField(upload_to='course_images/', default='course_images/default.jpg', null=True, blank=True)
     preview_video_link = models.URLField(max_length=200, null=True, blank=True)
 
@@ -43,7 +52,7 @@ class CourseTeacher(BaseModel):
         ('teacher', 'Teacher'),
         ('assistant', 'Teaching Assistant'),
     ]
-    course = models.ForeignKey(Courses, on_delete=models.CASCADE, related_name='teachers')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='teachers')
     teacher = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -65,7 +74,7 @@ class Enrollment(BaseModel):
         ('withdrawn', 'Withdrawn'),
     ]
 
-    course = models.ForeignKey(Courses, on_delete=models.CASCADE, related_name='enrollments')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
     student = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -78,3 +87,15 @@ class Enrollment(BaseModel):
 
     def __str__(self):
         return f"{self.student.username} enrolled in {self.course.title}"
+
+
+class Module(BaseModel):
+    title = models.CharField(max_length=255)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='modules')
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.title} - {self.course.title}"

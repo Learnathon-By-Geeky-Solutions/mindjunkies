@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.http import HttpRequest, HttpResponse
 from .forms import LectureForm, LecturePDFForm
 from .models import Lecture
-from courses.models import Courses
+from courses.models import Course
 from django.views.decorators.http import require_http_methods
 
 

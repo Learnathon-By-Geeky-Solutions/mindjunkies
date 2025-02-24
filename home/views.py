@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
-from courses.models import Courses, Enrollment, CourseTeacher
+from courses.models import Course, Enrollment, CourseTeacher
 
 
 @require_http_methods(["GET"])
 def home(request):
-    featured_course = Courses.objects.all()
+    featured_course = Course.objects.all()
     enrolled_classes = []
     teacher_classes = []
     if request.user.is_authenticated:
