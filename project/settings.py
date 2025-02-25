@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'videoConf',
     'theme',
     'lecture',
+    'dashboard',
     # third party apps
     'tailwind',
     'django_browser_reload',
