@@ -101,6 +101,9 @@ def user_course_list(request: HttpRequest) -> HttpResponse:
     enrolled = Enrollment.objects.filter(student=request.user)
     courses = courses + [ec.course for ec in enrolled]
 
+    print(courses)
+    print("enrolled",enrolled)
+
     context = {
         "courses": courses,
         "enrolled_classes": courses,
