@@ -49,6 +49,7 @@ pip-log.txt
 coverage.xml
 htmlcov/
 nosetests.xml
+tox.ini
 
 # pyenv
 .python-version

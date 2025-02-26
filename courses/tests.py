@@ -1,3 +1,9 @@
+import os
+import django
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
+django.setup()
+
 from django.test import TestCase
 from .models import Courses, CourseTeacher, Enrollment
 from accounts.models import User
