@@ -1,3 +1,9 @@
+import os
+import django
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
+django.setup()
+
 from django.test import TestCase
 from django.utils.text import slugify
 from courses.models import Courses
