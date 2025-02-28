@@ -11,6 +11,7 @@
     <div class="flex-none gap-2">
         <div class="menu menu-horizontal gap-4">
             <ul class="menu menu-horizontal px-1 hidden md:flex">
+                <li><a href="{% url 'create_course' %}">Create Course</a></li>
                 <li><a href="#">Features</a></li>
                 <li><a href="#">Courses</a></li>
                 {% if user.is_authenticated %}

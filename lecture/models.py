@@ -1,16 +1,22 @@
 from django.db import models
 from django.utils.text import slugify
 
-from courses.models import Courses
+from courses.models import Course, Module
 from core.models import BaseModel
 
 
 class Lecture(BaseModel):
     course = models.ForeignKey(
-        Courses,
+        Course,
         on_delete=models.CASCADE,
         related_name='lectures'
     )
+    module = models.ForeignKey(
+        Module,
+        on_delete=models.CASCADE,
+        related_name='lectures'
+    )
+
     title = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     video_url = models.URLField(max_length=200, null=True, blank=True)
@@ -33,7 +39,7 @@ class Lecture(BaseModel):
 
 class LecturePDF(BaseModel):
     lecture = models.ForeignKey(
-        'Lecture',
+        Lecture,
         on_delete=models.CASCADE,
         related_name='pdf_files'
     )
