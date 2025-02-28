@@ -13,6 +13,10 @@ django-allauth = "*"
 python-decouple = "*"
 django-extensions = "*"
 markdown = "*"
+gunicorn = "*"
+whitenoise = "*"
+psycopg2-binary = "*"
+dj-database-url = "*"
 
 [dev-packages]
 
