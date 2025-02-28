@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main_content %}
+<div class="flex">
+    <!-- Left Sidebar -->
+    <aside class="w-64 border-r h-[calc(100vh-3.5rem)] overflow-y-auto">
+        <div class="p-4">
+            <h1 class="font-bold text-lg mb-4">
+                {{ course.title }}
+            </h1>
+            <nav class="space-y-1">
+                <div class="collapse collapse-arrow bg-base-200 rounded-md">
+                    <input type="checkbox" checked /> 
+                    <div class="collapse-title p-2 text-left">
+                        Course Material
+                    </div>
+                    <div class="collapse-content pl-4 space-y-1">
+                        {% for week in course.weeks %}
+                        <button class="w-full flex items-center gap-2 p-2 text-left {% if week.is_current %}text-primary bg-primary/10{% else %}hover:bg-base-300{% endif %} rounded-md">
+                            <div class="h-2 w-2 rounded-full {% if week.is_current %}bg-primary{% else %}bg-gray-300{% endif %}"></div>
+                            Week {{ week.number }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+                <button class="w-full p-2 text-left hover:bg-base-200 rounded-md">Grades</button>
+                <button class="w-full p-2 text-left hover:bg-base-200 rounded-md">Notes</button>
+                <button class="w-full p-2 text-left hover:bg-base-200 rounded-md">Messages</button>
+                <button class="w-full p-2 text-left hover:bg-base-200 rounded-md">Course Info</button>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 h-[calc(100vh-3.5rem)] overflow-y-auto">
+        <div class="max-w-3xl mx-auto p-8">
+            <div class="bg-base-200 rounded-lg p-6 mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold">Week {{ current_week.number }}: {{ current_week.title }}</h2>
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                <div class="flex gap-6 text-sm text-base-content/70">
+                    <div class="flex items-center gap-1">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+                        </svg>
+                        <span>{{ current_week.video_duration }} of videos left</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                        </svg>
+                        <span>{{ current_week.reading_duration }} of readings left</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                        </svg>
+                        <span>{{ current_week.assessments_count }} graded assessments left</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="prose max-w-none">
+                <p class="text-base-content/70">
+                    {{ current_week.description }}
+                </p>
+                
+                <div class="collapse collapse-arrow bg-base-200 rounded-box mt-4">
+                    <input type="checkbox" id="learning-objectives-accordion" /> 
+                    <div class="collapse-title text-xl font-medium">
+                        Learning Objectives
+                    </div>
+                    <div class="collapse-content"> 
+                        <ul class="list-disc pl-5 space-y-2">
+                            {% for objective in current_week.learning_objectives %}
+                            <li>{{ objective }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <div class="collapse collapse-arrow bg-base-200 rounded-box">
+                        <input type="checkbox" checked /> 
+                        <div class="collapse-title text-lg font-semibold">
+                            {{ current_week.section_title }}
+                        </div>
+                        <div class="collapse-content">
+                            <div class="space-y-4 ">
+                                {% for item in current_week.items %}
+                                <div class="flex items-center gap-4 p-4 hover:bg-base-300 rounded-lg cursor-pointer">
+                                    <svg class="h-6 w-6 mt-1" viewBox="0 0 24 24" fill="currentColor">
+                                        {% if item.type == 'video' %}
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+                                        {% elif item.type == 'reading' %}
+                                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+                                        {% else %}
+                                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+                                        {% endif %}
+                                    </svg>
+                                    <div>
+                                        <h4 class="font-medium">{{ item.title }}</h4>
+                                        <p class="text-sm text-base-content/60">{{ item.type|title }} • {{ item.duration }}</p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Right Sidebar -->
+    <aside class="w-80 border-l h-[calc(100vh-3.5rem)] overflow-y-auto p-6">
+        <div class="space-y-8">
+            <div>
+                <h3 class="font-medium mb-2">Weekly goal progress tracker</h3>
+                <p class="text-sm text-base-content/70 mb-4">
+                    Learners with goals are 75% more likely to complete their courses. Set a weekly goal now to take charge of
+                    your learning journey and boost your success!
+                </p>
+                <button class="btn btn-primary btn-sm">
+                    Set your weekly goal
+                </button>
+            </div>
+
+            <div>
+                <h3 class="font-medium mb-4">Course timeline</h3>
+                <div class="relative pl-6 border-l border-base-300">
+                    <div class="absolute left-0 -translate-x-1/2 w-2 h-2 rounded-full bg-base-content"></div>
+                    <p class="text-sm font-medium">Start date: {{ course.start_date|date:"F j, Y" }}</p>
+                    
+                    <div class="mt-6">
+                        <p class="text-sm font-medium mb-2">Your next two deadlines</p>
+                        <div class="space-y-4">
+                            {% for deadline in upcoming_deadlines %}
+                            <div>
+                                <a href="{{ deadline.url }}" class="text-sm text-primary hover:text-primary-focus">
+                                    {{ deadline.title }}
+                                </a>
+                                <p class="text-sm {% if deadline.is_overdue %}text-error{% else %}text-primary{% endif %}">
+                                    {% if deadline.is_overdue %}Overdue{% else %}Due in {{ deadline.days_left }} days{% endif %}
+                                </p>
+                                <p class="text-sm text-base-content/60">{{ deadline.type }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <div class="absolute left-0 -translate-x-1/2 w-2 h-2 rounded-full bg-base-content"></div>
+                        <p class="text-sm font-medium">Estimated end date: {{ course.end_date|date:"F j, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const showObjectivesButton = document.getElementById('show-objectives');
+        const learningObjectivesAccordion = document.getElementById('learning-objectives-accordion');
+        
+        if (showObjectivesButton && learningObjectivesAccordion) {
+            showObjectivesButton.addEventListener('click', function() {
+                learningObjectivesAccordion.checked = !learningObjectivesAccordion.checked;
+                console.log('Show learning objectives clicked');
+            });
+        }
+    });
+</script>
+{% endblock %}
+
