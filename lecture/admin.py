@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Lecture, LecturePDF
+from .models import Lecture, LecturePDF,LectureVideo
 
 
 @admin.register(Lecture)
@@ -14,4 +14,9 @@ class LectureAdmin(admin.ModelAdmin):
 @admin.register(LecturePDF)
 class LecturePDFAdmin(admin.ModelAdmin):
     list_display = ('lecture', 'pdf_file')
+    search_fields = ('lecture__title',)
+
+@admin.register(LectureVideo)
+class LectureVideoAdmin(admin.ModelAdmin):
+    list_display = ('lecture', 'video_file')
     search_fields = ('lecture__title',)
