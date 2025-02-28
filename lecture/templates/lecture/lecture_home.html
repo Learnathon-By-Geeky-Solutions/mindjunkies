@@ -10,17 +10,17 @@
                 {{ course.title }}
             </h1>
             <nav class="space-y-1">
-                <div class="collapse collapse-arrow bg-base-200 rounded-md">
+                <div class="collapse rounded-md">
                     <input type="checkbox" checked /> 
-                    <div class="collapse-title p-2 text-left">
+                    <div class="collapse-title p-2  collapse-arrow ">
                         Course Material
                     </div>
                     <div class="collapse-content pl-4 space-y-1">
-                        {% for week in course.weeks %}
-                        <button class="w-full flex items-center gap-2 p-2 text-left {% if week.is_current %}text-primary bg-primary/10{% else %}hover:bg-base-300{% endif %} rounded-md">
+                        {% for lecture in course.lectures.all %}
+                        <a href="{% url 'lecture_home' course.id %}?lecture_id={{lecture.id }}"><button class="w-full flex items-center gap-2 p-2 text-left {% if week.is_current %}text-primary bg-primary/10{% else %}hover:bg-base-300{% endif %} rounded-md">
                             <div class="h-2 w-2 rounded-full {% if week.is_current %}bg-primary{% else %}bg-gray-300{% endif %}"></div>
-                            Week {{ week.number }}
-                        </button>
+                            Module {{ lecture.order }}
+                        </button></a>
                         {% endfor %}
                     </div>
                 </div>
@@ -76,9 +76,9 @@
                     </div>
                     <div class="collapse-content"> 
                         <ul class="list-disc pl-5 space-y-2">
-                            {% for objective in current_week.learning_objectives %}
-                            <li>{{ objective }}</li>
-                            {% endfor %}
+                            
+                            <li>{{ current_week.content }}</li>
+                           
                         </ul>
                     </div>
                 </div>
@@ -87,11 +87,11 @@
                     <div class="collapse collapse-arrow bg-base-200 rounded-box">
                         <input type="checkbox" checked /> 
                         <div class="collapse-title text-lg font-semibold">
-                            {{ current_week.section_title }}
+                            Attachments
                         </div>
                         <div class="collapse-content">
                             <div class="space-y-4 ">
-                                {% for item in current_week.items %}
+                                {% for item in current_week.pdf_files.all %}
                                 <div class="flex items-center gap-4 p-4 hover:bg-base-300 rounded-lg cursor-pointer">
                                     <svg class="h-6 w-6 mt-1" viewBox="0 0 24 24" fill="currentColor">
                                         {% if item.type == 'video' %}
@@ -103,8 +103,12 @@
                                         {% endif %}
                                     </svg>
                                     <div>
-                                        <h4 class="font-medium">{{ item.title }}</h4>
-                                        <p class="text-sm text-base-content/60">{{ item.type|title }} • {{ item.duration }}</p>
+                                        <h4 class="font-medium">
+                                            <a href="{{item.pdf_file.url }}" class="text-primary hover:underline" target="_blank">
+                                                {{ item.name}}
+                                            </a>
+                                        </h4>
+                                        <p class="text-sm text-base-content/60">PDF File</p>
                                     </div>
                                 </div>
                                 {% endfor %}
