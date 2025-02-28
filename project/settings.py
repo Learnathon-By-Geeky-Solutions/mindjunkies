@@ -52,12 +52,15 @@ INSTALLED_APPS = [
     'lecture',
     # third party apps
     'tailwind',
-    "allauth",
-    "allauth.account",
     'django_browser_reload',
     'crispy_forms',
     'crispy_tailwind',
     'django_extensions',
+    # allauth
+    "allauth",
+    "allauth.account",
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 # Domain for Jitsi video conferencing
@@ -75,6 +78,9 @@ if JITSI_MAGIC_COOKIE is None:
 
 # Subresource Integrity (SRI) hash for ensuring the integrity of external resources
 SRI_HASH = config('SRI_HASH')
+
+# JSON Web Token (JWT) for authenticating users in Jitsi
+JWT = config('JWT')
 
 
 MIDDLEWARE = [
@@ -178,8 +184,6 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
 LOGIN_REDIRECT_URL = "/"
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -210,9 +214,29 @@ ACCOUNT_FORMS = {
     'user_token': 'allauth.account.forms.UserTokenForm',
 }
 
+SOCIALACCOUNT_PROVIDERS = {
+  'google': {
+      'APP': {
+            'client_id': config('GOOGLE_CLIENT_ID'),
+            'secret': config('GOOGLE_CLIENT_SECRET'),
+            'key': config('GOOGLE_API_KEY'),
+      },
+      'EMAIL_AUTHENTICATION': True,
+      'FETCH_USERINFO': True,
+  }
+}
+
 # Tailwind settings
 TAILWIND_APP_NAME = 'theme'
 NPM_BIN_PATH = config('NPM_BIN_PATH')
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
+
+# Email server configuration
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')

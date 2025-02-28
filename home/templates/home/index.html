@@ -3,6 +3,7 @@
 {% block head_title %}Home{% endblock head_title %}
 
 {% block main_content %}
+    {% if not user.is_authenticated %}
     <section class="hero min-h-screen bg-base-200">
         <div class="hero-content text-center">
             <div class="max-w-md">
@@ -55,10 +56,12 @@
         </div>
     </section>
 
+    {% endif %}
+
     <section id="courses" class="py-16 bg-base-200">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-center mb-8">Popular Courses</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {% for course in course_list %}
                     {% if course in enrolled_classes %}
                     {% include 'home/card_student.html' %}
