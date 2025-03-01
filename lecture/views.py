@@ -43,35 +43,40 @@ def lecture_home(request: HttpRequest, course_id: int) -> HttpResponse:
 
 @login_required
 @require_http_methods(["GET"])
-def lecture_video(request: HttpRequest, video_id: int) -> HttpResponse:
+def lecture_video(request: HttpRequest, slug:str, video_id: int) -> HttpResponse:
     """View to display a lecture video."""
     
     # Get the video or return 404 if not found
     video = get_object_or_404(LectureVideo, id=video_id)
-    
+    lecture=Lecture.objects.get(slug=slug)
     # Ensure the user is enrolled in the related course
     if not request.user.is_staff and not video.lecture.course.enrollments.filter(student=request.user).exists():
         return HttpResponseForbidden("You are not enrolled in this course.")
 
     context = {
         "video": video,
+        "lecture":lecture
     }
 
     return render(request, "lecture/lecture_video.html", context)
 
 @login_required
 @require_http_methods(["GET"])
-def lecture_pdf(request: HttpRequest, pdf_id: int) -> HttpResponse:
+def lecture_pdf(request: HttpRequest,slug:str,pdf_id: int) -> HttpResponse:
     """View to display a lecture video."""
     
     # Get the pdf or return 404 if not found
     pdf = get_object_or_404(LecturePDF, id=pdf_id)
+    lecture=Lecture.objects.get(slug=slug)
+   
     
     # Ensure the user is enrolled in the related course
-    print(pdf.pdf_file.url)
+   
 
     context = {
         "pdf": pdf,
+        "lecture":lecture
+       
     }
 
     return render(request, "lecture/lecture_pdf.html", context)

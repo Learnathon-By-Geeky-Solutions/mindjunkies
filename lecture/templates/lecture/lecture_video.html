@@ -2,171 +2,66 @@
 {% load static %}
 
 {% block main_content %}
-<div class="min-h-screen flex flex-col">
-    <!-- Navigation Bar -->
+<div class="drawer lg:drawer-open">
+  <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content flex flex-col">
+    <!-- Page content here -->
+    <div class="navbar bg-base-100 lg:hidden">
+        <div class="flex-none">
+          <label for="my-drawer" class="btn btn-square btn-ghost drawer-button">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-5 h-5 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          </label>
+        </div>
+        <div class="flex-1">
+          <a class="btn btn-ghost normal-case text-xl">{{lecture.title}}</a>
+        </div>
+      </div>
   
-
+    
     <!-- Main Content -->
-    <div class="flex-1 flex overflow-hidden">
-        <!-- Sidebar -->
-        <aside class="bg-base-200 w-64 flex-shrink-0 overflow-y-auto">
-            <div class="p-4">
-                <h2 class="text-lg font-semibold mb-4">Overview of Machine Learning</h2>
-                <ul class="menu bg-base-200 w-56 rounded-box">
-                    <li>
-                        <details open>
-                            <summary>Video: Welcome to machine learning!</summary>
-                            <ul>
-                                <li><a class="active">2 min</a></li>
-                            </ul>
-                        </details>
-                    </li>
-                    <li>
-                        <details>
-                            <summary>Video: Applications of machine learning</summary>
-                            <ul>
-                                <li><a>4 min</a></li>
-                            </ul>
-                        </details>
-                    </li>
-                    <li>
-                        <details>
-                            <summary>Ungraded App Item: Intake Survey</summary>
-                            <ul>
-                                <li><a>1 min</a></li>
-                            </ul>
-                        </details>
-                    </li>
-                    <li>
-                        <details>
-                            <summary>Reading: [IMPORTANT] Have questions, issues or ideas? Join our Forum!</summary>
-                            <ul>
-                                <li><a>2 min</a></li>
-                            </ul>
-                        </details>
-                    </li>
-                </ul>
-            </div>
-        </aside>
+    <main class="flex-1 overflow-y-auto">
+      <!-- Breadcrumb Navigation -->
+      <div class="flex items-center justify-between p-4 border-b bg-base-100">
+        <div class="flex items-center gap-2 text-sm">
+          <a href="#" class="text-primary hover:underline">Supervised Machine Learning: Regression and Classification</a>
+          <span class="text-base-content/70">›</span>
+          <a href="#" class="text-primary hover:underline">Week 1</a>
+          <span class="text-base-content/70">›</span>
+          <span>Welcome to machine learning!</span>
+        </div>
+        <a href="#" class="btn btn-primary btn-sm">Next</a>
+      </div>
 
-        <!-- Main Content Area -->
-        <main class="flex-1 overflow-y-auto p-4">
-            <div class="text-sm breadcrumbs mb-4">
-                <ul>
-                    <li><a>Supervised Machine Learning: Regression and Classification</a></li>
-                    <li><a>Week 1</a></li>
-                    <li>Welcome to machine learning!</li>
-                </ul>
-            </div>
-            <div class="card bg-base-100 shadow-xl">
-                <div class="card-body p-0 m-2">
-                 
-                    <div class="aspect-w-10 aspect-h-5">
-                        <video controls class="w-full h-full object-cover">
-                            <source src="{{ video.video_file.url }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                </div>
-            </div>
-            
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const video = document.getElementById('courseVideo');
-                    const playPauseBtn = document.getElementById('playPauseBtn');
-                    const volumeBtn = document.getElementById('volumeBtn');
-                    const volumeSlider = document.getElementById('volumeSlider');
-                    const fullscreenBtn = document.getElementById('fullscreenBtn');
-                    const progressBar = document.getElementById('progressBar');
-                    const currentTime = document.getElementById('currentTime');
-                    const duration = document.getElementById('duration');
-            
-                    function togglePlayPause() {
-                        if (video.paused) {
-                            video.play();
-                            playPauseBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
-                        } else {
-                            video.pause();
-                            playPauseBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
-                        }
-                    }
-            
-                    function toggleMute() {
-                        video.muted = !video.muted;
-                        updateVolumeIcon();
-                    }
-            
-                    function updateVolumeIcon() {
-                        if (video.muted || video.volume === 0) {
-                            volumeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" /></svg>';
-                        } else {
-                            volumeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>';
-                        }
-                    }
-            
-                    function toggleFullscreen() {
-                        if (!document.fullscreenElement) {
-                            if (video.requestFullscreen) {
-                                video.requestFullscreen();
-                            } else if (video.mozRequestFullScreen) {
-                                video.mozRequestFullScreen();
-                            } else if (video.webkitRequestFullscreen) {
-                                video.webkitRequestFullscreen();
-                            } else if (video.msRequestFullscreen) {
-                                video.msRequestFullscreen();
-                            }
-                        } else {
-                            if (document.exitFullscreen) {
-                                document.exitFullscreen();
-                            } else if (document.mozCancelFullScreen) {
-                                document.mozCancelFullScreen();
-                            } else if (document.webkitExitFullscreen) {
-                                document.webkitExitFullscreen();
-                            } else if (document.msExitFullscreen) {
-                                document.msExitFullscreen();
-                            }
-                        }
-                    }
-            
-                    function updateProgress() {
-                        const value = (video.currentTime / video.duration) * 100;
-                        progressBar.value = value;
-                        currentTime.textContent = formatTime(video.currentTime);
-                        duration.textContent = formatTime(video.duration);
-                    }
-            
-                    function seek(e) {
-                        const seekTime = (e.target.value / 100) * video.duration;
-                        video.currentTime = seekTime;
-                    }
-            
-                    function formatTime(time) {
-                        const minutes = Math.floor(time / 60);
-                        const seconds = Math.floor(time % 60);
-                        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-                    }
-            
-                    playPauseBtn.addEventListener('click', togglePlayPause);
-                    volumeBtn.addEventListener('click', toggleMute);
-                    fullscreenBtn.addEventListener('click', toggleFullscreen);
-                    video.addEventListener('timeupdate', updateProgress);
-                    progressBar.addEventListener('input', seek);
-                    volumeSlider.addEventListener('input', (e) => {
-                        video.volume = e.target.value;
-                        video.muted = false;
-                        updateVolumeIcon();
-                    });
-            
-                    video.addEventListener('loadedmetadata', () => {
-                        duration.textContent = formatTime(video.duration);
-                    });
-                });
-            </script>
-            <div class="mt-4 flex justify-between">
-                <button class="btn btn-primary">Previous</button>
-                <button class="btn btn-primary">Next</button>
-            </div>
-        </main>
-    </div>
+      <!-- Video Content -->
+      <div class="p-4">
+        <div class="rounded-xl overflow-hidden bg-base-200">
+          <div class="aspect-w-16 aspect-h-9">
+            {% if video.video_file.url %}
+              <video 
+                id="videoPlayer"
+                class="w-full h-full" 
+                controls
+                poster="{% static 'images/course-thumbnail.jpg' %}"
+              >
+                <source src="{{ video.video_file.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            {% endif %}
+          </div>
+          <div class="p-4">
+            <button class="btn btn-ghost btn-sm text-primary">
+              <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+              </svg>
+              Report an issue
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div> 
+   <!-- Sidebar Content -->
+  {% include 'lecture/lecture_content.html' %}
 </div>
 {% endblock %}
+
