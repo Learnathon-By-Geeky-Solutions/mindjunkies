@@ -112,8 +112,45 @@
                                     </div>
                                 </div>
                                 {% endfor %}
+
                             </div>
                         </div>
+                       
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <div class="collapse collapse-arrow bg-base-200 rounded-box">
+                        <input type="checkbox" checked /> 
+                        <div class="collapse-title text-lg font-semibold">
+                           Video Content
+                        </div>
+                        <div class="collapse-content">
+                            <div class="space-y-4 ">
+                                {% for item in current_week.videos.all %}
+                                <div class="flex items-center gap-4 p-4 hover:bg-base-300 rounded-lg cursor-pointer">
+                                    <svg class="h-6 w-6 mt-1" viewBox="0 0 24 24" fill="currentColor">
+                                        {% if item.type == 'video' %}
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+                                        {% elif item.type == 'reading' %}
+                                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+                                        {% else %}
+                                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+                                        {% endif %}
+                                    </svg>
+                                    <div>
+                                        <h4 class="font-medium">
+                                            <a href="{% url 'lecture_video_content' item.id %}" class="text-primary hover:underline" target="_blank">
+                                                {{ item.video_file.name}}
+                                            </a>
+                                        </h4>
+                                        <p class="text-sm text-base-content/60">Video File</p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                       
                     </div>
                 </div>
             </div>
