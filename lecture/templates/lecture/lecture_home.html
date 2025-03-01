@@ -104,7 +104,7 @@
                                     </svg>
                                     <div>
                                         <h4 class="font-medium">
-                                            <a href="{{item.pdf_file.url }}" class="text-primary hover:underline" target="_blank">
+                                            <a href="{% url 'lecture_pdf_content' item.id %}" class="text-primary hover:underline" target="_blank">
                                                 {{ item.pdf_file.name}}
                                             </a>
                                         </h4>

@@ -44,6 +44,7 @@ class LecturePDF(BaseModel):
         related_name='pdf_files'
     )
     pdf_file = models.FileField(upload_to='lecture_pdfs/')
+    pdf_title= models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f"PDF for {self.lecture.title}"
@@ -51,5 +52,6 @@ class LecturePDF(BaseModel):
 class LectureVideo(BaseModel):
     lecture=models.ForeignKey('Lecture',on_delete=models.CASCADE,related_name='videos')
     video_file=models.FileField(upload_to='lecture_videos/')
+    video_title=models.TextField(null=True, blank=True)
     def __str__(self):
         return   f"Video content for {self.lecture.title}"  

@@ -6,7 +6,7 @@ from django.views.decorators.http import require_http_methods
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, Http404
 
 from courses.models import Course
-from .models import Lecture, LectureVideo
+from .models import Lecture, LectureVideo,LecturePDF
 
 
 @login_required
@@ -58,3 +58,20 @@ def lecture_video(request: HttpRequest, video_id: int) -> HttpResponse:
     }
 
     return render(request, "lecture/lecture_video.html", context)
+
+@login_required
+@require_http_methods(["GET"])
+def lecture_pdf(request: HttpRequest, pdf_id: int) -> HttpResponse:
+    """View to display a lecture video."""
+    
+    # Get the pdf or return 404 if not found
+    pdf = get_object_or_404(LecturePDF, id=pdf_id)
+    
+    # Ensure the user is enrolled in the related course
+    print(pdf.pdf_file.url)
+
+    context = {
+        "pdf": pdf,
+    }
+
+    return render(request, "lecture/lecture_pdf.html", context)
