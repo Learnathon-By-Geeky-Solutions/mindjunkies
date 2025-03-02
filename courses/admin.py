@@ -1,11 +1,11 @@
 from django.contrib import admin
 
-from .models import Courses, CourseTeacher, Enrollment
+from .models import Course, CourseTeacher, Enrollment, Module
 
 
-@admin.register(Courses)
+@admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    model = Courses
+    model = Course
     list_display = ("title", "published", "published_on", "paid_course", "course_price")
 
 
@@ -21,3 +21,10 @@ class EnrollmentAdmin(admin.ModelAdmin):
     model = Enrollment
     list_display = ("course", "student", "status")
     list_filter = ("course", "status")
+
+
+@admin.register(Module)
+class ModuleAdmin(admin.ModelAdmin):
+    model = Module
+    list_display = ("title", "course", "order")
+    list_filter = ("course",)

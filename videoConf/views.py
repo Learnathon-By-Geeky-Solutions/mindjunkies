@@ -10,16 +10,18 @@ import time
 @require_http_methods(["GET"])
 @login_required
 def meeting(request: HttpRequest) -> HttpResponse:
-    context = { 
-        'room_name': "unique-room-nameISINCOMING",
+    context = {
+        # 'room_name': f"{settings.JITSI_ROOM_PREFIX}{request.user.name}_{int(time.time())}",
+        'room_name': "sadi_jifat",
+        'display_name': request.user.username,
         'JITSI_MAGIC_COOKIE': settings.JITSI_MAGIC_COOKIE,
         'SRI_HASH': settings.SRI_HASH,
-        'jwt': settings.JWT,
-        }
+        'jwt': settings.JWT
+    }
+
 
     response = render(request, 'meet/index.html', context)
     response['Content-Security-Policy'] = "frame-ancestors 'self' 8x8.vc"
     response['X-Frame-Options'] = 'SAMEORIGIN'
-    
-    return response
 
+    return response

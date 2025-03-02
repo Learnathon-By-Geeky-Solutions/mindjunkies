@@ -5,14 +5,14 @@ from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.http import HttpRequest, HttpResponse, HttpResponseNotAllowed
 
-from .models import Courses, CourseTeacher, Enrollment
+from .models import Course, CourseTeacher, Enrollment
 from .forms import CourseForm
 
 
 @require_http_methods(["GET"])
 def course_list(request: HttpRequest) -> HttpResponse:
     """View to show all courses."""
-    courses = Courses.objects.all()
+    courses = Course.objects.all()
     enrolled_classes = []
     teacher_classes = []
     role = None
@@ -78,7 +78,7 @@ def edit_course(request: HttpRequest) -> HttpResponse:
 @require_http_methods(["GET"])
 def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     """View to show course details."""
-    course = get_object_or_404(Courses, slug=slug)
+    course = get_object_or_404(Course, slug=slug)
     enrolled_courses = CourseTeacher.objects.filter(course=course)
     teachers = [et.teacher for et in enrolled_courses]
     print(teachers)
@@ -107,3 +107,13 @@ def user_course_list(request: HttpRequest) -> HttpResponse:
     }
     return render(request, "courses/course_list.html", context)
 
+
+@login_required
+@require_http_methods(["GET"])
+def course_view(request: HttpRequest, slug: str) -> HttpResponse:
+    print(slug)
+    course = get_object_or_404(Course, slug=slug)
+    context = {
+        "course": course,
+    }
+    return render(request, "courses/course_view.html", context)

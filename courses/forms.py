@@ -1,12 +1,12 @@
 from django import forms
 from django.utils.text import slugify
 
-from .models import Courses, CourseTeacher
+from .models import Course, CourseTeacher
 
 
 class CourseForm(forms.ModelForm):
     class Meta:
-        model = Courses
+        model = Course
         fields = ['title', 'short_introduction', 'course_description', 
                   'course_image', 'preview_video_link',
                   'upcoming', 'paid_course',
@@ -27,3 +27,5 @@ class CourseForm(forms.ModelForm):
 
 class RatingForm(forms.Form):
     rating = forms.IntegerField(min_value=1, max_value=5)
+
+
