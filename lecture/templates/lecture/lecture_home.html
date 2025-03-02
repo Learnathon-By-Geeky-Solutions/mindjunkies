@@ -1,223 +1,258 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block main_content %}
-<div class="flex">
-    <!-- Left Sidebar -->
-    <aside class="w-64 border-r h-[calc(100vh-3.5rem)] overflow-y-auto">
-        <div class="p-4">
-            <h1 class="font-bold text-lg mb-4">
-                {{ course.title }}
-            </h1>
-            <nav class="space-y-1">
-                <div class="collapse rounded-md">
-                    <input type="checkbox" checked /> 
-                    <div class="collapse-title p-2  collapse-arrow ">
-                        Course Material
-                    </div>
-                    <div class="collapse-content pl-4 space-y-1">
-                        {% for lecture in course.lectures.all %}
-                        <a href="{% url 'lecture_home' course.id %}?lecture_id={{lecture.id }}"><button class="w-full flex items-center gap-2 p-2 text-left {% if week.is_current %}text-primary bg-primary/10{% else %}hover:bg-base-300{% endif %} rounded-md">
-                            <div class="h-2 w-2 rounded-full {% if week.is_current %}bg-primary{% else %}bg-gray-300{% endif %}"></div>
-                            Module {{ lecture.order }}
-                        </button></a>
-                        {% endfor %}
-                    </div>
-                </div>
-                <button class="w-full p-2 text-left hover:bg-base-200 rounded-md">Grades</button>
-                <button class="w-full p-2 text-left hover:bg-base-200 rounded-md">Notes</button>
-                <button class="w-full p-2 text-left hover:bg-base-200 rounded-md">Messages</button>
-                <button class="w-full p-2 text-left hover:bg-base-200 rounded-md">Course Info</button>
-            </nav>
-        </div>
-    </aside>
-
+<div class="drawer lg:drawer-open">
+  <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content flex flex-col h-screen">
+    <!-- Mobile navbar -->
+    <div class="navbar bg-base-100 lg:hidden">
+      <div class="flex-none">
+        <label for="my-drawer" class="btn btn-square btn-ghost drawer-button">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-5 h-5 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </label>
+      </div>
+      <div class="flex-1">
+        <a class="btn btn-ghost normal-case text-xl">{{course.title}}</a>
+      </div>
+    </div>
+    
     <!-- Main Content -->
-    <main class="flex-1 h-[calc(100vh-3.5rem)] overflow-y-auto">
-        <div class="max-w-3xl mx-auto p-8">
-            <div class="bg-base-200 rounded-lg p-6 mb-8">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-semibold">Week {{ current_week.number }}: {{ current_week.title }}</h2>
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </div>
-                <div class="flex gap-6 text-sm text-base-content/70">
-                    <div class="flex items-center gap-1">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
-                        </svg>
-                        <span>{{ current_week.video_duration }} of videos left</span>
-                    </div>
-                    <div class="flex items-center gap-1">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
-                        </svg>
-                        <span>{{ current_week.reading_duration }} of readings left</span>
-                    </div>
-                    <div class="flex items-center gap-1">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
-                        </svg>
-                        <span>{{ current_week.assessments_count }} graded assessments left</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="prose max-w-none">
-                <p class="text-base-content/70">
-                    {{ current_week.description }}
-                </p>
-                
-                <div class="collapse collapse-arrow bg-base-200 rounded-box mt-4">
-                    <input type="checkbox" id="learning-objectives-accordion" /> 
-                    <div class="collapse-title text-xl font-medium">
-                        Learning Objectives
-                    </div>
-                    <div class="collapse-content"> 
-                        <ul class="list-disc pl-5 space-y-2">
-                            
-                            <li>{{ current_week.content }}</li>
-                           
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="mt-8">
-                    <div class="collapse collapse-arrow bg-base-200 rounded-box">
-                        <input type="checkbox" checked /> 
-                        <div class="collapse-title text-lg font-semibold">
-                            Attachments
-                        </div>
-                        <div class="collapse-content">
-                            <div class="space-y-4 ">
-                                {% for item in current_week.pdf_files.all %}
-                                <div class="flex items-center gap-4 p-4 hover:bg-base-300 rounded-lg cursor-pointer">
-                                    <svg class="h-6 w-6 mt-1" viewBox="0 0 24 24" fill="currentColor">
-                                        {% if item.type == 'video' %}
-                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
-                                        {% elif item.type == 'reading' %}
-                                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
-                                        {% else %}
-                                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
-                                        {% endif %}
-                                    </svg>
-                                    <div>
-                                        <h4 class="font-medium">
-                                            <a href="{{item.pdf_file.url }}" class="text-primary hover:underline" target="_blank">
-                                                {{ item.pdf_file.name}}
-                                            </a>
-                                        </h4>
-                                        <p class="text-sm text-base-content/60">PDF File</p>
-                                    </div>
-                                </div>
-                                {% endfor %}
-
-                            </div>
-                        </div>
-                       
-                    </div>
-                </div>
-                <div class="mt-8">
-                    <div class="collapse collapse-arrow bg-base-200 rounded-box">
-                        <input type="checkbox" checked /> 
-                        <div class="collapse-title text-lg font-semibold">
-                           Video Content
-                        </div>
-                        <div class="collapse-content">
-                            <div class="space-y-4 ">
-                                {% for item in current_week.videos.all %}
-                                <div class="flex items-center gap-4 p-4 hover:bg-base-300 rounded-lg cursor-pointer">
-                                    <svg class="h-6 w-6 mt-1" viewBox="0 0 24 24" fill="currentColor">
-                                        {% if item.type == 'video' %}
-                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
-                                        {% elif item.type == 'reading' %}
-                                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
-                                        {% else %}
-                                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
-                                        {% endif %}
-                                    </svg>
-                                    <div>
-                                        <h4 class="font-medium">
-                                            <a href="{% url 'lecture_video_content' item.id %}" class="text-primary hover:underline" target="_blank">
-                                                {{ item.video_file.name}}
-                                            </a>
-                                        </h4>
-                                        <p class="text-sm text-base-content/60">Video File</p>
-                                    </div>
-                                </div>
-                                {% endfor %}
-
-                            </div>
-                        </div>
-                       
-                    </div>
-                </div>
-            </div>
+    <main class="flex-1 overflow-y-auto p-4 lg:p-8">
+      <!-- Module Title at Top Center -->
+      <div class="text-center mb-6">
+        <h1 class="text-2xl font-bold">Module {{current_week.order}}: {{current_week.title}}</h1>
+      </div>
+      
+      <!-- Weeks/Lectures in Module -->
+      {% for lecture in current_week.lectures.all %}
+      <div class="collapse collapse-arrow bg-base-100 border rounded-lg mb-4 overflow-hidden">
+        <input type="checkbox" {% if forloop.first %}checked{% endif %} /> 
+        <div class="collapse-title text-xl font-medium flex items-center">
+          <span class="flex-1">Week {{ lecture.order }}: {{lecture.title}}</span>
         </div>
+        
+        <!-- Week Content -->
+        <div class="collapse-content p-0"> 
+          <!-- Week Stats -->
+          <div class="flex flex-wrap gap-4 p-4 bg-base-200 border-y">
+            <div class="flex items-center gap-1 text-sm">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+              </svg>
+              <span>1h 30m of videos left</span>
+            </div>
+            <div class="flex items-center gap-1 text-sm">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+              </svg>
+              <span>45m of readings left</span>
+            </div>
+            <div class="flex items-center gap-1 text-sm">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+              </svg>
+              <span>2 graded assessments left</span>
+            </div>
+          </div>
+          
+          <!-- Week Description -->
+          <div class="p-4 border-b">
+            <p class="text-base-content/80">This week covers the fundamental concepts of {% if week_num == "1" %}machine learning, including its applications and basic terminology{% elif week_num == "2" %}supervised learning, focusing on classification and regression problems{% else %}unsupervised learning, exploring clustering and dimensionality reduction techniques{% endif %}.</p>
+            
+            <!-- Learning Objectives Toggle -->
+            <button class="flex items-center gap-2 text-primary mt-4" id="objectives-toggle-{{ week_num }}">
+              <svg class="h-4 w-4 transform transition-transform duration-200" id="objectives-icon-{{ week_num }}" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+              </svg>
+              <span>Show Learning Objectives</span>
+            </button>
+            
+            <!-- Learning Objectives Content -->
+            <div class="hidden mt-2 pl-6" id="objectives-content-{{ week_num }}">
+              <ul class="list-disc space-y-1 text-sm">
+                <li>Understand the basic concepts of {% if week_num == "1" %}machine learning{% elif week_num == "2" %}supervised learning{% else %}unsupervised learning{% endif %}</li>
+                <li>Identify common applications of {% if week_num == "1" %}machine learning in various industries{% elif week_num == "2" %}classification and regression{% else %}clustering and dimensionality reduction{% endif %}</li>
+                <li>Explain the {% if week_num == "1" %}difference between supervised and unsupervised learning{% elif week_num == "2" %}process of training and evaluating supervised models{% else %}key algorithms used in unsupervised learning{% endif %}</li>
+              </ul>
+            </div>
+          </div>
+          
+          <!-- Lecture Items -->
+          <div class="divide-y">
+            {% for pdf in lecture.pdf_files.all %}
+            <div class="flex items-center p-4 hover:bg-base-200">
+              <div class="mr-4 text-primary">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+                  </svg>
+              
+              </div>
+              <div class="flex-1">
+                <h4 class="font-medium">
+                  <a href="#" class="hover:text-primary">
+                  {{pdf.pdf_title}}
+                  </a>
+                </h4>
+                <p class="text-xs text-base-content/60">Reading • {% if item_num == "1" %}15{% elif item_num == "2" %}20{% else %}25{% endif %} min</p>
+              </div>
+              {% if item_num == "1" %}
+              <div class="text-success">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                </svg>
+              </div>
+              {% else %}
+              <a href="#" class="btn btn-primary btn-sm">
+                Resume
+              </a>
+              {% endif %}
+            </div>
+            {% endfor %}
+            {% for video in lecture.videos.all %}
+            <div class="flex items-center p-4 hover:bg-base-200">
+              <div class="mr-4 text-primary">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+                  </svg>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-medium">
+                  <a href="#" class="hover:text-primary">
+                   {{video.video_title}}
+                  </a>
+                </h4>
+                <p class="text-xs text-base-content/60">Video • 45 min</p>
+              </div>
+              <a href="#" class="btn btn-primary btn-sm">
+                Read
+              </a>
+            </div>
+            {% endfor %}
+            
+            <div class="flex items-center p-4 hover:bg-base-200">
+              <div class="mr-4 text-primary">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+                  </svg>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-medium">
+                  <a href="#" class="hover:text-primary">
+                    Week {{ week_num }} Quiz: {% if week_num == "1" %}Machine Learning Basics{% elif week_num == "2" %}Supervised Learning Concepts{% else %}Unsupervised Learning Techniques{% endif %}
+                  </a>
+                </h4>
+                <p class="text-xs text-base-content/60">Graded Assessment</p>
+              </div>
+              <a href="#" class="btn btn-primary btn-sm">
+                Start
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
     </main>
-
-    <!-- Right Sidebar -->
-    <aside class="w-80 border-l h-[calc(100vh-3.5rem)] overflow-y-auto p-6">
-        <div class="space-y-8">
-            <div>
-                <h3 class="font-medium mb-2">Weekly goal progress tracker</h3>
-                <p class="text-sm text-base-content/70 mb-4">
-                    Learners with goals are 75% more likely to complete their courses. Set a weekly goal now to take charge of
-                    your learning journey and boost your success!
-                </p>
-                <button class="btn btn-primary btn-sm">
-                    Set your weekly goal
-                </button>
+  </div> 
+  
+  <!-- Sidebar -->
+  <div class="drawer-side h-screen">
+    <label for="my-drawer" class="drawer-overlay"></label>
+    <aside class="w-80 bg-base-100 border-r flex-shrink-0">
+      <div class="p-4">
+        <h2 class="font-bold text-lg mb-4">{{course.title}}</h2>
+        
+        <nav class="space-y-1">
+          <!-- Course Material Section -->
+          <div class="collapse collapse-arrow bg-base-200 rounded-md">
+            <input type="checkbox" checked /> 
+            <div class="collapse-title font-medium">Course Material</div>
+            <div class="collapse-content px-0 pt-1">
+              {% for module in course.modules.all %}
+              <a href="{% url 'lecture_home' course.slug%}?module_id={{module.id}}" 
+                 class="flex items-center py-2 px-4 hover:bg-base-300 rounded-md {% if module_num == "1" %}text-primary bg-primary/10 font-medium{% endif %}">
+                <span class="w-6 h-6 flex items-center justify-center rounded-full bg-base-300 mr-2 text-xs">
+                  {{ module_num }}
+                </span>
+                Module {{ module.order }}:{{module.title}}
+               
+              </a>
+              {% endfor %}
             </div>
-
-            <div>
-                <h3 class="font-medium mb-4">Course timeline</h3>
-                <div class="relative pl-6 border-l border-base-300">
-                    <div class="absolute left-0 -translate-x-1/2 w-2 h-2 rounded-full bg-base-content"></div>
-                    <p class="text-sm font-medium">Start date: {{ course.start_date|date:"F j, Y" }}</p>
-                    
-                    <div class="mt-6">
-                        <p class="text-sm font-medium mb-2">Your next two deadlines</p>
-                        <div class="space-y-4">
-                            {% for deadline in upcoming_deadlines %}
-                            <div>
-                                <a href="{{ deadline.url }}" class="text-sm text-primary hover:text-primary-focus">
-                                    {{ deadline.title }}
-                                </a>
-                                <p class="text-sm {% if deadline.is_overdue %}text-error{% else %}text-primary{% endif %}">
-                                    {% if deadline.is_overdue %}Overdue{% else %}Due in {{ deadline.days_left }} days{% endif %}
-                                </p>
-                                <p class="text-sm text-base-content/60">{{ deadline.type }}</p>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-
-                    <div class="mt-6">
-                        <div class="absolute left-0 -translate-x-1/2 w-2 h-2 rounded-full bg-base-content"></div>
-                        <p class="text-sm font-medium">Estimated end date: {{ course.end_date|date:"F j, Y" }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+          </div>
+          
+          <a href="#" class="flex items-center py-2 px-4 hover:bg-base-200 rounded-md">
+            <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
+            </svg>
+            Grades
+          </a>
+          
+          <a href="#" class="flex items-center py-2 px-4 hover:bg-base-200 rounded-md">
+            <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+            </svg>
+            Notes
+          </a>
+          
+          <a href="#" class="flex items-center py-2 px-4 hover:bg-base-200 rounded-md">
+            <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
+            </svg>
+            Messages
+          </a>
+          
+          <a href="#" class="flex items-center py-2 px-4 hover:bg-base-200 rounded-md">
+            <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+            </svg>
+            Course Info
+          </a>
+        </nav>
+      </div>
     </aside>
+  </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const showObjectivesButton = document.getElementById('show-objectives');
-        const learningObjectivesAccordion = document.getElementById('learning-objectives-accordion');
-        
-        if (showObjectivesButton && learningObjectivesAccordion) {
-            showObjectivesButton.addEventListener('click', function() {
-                learningObjectivesAccordion.checked = !learningObjectivesAccordion.checked;
-                console.log('Show learning objectives clicked');
-            });
-        }
-    });
+  document.addEventListener('DOMContentLoaded', function() {
+    // Handle drawer state for responsive design
+    const drawer = document.getElementById('my-drawer');
+    const mediaQuery = window.matchMedia('(min-width: 1024px)');
+
+    function handleDrawerState(e) {
+      if (e.matches) {
+        drawer.checked = true;
+      } else {
+        drawer.checked = false;
+      }
+    }
+
+    mediaQuery.addListener(handleDrawerState);
+    handleDrawerState(mediaQuery);
+    
+    // Handle learning objectives toggles
+    for (let i = 1; i <= 3; i++) {
+      const objectivesToggle = document.getElementById(`objectives-toggle-${i}`);
+      const objectivesContent = document.getElementById(`objectives-content-${i}`);
+      const objectivesIcon = document.getElementById(`objectives-icon-${i}`);
+      
+      if (objectivesToggle && objectivesContent) {
+        objectivesToggle.addEventListener('click', function() {
+          objectivesContent.classList.toggle('hidden');
+          objectivesIcon.classList.toggle('rotate-180');
+          
+          const toggleText = objectivesToggle.querySelector('span');
+          if (objectivesContent.classList.contains('hidden')) {
+            toggleText.textContent = 'Show Learning Objectives';
+          } else {
+            toggleText.textContent = 'Hide Learning Objectives';
+          }
+        });
+      }
+    }
+  });
 </script>
 {% endblock %}
-

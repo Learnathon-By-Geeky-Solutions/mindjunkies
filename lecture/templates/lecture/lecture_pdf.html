@@ -36,14 +36,14 @@
       <div class="p-4">
         <div class="rounded-xl overflow-hidden bg-base-200">
           <div class="aspect-w-16 aspect-h-9">
-            {% if video.video_file.url %}
+            {% if video.url %}
               <video 
                 id="videoPlayer"
                 class="w-full h-full" 
                 controls
                 poster="{% static 'images/course-thumbnail.jpg' %}"
               >
-                <source src="{{ video.video_file.url }}" type="video/mp4">
+                <source src="{{ video.url }}" type="video/mp4">
                 Your browser does not support the video tag.
               </video>
             {% endif %}
