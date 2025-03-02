@@ -90,7 +90,7 @@
               </div>
               <div class="flex-1">
                 <h4 class="font-medium">
-                  <a href="#" class="hover:text-primary">
+                  <a href="" class="hover:text-primary">
                   {{pdf.pdf_title}}
                   </a>
                 </h4>
@@ -103,9 +103,9 @@
                 </svg>
               </div>
               {% else %}
-              <a href="#" class="btn btn-primary btn-sm">
-                Resume
-              </a>
+              <a href="{{pdf.pdf_file.url }}" class="btn btn-primary btn-sm" download>
+                Download
+            </a>
               {% endif %}
             </div>
             {% endfor %}
@@ -124,8 +124,8 @@
                 </h4>
                 <p class="text-xs text-base-content/60">Video • 45 min</p>
               </div>
-              <a href="#" class="btn btn-primary btn-sm">
-                Read
+              <a href="{% url 'lecture_video_content' current_week.id video.id %}" class="btn btn-primary btn-sm">
+                Resume
               </a>
             </div>
             {% endfor %}

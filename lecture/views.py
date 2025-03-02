@@ -45,12 +45,12 @@ def lecture_home(request: HttpRequest,slug:str) -> HttpResponse:
 
 @login_required
 @require_http_methods(["GET"])
-def lecture_video(request: HttpRequest, slug:str, video_id: int) -> HttpResponse:
+def lecture_video(request: HttpRequest, module_id:str, video_id: int) -> HttpResponse:
     """View to display a lecture video."""
     
     # Get the video or return 404 if not found
     video = get_object_or_404(LectureVideo, id=video_id)
-    lecture=Lecture.objects.get(slug=slug)
+    lecture={}
     # Ensure the user is enrolled in the related course
     if not request.user.is_staff and not video.lecture.course.enrollments.filter(student=request.user).exists():
         return HttpResponseForbidden("You are not enrolled in this course.")
