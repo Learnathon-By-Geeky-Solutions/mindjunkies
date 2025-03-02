@@ -1,0 +1,23 @@
+<h2 class="text-2xl font-bold mb-4">Schedule a Live Class for {{ course.title }}</h2>
+<form method="post" class="space-y-4">
+    {% csrf_token %}
+    <div class="form-control">
+        <label class="label">
+            <span class="label-text">Topic:</span>
+        </label>
+        <input type="text" name="topic" required class="input input-bordered w-full">
+    </div>
+    <div class="form-control">
+        <label class="label">
+            <span class="label-text">Schedule Time:</span>
+        </label>
+        <input type="datetime-local" name="scheduled_at" required class="input input-bordered w-full">
+    </div>
+    <div class="form-control">
+        <label class="label">
+            <span class="label-text">Duration (Minutes):</span>
+        </label>
+        <input type="number" name="duration" value="60" required class="input input-bordered w-full">
+    </div>
+    <button type="submit" class="btn btn-primary w-full">Create Live Class</button>
+</form>
