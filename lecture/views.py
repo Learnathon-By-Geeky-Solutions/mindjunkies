@@ -4,18 +4,19 @@ from django.contrib import messages
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, Http404
-
+from .forms import LectureForm
 from courses.models import Course
 from .models import Lecture, LectureVideo,LecturePDF
 
 
 @login_required
 @require_http_methods(["GET"])
-def lecture_home(request: HttpRequest, course_id: int) -> HttpResponse:
+def lecture_home(request: HttpRequest,slug:str) -> HttpResponse:
     """View to show lectures for a course."""
     
     # Get the course or return 404 if not found
-    course = get_object_or_404(Course, id=course_id)
+    
+    course = get_object_or_404(Course, slug=slug)
     
     # Ensure the user is enrolled in the course
     if not request.user.is_staff and not course.enrollments.filter(student=request.user).exists():
@@ -80,3 +81,24 @@ def lecture_pdf(request: HttpRequest,slug:str,pdf_id: int) -> HttpResponse:
     }
 
     return render(request, "lecture/lecture_pdf.html", context)
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def create_lecture(request: HttpRequest) -> HttpResponse:
+    if request.method == "POST":
+        form = LectureForm(request.POST)  # Pass the user if needed
+
+        if form.is_valid():
+            saved_lecture = form.save()
+            messages.success(request, "Lecture created successfully!")
+            return redirect("lecture_home", slug=saved_lecture.slug)  # Redirect to a relevant page
+        else:
+            messages.error(request, "There was an error processing the form. Please check the fields below.")
+
+    else:
+        form = LectureForm()
+
+    return render(request, "lecture/create_lecture.html", {"form": form})
+     
+
