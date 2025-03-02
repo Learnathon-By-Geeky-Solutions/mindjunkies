@@ -13,7 +13,7 @@
         </label>
       </div>
       <div class="flex-1">
-        <a class="btn btn-ghost normal-case text-xl">Course Name</a>
+        <a class="btn btn-ghost normal-case text-xl">{{module.title}}</a>
       </div>
     </div>
     
@@ -41,7 +41,7 @@
               controls
               poster="{% static 'images/course-thumbnail.jpg' %}"
             >
-              <source src="{{ video.url }}" type="video/mp4">
+              <source src="{{ video.video_file.url }}" type="video/mp4">
               Your browser does not support the video tag.
             </video>
           </div>
@@ -59,45 +59,50 @@
   </div> 
   <div class="drawer-side">
     <label for="my-drawer" class="drawer-overlay"></label>
-    <aside class="w-80 bg-base-100 border-r flex-shrink-0">
+    <aside class="w-80 bg-base-100 border-r flex-shrink-0 h-screen">
       <!-- Sidebar content here -->
       <div class="p-4">
         <h2 class="font-bold text-lg mb-4">Course Content</h2>
         
         <div class="space-y-2">
           <!-- Week 1 Dropdown -->
+           {% for lecture in module.lectures.all %}
           <div class="collapse collapse-arrow bg-base-200">
             <input type="checkbox" checked /> 
             <div class="collapse-title font-medium">
-              Week 1: Introduction to Machine Learning
+              Week {{lecture.order}}: {{lecture.title}}
             </div>
             <div class="collapse-content"> 
               <div class="space-y-2">
                 <!-- Video Item -->
-                <a href="#" class="flex items-start p-2 rounded-lg hover:bg-base-300">
+                 {% for video in lecture.videos.all %}
+                <a href="{% url 'lecture_video_content' module.id video.id %}" class="flex items-start p-2 rounded-lg hover:bg-base-300">
                   <div class="flex-shrink-0 mt-1">
                     <svg class="h-5 w-5 text-primary" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
                     </svg>
                   </div>
                   <div class="ml-3 flex-1">
-                    <p class="text-sm font-medium">Welcome to machine learning!</p>
+                    <p class="text-sm font-medium">{{video.video_title}}</p>
                     <span class="text-xs text-base-content/70">2 min</span>
                   </div>
                 </a>
+                {% endfor %}
 
                 <!-- Reading Item -->
-                <a href="#" class="flex items-start p-2 rounded-lg hover:bg-base-300">
+                 {% for pdf in lecture.pdf_files.all %}
+                <a href="{{pdf.pdf_file.url }}" class="flex items-start p-2 rounded-lg hover:bg-base-300" download="">
                   <div class="flex-shrink-0 mt-1">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z" />
                     </svg>
                   </div>
                   <div class="ml-3 flex-1">
-                    <p class="text-sm font-medium">Course syllabus</p>
+                    <p class="text-sm font-medium">{{pdf.pdf_title}}</p>
                     <span class="text-xs text-base-content/70">5 min read</span>
                   </div>
                 </a>
+                {% endfor %}
 
                 <!-- Quiz Item -->
                 <a href="#" class="flex items-start p-2 rounded-lg hover:bg-base-300">
@@ -113,79 +118,11 @@
               </div>
             </div>
           </div>
+          {% endfor %}
 
-          <!-- Week 2 Dropdown -->
-          <div class="collapse collapse-arrow bg-base-200">
-            <input type="checkbox" /> 
-            <div class="collapse-title font-medium">
-              Week 2: Regression Analysis
-            </div>
-            <div class="collapse-content"> 
-              <div class="space-y-2">
-                <!-- Video Item -->
-                <a href="#" class="flex items-start p-2 rounded-lg hover:bg-base-300">
-                  <div class="flex-shrink-0 mt-1">
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
-                    </svg>
-                  </div>
-                  <div class="ml-3 flex-1">
-                    <p class="text-sm font-medium">Linear Regression</p>
-                    <span class="text-xs text-base-content/70">15 min</span>
-                  </div>
-                </a>
+        
 
-                <!-- Reading Item -->
-                <a href="#" class="flex items-start p-2 rounded-lg hover:bg-base-300">
-                  <div class="flex-shrink-0 mt-1">
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z" />
-                    </svg>
-                  </div>
-                  <div class="ml-3 flex-1">
-                    <p class="text-sm font-medium">Regression models in practice</p>
-                    <span class="text-xs text-base-content/70">10 min read</span>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Week 3 Dropdown -->
-          <div class="collapse collapse-arrow bg-base-200">
-            <input type="checkbox" /> 
-            <div class="collapse-title font-medium">
-              Week 3: Classification
-            </div>
-            <div class="collapse-content"> 
-              <div class="space-y-2">
-                <!-- Video Item -->
-                <a href="#" class="flex items-start p-2 rounded-lg hover:bg-base-300">
-                  <div class="flex-shrink-0 mt-1">
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
-                    </svg>
-                  </div>
-                  <div class="ml-3 flex-1">
-                    <p class="text-sm font-medium">Logistic Regression</p>
-                    <span class="text-xs text-base-content/70">20 min</span>
-                  </div>
-                </a>
-
-                <!-- Quiz Item -->
-                <a href="#" class="flex items-start p-2 rounded-lg hover:bg-base-300">
-                  <div class="flex-shrink-0 mt-1">
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
-                    </svg>
-                  </div>
-                  <div class="ml-3 flex-1">
-                    <p class="text-sm font-medium">Quiz: Classification Techniques</p>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
+         
         </div>
       </div>
     </aside>
