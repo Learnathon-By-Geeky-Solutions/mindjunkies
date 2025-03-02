@@ -5,8 +5,9 @@ from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, Http404
 from .forms import LectureForm
-from courses.models import Course
+from courses.models import Course,Module
 from .models import Lecture, LectureVideo,LecturePDF
+
 
 
 @login_required
@@ -23,12 +24,12 @@ def lecture_home(request: HttpRequest,slug:str) -> HttpResponse:
         return HttpResponseForbidden("You are not enrolled in this course.")
 
     # Fetch lectures for the course
-    default_current_week = course.lectures.first()
+    default_current_week = course.modules.first()
     upcoming_deadlines = {}  # TODO: Add logic for upcoming deadlines
 
     # Get selected lecture if provided
-    lecture_id = request.GET.get("lecture_id")
-    current_week = Lecture.objects.filter(id=lecture_id).first() if lecture_id else default_current_week
+    module_id = request.GET.get("module_id")
+    current_week = Module.objects.filter(id=module_id).first() if module_id else default_current_week
 
     if not current_week:
         messages.warning(request, "No lectures available for this course.")
