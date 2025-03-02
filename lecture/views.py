@@ -124,6 +124,30 @@ def create_content(request: HttpRequest,course_slug:str,lecture_slug:str) -> Htt
 
     return render(request, "lecture/create_content.html", {"form": form})
 
+@login_required
+@require_http_methods(["GET", "POST"])
+def edit_lecture(request: HttpRequest,course_slug:str,lecture_slug:str) -> HttpResponse:
+    lecture = get_object_or_404(Lecture, slug=lecture_slug) if lecture_slug else None
+    if request.method == "POST":
+       
+        
+        form = LectureForm(request.POST, request.FILES, instance=lecture)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Lecture saved successfully!")
+            return redirect("lecture_home",slug=course_slug)
+        else:
+            print("Form errors:", form.errors)  # Log the errors to the console
+            messages.error(request, f"There was an error processing the form: {form.errors}")
+    else:
+       
+        lecture = get_object_or_404(Lecture, slug=lecture_slug) if lecture_slug else None
+        form =LectureForm(instance=lecture)
+
+    return render(request, "lecture/create_lecture.html", {"form": form, "lecture": lecture})
+
+
+
 
      
 
