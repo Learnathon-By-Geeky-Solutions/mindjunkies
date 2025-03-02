@@ -19,6 +19,7 @@ def meeting(request: HttpRequest) -> HttpResponse:
         'jwt': settings.JWT
     }
 
+
     response = render(request, 'meet/index.html', context)
     response['Content-Security-Policy'] = "frame-ancestors 'self' 8x8.vc"
     response['X-Frame-Options'] = 'SAMEORIGIN'
