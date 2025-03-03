@@ -26,10 +26,30 @@
       
       <!-- Weeks/Lectures in Module -->
       {% for lecture in current_week.lectures.all %}
-      <div class="collapse collapse-arrow bg-base-100 border rounded-lg mb-4 overflow-hidden">
-        <input type="checkbox" {% if forloop.first %}checked{% endif %} /> 
+     
+    
+   <div class="collapse collapse-arrow bg-base-100 border rounded-lg mb-4 overflow-hidden z--1">
+        <input type="checkbox" class="accordion-checkbox" {% if forloop.first %}checked{% endif %} /> 
         <div class="collapse-title text-xl font-medium flex items-center">
-          <span class="flex-1">Week {{ lecture.order }}: {{lecture.title}}</span>
+          <div class="flex flex-row items-center gap-2">
+            <p class="inline-block">Week {{ lecture.order }}: {{lecture.title}}</p>
+            
+            <a href="{% url 'edit_lecture' course.slug lecture.slug %}" class="z-10 edit-link"><svg
+                width="20" height="20"
+                viewBox="0 0 24 24"
+                fill="#007bff"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                
+                <path 
+                    d="M3 21v-3.75L14.06 6.19l3.75 3.75L6.75 21H3zm17.71-14.04a1 1 0 0 0 0-1.42l-2.25-2.25a1 1 0 0 0-1.42 0L15 4.54l3.75 3.75 1.96-1.96z" 
+                    fill="#007bff"
+                />
+            </svg></a>
+          </div> 
+        
+         
+
         </div>
         
         <!-- Week Content -->
@@ -53,6 +73,18 @@
                 <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
               </svg>
               <span>2 graded assessments left</span>
+            </div>
+            <div class="flex items-center justify-end gap-1 text-sm">
+            
+              <a href="{% url 'create_content' course.slug lecture.slug %}" class="inline-block action-link">
+                <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-2  rounded-md shadow-md transition duration-300 ease-in-out flex items-center">
+                    <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 4v16M4 12h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Add Content
+                </button>
+            </a>
+            
             </div>
           </div>
           
@@ -90,7 +122,7 @@
               </div>
               <div class="flex-1">
                 <h4 class="font-medium">
-                  <a href="#" class="hover:text-primary">
+                  <a href="" class="hover:text-primary">
                   {{pdf.pdf_title}}
                   </a>
                 </h4>
@@ -103,8 +135,8 @@
                 </svg>
               </div>
               {% else %}
-              <a href="#" class="btn btn-primary btn-sm">
-                Resume
+              <a href="{{pdf.pdf_file.url }}" class="btn btn-primary btn-sm action-link" download>
+                Download
               </a>
               {% endif %}
             </div>
@@ -124,8 +156,8 @@
                 </h4>
                 <p class="text-xs text-base-content/60">Video • 45 min</p>
               </div>
-              <a href="#" class="btn btn-primary btn-sm">
-                Read
+              <a href="{% url 'lecture_video_content' current_week.id video.id %}" class="btn btn-primary btn-sm action-link">
+                Resume
               </a>
             </div>
             {% endfor %}
@@ -144,13 +176,13 @@
                 </h4>
                 <p class="text-xs text-base-content/60">Graded Assessment</p>
               </div>
-              <a href="#" class="btn btn-primary btn-sm">
+              <a href="#" class="btn btn-primary btn-sm action-link">
                 Start
               </a>
             </div>
           </div>
         </div>
-      </div>
+      </div>  
       {% endfor %}
     </main>
   </div> 
@@ -169,14 +201,16 @@
             <div class="collapse-title font-medium">Course Material</div>
             <div class="collapse-content px-0 pt-1">
               {% for module in course.modules.all %}
-              <a href="{% url 'lecture_home' course.slug%}?module_id={{module.id}}" 
-                 class="flex items-center py-2 px-4 hover:bg-base-300 rounded-md {% if module_num == "1" %}text-primary bg-primary/10 font-medium{% endif %}">
-                <span class="w-6 h-6 flex items-center justify-center rounded-full bg-base-300 mr-2 text-xs">
-                  {{ module_num }}
-                </span>
-                Module {{ module.order }}:{{module.title}}
-               
-              </a>
+              <a href="{% url 'lecture_home' course.slug %}?module_id={{ module.id }}" 
+              class="flex items-center py-2 px-4 hover:bg-base-300 rounded-md 
+                     {% if module.id == request.GET.module_id %}
+                       text-primary bg-primary/10 font-medium
+                     {% endif %}">
+               <span class="w-6 h-6 flex items-center justify-center rounded-full bg-base-300 mr-2 text-xs">
+                 {{ module_num }}
+               </span>
+               Module {{ module.order }}: {{ module.title }}
+           </a>
               {% endfor %}
             </div>
           </div>
@@ -207,6 +241,12 @@
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
             </svg>
             Course Info
+          </a>
+          <a href="{% url 'create_lecture' course.slug %}" class="flex items-center py-2 px-4 hover:bg-base-200 rounded-md">
+            <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+            </svg>
+            Add Lecture
           </a>
         </nav>
       </div>
@@ -253,6 +293,26 @@
         });
       }
     }
+
+    // Fix for accordion links - prevent event propagation
+    const editLinks = document.querySelectorAll('.edit-link');
+    const actionLinks = document.querySelectorAll('.action-link');
+    
+    // Function to handle click events on links inside accordions
+    function handleLinkClick(e) {
+      e.stopPropagation();
+    }
+    
+    // Add event listeners to all edit links
+    editLinks.forEach(link => {
+      link.addEventListener('click', handleLinkClick);
+    });
+    
+    // Add event listeners to all action links (download, resume, start buttons)
+    actionLinks.forEach(link => {
+      link.addEventListener('click', handleLinkClick);
+    });
   });
 </script>
 {% endblock %}
+

@@ -6,7 +6,7 @@ from django.utils.text import slugify
 class LectureForm(forms.ModelForm):
     class Meta:
         model = Lecture
-        fields = ['course','module','title','description','video_url','content','order']
+        fields = ['module','title','description','video_url','content','order']
         def save(self, commit=True):
             instance = super(LectureForm, self).save(commit=False)
             instance.slug = slugify(instance.title)
@@ -19,7 +19,7 @@ class LectureForm(forms.ModelForm):
 class LecturePDFForm(forms.ModelForm):
     class Meta:
         model = LecturePDF
-        fields = ['pdf_file', 'lecture']
+        fields = ['pdf_file','pdf_title']
 
     def save(self, commit=True, lecture=None):
         instance = super().save(commit=False)
