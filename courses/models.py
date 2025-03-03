@@ -29,6 +29,7 @@ class Course(BaseModel):
     slug = models.SlugField(max_length=255, unique=True)
     total_rating = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     number_of_ratings = models.PositiveIntegerField(default=0)
+    number_of_enrollments = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -87,6 +88,12 @@ class Enrollment(BaseModel):
 
     def __str__(self):
         return f"{self.student.username} enrolled in {self.course.title}"
+    
+    def save(self, *args, **kwargs):
+        if self.status == 'active':
+            self.course.number_of_enrollments += 1
+            self.course.save()
+        super().save(*args, **kwargs)
 
 
 class Module(BaseModel):
