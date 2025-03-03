@@ -1,0 +1,75 @@
+<div class="drawer-side h-screen">
+    <label for="my-drawer" class="drawer-overlay"></label>
+    <aside class="w-80 bg-base-100 border-r flex-shrink-0 h-screen">
+      <!-- Sidebar content here -->
+      <div class="p-4">
+        <h2 class="font-bold text-lg mb-4">{{lecture.title}}</h2>
+        
+        <div class="space-y-4">
+          <!-- Reading Assessment Dropdown -->
+          <div class="collapse collapse-arrow bg-base-200">
+            <input type="checkbox" class="peer" /> 
+            <div class="collapse-title font-medium flex items-center gap-2">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z" />
+              </svg>
+              Reading Content
+            </div>
+            <div class="collapse-content"> 
+              <ul class="menu menu-compact">
+                {% for pdf in lecture.pdf_files.all %}
+                  <li>
+                    <a href="{% url 'lecture_pdf_content' lecture.slug pdf.id %}" class="flex items-center gap-2 hover:bg-base-300 rounded-lg py-2">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+                      </svg>
+                      <span class="text-sm">{{ pdf.pdf_title }}</span>
+                    </a>
+                  </li>
+                {% empty %}
+                  <li class="text-sm text-base-content/70 px-4 py-2">No reading materials available</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+  
+          <!-- Video Assessment Dropdown -->
+          <div class="collapse collapse-arrow bg-base-200">
+            <input type="checkbox" class="peer" /> 
+            <div class="collapse-title font-medium flex items-center gap-2">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+              </svg>
+              Video Content
+            </div>
+            <div class="collapse-content"> 
+              <ul class="menu menu-compact">
+                {% for video in lecture.videos.all %}
+                  <li>
+                    <a href="{% url 'lecture_video_content' lecture.slug  video.id %}" class="flex items-center gap-2 hover:bg-base-300 rounded-lg py-2">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+                      </svg>
+                      <span class="text-sm">{{ video.video_title }}</span>
+                    </a>
+                  </li>
+                {% empty %}
+                  <li class="text-sm text-base-content/70 px-4 py-2">No video materials available</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+  
+          <!-- Quiz Items (Kept as is) -->
+          <div class="mt-6">
+            <h3 class="font-bold mb-2">Practice Quiz:</h3>
+            <a href="#" class="flex items-start p-3 rounded-lg hover:bg-base-200">
+              <div class="ml-3">
+                <p class="text-sm">Supervised vs unsupervised learning</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
