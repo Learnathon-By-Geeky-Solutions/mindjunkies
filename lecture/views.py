@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, Http404
-from .forms import LectureForm,LecturePDFForm
+from .forms import LectureForm,LecturePDFForm,ModuleForm
 from courses.models import Course,Module
 from .models import Lecture, LectureVideo,LecturePDF
 
@@ -145,6 +145,25 @@ def edit_lecture(request: HttpRequest,course_slug:str,lecture_slug:str) -> HttpR
         form =LectureForm(instance=lecture)
 
     return render(request, "lecture/create_lecture.html", {"form": form, "lecture": lecture})
+@login_required
+@require_http_methods(["GET","POST"])
+def create_module(request:HttpRequest,course_slug:str)->HttpResponse:
+    if request.method=="POST":
+        form=ModuleForm(request.POST)
+        if form.is_valid():
+            course=get_object_or_404(Course,slug=course_slug)
+            instance=form.save(commit=False)
+            instance.course=course
+            instance.save()
+
+            return redirect("lecture_home",slug=course_slug)
+    else:
+           form=ModuleForm()
+
+
+    return render(request,'lecture/create_module.html',{"form":form})
+
+
 
 
 
