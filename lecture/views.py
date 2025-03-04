@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, Http404
-from .forms import LectureForm,LecturePDFForm,ModuleForm
+from .forms import LectureForm,LecturePDFForm,ModuleForm,LectureVideoForm
 from courses.models import Course,Module
 from .models import Lecture, LectureVideo,LecturePDF
 
@@ -106,23 +106,32 @@ def create_lecture(request: HttpRequest,slug:str) -> HttpResponse:
 
 @login_required
 @require_http_methods(["GET", "POST"])
-def create_content(request: HttpRequest,course_slug:str,lecture_slug:str) -> HttpResponse:
+def create_content(request: HttpRequest, course_slug: str, lecture_slug: str, type: str) -> HttpResponse:
+    lecture = get_object_or_404(Lecture, slug=lecture_slug)
+
+    # Determine which form to use based on the type
+    if type == "attachment":
+        FormClass = LecturePDFForm
+    elif type == "video":
+        FormClass = LectureVideoForm
+    else:
+        messages.error(request, "Invalid content type specified.")
+        return redirect("lecture_home", slug=course_slug)
+
     if request.method == "POST":
-        form = LecturePDFForm(request.POST,request.FILES)  # Pass the user if needed
-        lecture = get_object_or_404(Lecture, slug=lecture_slug)
+        form = FormClass(request.POST, request.FILES)
         if form.is_valid():
             saved_content = form.save(commit=False)
-            saved_content.lecture=lecture
+            saved_content.lecture = lecture  # Assign lecture before saving
             saved_content.save()
-            messages.success(request, "Lecture Content created successfully!")
-            return redirect("lecture_home", slug=course_slug)  # Redirect to a relevant page
+            messages.success(request, f"Lecture {type.capitalize()} uploaded successfully!")
+            return redirect("lecture_home", slug=course_slug)
         else:
             messages.error(request, "There was an error processing the form. Please check the fields below.")
-
     else:
-        form = LecturePDFForm()
+        form = FormClass()
 
-    return render(request, "lecture/create_content.html", {"form": form})
+    return render(request, "lecture/create_content.html", {"form": form, "type": type})
 
 @login_required
 @require_http_methods(["GET", "POST"])
