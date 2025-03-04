@@ -9,7 +9,7 @@ class CourseForm(forms.ModelForm):
         model = Course
         fields = ['title', 'short_introduction', 'course_description', 
                   'course_image', 'preview_video_link',
-                  'upcoming', 'paid_course',
+                  'upcoming', 'published', 'paid_course',
                   'course_price']
 
     def __init__(self, *args, **kwargs):

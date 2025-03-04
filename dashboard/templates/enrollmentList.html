@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load courses_tags %}
+
+{% block main_content %}
+   <body class="bg-gray-50">
+  <div class="container mx-auto py-8 px-4">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold tracking-tight">{{course.title}}</h1>
+      <p class="text-gray-500 mt-2">Course Student List</p>
+    </div>
+
+    <div class="rounded-md border bg-white shadow-sm">
+      <table class="min-w-full divide-y divide-gray-200">
+        <caption class="sr-only">A list of students enrolled in this course.</caption>
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[80%]">Student Name</th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+        {% for student in students %}
+          <tr>
+          <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 h-10 w-10">
+                  <img class="h-10 w-10 rounded-full" src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-fwGq4LtnToiaNqIHGJ2SCQwA3zPbuT.png" alt="Default avatar" />
+                </div>
+                <div class="ml-4">
+                  <div class="text-sm font-medium text-gray-900"> {{student.username}} </div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <a href="{% url 'dashboard_enrollments_remove' course.slug student.uuid %}">
+                <button class="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" aria-label="Delete John Doe">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18"></path>
+                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                  </svg>
+                </button>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+         
+        </tbody>
+        <tfoot class="bg-gray-50">
+          <tr>
+            <td colspan="2" class="px-6 py-3 text-sm text-gray-500">
+              Total Students: {{course.number_of_enrollments}}
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</body>
+
+{% endblock main_content %}
