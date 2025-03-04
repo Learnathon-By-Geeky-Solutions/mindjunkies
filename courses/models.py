@@ -90,10 +90,12 @@ class Enrollment(BaseModel):
         return f"{self.student.username} enrolled in {self.course.title}"
     
     def save(self, *args, **kwargs):
-        if self.pk is None:  # Check if the enrollment is being created
+        if self.pk is None:  
+            print("course name is",self.course)
             self.course.number_of_enrollments += 1
             self.course.save()
         super().save(*args, **kwargs)
+
 
 
 class Module(BaseModel):
