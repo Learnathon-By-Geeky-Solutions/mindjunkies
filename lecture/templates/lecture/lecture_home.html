@@ -79,12 +79,24 @@
             </div>
             <div class="flex items-center justify-end gap-1 text-sm">
             
-              <a href="{% url 'create_content' course.slug lecture.slug %}" class="inline-block action-link">
+              <a href="{% url 'create_content' course.slug lecture.slug  'attachment' %}" class="inline-block action-link">
                 <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-2  rounded-md shadow-md transition duration-300 ease-in-out flex items-center">
                     <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 4v16M4 12h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    Add Content
+                    Add Attachment
+                </button>
+            </a>
+            
+            </div>
+            <div class="flex items-center justify-end gap-1 text-sm">
+            
+              <a href="{% url 'create_content' course.slug lecture.slug 'video' %}" class="inline-block action-link">
+                <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-2  rounded-md shadow-md transition duration-300 ease-in-out flex items-center">
+                    <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 4v16M4 12h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Add Video
                 </button>
             </a>
             
