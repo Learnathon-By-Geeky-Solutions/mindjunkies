@@ -62,7 +62,7 @@ def serve_hls_playlist(request, video_id):
             m3u8_content = m3u8_file.read()
 
         base_url = request.build_absolute_uri('/') 
-        serve_hls_segment_url = base_url +"serve_hls_segment/" +str(video_id)
+        serve_hls_segment_url = base_url +"/lecture/serve_hls_segment/" +str(video_id)
         m3u8_content = m3u8_content.replace('{{ dynamic_path }}', serve_hls_segment_url)
 
 
@@ -77,6 +77,8 @@ def serve_hls_segment(request, video_id, segment_name):
         video = get_object_or_404(LectureVideo, pk=video_id)
         hls_directory = os.path.join(os.path.dirname(video.video_file.path), 'hls_output')
         segment_path = os.path.join(hls_directory, segment_name)
+
+        print("Segment path:", segment_path)
 
         # Serve the HLS segment as a binary file response
         return FileResponse(open(segment_path, 'rb'))
