@@ -3,10 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_protect
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, Http404
-from .forms import LectureForm,LecturePDFForm,ModuleForm,LectureVideoForm
-from courses.models import Course,Module
-from .models import Lecture, LectureVideo,LecturePDF
+from .forms import LectureForm, LecturePDFForm, ModuleForm, LectureVideoForm
+from courses.models import Course, Module
+from .models import Lecture, LectureVideo, LecturePDF
 
 
 
@@ -92,6 +93,7 @@ def lecture_pdf(request: HttpRequest,slug:str,pdf_id: int) -> HttpResponse:
 
 
 @login_required
+@csrf_protect
 @require_http_methods(["GET", "POST"])
 def create_lecture(request: HttpRequest,slug:str) -> HttpResponse:
     if request.method == "POST":
