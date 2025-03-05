@@ -82,14 +82,15 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     course = get_object_or_404(Course, slug=slug)
     enrolled_courses = CourseTeacher.objects.get(course=course)
     course_teacher = enrolled_courses.teacher
-    user_teacher = False
+    accessed = False
     enrolled = course.enrollments.filter(student=request.user).exists()
     if request.user == course_teacher or enrolled:
-        user_teacher = True
+        accessed = True
     context = {
         'course_detail': course,
-        'teacher': user_teacher,
+        'accessed': accessed,
         'instructor': course_teacher,
+        'teacher': request.user == course_teacher,
         
     }
     return render(request, "courses/course_details.html", context)
