@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 
+
+{% block extra_head %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.7.0/video-js.min.css" rel="stylesheet" />
+{% endblock extra_head %}
+
 {% block main_content %}
 <div class="drawer lg:drawer-open">
   <input id="my-drawer" type="checkbox" class="drawer-toggle" />
@@ -35,15 +40,12 @@
       <div class="p-4">
         <div class="rounded-xl overflow-hidden bg-base-200">
           <div class="aspect-w-16 aspect-h-9">
-            <video 
-              id="videoPlayer"
-              class="w-full h-full" 
-              controls
-              poster="{% static 'images/course-thumbnail.jpg' %}"
-            >
-              <source src="{{ video.video_file.url }}" type="video/mp4">
-              Your browser does not support the video tag.
-            </video>
+         <div class="video-container">
+        <video id="video" class="video-js vjs-default-skin" controls preload="auto" >
+            <source src="{{ hls_url }}" type="application/x-mpegURL">
+            <track src="https://example.com/subtitles-en.vtt" kind="subtitles" srclang="en" label="English" default>
+        </video>
+      </div>
           </div>
           <div class="p-4">
             <button class="btn btn-ghost btn-sm text-primary">
@@ -128,9 +130,25 @@
     </aside>
   </div>
 </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.7.0/video.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/8.0.0/videojs-contrib-hls.min.js"></script>
+        <script>
+        var player = videojs('video', {
+            controls: true,
+            autoplay: false,
+            preload: 'auto',
+            playbackRates: [0.5, 1, 1.5, 2, 2.5] // Playback speed options
+        });
+
+        player.ready(function () {
+            console.log("Video.js Player is Ready!");
+        });
+    </script>
 {% endblock %}
 
 {% block extra_js %}
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const drawer = document.getElementById('my-drawer');

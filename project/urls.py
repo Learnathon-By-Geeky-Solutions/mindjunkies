@@ -18,6 +18,8 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
+from lecture.views import serve_hls_segment
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,6 +29,7 @@ urlpatterns = [
     path('lecture/', include('lecture.urls')),
     path('meet/', include('videoConf.urls')),
     path('dashboard/', include('dashboard.urls')),
+    path('serve_hls_segment/<str:video_id>/<str:segment_name>/',serve_hls_segment, name='serve_hls_segment'),
 ]
 
 if settings.DEBUG:
