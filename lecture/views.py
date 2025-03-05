@@ -21,11 +21,17 @@ def lecture_home(request: HttpRequest,slug:str) -> HttpResponse:
     
     # Ensure the user is enrolled in the course
     if not request.user.is_staff and not course.enrollments.filter(student=request.user).exists():
-        return HttpResponseForbidden("You are not enrolled in this course.")
+        return HttpResponseForbidden("added to shopping cart")
 
     # Fetch lectures for the course
     default_current_week = course.modules.first()
     upcoming_deadlines = {}  # TODO: Add logic for upcoming deadlines
+
+
+    teacher = False
+    if request.user.is_staff or course.enrollments.filter(teacher=request.user).exists():
+        print("TRUE")
+        teacher = True
 
     # Get selected lecture if provided
     module_id = request.GET.get("module_id")
@@ -38,6 +44,7 @@ def lecture_home(request: HttpRequest,slug:str) -> HttpResponse:
         "course": course,
         "current_week": current_week,
         "upcoming_deadlines": upcoming_deadlines,
+        "isTeacher": teacher,
     }
     
     return render(request, "lecture/lecture_home.html", context)
