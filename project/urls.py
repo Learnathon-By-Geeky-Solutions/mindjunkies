@@ -29,7 +29,6 @@ urlpatterns = [
     path('lecture/', include('lecture.urls')),
     path('meet/', include('videoConf.urls')),
     path('dashboard/', include('dashboard.urls')),
-    path('serve_hls_segment/<str:video_id>/<str:segment_name>/',serve_hls_segment, name='serve_hls_segment'),
 ]
 
 if settings.DEBUG:
