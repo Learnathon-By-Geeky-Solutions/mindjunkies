@@ -47,10 +47,10 @@ INSTALLED_APPS = [
     'home',
     'accounts',
     'courses',
-    'videoConf',
     'theme',
     'lecture',
     'dashboard',
+    'liveclasses',
     # third party apps
     'tailwind',
     'django_browser_reload',
@@ -63,25 +63,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
 ]
-
-# Domain for Jitsi video conferencing
-JITSI_DOMAIN = config('JITSI_DOMAIN', default='meet.jit.si')
-
-# Prefix for Jitsi room names
-JITSI_ROOM_PREFIX = config('JITSI_ROOM_PREFIX', default='myapp-')
-
-# Magic cookie for Jitsi authentication
-JITSI_MAGIC_COOKIE = config('JITSI_MAGIC_COOKIE', default=None)
-
-# Raise an error if the magic cookie is not set
-if JITSI_MAGIC_COOKIE is None:
-    raise ValueError("JITSI_MAGIC_COOKIE environment variable is required for video conferencing")
-
-# Subresource Integrity (SRI) hash for ensuring the integrity of external resources
-SRI_HASH = config('SRI_HASH')
-
-# JSON Web Token (JWT) for authenticating users in Jitsi
-JWT = config('JWT')
 
 
 MIDDLEWARE = [
@@ -241,3 +222,7 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+
+
+JITSI_APP_ID = "vpaas-magic-cookie-fb583aeece2040b4805f50d0b267e75b"
+JITSI_SECRET = "vpaas-magic-cookie-fb583aeece2040b4805f50d0b267e75b/ee88ba"
