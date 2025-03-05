@@ -18,5 +18,5 @@ class LecturePDFAdmin(admin.ModelAdmin):
 
 @admin.register(LectureVideo)
 class LectureVideoAdmin(admin.ModelAdmin):
-    list_display = ('lecture', 'video_file')
+    list_display = ('video_title','lecture', 'video_file', 'status', 'is_running')
     search_fields = ('lecture__title',)

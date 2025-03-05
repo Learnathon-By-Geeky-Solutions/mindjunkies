@@ -21,7 +21,14 @@
     <main class="flex-1 overflow-y-auto p-4 lg:p-8">
       <!-- Module Title at Top Center -->
       <div class="text-center mb-6">
-        <h1 class="text-2xl font-bold">Module {{current_week.order}}: {{current_week.title}}</h1>
+        <div class="flex items-center gap-2"><h1 class="text-2xl font-bold">Module {{current_week.order}}: {{current_week.title}}</h1>
+        {% if isTeacher %}
+         <a href="{% url 'create_lecture' course.slug %}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10" stroke="blue" stroke-width="2"/>
+          <path d="M12 7V17M7 12H17" stroke="blue" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg></a>
+        {% endif %}
+        </div>
       </div>
       
       <!-- Weeks/Lectures in Module -->
@@ -76,12 +83,24 @@
             </div>
             <div class="flex items-center justify-end gap-1 text-sm">
             
-              <a href="{% url 'create_content' course.slug lecture.slug %}" class="inline-block action-link">
+              <a href="{% url 'create_content' course.slug lecture.slug  'attachment' %}" class="inline-block action-link">
                 <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-2  rounded-md shadow-md transition duration-300 ease-in-out flex items-center">
                     <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 4v16M4 12h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    Add Content
+                    Add Attachment
+                </button>
+            </a>
+            
+            </div>
+            <div class="flex items-center justify-end gap-1 text-sm">
+            
+              <a href="{% url 'create_content' course.slug lecture.slug 'video' %}" class="inline-block action-link">
+                <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-2  rounded-md shadow-md transition duration-300 ease-in-out flex items-center">
+                    <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 4v16M4 12h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Add Video
                 </button>
             </a>
             
@@ -197,8 +216,22 @@
         <nav class="space-y-1">
           <!-- Course Material Section -->
           <div class="collapse collapse-arrow bg-base-200 rounded-md">
-            <input type="checkbox" checked /> 
-            <div class="collapse-title font-medium">Course Material</div>
+            <input type="checkbox" checked />
+            <div class="collapse-title font-medium">
+              <div class="flex flex-row items-center gap-2">
+                <p class="inline-block">Course Material</p>
+                {% if isTeacher %}
+                <a href="{% url 'create_module' course.slug %}" class="z-10 edit-link"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="10" stroke="blue" stroke-width="2"/>
+                  <path d="M12 7V17M7 12H17" stroke="blue" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg></a>
+                {% endif %}
+              </div> 
+            
+             
+    
+            </div> 
+            <!-- <div class="collapse-title font-medium">Course Material <a href="{% url 'create_module' course.slug %}" class="z-10 edit-link">Add</a></div> -->
             <div class="collapse-content px-0 pt-1">
               {% for module in course.modules.all %}
               <a href="{% url 'lecture_home' course.slug %}?module_id={{ module.id }}" 
@@ -233,7 +266,7 @@
             <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
               <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
             </svg>
-            Messages
+            Discussions
           </a>
           
           <a href="#" class="flex items-center py-2 px-4 hover:bg-base-200 rounded-md">
@@ -242,12 +275,16 @@
             </svg>
             Course Info
           </a>
+
+          {% if isTeacher %}
           <a href="{% url 'create_lecture' course.slug %}" class="flex items-center py-2 px-4 hover:bg-base-200 rounded-md">
             <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
             </svg>
-            Add Lecture
+            Add Lecture 
           </a>
+          {% endif %}
+
         </nav>
       </div>
     </aside>

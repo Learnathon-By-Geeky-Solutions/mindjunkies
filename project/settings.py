@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'courses',
     'theme',
     'lecture',
+    'dashboard',
     'liveclasses',
     # third party apps
     'tailwind',
