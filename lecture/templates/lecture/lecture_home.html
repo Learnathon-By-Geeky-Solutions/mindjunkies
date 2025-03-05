@@ -261,7 +261,7 @@
             <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
               <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
             </svg>
-            Messages
+            Discussions
           </a>
           
           <a href="#" class="flex items-center py-2 px-4 hover:bg-base-200 rounded-md">
@@ -270,7 +270,16 @@
             </svg>
             Course Info
           </a>
-          
+
+          {% if isTeacher %}
+          <a href="{% url 'create_lecture' course.slug %}" class="flex items-center py-2 px-4 hover:bg-base-200 rounded-md">
+            <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+            </svg>
+            Add Lecture 
+          </a>
+          {% endif %}
+
         </nav>
       </div>
     </aside>

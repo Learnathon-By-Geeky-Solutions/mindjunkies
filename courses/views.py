@@ -7,6 +7,7 @@ from django.http import HttpRequest, HttpResponse, HttpResponseNotAllowed
 
 from .models import Course, CourseTeacher, Enrollment
 from .forms import CourseForm
+from accounts.models import Profile
 
 
 @require_http_methods(["GET"])
@@ -58,7 +59,7 @@ def create_course(request: HttpRequest) -> HttpResponse:
 def edit_course(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         slug = request.GET.get("slug")
-        course = get_object_or_404(Courses, slug=slug) if slug else None
+        course = get_object_or_404(Course, slug=slug) if slug else None
         form = CourseForm(request.POST, request.FILES, instance=course)
         if form.is_valid():
             form.save()
@@ -69,7 +70,7 @@ def edit_course(request: HttpRequest) -> HttpResponse:
             messages.error(request, f"There was an error processing the form: {form.errors}")
     else:
         slug = request.GET.get("slug")
-        course = get_object_or_404(Courses, slug=slug) if slug else None
+        course = get_object_or_404(Course, slug=slug) if slug else None
         form = CourseForm(instance=course)
 
     return render(request, "courses/create_course.html", {"form": form, "course": course})
@@ -79,15 +80,17 @@ def edit_course(request: HttpRequest) -> HttpResponse:
 def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     """View to show course details."""
     course = get_object_or_404(Course, slug=slug)
-    enrolled_courses = CourseTeacher.objects.filter(course=course)
-    teachers = [et.teacher for et in enrolled_courses]
-    print(teachers)
-    teacher = False
-    if request.user in teachers:
-        teacher = True
+    enrolled_courses = CourseTeacher.objects.get(course=course)
+    course_teacher = enrolled_courses.teacher
+    user_teacher = False
+    enrolled = course.enrollments.filter(student=request.user).exists()
+    if request.user == course_teacher or enrolled:
+        user_teacher = True
     context = {
         'course_detail': course,
-        'teacher': teacher,
+        'teacher': user_teacher,
+        'instructor': course_teacher,
+        
     }
     return render(request, "courses/course_details.html", context)
 
@@ -100,6 +103,9 @@ def user_course_list(request: HttpRequest) -> HttpResponse:
 
     enrolled = Enrollment.objects.filter(student=request.user)
     courses = courses + [ec.course for ec in enrolled]
+
+    print(courses)
+    print("enrolled",enrolled)
 
     context = {
         "courses": courses,
