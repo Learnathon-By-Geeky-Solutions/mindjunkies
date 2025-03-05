@@ -29,7 +29,7 @@ def lecture_home(request: HttpRequest,slug:str) -> HttpResponse:
 
 
     teacher = False
-    if request.user.is_staff or course.enrollments.filter(teacher=request.user).exists():
+    if request.user.is_staff or course.teachers.filter(teacher=request.user).exists():
         print("TRUE")
         teacher = True
 
