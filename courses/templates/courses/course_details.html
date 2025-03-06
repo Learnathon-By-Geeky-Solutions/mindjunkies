@@ -22,7 +22,7 @@
                         <div>{{ course_detail.num_students }} {{ course_detail.number_of_enrollments }} students enrolled</div>
                     </div>
                     <div class="flex items-center mb-4">
-                        <img src="{{ instructor.profile.avatar.url }}"
+                        <img src="{% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'images/default-avatar.jpg' %}{% endif %}"
                              alt="{{ instructor.username }}" class="w-12 h-12 rounded-full mr-4">
                         <div>
                             <p>Created by </p>
@@ -143,7 +143,8 @@
                     <div class="card-body">
                         <h2 class="card-title text-2xl mb-4">Instructor</h2>
                         <div class="flex items-center mb-4">
-                            <img src="{{ instructor.profile.avatar.url }}"
+                            <img src="
+                                    {% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'images/default-avatar.jpg' %}{% endif %}"
                                  alt="{{ instructor.username }}" class="w-24 h-24 rounded-full mr-6">
                             <div>
                                 <h3 class="text-xl font-semibold mb-2">{{ instructor.username }}</h3>
