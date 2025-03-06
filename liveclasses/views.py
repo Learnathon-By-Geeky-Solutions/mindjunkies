@@ -16,7 +16,6 @@ def list_live_classes(request, slug):
     live_classes = LiveClass.objects.filter(course=course)
 
     teacher = course.teachers.filter(teacher=request.user).exists()
-    print(teacher)
 
     return render(
         request,
@@ -58,11 +57,9 @@ def create_live_class(request, slug):
 
 
 def join_live_class(request, meeting_id):
-    """Render Jitsi meeting inside LMS with JWT authentication."""
+    """Render a Jitsi meeting inside LMS with JWT authentication."""
 
     live_class = get_object_or_404(LiveClass, meeting_id=meeting_id)
 
-    secure_meeting_url = live_class.get_meeting_url()
-
-    return render(request, "live_classes/join_live_class.html",
-                  {"live_class": live_class, "meeting_url": secure_meeting_url})
+    return render(request, "liveclasses/join_live_class.html",
+                  {"live_class": live_class})
