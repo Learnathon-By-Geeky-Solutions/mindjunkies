@@ -1,8 +1,8 @@
 from django.urls import path
-from .views import list_live_classes, create_live_class, join_live_class
+from .views import LiveClassListView, CreateLiveClassView, JoinLiveClassView
 
 urlpatterns = [
-    path("course/<str:slug>/", list_live_classes, name="list_live_classes"),
-    path("course/<str:slug>/create/", create_live_class, name="create_live_class"),
-    path("<str:meeting_id>/join/", join_live_class, name="join_live_class"),
+    path("course/<str:slug>/", LiveClassListView.as_view(), name="list_live_classes"),
+    path("course/<str:slug>/create/", CreateLiveClassView.as_view(), name="create_live_class"),
+    path("<str:meeting_id>/join/", JoinLiveClassView.as_view(), name="join_live_class"),
 ]

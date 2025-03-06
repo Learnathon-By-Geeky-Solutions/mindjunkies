@@ -46,7 +46,8 @@
                     <div class="rounded-xl bg-base-200">
                         <div class="">
                             <div class="video-container">
-                                <video id="video" class="video-js vjs-default-skin w-[800px] h-[450px]" controls preload="auto">
+                                <video id="video" class="video-js vjs-default-skin w-[800px] h-[450px]" controls
+                                       preload="auto">
                                     <source src="{{ hls_url }}" type="application/x-mpegURL">
                                     <track src="https://example.com/subtitles-en.vtt" kind="subtitles" srclang="en"
                                            label="English" default>
@@ -139,10 +140,10 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.7.0/video.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/8.0.0/videojs-contrib-hls.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.7.0/video.min.js"
+            integrity="sha256-uNxDfF9Tdb1GQ9Gb7DRVcWD6uDY/vNyhvuspnJP567I=" crossorigin="anonymous"></script>
     <script>
-        var player = videojs('video', {
+        const player = videojs('video', {
             controls: true,
             autoplay: false,
             preload: 'auto',
