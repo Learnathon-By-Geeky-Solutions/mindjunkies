@@ -7,7 +7,7 @@ import os
 class LectureForm(forms.ModelForm):
     class Meta:
         model = Lecture
-        fields = ['module','title','description','video_url','content','order']
+        fields = ['title','description','video_url','content','order']
         def save(self, commit=True):
             instance = super(LectureForm, self).save(commit=False)
             instance.slug = slugify(instance.title)
