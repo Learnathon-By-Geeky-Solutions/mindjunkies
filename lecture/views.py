@@ -86,16 +86,19 @@ def lecture_pdf(request: HttpRequest,slug:str,pdf_id: int) -> HttpResponse:
 
 @login_required
 @require_http_methods(["GET", "POST"])
-def create_lecture(request: HttpRequest,slug:str) -> HttpResponse:
+def create_lecture(request: HttpRequest,course_slug:str,module_id:str) -> HttpResponse:
     if request.method == "POST":
         form = LectureForm(request.POST)  # Pass the user if needed
-        course = get_object_or_404(Course, slug=slug)
+        course = get_object_or_404(Course, slug=course_slug)
+        module=get_object_or_404(Module,id=module_id)
         if form.is_valid():
             saved_lecture = form.save(commit=False)
+            saved_lecture.module=module
             saved_lecture.course=course
             saved_lecture.save()
             messages.success(request, "Lecture created successfully!")
-            return redirect("lecture_home", slug=slug)  # Redirect to a relevant page
+            url = reverse("lecture_home", kwargs={"slug": course_slug})
+            return redirect(f"{url}?module_id={module_id}")
         else:
             messages.error(request, "There was an error processing the form. Please check the fields below.")
 
