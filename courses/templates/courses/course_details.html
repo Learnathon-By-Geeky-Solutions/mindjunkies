@@ -66,12 +66,13 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Main Content -->
             <div class="lg:col-span-2">
+
                 <!-- What you'll learn -->
                 <div class="card bg-base-100 shadow-xl mb-8">
                     <div class="card-body">
                         <h2 class="card-title text-2xl mb-4">What you'll learn</h2>
                         <ul class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                            {% for objective in course_detail.learning_objectives %}
+                            {% for objective in course_detail.objectives.all %}
                                 <li class="flex items-start">
                                     <svg xmlns="http://www.w3.org/2000/svg"
                                          class="h-6 w-6 mr-2 flex-shrink-0 text-success" fill="none"
@@ -120,8 +121,8 @@
                     <div class="card-body">
                         <h2 class="card-title text-2xl mb-4">Requirements</h2>
                         <ul class="list-disc list-inside">
-                            {% for lines in course_detail.requirements.splitlines %}
-                                <li>{{ lines }}</li>
+                            {% for line in course_detail.requirements.all %}
+                                <li>{{ line }}</li>
                             {% endfor %}
                         </ul>
                     </div>
