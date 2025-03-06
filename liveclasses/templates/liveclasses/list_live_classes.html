@@ -1,14 +1,18 @@
-<h2>Live Classes for {{ course.title }}</h2>
-{% for live_class in live_classes %}
-    <p><strong>{{ live_class.topic }}</strong> ({{ live_class.scheduled_at }})</p>
-    {% if teacher %}
-    <a href="{{ live_class.get_meeting_url_teacher }}">Join Class</a>
-    {% else %}
-    <a href="{{ live_class.get_meeting_url_student }}">Join Class</a>
-    {% endif %}
-{% empty %}
-    <p>No live classes scheduled.</p>
-{% endfor %}
-{% if request.user.role == "teacher" %}
-    <a href="{% url 'create_live_class' course.id %}">Schedule a Live Class</a>
-{% endif %}
+{% extends 'base.html' %}
+
+{% block main_content %}
+    <div class="p-3 mb-2 bg-light text-dark">
+        <h2 class="text-xl font-bold">Live Classes for {{ course.title }}</h2>
+        {% for live_class in live_classes %}
+            <div class="border-dashed border-2 p-2 m-2">
+                <p class="mb-2"><strong>{{ live_class.topic }}</strong> ({{ live_class.scheduled_at }})</p>
+                <a class="btn btn-secondary" href="{% url 'join_live_class' live_class.meeting_id %}">Join Class</a>
+            </div>
+        {% empty %}
+            <p>No live classes scheduled.</p>
+        {% endfor %}
+        {% if request.user.role == "teacher" %}
+            <a href="{% url 'create_live_class' course.id %}">Schedule a Live Class</a>
+        {% endif %}
+    </div>
+{% endblock %}

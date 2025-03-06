@@ -8,52 +8,43 @@ from django.http import FileResponse, HttpRequest, HttpResponse, HttpResponseFor
 from .forms import LectureForm, LecturePDFForm, ModuleForm, LectureVideoForm
 from courses.models import Course, Module
 from .models import Lecture, LectureVideo, LecturePDF
-import os 
-
+import os
 
 
 @login_required
 @require_http_methods(["GET"])
-def lecture_home(request: HttpRequest,slug:str) -> HttpResponse:
+@login_required
+@require_http_methods(["GET"])
+def lecture_home(request: HttpRequest, course_slug: str) -> HttpResponse:
     """View to show lectures for a course."""
-    
-    # Get the course or return 404 if not found
-    
-    course = get_object_or_404(Course, slug=slug)
-    
-    # Ensure the user is enrolled in the course
+    course = get_object_or_404(Course, slug=course_slug)
+
     if not request.user.is_staff and not course.enrollments.filter(student=request.user).exists():
-        return HttpResponseForbidden("added to shopping cart")
+        return HttpResponseForbidden("You are not enrolled in this course.")
 
-    # Fetch lectures for the course
-    default_current_week = course.modules.first()
-    upcoming_deadlines = {}  # TODO: Add logic for upcoming deadlines
+    teacher = request.user.is_staff or course.teachers.filter(teacher=request.user).exists()
 
-
-    teacher = False
-    if request.user.is_staff or course.teachers.filter(teacher=request.user).exists():
-        print("TRUE")
-        teacher = True
-
-    # Get selected lecture if provided
     module_id = request.GET.get("module_id")
-    current_week = Module.objects.filter(id=module_id).first() if module_id else default_current_week
+    if module_id:
+        current_module = get_object_or_404(Module, id=module_id)
+    else:
+        current_module = course.modules.first()
 
-    if not current_week:
+    if not current_module:
         messages.warning(request, "No lectures available for this course.")
-    
+
+    print(teacher)
     context = {
         "course": course,
-        "current_week": current_week,
-        "upcoming_deadlines": upcoming_deadlines,
+        "modules": course.modules.all(),
+        "current_module": current_module,
         "isTeacher": teacher,
     }
-    
+
     return render(request, "lecture/lecture_home.html", context)
 
 
-
-def serve_hls_playlist(request, video_id):
+def serve_hls_playlist(request, course_slug, video_id):
     try:
         video = get_object_or_404(LectureVideo, pk=video_id)
         hls_playlist_path = video.hls
@@ -61,18 +52,16 @@ def serve_hls_playlist(request, video_id):
         with open(hls_playlist_path, 'r') as m3u8_file:
             m3u8_content = m3u8_file.read()
 
-        base_url = request.build_absolute_uri('/') 
-        serve_hls_segment_url = base_url +"/lecture/serve_hls_segment/" +str(video_id)
+        base_url = request.build_absolute_uri('/') + 'courses'
+        serve_hls_segment_url = base_url + f"/{course_slug}/serve_hls_segment/" + str(video_id)
         m3u8_content = m3u8_content.replace('{{ dynamic_path }}', serve_hls_segment_url)
-
 
         return HttpResponse(m3u8_content, content_type='application/vnd.apple.mpegurl')
     except (LectureVideo.DoesNotExist, FileNotFoundError):
         return HttpResponse("Video or HLS playlist not found", status=404)
-    
 
 
-def serve_hls_segment(request, video_id, segment_name):
+def serve_hls_segment(request, course_slug, video_id, segment_name):
     try:
         video = get_object_or_404(LectureVideo, pk=video_id)
         hls_directory = os.path.join(os.path.dirname(video.video_file.path), 'hls_output')
@@ -86,49 +75,45 @@ def serve_hls_segment(request, video_id, segment_name):
         return HttpResponse("Video or HLS segment not found", status=404)
 
 
-
-
-
-
 @login_required
 @require_http_methods(["GET"])
-def lecture_video(request: HttpRequest, module_id:str, video_id: int) -> HttpResponse:
+def lecture_video(request: HttpRequest, course_slug: str, module_id: str, video_id) -> HttpResponse:
     """View to display a lecture video."""
-    
+
     # Get the video or return 404 if not found
     video = get_object_or_404(LectureVideo, id=video_id)
-    module=Module.objects.get(id=module_id)
+    module = Module.objects.get(id=module_id)
     # Ensure the user is enrolled in the related course
     if not request.user.is_staff and not video.lecture.course.enrollments.filter(student=request.user).exists():
         return HttpResponseForbidden("You are not enrolled in this course.")
-    
-    hls_playlist_url = reverse('serve_hls_playlist', args=[video_id])
+
+    hls_playlist_url = reverse('serve_hls_playlist', args=[course_slug, video_id])
 
     context = {
+        "course": video.lecture.course,
         "video": video,
-        "module":module,
+        "module": module,
         "hls_url": hls_playlist_url,
     }
 
     return render(request, "lecture/lecture_video.html", context)
 
+
 @login_required
 @require_http_methods(["GET"])
-def lecture_pdf(request: HttpRequest,slug:str,pdf_id: int) -> HttpResponse:
+def lecture_pdf(request: HttpRequest, slug: str, pdf_id: int) -> HttpResponse:
     """View to display a lecture video."""
-    
+
     # Get the pdf or return 404 if not found
     pdf = get_object_or_404(LecturePDF, id=pdf_id)
-    lecture=Lecture.objects.get(slug=slug)
-   
-    
+    lecture = Lecture.objects.get(slug=slug)
+
     # Ensure the user is enrolled in the related course
-   
 
     context = {
         "pdf": pdf,
-        "lecture":lecture
-       
+        "lecture": lecture
+
     }
 
     return render(request, "lecture/lecture_pdf.html", context)
@@ -137,16 +122,16 @@ def lecture_pdf(request: HttpRequest,slug:str,pdf_id: int) -> HttpResponse:
 @login_required
 @csrf_protect
 @require_http_methods(["GET", "POST"])
-def create_lecture(request: HttpRequest,slug:str) -> HttpResponse:
+def create_lecture(request: HttpRequest, course_slug: str, ) -> HttpResponse:
     if request.method == "POST":
         form = LectureForm(request.POST)  # Pass the user if needed
-        course = get_object_or_404(Course, slug=slug)
+        course = get_object_or_404(Course, slug=course_slug)
         if form.is_valid():
             saved_lecture = form.save(commit=False)
-            saved_lecture.course=course
+            saved_lecture.course = course
             saved_lecture.save()
             messages.success(request, "Lecture created successfully!")
-            return redirect("lecture_home", slug=slug)  # Redirect to a relevant page
+            return redirect("lecture_home", slug=course_slug)  # Redirect to a relevant page
         else:
             messages.error(request, "There was an error processing the form. Please check the fields below.")
 
@@ -154,6 +139,7 @@ def create_lecture(request: HttpRequest,slug:str) -> HttpResponse:
         form = LectureForm()
 
     return render(request, "lecture/create_lecture.html", {"form": form})
+
 
 @login_required
 @require_http_methods(["GET", "POST"])
@@ -176,7 +162,7 @@ def create_content(request: HttpRequest, course_slug: str, lecture_slug: str, ty
             saved_content.lecture = lecture  # Assign lecture before saving
             saved_content.save()
             messages.success(request, f"Lecture {type.capitalize()} uploaded successfully!")
-            return redirect("lecture_home", slug=course_slug)
+            return redirect("lecture_home", course_slug=course_slug)
         else:
             messages.error(request, "There was an error processing the form. Please check the fields below.")
     else:
@@ -184,49 +170,42 @@ def create_content(request: HttpRequest, course_slug: str, lecture_slug: str, ty
 
     return render(request, "lecture/create_content.html", {"form": form, "type": type})
 
+
 @login_required
 @require_http_methods(["GET", "POST"])
-def edit_lecture(request: HttpRequest,course_slug:str,lecture_slug:str) -> HttpResponse:
+def edit_lecture(request: HttpRequest, course_slug: str, lecture_slug: str) -> HttpResponse:
     lecture = get_object_or_404(Lecture, slug=lecture_slug) if lecture_slug else None
     if request.method == "POST":
-       
-        
+
         form = LectureForm(request.POST, request.FILES, instance=lecture)
         if form.is_valid():
             form.save()
             messages.success(request, "Lecture saved successfully!")
-            return redirect("lecture_home",slug=course_slug)
+            return redirect("lecture_home", slug=course_slug)
         else:
             print("Form errors:", form.errors)  # Log the errors to the console
             messages.error(request, f"There was an error processing the form: {form.errors}")
     else:
-       
+
         lecture = get_object_or_404(Lecture, slug=lecture_slug) if lecture_slug else None
-        form =LectureForm(instance=lecture)
+        form = LectureForm(instance=lecture)
 
     return render(request, "lecture/create_lecture.html", {"form": form, "lecture": lecture})
+
+
 @login_required
-@require_http_methods(["GET","POST"])
-def create_module(request:HttpRequest,course_slug:str)->HttpResponse:
-    if request.method=="POST":
-        form=ModuleForm(request.POST)
+@require_http_methods(["GET", "POST"])
+def create_module(request: HttpRequest, course_slug: str) -> HttpResponse:
+    if request.method == "POST":
+        form = ModuleForm(request.POST)
         if form.is_valid():
-            course=get_object_or_404(Course,slug=course_slug)
-            instance=form.save(commit=False)
-            instance.course=course
+            course = get_object_or_404(Course, slug=course_slug)
+            instance = form.save(commit=False)
+            instance.course = course
             instance.save()
 
-            return redirect("lecture_home",slug=course_slug)
+            return redirect("lecture_home", slug=course_slug)
     else:
-           form=ModuleForm()
+        form = ModuleForm()
 
-
-    return render(request,'lecture/create_module.html',{"form":form})
-
-
-
-
-
-
-     
-
+    return render(request, 'lecture/create_module.html', {"form": form})

@@ -155,6 +155,7 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "theme" / "static",  # Correct path to the static directory inside the theme app
+    BASE_DIR / "static",
 ]
 
 MEDIA_URL = 'media/'

@@ -47,7 +47,8 @@ class LiveClass(models.Model):
                     .with_app_id(settings.JITSI_APP_ID) \
                     .with_user_avatar("") \
                     .sign_with(reader.read())
-                return token
+                print(token.decode())
+                return token.decode()
         except Exception as e:
             print(e)
 
@@ -55,7 +56,7 @@ class LiveClass(models.Model):
         """Return the secure Jitsi meeting URL with JWT authentication."""
 
         token = self.generate_jwt_token()
-        return f"https://8x8.vc/{settings.JITSI_APP_ID}/{self.meeting_id}?jwt={token.decode()}"
+        return f"https://8x8.vc/{settings.JITSI_APP_ID}/{self.meeting_id}?jwt={token}"
 
     def get_meeting_url_student(self):
         return f"https://8x8.vc/{settings.JITSI_APP_ID}/{self.meeting_id}"

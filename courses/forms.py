@@ -1,13 +1,23 @@
 from django import forms
 from django.utils.text import slugify
 
-from .models import Course, CourseTeacher
+from .models import Course, CourseTeacher, CourseRequirement, CourseObjective
 
 
 class CourseForm(forms.ModelForm):
+    requirements = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 3}),
+        help_text="Enter each requirement in a new line."
+    )
+    learning_objectives = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 3}),
+        help_text="Enter each objective in a new line."
+    )
+
     class Meta:
         model = Course
-        fields = ['title', 'short_introduction', 'course_description', 
+        fields = ['title', 'short_introduction', 'course_description',
+                  'requirements', 'learning_objectives', 'level',
                   'course_image', 'preview_video_link',
                   'upcoming', 'published', 'paid_course',
                   'course_price']
@@ -21,6 +31,16 @@ class CourseForm(forms.ModelForm):
         instance.slug = slugify(instance.title)
         if commit:
             instance.save()
+            CourseRequirement.objects.filter(course=instance).delete()
+            CourseObjective.objects.filter(course=instance).delete()
+
+            for req in self.cleaned_data['requirements'].split('\n'):
+                if req.strip():
+                    CourseRequirement.objects.create(course=instance, requirement=req)
+
+            for obj in self.cleaned_data['learning_objectives'].split('\n'):
+                if obj.strip():
+                    CourseObjective.objects.create(course=instance, objective=obj)
 
         return instance
 

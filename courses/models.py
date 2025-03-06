@@ -13,11 +13,10 @@ class Course(BaseModel):
     title = models.CharField(max_length=255)
     short_introduction = models.CharField(max_length=500)
     course_description = models.TextField()
-    requirements = models.TextField()
-    learnings = models.TextField()
     level = models.CharField(max_length=15, choices=LEVEL_CHOICES, default='beginner')
 
-    course_image = models.ImageField(upload_to='course_images/', default='course_images/default.jpg', null=True, blank=True)
+    course_image = models.ImageField(upload_to='course_images/', default='course_images/default.jpg', null=True,
+                                     blank=True)
     preview_video_link = models.URLField(max_length=200, null=True, blank=True)
 
     published = models.BooleanField(default=False)
@@ -25,7 +24,7 @@ class Course(BaseModel):
     published_on = models.DateTimeField(null=True, blank=True)
     paid_course = models.BooleanField(default=False)
     course_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
-   
+
     slug = models.SlugField(max_length=255, unique=True)
     total_rating = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     number_of_ratings = models.PositiveIntegerField(default=0)
@@ -46,6 +45,22 @@ class Course(BaseModel):
 
     def get_teachers(self):
         return self.teachers.all()
+
+
+class CourseRequirement(BaseModel):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='requirements')
+    requirement = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.requirement
+
+
+class CourseObjective(BaseModel):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='objectives')
+    objective = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.objective
 
 
 class CourseTeacher(BaseModel):
@@ -88,14 +103,13 @@ class Enrollment(BaseModel):
 
     def __str__(self):
         return f"{self.student.username} enrolled in {self.course.title}"
-    
+
     def save(self, *args, **kwargs):
-        if self.pk is None:  
-            print("course name is",self.course)
+        if self.pk is None:
+            print("course name is", self.course)
             self.course.number_of_enrollments += 1
             self.course.save()
         super().save(*args, **kwargs)
-
 
 
 class Module(BaseModel):
