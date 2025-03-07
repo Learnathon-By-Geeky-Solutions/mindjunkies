@@ -9,12 +9,12 @@
 - [Md. Redwanuzzaman](https://github.com/redwanuzzaman)
 
 ## Project Description
-**MindJunkies** is a modern **Learning Management System (LMS)** built using **Django** and **Tailwind CSS**. It offers a seamless platform for managing courses, users, classrooms, assignments, and learning content efficiently. Designed to empower teachers and students, MindJunkies focuses on scalability, user experience, and modern web standards.
+**Nexora** is a modern **Learning Management System (LMS)** built using **Django** and **Tailwind CSS**. It offers a seamless platform for managing courses, users, courses, assignments, and learning content efficiently. Designed to empower teachers and students, MindJunkies focuses on scalability, user experience, and modern web standards.
 
 ## 🛠️ Features
 - User Authentication (Registration, Login, Social Auth, Email Verification)
 - Role-based Access Control (Teachers, Students, Moderators)
-- Classroom Management (Create, Join, Edit)
+- Course Management (Create, Join, Edit)
 - Markdown-based Content Writing for Teachers
 - Live Video Conferencing with Chat, Polls, and Screen Sharing
 - Assignment Submission and Evaluation
@@ -82,7 +82,7 @@ Follow these steps to set up the project locally:
 ```plaintext
 mindjunkies/
 ├── accounts/       # User authentication and profile management
-├── classrooms/     # Classroom creation, management, and participation
+├── courses/        # Course creation, management, and participation
 ├── assignments/    # Assignment submission and evaluation
 ├── video/          # Live video conferencing feature
 ├── static/         # Static files (CSS, JS, images)

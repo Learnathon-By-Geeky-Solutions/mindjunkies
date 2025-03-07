@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% load i18n %}
+{% load static %}
+
+{% block head_title %}
+    {{ user.username }}'s Profile
+{% endblock %}
+
+{% block main_content %}
+<div class="min-h-screen bg-base-200 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto">
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <div class="flex items-center space-x-4 mb-6">
+                    <div class="avatar">
+                        <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                            <img src="{% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'images/default-avatar.jpg' %}{% endif %}" alt="{{ user.username }}'s avatar" />
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">{{ user.get_full_name|default:user.username }}</h1>
+                        <p class="text-sm text-base-content/70">@{{ user.username }}</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h2 class="text-xl font-semibold mb-4">{% trans "Personal Information" %}</h2>
+                        <ul class="space-y-2">
+                            <li><strong>{% trans "Email:" %}</strong> {{ user.email }}</li>
+                            <li><strong>{% trans "Full Name:" %}</strong> {{ user.get_full_name|default:"Not provided" }}</li>
+                            <li><strong>{% trans "Date Joined:" %}</strong> {{ user.date_joined|date:"F j, Y" }}</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold mb-4">{% trans "Learning Progress" %}</h2>
+                        <ul class="space-y-2">
+                            <li><strong>{% trans "Courses Enrolled:" %}</strong> {{ user.profile.courses_enrolled|default:0 }}</li>
+                            <li><strong>{% trans "Courses Completed:" %}</strong> {{ user.profile.courses_completed|default:0 }}</li>
+                            <li><strong>{% trans "Certificates Earned:" %}</strong> {{ user.profile.certificates_earned|default:0 }}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div>
+                    <h2 class="text-xl font-semibold mb-4">{% trans "Bio" %}</h2>
+                    <p>{{ user.profile.bio|default:"No bio provided yet." }}</p>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="flex flex-wrap gap-4 justify-center">
+                    <a href="{% url 'account_email' %}" class="btn btn-primary">
+                        {% trans "Change E-mail" %}
+                    </a>
+                    <a href="{% url 'account_change_password' %}" class="btn btn-primary">
+                        {% trans "Change Password" %}
+                    </a>
+                    <a href="{% url 'edit_profile' %}" class="btn btn-secondary">
+                        {% trans "Edit Profile" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
