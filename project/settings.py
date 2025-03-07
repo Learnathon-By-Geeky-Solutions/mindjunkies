@@ -47,21 +47,6 @@ INSTALLED_APPS = [
     'django_extensions',
 ]
 
-# Domain for Jitsi video conferencing
-JITSI_DOMAIN = config('JITSI_DOMAIN', default='meet.jit.si')
-
-# Prefix for Jitsi room names
-JITSI_ROOM_PREFIX = config('JITSI_ROOM_PREFIX', default='myapp-')
-
-# Magic cookie for Jitsi authentication
-JITSI_MAGIC_COOKIE = config('JITSI_MAGIC_COOKIE', default=None)
-
-# Raise an error if the magic cookie is not set
-if JITSI_MAGIC_COOKIE is None:
-    raise ValueError("JITSI_MAGIC_COOKIE environment variable is required for video conferencing")
-
-# Subresource Integrity (SRI) hash for ensuring the integrity of external resources
-SRI_HASH = config('SRI_HASH')
 
 MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",  # allauth
@@ -148,15 +133,12 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-STATIC_URL = "/static/"
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "theme/static"),
-]
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATIC_URL = 'static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / "media"
@@ -200,7 +182,6 @@ ACCOUNT_FORMS = {
 
 # Tailwind settings
 TAILWIND_APP_NAME = 'theme'
-NPM_BIN_PATH = config('NPM_BIN_PATH')
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
