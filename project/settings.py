@@ -33,10 +33,11 @@ INSTALLED_APPS = [
     # custom apps
     'home',
     'accounts',
-    'classrooms',
-    'videoConf',
+    'courses',
     'theme',
+    'liveclasses',
     'lecture',
+    'dashboard',
     # third party apps
     'tailwind',
     "allauth",
