@@ -204,8 +204,9 @@ def create_module(request: HttpRequest, course_slug: str) -> HttpResponse:
             instance.course = course
             instance.save()
 
-            return redirect("lecture_home", slug=course_slug)
+            return redirect("lecture_home", course_slug=course_slug)
     else:
         form = ModuleForm()
 
     return render(request, 'lecture/create_module.html', {"form": form})
+

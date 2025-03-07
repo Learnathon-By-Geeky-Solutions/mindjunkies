@@ -2,13 +2,10 @@ from pathlib import Path
 from decouple import config
 import dj_database_url
 
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 SECRET_KEY = config('SECRET_KEY')
 
@@ -100,15 +97,9 @@ DATABASES = {
 }
 
 db_url = config('DATABASE_URL', default=None)
-DATABASES['default'] = dj_database_url.parse(db_url)
-
-db_url = config('DATABASE_URL', default=None)
 if db_url:
     DATABASES['default'] = dj_database_url.parse(db_url)
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -197,7 +188,7 @@ SOCIALACCOUNT_PROVIDERS = {
       },
       'EMAIL_AUTHENTICATION': True,
       'FETCH_USERINFO': True,
-  }
+  },
 }
 
 # Tailwind settings
@@ -216,5 +207,5 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
 
-JITSI_APP_ID = "vpaas-magic-cookie-fb583aeece2040b4805f50d0b267e75b"
-JITSI_SECRET = "vpaas-magic-cookie-fb583aeece2040b4805f50d0b267e75b/ee88ba"
+JITSI_APP_ID = config("JITSI_APP_ID")
+JITSI_SECRET = config("JITSI_SECRET")
