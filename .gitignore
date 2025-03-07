@@ -24,7 +24,6 @@ db.sqlite3
 .eggs/
 .installed.cfg
 develop-eggs/
-dist/
 downloads/
 eggs/
 lib/
