@@ -209,3 +209,4 @@ def create_module(request: HttpRequest, course_slug: str) -> HttpResponse:
         form = ModuleForm()
 
     return render(request, 'lecture/create_module.html', {"form": form})
+
