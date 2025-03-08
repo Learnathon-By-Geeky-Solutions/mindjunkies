@@ -42,13 +42,12 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         saved_course = form.save()
-        if self.request.user:
-            CourseTeacher.objects.create(course=saved_course, teacher=self.request.user)
+        # LoginRequiredMixin ensures that the user is authenticated
+        CourseTeacher.objects.create(course=saved_course, teacher=self.request.user)
         messages.success(self.request, "Course saved successfully!")
         return redirect(reverse("course_details", kwargs={"slug": saved_course.slug}))
 
     def form_invalid(self, form):
-        print("Form errors:", form.errors)  # Log the errors to the console
         messages.error(self.request, f"There was an error processing the form: {form.errors}")
         return self.render_to_response(self.get_context_data(form=form))
 
