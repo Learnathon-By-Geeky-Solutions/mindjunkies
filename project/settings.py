@@ -26,6 +26,12 @@ ALLOWED_HOSTS = [
     config('ALLOWED_HOSTS', default='localhost'),
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://mindjunkies.up.railway.app",
+]
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
@@ -150,7 +156,6 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
