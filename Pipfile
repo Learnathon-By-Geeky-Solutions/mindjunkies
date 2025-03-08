@@ -13,6 +13,8 @@ python-decouple = "*"
 django-extensions = "*"
 markdown = "*"
 django-allauth = {extras = ["socialaccount"], version = "*"}
+pyjwt = "*"
+authlib = "*"
 
 [dev-packages]
 
