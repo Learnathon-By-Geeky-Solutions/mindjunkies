@@ -3,6 +3,17 @@ from decouple import config
 
 import dj_database_url
 import os
+import cloudinary
+import cloudinary.uploader
+from cloudinary.utils import cloudinary_url
+
+# Configuration
+cloudinary.config(
+    cloud_name="dbkselzxf",
+    api_key="479988512454798",
+    api_secret=config("CLOUDINARY_API_SECRET"),
+    secure=True
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +36,6 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -56,7 +66,6 @@ INSTALLED_APPS = [
     'crispy_tailwind',
     'django_extensions',
 ]
-
 
 MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",  # allauth
@@ -143,12 +152,10 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / "media"
@@ -195,3 +202,4 @@ TAILWIND_APP_NAME = 'theme'
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
+
