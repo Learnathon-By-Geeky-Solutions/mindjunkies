@@ -3,11 +3,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
-from django.http import HttpRequest, HttpResponse, HttpResponseNotAllowed
+from django.http import HttpRequest, HttpResponse
+from django.views.generic.edit import CreateView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Course, CourseTeacher, Enrollment
 from .forms import CourseForm
-from accounts.models import Profile
 
 
 @require_http_methods(["GET"])
@@ -34,46 +35,41 @@ def course_list(request: HttpRequest) -> HttpResponse:
     return render(request, "courses/course_list.html", context)
 
 
-@login_required
-@require_http_methods(["POST", "GET"])
-def create_course(request: HttpRequest) -> HttpResponse:
-    if request.method == "POST":
-        form = CourseForm(request.POST, request.FILES)
-        if form.is_valid():
-            saved_course = form.save()
-            if request.user:
-                CourseTeacher.objects.create(course=saved_course, teacher=request.user)
-            messages.success(request, "Course saved successfully!")
-            return redirect(reverse("course_details", kwargs={"slug": saved_course.slug}))
-        else:
-            print("Form errors:", form.errors)  # Log the errors to the console
-            messages.error(request, f"There was an error processing the form: {form.errors}")
-    else:
-        form = CourseForm()
+class CreateCourseView(LoginRequiredMixin, CreateView):
+    model = Course
+    form_class = CourseForm
+    template_name = "courses/create_course.html"
 
-    return render(request, "courses/create_course.html", {"form": form, "course": None})
+    def form_valid(self, form):
+        saved_course = form.save()
+        # LoginRequiredMixin ensures that the user is authenticated
+        CourseTeacher.objects.create(course=saved_course, teacher=self.request.user)
+        messages.success(self.request, "Course saved successfully!")
+        return redirect(reverse("course_details", kwargs={"slug": saved_course.slug}))
+
+    def form_invalid(self, form):
+        messages.error(self.request, f"There was an error processing the form: {form.errors}")
+        return self.render_to_response(self.get_context_data(form=form))
 
 
-@login_required
-@require_http_methods(["GET", "POST"])
-def edit_course(request: HttpRequest) -> HttpResponse:
-    if request.method == "POST":
-        slug = request.GET.get("slug")
-        course = get_object_or_404(Course, slug=slug) if slug else None
-        form = CourseForm(request.POST, request.FILES, instance=course)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Course saved successfully!")
-            return redirect(reverse("course_details", kwargs={"slug": course.slug}))
-        else:
-            print("Form errors:", form.errors)  # Log the errors to the console
-            messages.error(request, f"There was an error processing the form: {form.errors}")
-    else:
-        slug = request.GET.get("slug")
-        course = get_object_or_404(Course, slug=slug) if slug else None
-        form = CourseForm(instance=course)
+class CourseUpdateView(LoginRequiredMixin, UpdateView):
+    model = Course
+    form_class = CourseForm
+    template_name = "courses/create_course.html"
+    context_object_name = "course"
 
-    return render(request, "courses/create_course.html", {"form": form, "course": course})
+    def get_object(self, queryset=None):
+        slug = self.request.GET.get("slug")
+        return get_object_or_404(Course, slug=slug) if slug else None
+
+    def form_valid(self, form):
+        messages.success(self.request, "Course saved successfully!")
+        return redirect(reverse("course_details", kwargs={"slug": form.instance.slug}))
+
+    def form_invalid(self, form):
+        print("Form errors:", form.errors)  # Log the errors to the console
+        messages.error(self.request, f"There was an error processing the form: {form.errors}")
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 @require_http_methods(["GET"])
@@ -91,7 +87,7 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
         'accessed': accessed,
         'instructor': course_teacher,
         'teacher': request.user == course_teacher,
-        
+
     }
     return render(request, "courses/course_details.html", context)
 
@@ -106,7 +102,7 @@ def user_course_list(request: HttpRequest) -> HttpResponse:
     courses = courses + [ec.course for ec in enrolled]
 
     print(courses)
-    print("enrolled",enrolled)
+    print("enrolled", enrolled)
 
     context = {
         "courses": courses,
