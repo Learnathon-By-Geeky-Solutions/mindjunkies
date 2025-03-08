@@ -44,6 +44,7 @@
                 poster="{% static 'images/course-thumbnail.jpg' %}"
               >
                 <source src="{{ video.url }}" type="video/mp4">
+                <track kind="subtitles" src="{% static 'subtitles/video-subtitles.vtt' %}" srclang="en" label="English">
                 Your browser does not support the video tag.
               </video>
             {% endif %}
