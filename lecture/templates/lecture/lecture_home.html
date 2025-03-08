@@ -123,41 +123,26 @@
 
                                     <!-- Week Description -->
                                     <div class="mt-4">
-                                        <p class="text-base-content/80">This week covers the fundamental concepts of
-                                            {% if week_num == "1" %}machine learning, including its applications and
-                                                basic terminology{% elif week_num == "2" %}supervised learning, focusing
-                                                on classification and regression problems{% else %}unsupervised
-                                                learning, exploring clustering and dimensionality reduction
-                                                techniques{% endif %}.</p>
+                                        <p class="text-base-content/80">{{lecture.description}}</p>
+                                        <div class="collapse">
+                                            <input type="checkbox" class="peer" id="toggle-1" />
+                                            <div class="collapse-title text-md text-blue-500 font-medium flex items-center space-x-2">
+                                              <!-- Arrow button before the title -->
+                                              <svg class="w-5 h-5 text-blue-500 peer-checked:rotate-180 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                              </svg>
+                                              <span>Show Learning Objectives</span>
+                                            </div>
+                                            <div class="collapse-content">
+                                              
+                                               {{lecture.learning_objective}}
+                                              
+                                            </div>
+                                          </div>
+                                          
+                                          
 
-                                        <!-- Learning Objectives Toggle -->
-                                        <button class="flex items-center gap-2 text-primary mt-4"
-                                                id="objectives-toggle-{{ week_num }}">
-                                            <svg class="h-4 w-4 transform transition-transform duration-200"
-                                                 id="objectives-icon-{{ week_num }}" viewBox="0 0 24 24"
-                                                 fill="currentColor">
-                                                <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
-                                            </svg>
-                                            <span>Show Learning Objectives</span>
-                                        </button>
-
-                                        <!-- Learning Objectives Content -->
-                                        <div class="hidden mt-2 pl-6" id="objectives-content-{{ week_num }}">
-                                            <ul class="list-disc space-y-1 text-sm">
-                                                <li>Understand the basic concepts of {% if week_num == "1" %}machine
-                                                    learning{% elif week_num == "2" %}supervised learning{% else %}
-                                                    unsupervised learning{% endif %}</li>
-                                                <li>Identify common applications of {% if week_num == "1" %}machine
-                                                    learning in various industries{% elif week_num == "2" %}
-                                                    classification and regression{% else %}clustering and dimensionality
-                                                    reduction{% endif %}</li>
-                                                <li>Explain the {% if week_num == "1" %}difference between supervised
-                                                    and unsupervised learning{% elif week_num == "2" %}process of
-                                                    training and evaluating supervised models{% else %}key algorithms
-                                                    used in unsupervised learning{% endif %}</li>
-                                            </ul>
-                                        </div>
-                                    </div>
+                                      </div>
 
                                     <!-- Lecture Items -->
                                     <div class="mt-4 space-y-4">
