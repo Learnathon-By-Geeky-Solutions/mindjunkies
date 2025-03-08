@@ -20,9 +20,6 @@ def lecture_home(request: HttpRequest, course_slug: str) -> HttpResponse:
     """View to show lectures for a course."""
     course = get_object_or_404(Course, slug=course_slug)
 
-    # if not request.user.is_staff and not course.enrollments.filter(student=request.user).exists():
-    #     return HttpResponseForbidden("You are not enrolled in this course.")
-
     teacher = request.user.is_staff or course.teachers.filter(teacher=request.user).exists()
 
     module_id = request.GET.get("module_id")
@@ -62,7 +59,7 @@ def serve_hls_playlist(request, course_slug, video_id):
         return HttpResponse("Video or HLS playlist not found", status=404)
 
 
-def serve_hls_segment(request, course_slug, video_id, segment_name):
+def serve_hls_segment(video_id, segment_name):
     try:
         video = get_object_or_404(LectureVideo, pk=video_id)
         hls_directory = os.path.join(os.path.dirname(video.video_file.path), 'hls_output')
@@ -153,10 +150,10 @@ class CreateContentView(LoginRequiredMixin, FormView):
 
     def get_form_class(self):
         """ Dynamically choose the form based on the 'type' parameter """
-        type = self.kwargs.get('type')
-        if type == "attachment":
+        format = self.kwargs.get('format')
+        if format == "attachment":
             return LecturePDFForm
-        elif type == "video":
+        elif format == "video":
             return LectureVideoForm
         else:
             messages.error(self.request, "Invalid content type specified.")
@@ -172,7 +169,7 @@ class CreateContentView(LoginRequiredMixin, FormView):
         saved_content = form.save(commit=False)
         saved_content.lecture = self.lecture
         saved_content.save()
-        messages.success(self.request, f"Lecture {self.kwargs['type'].capitalize()} uploaded successfully!")
+        messages.success(self.request, f"Lecture {self.kwargs['format'].capitalize()} uploaded successfully!")
         return redirect("lecture_home", course_slug=self.kwargs["course_slug"])
 
     def form_invalid(self, form):
@@ -183,7 +180,7 @@ class CreateContentView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         """ Add additional context to the template """
         context = super().get_context_data(**kwargs)
-        context["type"] = self.kwargs["type"]
+        context["format"] = self.kwargs["format"]
         return context
     
 
