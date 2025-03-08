@@ -150,10 +150,10 @@ class CreateContentView(LoginRequiredMixin, FormView):
 
     def get_form_class(self):
         """ Dynamically choose the form based on the 'type' parameter """
-        format = self.kwargs.get('format')
-        if format == "attachment":
+        content_type = self.kwargs.get('format')
+        if content_type == "attachment":
             return LecturePDFForm
-        elif format == "video":
+        elif content_type == "video":
             return LectureVideoForm
         else:
             messages.error(self.request, "Invalid content type specified.")
@@ -180,7 +180,7 @@ class CreateContentView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         """ Add additional context to the template """
         context = super().get_context_data(**kwargs)
-        context["format"] = self.kwargs["format"]
+        context["content_type"] = self.kwargs["format"]
         return context
     
 
