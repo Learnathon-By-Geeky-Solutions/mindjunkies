@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
+from cloudinary.models import CloudinaryField
+
 from core.models import BaseModel
 from accounts.models import User
 
@@ -15,8 +17,13 @@ class Course(BaseModel):
     course_description = models.TextField()
     level = models.CharField(max_length=15, choices=LEVEL_CHOICES, default='beginner')
 
-    course_image = models.ImageField(upload_to='course_images/', default='course_images/default.jpg', null=True,
-                                     blank=True)
+    course_image = CloudinaryField(
+        folder='course_images/',
+        resource_type="image",
+        overwrite=True,
+        null=True,
+        blank=True
+    )
     preview_video_link = models.URLField(max_length=200, null=True, blank=True)
 
     published = models.BooleanField(default=False)

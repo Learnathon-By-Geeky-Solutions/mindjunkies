@@ -1,5 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import CreateView,FormView,UpdateView
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect
+from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
@@ -10,17 +14,11 @@ from courses.models import Course, Module
 from .models import Lecture, LectureVideo, LecturePDF
 import os
 
-
-@login_required
-@require_http_methods(["GET"])
 @login_required
 @require_http_methods(["GET"])
 def lecture_home(request: HttpRequest, course_slug: str) -> HttpResponse:
     """View to show lectures for a course."""
     course = get_object_or_404(Course, slug=course_slug)
-
-    if not request.user.is_staff and not course.enrollments.filter(student=request.user).exists():
-        return HttpResponseForbidden("You are not enrolled in this course.")
 
     teacher = request.user.is_staff or course.teachers.filter(teacher=request.user).exists()
 
@@ -33,7 +31,7 @@ def lecture_home(request: HttpRequest, course_slug: str) -> HttpResponse:
     if not current_module:
         messages.warning(request, "No lectures available for this course.")
 
-    print(teacher)
+ 
     context = {
         "course": course,
         "modules": course.modules.all(),
@@ -61,7 +59,7 @@ def serve_hls_playlist(request, course_slug, video_id):
         return HttpResponse("Video or HLS playlist not found", status=404)
 
 
-def serve_hls_segment(request, course_slug, video_id, segment_name):
+def serve_hls_segment(video_id, segment_name):
     try:
         video = get_object_or_404(LectureVideo, pk=video_id)
         hls_directory = os.path.join(os.path.dirname(video.video_file.path), 'hls_output')
@@ -118,95 +116,130 @@ def lecture_pdf(request: HttpRequest, slug: str, pdf_id: int) -> HttpResponse:
 
     return render(request, "lecture/lecture_pdf.html", context)
 
+@method_decorator(csrf_protect, name="dispatch")  # Protects against CSRF attacks
+class CreateLectureView(LoginRequiredMixin, CreateView):
+    model = Lecture
+    form_class = LectureForm
+    template_name = "lecture/create_lecture.html"
 
-@login_required
-@csrf_protect
-@require_http_methods(["GET", "POST"])
-def create_lecture(request: HttpRequest, course_slug: str, ) -> HttpResponse:
-    if request.method == "POST":
-        form = LectureForm(request.POST)  # Pass the user if needed
-        course = get_object_or_404(Course, slug=course_slug)
-        if form.is_valid():
-            saved_lecture = form.save(commit=False)
-            saved_lecture.course = course
-            saved_lecture.save()
-            messages.success(request, "Lecture created successfully!")
-            return redirect("lecture_home", slug=course_slug)  # Redirect to a relevant page
+    def dispatch(self, request, *args, **kwargs):
+        """ Ensure the course exists before proceeding """
+        self.course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        """ Assign the lecture to the appropriate course """
+        saved_lecture = form.save(commit=False)
+        saved_lecture.course = self.course  # Associate lecture with the course
+        saved_lecture.save()
+        messages.success(self.request, "Lecture created successfully!")
+        return redirect(reverse("lecture_home", kwargs={"course_slug": self.course.slug}))
+
+    def form_invalid(self, form):
+        messages.error(self.request, "There was an error processing the form. Please check the fields below.")
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_context_data(self, **kwargs):
+        """ Pass the course to the template context """
+        context = super().get_context_data(**kwargs)
+        context["course"] = self.course
+        return context
+
+class CreateContentView(LoginRequiredMixin, FormView):
+    template_name = "lecture/create_content.html"
+
+    def get_form_class(self):
+        """ Dynamically choose the form based on the 'type' parameter """
+        content_type = self.kwargs.get('format')
+        if content_type == "attachment":
+            return LecturePDFForm
+        elif content_type == "video":
+            return LectureVideoForm
         else:
-            messages.error(request, "There was an error processing the form. Please check the fields below.")
+            messages.error(self.request, "Invalid content type specified.")
+            return redirect("lecture_home", slug=self.kwargs["course_slug"])
 
-    else:
-        form = LectureForm()
+    def dispatch(self, request, *args, **kwargs):
+        """ Ensure the lecture exists before proceeding """
+        self.lecture = get_object_or_404(Lecture, slug=self.kwargs["lecture_slug"])
+        return super().dispatch(request, *args, **kwargs)
 
-    return render(request, "lecture/create_lecture.html", {"form": form})
+    def form_valid(self, form):
+        """ Save the content, attach it to the lecture, and show success message """
+        saved_content = form.save(commit=False)
+        saved_content.lecture = self.lecture
+        saved_content.save()
+        messages.success(self.request, f"Lecture {self.kwargs['format'].capitalize()} uploaded successfully!")
+        return redirect("lecture_home", course_slug=self.kwargs["course_slug"])
 
+    def form_invalid(self, form):
+        """ Display errors if the form is invalid """
+        messages.error(self.request, "There was an error processing the form. Please check the fields below.")
+        return self.render_to_response(self.get_context_data(form=form))
 
-@login_required
-@require_http_methods(["GET", "POST"])
-def create_content(request: HttpRequest, course_slug: str, lecture_slug: str, type: str) -> HttpResponse:
-    lecture = get_object_or_404(Lecture, slug=lecture_slug)
+    def get_context_data(self, **kwargs):
+        """ Add additional context to the template """
+        context = super().get_context_data(**kwargs)
+        context["content_type"] = self.kwargs["format"]
+        return context
+    
 
-    # Determine which form to use based on the type
-    if type == "attachment":
-        FormClass = LecturePDFForm
-    elif type == "video":
-        FormClass = LectureVideoForm
-    else:
-        messages.error(request, "Invalid content type specified.")
-        return redirect("lecture_home", slug=course_slug)
+class EditLectureView(LoginRequiredMixin, UpdateView):
+    model = Lecture
+    form_class = LectureForm
+    template_name = "lecture/create_lecture.html"
 
-    if request.method == "POST":
-        form = FormClass(request.POST, request.FILES)
-        if form.is_valid():
-            saved_content = form.save(commit=False)
-            saved_content.lecture = lecture  # Assign lecture before saving
-            saved_content.save()
-            messages.success(request, f"Lecture {type.capitalize()} uploaded successfully!")
-            return redirect("lecture_home", course_slug=course_slug)
-        else:
-            messages.error(request, "There was an error processing the form. Please check the fields below.")
-    else:
-        form = FormClass()
+    def get_object(self):
+        """ Get the lecture object based on the slug from the URL """
+        lecture_slug = self.kwargs.get("lecture_slug")
+        return get_object_or_404(Lecture, slug=lecture_slug)
 
-    return render(request, "lecture/create_content.html", {"form": form, "type": type})
+    def form_valid(self, form):
+        """ If the form is valid, save the lecture and redirect """
+        form.save()
+        messages.success(self.request, "Lecture saved successfully!")
+        return redirect("lecture_home", slug=self.kwargs["course_slug"])
 
+    def form_invalid(self, form):
+        """ If the form is invalid, display errors and stay on the form page """
+        messages.error(self.request, f"There was an error processing the form: {form.errors}")
+        return self.render_to_response(self.get_context_data(form=form))
 
-@login_required
-@require_http_methods(["GET", "POST"])
-def edit_lecture(request: HttpRequest, course_slug: str, lecture_slug: str) -> HttpResponse:
-    lecture = get_object_or_404(Lecture, slug=lecture_slug) if lecture_slug else None
-    if request.method == "POST":
-
-        form = LectureForm(request.POST, request.FILES, instance=lecture)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Lecture saved successfully!")
-            return redirect("lecture_home", slug=course_slug)
-        else:
-            print("Form errors:", form.errors)  # Log the errors to the console
-            messages.error(request, f"There was an error processing the form: {form.errors}")
-    else:
-
-        lecture = get_object_or_404(Lecture, slug=lecture_slug) if lecture_slug else None
-        form = LectureForm(instance=lecture)
-
-    return render(request, "lecture/create_lecture.html", {"form": form, "lecture": lecture})
+    def get_context_data(self, **kwargs):
+        """ Add extra context, such as the lecture object """
+        context = super().get_context_data(**kwargs)
+        lecture_slug = self.kwargs.get("lecture_slug")
+        lecture = get_object_or_404(Lecture, slug=lecture_slug)
+        context["lecture"] = lecture
+        return context
 
 
-@login_required
-@require_http_methods(["GET", "POST"])
-def create_module(request: HttpRequest, course_slug: str) -> HttpResponse:
-    if request.method == "POST":
-        form = ModuleForm(request.POST)
-        if form.is_valid():
-            course = get_object_or_404(Course, slug=course_slug)
-            instance = form.save(commit=False)
-            instance.course = course
-            instance.save()
 
-            return redirect("lecture_home", course_slug=course_slug)
-    else:
-        form = ModuleForm()
+class CreateModuleView(LoginRequiredMixin, CreateView):
+    model = Module
+    form_class = ModuleForm
+    template_name = "lecture/create_module.html"
 
-    return render(request, 'lecture/create_module.html', {"form": form})
+    def dispatch(self, request, *args, **kwargs):
+        """Ensure the course exists before proceeding"""
+        self.course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        """Assign the module to the correct course before saving"""
+        instance = form.save(commit=False)
+        instance.course = self.course
+        instance.save()
+        messages.success(self.request, "Module created successfully!")
+        return redirect(reverse("lecture_home", kwargs={"course_slug": self.course.slug}))
+
+    def get_context_data(self, **kwargs):
+        """Pass the course to the template for context"""
+        context = super().get_context_data(**kwargs)
+        context["course"] = self.course
+        return context
+
+
+
+
 

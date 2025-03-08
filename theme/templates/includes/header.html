@@ -1,4 +1,5 @@
 {% load static %}
+{% load cloudinary %}
 <header class="navbar bg-base-100 shadow-sm">
     <div class="flex-none">
         <a href="{% url 'home' %}" class="btn btn-ghost normal-case text-2xl font-bold">Nexora</a>
@@ -44,12 +45,9 @@
                 <div class="dropdown dropdown-end">
                     <div
                             tabindex="0"
-                         class="btn btn-ghost btn-circle avatar">
+                            class="btn btn-ghost btn-circle avatar">
                         <div class="w-10 rounded-full">
-                            <img src="
-
-                                    {% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'images/default-avatar.jpg' %}{% endif %}"
-                                 alt="{{ user.username }}'s avatar"/>
+                            {% cloudinary user.profile.avatar quality='auto' crop='pad' width=400 %}
                         </div>
                     </div>
                     <ul

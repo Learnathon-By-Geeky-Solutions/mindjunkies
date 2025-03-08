@@ -1,6 +1,5 @@
 from pathlib import Path
 from decouple import config
-
 import dj_database_url
 import os
 import cloudinary
@@ -9,33 +8,23 @@ from cloudinary.utils import cloudinary_url
 
 # Configuration
 cloudinary.config(
-    cloud_name="dbkselzxf",
-    api_key="479988512454798",
+    cloud_name=config("CLOUDINARY_NAME"),
+    api_key=config("CLOUDINARY_API_KEY"),
     api_secret=config("CLOUDINARY_API_SECRET"),
     secure=True
 )
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY')
 
-DEBUG = False
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = [
-    "mindjunkies.up.railway.app",
-    "127.0.0.1",
-    "localhost",
+    config('ALLOWED_HOSTS', default='localhost'),
 ]
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://mindjunkies.up.railway.app",
-]
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -54,24 +43,27 @@ INSTALLED_APPS = [
     'accounts',
     'courses',
     'theme',
-    'liveclasses',
     'lecture',
     'dashboard',
+    'liveclasses',
     # third party apps
     'tailwind',
-    "allauth",
-    "allauth.account",
     'django_browser_reload',
     'crispy_forms',
     'crispy_tailwind',
     'django_extensions',
+    'cloudinary',
+    # allauth
+    "allauth",
+    "allauth.account",
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",  # allauth
     "django_browser_reload.middleware.BrowserReloadMiddleware",
     'django.middleware.security.SecurityMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # Whitenoise
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -116,10 +108,8 @@ DATABASES = {
 }
 
 db_url = config('DATABASE_URL', default=None)
-DATABASES['default'] = dj_database_url.parse(db_url)
-
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
+if db_url:
+    DATABASES['default'] = dj_database_url.parse(db_url)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -152,20 +142,20 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.1/howto/static-files/
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 LOGIN_REDIRECT_URL = "/"
 
@@ -197,9 +187,32 @@ ACCOUNT_FORMS = {
     'user_token': 'allauth.account.forms.UserTokenForm',
 }
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': config('GOOGLE_CLIENT_ID'),
+            'secret': config('GOOGLE_CLIENT_SECRET'),
+            'key': config('GOOGLE_API_KEY'),
+        },
+        'EMAIL_AUTHENTICATION': True,
+        'FETCH_USERINFO': True,
+    },
+}
+
 # Tailwind settings
 TAILWIND_APP_NAME = 'theme'
+NPM_BIN_PATH = config('NPM_BIN_PATH')
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
 
+# Email server configuration
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+
+JITSI_APP_ID = config("JITSI_APP_ID")
+JITSI_SECRET = config("JITSI_SECRET")
