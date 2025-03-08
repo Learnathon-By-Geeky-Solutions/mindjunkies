@@ -77,3 +77,5 @@ venv/
 .vscode
 
 /node_modules/
+
+liveclasses/private.pem

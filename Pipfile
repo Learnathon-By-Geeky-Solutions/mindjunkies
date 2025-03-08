@@ -13,6 +13,13 @@ python-decouple = "*"
 django-extensions = "*"
 markdown = "*"
 django-allauth = {extras = ["socialaccount"], version = "*"}
+pyjwt = "*"
+authlib = "*"
+gunicorn = "*"
+whitenoise = "*"
+psycopg2-binary = "*"
+dj-database-url = "*"
+cloudinary = "*"
 
 [dev-packages]
 

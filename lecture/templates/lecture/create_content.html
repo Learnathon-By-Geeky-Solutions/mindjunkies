@@ -5,14 +5,14 @@
 
 {% block extra_head %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
-    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"  integrity="sha256-6sZs7OGP0Uzcl7UDsLaNsy1K0KTZx1+6yEVrRJMn2IM=" crossorigin="anonymous"></script>
 {% endblock extra_head %}
 
 {% block main_content %}
 
     <div class="flex items-center justify-center  bg-base-200 h-screen ">
         <div class="card w-full bg-white shadow-xl p-6 mt-2 mx-48">
-            <h3 class="text-2xl font-semibold text-center text-gray-700 mb-4">Create Reading Content</h3>
+            <h3 class="text-2xl font-semibold text-center text-gray-700 mb-4">Create {{format}} content</h3>
             <form method="post" enctype="multipart/form-data" novalidate>
                 {% csrf_token %}
                 {{ form|crispy }}

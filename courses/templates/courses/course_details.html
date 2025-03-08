@@ -19,14 +19,14 @@
                             <span class="text-yellow-400 mr-1">★</span>
                             <span>{{ course_detail.total_rating }} ({{ course_detail.num_reviews }} reviews)</span>
                         </div>
-                        <div>{{ course_detail.num_students }} 15k students enrolled</div>
+                        <div>{{ course_detail.num_students }} {{ course_detail.number_of_enrollments }} students enrolled</div>
                     </div>
                     <div class="flex items-center mb-4">
-                        <img src="{{ course_detail.instructor.profile.avatar.url }}"
-                             alt="{{ course_detail.instructor.name }}" class="w-12 h-12 rounded-full mr-4">
+                        <img src="{% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'images/default-avatar.jpg' %}{% endif %}"
+                             alt="{{ instructor.username }}" class="w-12 h-12 rounded-full mr-4">
                         <div>
-                            <p>Created by</p>
-                            <p class="font-semibold">Shafayet Sadi</p>
+                            <p>Created by </p>
+                            <p class="font-semibold">{{ instructor.username }}</p>
                         </div>
                     </div>
                     <div class="flex flex-wrap gap-4">
@@ -66,12 +66,13 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Main Content -->
             <div class="lg:col-span-2">
+
                 <!-- What you'll learn -->
                 <div class="card bg-base-100 shadow-xl mb-8">
                     <div class="card-body">
                         <h2 class="card-title text-2xl mb-4">What you'll learn</h2>
                         <ul class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                            {% for objective in course_detail.learning_objectives %}
+                            {% for objective in course_detail.objectives.all %}
                                 <li class="flex items-start">
                                     <svg xmlns="http://www.w3.org/2000/svg"
                                          class="h-6 w-6 mr-2 flex-shrink-0 text-success" fill="none"
@@ -120,8 +121,8 @@
                     <div class="card-body">
                         <h2 class="card-title text-2xl mb-4">Requirements</h2>
                         <ul class="list-disc list-inside">
-                            {% for requirement in course_detail.requirements %}
-                                <li>{{ requirement }}</li>
+                            {% for line in course_detail.requirements.all %}
+                                <li>{{ line }}</li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -142,11 +143,12 @@
                     <div class="card-body">
                         <h2 class="card-title text-2xl mb-4">Instructor</h2>
                         <div class="flex items-center mb-4">
-                            <img src="{{ course_detail.instructor.profile_image.url }}"
-                                 alt="{{ course_detail.instructor.name }}" class="w-24 h-24 rounded-full mr-6">
+                            <img src="
+                                    {% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'images/default-avatar.jpg' %}{% endif %}"
+                                 alt="{{ instructor.username }}" class="w-24 h-24 rounded-full mr-6">
                             <div>
-                                <h3 class="text-xl font-semibold mb-2">{{ course_detail.instructor.name }}</h3>
-                                <p class="text-base-content/70">{{ course_detail.instructor.title }}</p>
+                                <h3 class="text-xl font-semibold mb-2">{{ instructor.username }}</h3>
+                                <p class="text-base-content/70">{{ instructor.title }}</p>
                             </div>
                         </div>
                         <div class="flex flex-wrap gap-4 mb-4">
@@ -155,7 +157,7 @@
                                      fill="currentColor">
                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                 </svg>
-                                {{ course_detail.instructor.rating }} Instructor Rating
+                                {{ instructor.rating }} Instructor Rating
                             </div>
                             <div class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
@@ -196,7 +198,7 @@
                                     <a href="{% url 'edit_course' %}?slug={{ course_detail.slug }}"
                                        class="btn btn-primary">Edit
                                         Course</a>
-                                    <a href="{% url 'edit_profile' %}?slug={{ course_detail.slug }}"
+                                    <a href="{% url 'lecture_home' course_detail.slug %}"
                                        class="btn btn-secondary">Manage
                                         Lectures</a>
                                 </div>
@@ -214,7 +216,7 @@
                             {% if course_detail.preview_video_link %}
                                 <div class="aspect-w-16 aspect-h-9 mb-4">
                                     <iframe class="rounded-lg w-full" src="{{ course_detail.preview_video_link }}"
-                                            frameborder="0"
+                                            title="Course Preview"
                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                             allowfullscreen></iframe>
                                 </div>
@@ -223,10 +225,16 @@
                                      class="rounded-lg w-full h-auto max-h-48 object-cover mb-4">
                             {% endif %}
                             <div class="text-3xl font-bold mb-4">${{ course_detail.course_price }}</div>
-                            <a href="{% url 'lecture_home' course_detail.slug %}"
-                               class="btn btn-primary btn-block mb-4">Enroll Now</a>
-                            <a href="{{ course_detail.preview_video_link }}" class="btn btn-outline btn-block mb-4"
-                               target="_blank">Watch Preview</a>
+                            
+                            {% if not accessed %}
+                            <a href="{% url 'lecture_home' course_detail.slug %}
+                             "class="btn btn-primary btn-block mb-4">Add to cart</a>
+                             {% else %}
+                             <a href="{% url 'lecture_home' course_detail.slug %}
+                             "class="btn btn-primary btn-block mb-4">View</a>
+                            {% endif %}
+                            {% comment %} <a href="{{ course_detail.preview_video_link }}" class="btn btn-outline btn-block mb-4"
+                               target="_blank">Watch Preview</a> {% endcomment %}
                             <p class="text-center text-sm mb-4">30-Day Money-Back Guarantee</p>
                         </div>
                     </div>

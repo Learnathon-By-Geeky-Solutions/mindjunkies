@@ -24,7 +24,6 @@
                                    class="input input-bordered w-full" disabled>
                         </div>
                     {% endif %}
-                    <!-- TODO: Style the new email address (not verified) form -->
                     {% if new_emailaddress %}
                         {% element field id="new_email" value=new_emailaddress.email disabled=True type="email" %}
                             {% slot label %}
