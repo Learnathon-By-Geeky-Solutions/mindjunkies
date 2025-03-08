@@ -19,8 +19,8 @@ def lecture_home(request: HttpRequest, course_slug: str) -> HttpResponse:
     """View to show lectures for a course."""
     course = get_object_or_404(Course, slug=course_slug)
 
-    if not request.user.is_staff and not course.enrollments.filter(student=request.user).exists():
-        return HttpResponseForbidden("You are not enrolled in this course.")
+    # if not request.user.is_staff and not course.enrollments.filter(student=request.user).exists():
+    #     return HttpResponseForbidden("You are not enrolled in this course.")
 
     teacher = request.user.is_staff or course.teachers.filter(teacher=request.user).exists()
 
@@ -122,7 +122,7 @@ def lecture_pdf(request: HttpRequest, slug: str, pdf_id: int) -> HttpResponse:
 @login_required
 @csrf_protect
 @require_http_methods(["GET", "POST"])
-def create_lecture(request: HttpRequest, course_slug: str, ) -> HttpResponse:
+def create_lecture(request: HttpRequest, course_slug: str) -> HttpResponse:
     if request.method == "POST":
         form = LectureForm(request.POST)  # Pass the user if needed
         course = get_object_or_404(Course, slug=course_slug)
@@ -131,7 +131,7 @@ def create_lecture(request: HttpRequest, course_slug: str, ) -> HttpResponse:
             saved_lecture.course = course
             saved_lecture.save()
             messages.success(request, "Lecture created successfully!")
-            return redirect("lecture_home", slug=course_slug)  # Redirect to a relevant page
+            return redirect("lecture_home")  # Redirect to a relevant page
         else:
             messages.error(request, "There was an error processing the form. Please check the fields below.")
 
