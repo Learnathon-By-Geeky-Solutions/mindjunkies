@@ -17,7 +17,13 @@ class Course(BaseModel):
     course_description = models.TextField()
     level = models.CharField(max_length=15, choices=LEVEL_CHOICES, default='beginner')
 
-    course_image = CloudinaryField('course_images/', null=True, blank=True)
+    course_image = CloudinaryField(
+        folder='course_images/',
+        resource_type="image",
+        overwrite=True,
+        null=True,
+        blank=True
+    )
     preview_video_link = models.URLField(max_length=200, null=True, blank=True)
 
     published = models.BooleanField(default=False)

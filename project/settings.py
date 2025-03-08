@@ -4,19 +4,19 @@ import dj_database_url
 import os
 import cloudinary
 import cloudinary.uploader
-import cloudinary.api
+from cloudinary.utils import cloudinary_url
 
-# Cloudinary Config
-CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": config("CLOUDINARY_NAME"),
-    "API_KEY": config("CLOUDINARY_API_KEY"),
-    "API_SECRET": config("CLOUDINARY_API_SECRET"),
-}
+# Configuration
+cloudinary.config(
+    cloud_name=config("CLOUDINARY_NAME"),
+    api_key=config("CLOUDINARY_API_KEY"),
+    api_secret=config("CLOUDINARY_API_SECRET"),
+    secure=True
+)
 
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 SECRET_KEY = config('SECRET_KEY')
 
@@ -52,13 +52,13 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_tailwind',
     'django_extensions',
+    'cloudinary',
     # allauth
     "allauth",
     "allauth.account",
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
 ]
-
 
 MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",  # allauth
@@ -111,7 +111,6 @@ db_url = config('DATABASE_URL', default=None)
 if db_url:
     DATABASES['default'] = dj_database_url.parse(db_url)
 
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -148,12 +147,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "theme" / "static",  # Correct path to the static directory inside the theme app
+    BASE_DIR / "static",
 ]
-STATIC_ROOT = BASE_DIR / "static"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -191,15 +188,15 @@ ACCOUNT_FORMS = {
 }
 
 SOCIALACCOUNT_PROVIDERS = {
-  'google': {
-      'APP': {
+    'google': {
+        'APP': {
             'client_id': config('GOOGLE_CLIENT_ID'),
             'secret': config('GOOGLE_CLIENT_SECRET'),
             'key': config('GOOGLE_API_KEY'),
-      },
-      'EMAIL_AUTHENTICATION': True,
-      'FETCH_USERINFO': True,
-  },
+        },
+        'EMAIL_AUTHENTICATION': True,
+        'FETCH_USERINFO': True,
+    },
 }
 
 # Tailwind settings
@@ -216,7 +213,6 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
-
 
 JITSI_APP_ID = config("JITSI_APP_ID")
 JITSI_SECRET = config("JITSI_SECRET")

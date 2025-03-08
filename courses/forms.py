@@ -1,5 +1,6 @@
 from django import forms
 from django.utils.text import slugify
+from cloudinary.forms import CloudinaryFileField
 
 from .models import Course, CourseTeacher, CourseRequirement, CourseObjective
 
@@ -13,6 +14,7 @@ class CourseForm(forms.ModelForm):
         widget=forms.Textarea(attrs={'rows': 3}),
         help_text="Enter each objective in a new line."
     )
+    course_image = CloudinaryFileField()
 
     class Meta:
         model = Course

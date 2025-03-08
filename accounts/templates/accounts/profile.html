@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
+
 {% load i18n %}
 {% load static %}
+{% load cloudinary %}
 
 {% block head_title %}
     {{ user.username }}'s Profile
@@ -15,7 +17,7 @@
                 <div class="flex items-center space-x-4 mb-6">
                     <div class="avatar">
                         <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                            <img src="{% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'images/default-avatar.jpg' %}{% endif %}" alt="{{ user.username }}'s avatar" />
+                            {% cloudinary user.profile.avatar quality='auto' crop='pad' width=400 %}
                         </div>
                     </div>
                     <div>
