@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block main_content %}
-    <div class="my-2 bg-base-300 text-base-content">
+    <div class="my-2 bg-base-300 text-base-content z-10">
         <div class="drawer lg:drawer-open">
             <input id="my-drawer" type="checkbox" class="drawer-toggle"/>
             <div class="drawer-content flex flex-col min-h-screen">
@@ -31,7 +31,7 @@
                             <div class="flex items-center justify-center gap-2">
                                 <h1 class="text-2xl font-bold">
                                     Module {{ current_module.order }}: {{ current_module.title }}</h1>
-                                <a href="{% url 'create_lecture' course.slug %}">
+                                <a href="{% url 'create_lecture' course.slug current_module.id %}">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                          xmlns="http://www.w3.org/2000/svg">
                                         <circle cx="12" cy="12" r="10" stroke="blue" stroke-width="2"/>
@@ -48,7 +48,7 @@
                                 <input type="checkbox" class="peer" {% if forloop.first %}checked{% endif %}/>
                                 <div class="collapse-title text-xl font-medium flex items-center peer-checked:bg-base-200">
                                     <div class="flex items-center gap-2">
-                                        <span>Module {{ lecture.order }}: {{ lecture.title }}</span>
+                                        <span>Lecture {{ lecture.order }}: {{ lecture.title }}</span>
                                         <a href="{% url 'edit_lecture' course.slug lecture.slug %}"
                                            class="text-primary edit-link">
                                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
@@ -75,12 +75,14 @@
                                             </svg>
                                             <span>45m of readings left</span>
                                         </div>
+                                      
                                         <div class="flex items-center gap-1 text-sm">
                                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
                                                 <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
                                             </svg>
                                             <span>2 graded assessments left</span>
                                         </div>
+                                        <div class="flex gap-1">
                                         <div class="flex items-center justify-end gap-1 text-sm">
 
                                             {% if isTeacher %}
@@ -97,8 +99,8 @@
                                                     </button>
                                                 </a>
                                             {% endif %}
-
-                                        </div>
+                                            </div>
+                                       
                                         <div class="flex items-center justify-end gap-1 text-sm">
 
                                             {% if isTeacher %}
@@ -116,6 +118,7 @@
                                             {% endif %}
 
                                         </div>
+                                    </div>
                                     </div>
 
                                     <!-- Week Description -->
@@ -437,10 +440,10 @@
                                     {% for module in course.modules.all %}
                                         <a href="{% url 'lecture_home' course.slug %}?module_id={{ module.id }}"
                                            class="flex items-center py-2 px-4 hover:bg-base-300 rounded-md
-                     {% if module.id == request.GET.module_id %}
+                     {% if module.id == current_module.id %}
                        text-primary bg-primary/10 font-medium
                      {% endif %}">
-               <span class="w-6 h-6 flex items-center justify-center rounded-full bg-base-300 mr-2 text-xs">
+               <!-- <span class="w-6 h-6 flex items-center justify-center rounded-full bg-base-300 mr-2 text-xs"> -->
                  {{ module_num }}
                </span>
                                             Module {{ module.order }}: {{ module.title }}

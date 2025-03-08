@@ -125,15 +125,17 @@ class CreateLectureView(LoginRequiredMixin, CreateView):
     def dispatch(self, request, *args, **kwargs):
         """ Ensure the course exists before proceeding """
         self.course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        self.module=get_object_or_404(Module,id=self.kwargs["module_id"])
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         """ Assign the lecture to the appropriate course """
         saved_lecture = form.save(commit=False)
-        saved_lecture.course = self.course  # Associate lecture with the course
+        saved_lecture.course = self.course # Associate lecture with the course
+        saved_lecture.module=self.module# Associate lecture with the module
         saved_lecture.save()
         messages.success(self.request, "Lecture created successfully!")
-        return redirect(reverse("lecture_home", kwargs={"course_slug": self.course.slug}))
+        return redirect(f"{reverse('lecture_home', kwargs={'course_slug': self.course.slug})}?module_id={self.module.id}")
 
     def form_invalid(self, form):
         messages.error(self.request, "There was an error processing the form. Please check the fields below.")
