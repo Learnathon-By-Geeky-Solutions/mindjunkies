@@ -201,7 +201,8 @@ SOCIALACCOUNT_PROVIDERS = {
 
 # Tailwind settings
 TAILWIND_APP_NAME = 'theme'
-NPM_BIN_PATH = config('NPM_BIN_PATH')
+if DEBUG:
+    NPM_BIN_PATH = config('NPM_BIN_PATH')
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
