@@ -1,9 +1,20 @@
 from pathlib import Path
 from decouple import config
 import dj_database_url
+import os
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
+# Cloudinary Config
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": config("CLOUDINARY_NAME"),
+    "API_KEY": config("CLOUDINARY_API_KEY"),
+    "API_SECRET": config("CLOUDINARY_API_SECRET"),
+}
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
