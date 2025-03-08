@@ -128,3 +128,23 @@ class Module(BaseModel):
 
     def __str__(self):
         return f"{self.title} - {self.course.title}"
+
+
+
+class Review(models.Model):
+    product = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="reviews")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.PositiveIntegerField(default=1)
+    comment = models.TextField(blank=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Review for {self.product.name} by {self.user.username}"
+
+    class Meta:
+        unique_together = ('product', 'user')  
+
+    def average_rating(self):
+        reviews = self.product.reviews.all()
+        total_rating = sum([review.rating for review in reviews])
+        return total_rating / len(reviews) if reviews else 0
