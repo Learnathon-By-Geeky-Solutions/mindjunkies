@@ -32,7 +32,6 @@
         <div class="menu menu-horizontal gap-4">
             <ul class="menu menu-horizontal px-1 hidden md:flex">
                 <li><a href="{% url 'create_course' %}">Create Course</a></li>
-                <li><a href="#">Features</a></li>
                 <li><a href="{% url 'course_list' %}">Courses</a></li>
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'my_course_list' %}">My Courses</a></li>
@@ -43,15 +42,12 @@
             </ul>
             {% if user.is_authenticated %}
                 <div class="dropdown dropdown-end">
-                    <div
-                            tabindex="0"
-                            class="btn btn-ghost btn-circle avatar">
+                    <div tabindex="-1" class="btn btn-ghost btn-circle avatar">
                         <div class="w-10 rounded-full">
                             {% cloudinary user.profile.avatar quality='auto' crop='pad' width=400 %}
                         </div>
                     </div>
-                    <ul
-                            class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+                    <ul class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
                         <li><a href="{% url 'profile' %}" class="justify-between">Profile</a></li>
                         <li><a href="{% url 'dashboard_content' %}" class="justify-between">Dashboard</a></li>
                         <li><a href="{% url 'account_email' %}">Change Email</a></li>
