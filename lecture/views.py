@@ -41,7 +41,7 @@ def lecture_home(request: HttpRequest, course_slug: str) -> HttpResponse:
 
     return render(request, "lecture/lecture_home.html", context)
 
-
+@require_http_methods(["GET"])
 def serve_hls_playlist(request, course_slug, video_id):
     try:
         video = get_object_or_404(LectureVideo, pk=video_id)
@@ -58,7 +58,7 @@ def serve_hls_playlist(request, course_slug, video_id):
     except (LectureVideo.DoesNotExist, FileNotFoundError):
         return HttpResponse("Video or HLS playlist not found", status=404)
 
-
+@require_http_methods(["GET"])
 def serve_hls_segment(video_id, segment_name):
     try:
         video = get_object_or_404(LectureVideo, pk=video_id)
@@ -159,7 +159,7 @@ class CreateContentView(LoginRequiredMixin, FormView):
             return LectureVideoForm
         else:
             messages.error(self.request, "Invalid content type specified.")
-            return redirect("lecture_home", slug=self.kwargs["course_slug"])
+            return redirect("lecture_home", course_slug=self.kwargs["course_slug"])
 
     def dispatch(self, request, *args, **kwargs):
         """ Ensure the lecture exists before proceeding """
