@@ -159,7 +159,7 @@ class CreateContentView(LoginRequiredMixin, FormView):
             return LectureVideoForm
         else:
             messages.error(self.request, "Invalid content type specified.")
-            return redirect("lecture_home", slug=self.kwargs["course_slug"])
+            return redirect("lecture_home", course_slug=self.kwargs["course_slug"])
 
     def dispatch(self, request, *args, **kwargs):
         """ Ensure the lecture exists before proceeding """
