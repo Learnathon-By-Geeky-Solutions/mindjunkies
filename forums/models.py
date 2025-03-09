@@ -1,15 +1,15 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.utils.text import slugify
 from django.utils import timezone
-from courses.models import Course, Lecture  # Assuming these models exist in your project
+from courses.models import Course # Assuming these models exist in your project
 
 class ForumTopic(models.Model):
     """Model for forum topics/threads"""
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
     content = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='forum_topics')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='forum_topics')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='forum_topics')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -44,7 +44,7 @@ class ForumReply(models.Model):
     """Model for replies to forum topics"""
     topic = models.ForeignKey(ForumTopic, on_delete=models.CASCADE, related_name='replies')
     content = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='forum_replies')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='forum_replies')
     parent_reply = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='child_replies')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -68,11 +68,11 @@ class ForumNotification(models.Model):
         ('reaction', 'Reaction'),
     )
     
-    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='forum_notifications')
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='forum_notifications')
     notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
     topic = models.ForeignKey(ForumTopic, on_delete=models.CASCADE, null=True, blank=True)
     reply = models.ForeignKey(ForumReply, on_delete=models.CASCADE, null=True, blank=True)
-    actor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='forum_actions')
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='forum_actions')
     created_at = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
     
