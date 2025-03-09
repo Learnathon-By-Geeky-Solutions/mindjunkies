@@ -146,7 +146,6 @@ class CreateLectureView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context["course"] = self.course
         return context
-
 class CreateContentView(LoginRequiredMixin, FormView):
     template_name = "lecture/create_content.html"
 
@@ -159,7 +158,7 @@ class CreateContentView(LoginRequiredMixin, FormView):
             return LectureVideoForm
         else:
             messages.error(self.request, "Invalid content type specified.")
-            return redirect("lecture_home", slug=self.kwargs["course_slug"])
+            return redirect("lecture_home", course_slug=self.kwargs["course_slug"])
 
     def dispatch(self, request, *args, **kwargs):
         """ Ensure the lecture exists before proceeding """
@@ -184,7 +183,7 @@ class CreateContentView(LoginRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
         context["content_type"] = self.kwargs["format"]
         return context
-    
+     
 
 class EditLectureView(LoginRequiredMixin, UpdateView):
     model = Lecture

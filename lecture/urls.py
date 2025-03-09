@@ -8,7 +8,7 @@ urlpatterns = [
     path('module/create', views.CreateModuleView.as_view(), name='create_module'),
     path('<str:module_id>/lecture/create', views.CreateLectureView.as_view(), name="create_lecture"),
     path('edit/<str:lecture_slug>', views.EditLectureView.as_view(), name="edit_lecture"),
-    path('create/<str:lecture_slug>/content/<str:type>', views.CreateContentView.as_view(), name="create_content"),
+    path('create/<str:lecture_slug>/content/<str:format>', views.CreateContentView.as_view(), name="create_content"),
 
     # HLS video streaming
     path('serve_hls_playlist/<str:video_id>/', views.serve_hls_playlist, name='serve_hls_playlist'),

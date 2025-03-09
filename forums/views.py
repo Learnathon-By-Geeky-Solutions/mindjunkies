@@ -2,6 +2,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from courses.models import Course
+from .models import ForumTopic,ForumReply
 
 class ForumHomeView(LoginRequiredMixin, TemplateView):
     template_name = "forums/forum_home.html"
