@@ -28,6 +28,7 @@ urlpatterns = [
     path('courses/', include('courses.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('live-classes/', include('liveclasses.urls')),
+    
 ]
 
 if settings.DEBUG:
