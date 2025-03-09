@@ -146,6 +146,7 @@ class CreateLectureView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context["course"] = self.course
         return context
+    
 class CreateContentView(LoginRequiredMixin, FormView):
     template_name = "lecture/create_content.html"
 

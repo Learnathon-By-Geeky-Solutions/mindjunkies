@@ -1,0 +1,83 @@
+<div class="px-8 py-4">
+    <div class="flex items-start gap-4 {% if reply.parent_reply %}ml-5{% endif %}">
+        <div class="avatar">
+            <div class="w-10 h-10 rounded-full">
+                <img src="https://daisyui.com/images/stock/photo-1570295999919-56ceb5ecca61.jpg" alt="User avatar" />
+            </div>
+        </div>
+        <div class="flex-1">
+            <div class="flex justify-between items-start">
+                <p class="text-sm text-base-content/70">
+                    <span class="font-medium">{{ reply.author.username }}</span> • 
+                    {{ reply.created_at|timesince }} ago
+                    {% if reply.parent_reply %}
+                        <span class="text-xs text-muted-foreground ml-2">
+                            replying to <span class="font-medium">{{ reply.parent_reply.author.username }}</span>
+                        </span>
+                    {% endif %}
+                </p>
+                <div class="dropdown dropdown-end">
+                    <label tabindex="0" class="btn btn-ghost btn-circle btn-xs">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
+                        </svg>
+                    </label>
+                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                        <li><a>Edit Reply</a></li>
+                        <li><a>Delete Reply</a></li>
+                        <li><a>Report</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-1 prose max-w-none text-sm">
+                <p>{{ reply.content }}</p>
+            </div>
+            
+            <!-- Reply Reactions -->
+            <div class="flex gap-3 mt-2">
+                <button class="btn btn-xs btn-ghost gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75A2.25 2.25 0 0116.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.904M14.25 9h2.25M5.904 18.75c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 01-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 10.203 4.167 9.75 5 9.75h1.053c.472 0 .745.556.5.96a8.958 8.958 0 00-1.302 4.665c0 1.194.232 2.333.654 3.375z" />
+                    </svg>
+                    Like ({{ reply.like_count|default:"0" }})
+                </button>
+                <button class="btn btn-xs btn-ghost gap-1 toggle-reply-form" data-target="reply-form-{{ reply.id }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                    </svg>
+                    Reply
+                </button>
+            </div>
+            
+            <!-- Nested Reply Form (Hidden by default) -->
+            <div id="reply-form-{{ reply.id }}" class="mt-3 hidden">
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <div class="flex gap-2">
+                        <div class="avatar">
+                            <div class="w-8 h-8 rounded-full">
+                                <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt="Your avatar" />
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <textarea name="content" class="textarea textarea-bordered w-full h-16 text-sm" placeholder="Write your reply..."></textarea>
+                            <input type="hidden" name="topic_id" value="{{ topic.id }}">
+                            <input type="hidden" name="parent_reply_id" value="{{ reply.id }}">
+                            <div class="flex justify-end mt-2">
+                                <button type="button" class="btn btn-xs btn-ghost cancel-reply">Cancel</button>
+                                <button type="submit" class="btn btn-xs btn-primary ml-2">Reply</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Child replies -->
+            {% for child_reply in reply.child_replies.all %}
+                {% include "forums/reply.html" with reply=child_reply topic=topic %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
