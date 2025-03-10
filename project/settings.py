@@ -1,13 +1,22 @@
 from pathlib import Path
 from decouple import config
-
 import dj_database_url
+import os
+import cloudinary
+import cloudinary.uploader
+from cloudinary.utils import cloudinary_url
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Configuration
+cloudinary.config(
+    cloud_name=config("CLOUDINARY_NAME"),
+    api_key=config("CLOUDINARY_API_KEY"),
+    api_secret=config("CLOUDINARY_API_SECRET"),
+    secure=True
+)
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 SECRET_KEY = config('SECRET_KEY')
 
@@ -32,35 +41,24 @@ INSTALLED_APPS = [
     # custom apps
     'home',
     'accounts',
-    'classrooms',
-    'videoConf',
+    'courses',
     'theme',
     'lecture',
+    'dashboard',
+    'liveclasses',
     # third party apps
     'tailwind',
-    "allauth",
-    "allauth.account",
     'django_browser_reload',
     'crispy_forms',
     'crispy_tailwind',
     'django_extensions',
+    'cloudinary',
+    # allauth
+    "allauth",
+    "allauth.account",
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
-
-# Domain for Jitsi video conferencing
-JITSI_DOMAIN = config('JITSI_DOMAIN', default='meet.jit.si')
-
-# Prefix for Jitsi room names
-JITSI_ROOM_PREFIX = config('JITSI_ROOM_PREFIX', default='myapp-')
-
-# Magic cookie for Jitsi authentication
-JITSI_MAGIC_COOKIE = config('JITSI_MAGIC_COOKIE', default=None)
-
-# Raise an error if the magic cookie is not set
-if JITSI_MAGIC_COOKIE is None:
-    raise ValueError("JITSI_MAGIC_COOKIE environment variable is required for video conferencing")
-
-# Subresource Integrity (SRI) hash for ensuring the integrity of external resources
-SRI_HASH = config('SRI_HASH')
 
 MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",  # allauth
@@ -110,10 +108,8 @@ DATABASES = {
 }
 
 db_url = config('DATABASE_URL', default=None)
-DATABASES['default'] = dj_database_url.parse(db_url)
-
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
+if db_url:
+    DATABASES['default'] = dj_database_url.parse(db_url)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -151,19 +147,16 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "theme" / "static",
+    BASE_DIR / "static",
+    BASE_DIR / "theme/static",
 ]
-STATIC_ROOT = BASE_DIR / "static"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 LOGIN_REDIRECT_URL = "/"
 
@@ -195,9 +188,32 @@ ACCOUNT_FORMS = {
     'user_token': 'allauth.account.forms.UserTokenForm',
 }
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': config('GOOGLE_CLIENT_ID'),
+            'secret': config('GOOGLE_CLIENT_SECRET'),
+            'key': config('GOOGLE_API_KEY'),
+        },
+        'EMAIL_AUTHENTICATION': True,
+        'FETCH_USERINFO': True,
+    },
+}
+
 # Tailwind settings
 TAILWIND_APP_NAME = 'theme'
 NPM_BIN_PATH = config('NPM_BIN_PATH')
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
+
+# Email server configuration
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+
+JITSI_APP_ID = config("JITSI_APP_ID")
+JITSI_SECRET = config("JITSI_SECRET")

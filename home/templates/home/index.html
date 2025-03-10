@@ -3,10 +3,11 @@
 {% block head_title %}Home{% endblock head_title %}
 
 {% block main_content %}
+    {% if not user.is_authenticated %}
     <section class="hero min-h-screen bg-base-200">
         <div class="hero-content text-center">
             <div class="max-w-md">
-                <h1 class="text-5xl font-bold">Welcome to MindJunkies</h1>
+                <h1 class="text-5xl font-bold">Welcome to Nexora</h1>
                 <p class="py-6">Expand your knowledge with our cutting-edge Learning Management System. Dive into a
                     world of courses designed to elevate your skills.</p>
                 <a href="{% url 'account_signup' %}" class="btn btn-primary">Get Started</a>
@@ -55,14 +56,16 @@
         </div>
     </section>
 
+    {% endif %}
+
     <section id="courses" class="py-16 bg-base-200">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-center mb-8">Popular Courses</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {% for classroom in classroom_list %}
-                    {% if classroom in enrolled_classes %}
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                {% for course in course_list %}
+                    {% if course in enrolled_classes %}
                     {% include 'home/card_student.html' %}
-                        {% elif classroom in teacher_classes  %}
+                        {% elif course in teacher_classes  %}
                         {% include 'home/card_teacher.html' %}
                     {% else %}
                     {% include 'home/card.html' %}

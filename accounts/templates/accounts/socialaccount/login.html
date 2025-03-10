@@ -1,0 +1,49 @@
+{% extends "socialaccount/base_entrance.html" %}
+{% load i18n %}
+{% load allauth %}
+
+{% block head_title %}
+    {% trans "Sign In" %}
+{% endblock head_title %}
+
+{% block content %}
+<div class="min-h-screen bg-base-200 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="card w-full max-w-md bg-base-100 shadow-xl">
+        <div class="card-body">
+            {% if process == "connect" %}
+                <h1 class="card-title text-2xl font-bold text-center mb-4">
+                    {% blocktrans with provider.name as provider %}Connect {{ provider }}{% endblocktrans %}
+                </h1>
+                <p class="text-center mb-6">
+                    {% blocktrans with provider.name as provider %}You are about to connect a new third-party account from {{ provider }}.{% endblocktrans %}
+                </p>
+            {% else %}
+                <h1 class="card-title text-2xl font-bold text-center mb-4">
+                    {% blocktrans with provider.name as provider %}Sign In Via {{ provider }}{% endblocktrans %}
+                </h1>
+                <p class="text-center mb-6">
+                    {% blocktrans with provider.name as provider %}You are about to sign in using a third-party account from {{ provider }}.{% endblocktrans %}
+                </p>
+            {% endif %}
+
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                <div class="form-control">
+                    <button type="submit" class="btn btn-primary w-full">
+                        {% trans "Continue" %}
+                    </button>
+                </div>
+            </form>
+
+            <div class="divider">{% trans "or" %}</div>
+
+            <div class="text-center">
+                <a href="{% url 'account_login' %}" class="btn btn-outline btn-sm">
+                    {% trans "Go back" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Live Class - {{ live_class.topic }}</title>
+</head>
+<body>
+<h2>Live Class: {{ live_class.topic }}</h2>
+<div id="meet" style="width: 100%; height: 600px;"></div>
+
+<script src='https://8x8.vc/vpaas-magic-cookie-fb583aeece2040b4805f50d0b267e75b/external_api.js' integrity='' crossorigin='anonymous'></script>
+<script>
+    const initIframeAPI = () => {
+        const domain = "8x8.vc";
+        const options = {
+            roomName: "vpaas-magic-cookie-fb583aeece2040b4805f50d0b267e75b/{{ live_class.meeting_id }}",
+            width: "100%",
+            height: "100%",
+            parentNode: document.querySelector("#meet"),
+            {% if request.user == live_class.teacher %}
+                jwt: "{{ live_class.generate_jwt_token }}",  // Secure authentication token
+            {% endif %}
+            userInfo: {
+                displayName: "{{ request.user.username }}"
+            }
+        };
+
+        const api = new JitsiMeetExternalAPI(domain, options);
+    }
+    window.onload = () => {
+        initIframeAPI();
+    }
+</script>
+</body>
+</html>
