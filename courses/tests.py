@@ -1,17 +1,17 @@
 import os
+from django.test import TestCase
+from .models import Course, CourseTeacher, Enrollment
+from accounts.models import User
 import django
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
 django.setup()
 
-from django.test import TestCase
-from .models import Courses, CourseTeacher, Enrollment
-from accounts.models import User
 
 class CourseModelTest(TestCase):
 
     def setUp(self):
-        self.course = Courses.objects.create(
+        self.course = Course.objects.create(
             title='Test Course',
             short_introduction='This is a test short introduction',
             course_description='This is a test course description',
@@ -32,16 +32,14 @@ class CourseModelTest(TestCase):
         self.assertEqual(self.course.course_price, 0.0)
         self.assertEqual(self.course.total_rating, 0.0)
         self.assertEqual(self.course.number_of_ratings, 0)
-        
 
     def test_course_str(self):
         self.assertEqual(str(self.course), 'Test Course')
 
 
-    
 class CourseTeacherModelTest(TestCase):
     def setUp(self):
-        self.course = Courses.objects.create(title="Python 101")
+        self.course = Course.objects.create(title="Python 101")
         self.teacher = User.objects.create_user(username="teacher1", password="testpass", email="test@mail.com")
 
     def test_course_teacher_creation(self):
@@ -52,7 +50,7 @@ class CourseTeacherModelTest(TestCase):
 
     def test_unique_together_constraint(self):
         CourseTeacher.objects.create(course=self.course, teacher=self.teacher, role="teacher")
-        with self.assertRaises(Exception): # IntegrityError
+        with self.assertRaises(Exception):  # IntegrityError
             CourseTeacher.objects.create(course=self.course, teacher=self.teacher, role="assistant")
 
     def test_str_method(self):
@@ -61,10 +59,9 @@ class CourseTeacherModelTest(TestCase):
         self.assertEqual(str(course_teacher), expected_str)
 
 
-
 class EnrollmentModelTest(TestCase):
     def setUp(self):
-        self.course = Courses.objects.create(title="Django Fundamentals")
+        self.course = Course.objects.create(title="Django Fundamentals")
         self.student = User.objects.create_user(username="student1", password="testpass", email="test@gmail.com")
 
     def test_enrollment_creation(self):

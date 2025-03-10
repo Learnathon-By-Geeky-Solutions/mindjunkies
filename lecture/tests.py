@@ -16,6 +16,7 @@ VIDEO_FILE_NAME = "django_tutorial.mp4"
 VIDEO_CONTENT = b"video content"
 PDF_CONTENT = b"PDF content"
 
+
 class LectureModelTest(TestCase):
     def setUp(self):
         self.sample_course = Course.objects.create(title=COURSE_TITLE)
@@ -27,18 +28,19 @@ class LectureModelTest(TestCase):
             description=LECTURE_DESC,
             order=1
         )
-    
+
     def test_lecture_creation(self):
         self.assertEqual(self.sample_lecture.title, LECTURE_TITLE)
         self.assertEqual(self.sample_lecture.course, self.sample_course)
         self.assertEqual(self.sample_lecture.module, self.sample_module)
         self.assertEqual(self.sample_lecture.order, 1)
-    
+
     def test_slug_generation_on_save(self):
         self.assertEqual(self.sample_lecture.slug, slugify(LECTURE_TITLE))
-    
+
     def test_str_representation(self):
         self.assertEqual(str(self.sample_lecture), f"{self.sample_course.title} - {LECTURE_TITLE}")
+
 
 class LecturePDFModelTest(TestCase):
     def setUp(self):
@@ -54,13 +56,14 @@ class LecturePDFModelTest(TestCase):
             pdf_file=SimpleUploadedFile(PDF_FILE_NAME, PDF_CONTENT),
             pdf_title=PDF_TITLE
         )
-    
+
     def test_pdf_creation(self):
         self.assertEqual(self.sample_pdf.lecture, self.sample_lecture)
         self.assertEqual(self.sample_pdf.pdf_title, PDF_TITLE)
-    
+
     def test_str_representation(self):
         self.assertEqual(str(self.sample_pdf), f"PDF for {self.sample_lecture.title}")
+
 
 class LectureVideoModelTest(TestCase):
     def setUp(self):
@@ -78,12 +81,12 @@ class LectureVideoModelTest(TestCase):
             status=LectureVideo.PENDING,
             is_running=False
         )
-    
+
     def test_video_creation(self):
         self.assertEqual(self.sample_video.lecture, self.sample_lecture)
         self.assertEqual(self.sample_video.video_title, VIDEO_TITLE)
         self.assertEqual(self.sample_video.status, LectureVideo.PENDING)
         self.assertFalse(self.sample_video.is_running)
-    
+
     def test_str_representation(self):
         self.assertEqual(str(self.sample_video), VIDEO_TITLE)
