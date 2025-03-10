@@ -30,7 +30,16 @@ jobs:
         run: |
           pipenv install --dev
 
+      - name: Run Tests and Generate Coverage Report
+        run: |
+          pipenv run coverage run -m unittest discover
+          pipenv run coverage xml -o coverage.xml
+          ls -l coverage.xml  # Check if coverage.xml exists
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.python.coverage.reportPaths=coverage.xml
