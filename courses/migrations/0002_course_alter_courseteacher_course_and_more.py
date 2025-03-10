@@ -4,6 +4,7 @@ import django.db.models.deletion
 import uuid
 from django.db import migrations, models
 
+COURSES_TABLE = 'courses.course'
 
 class Migration(migrations.Migration):
 
@@ -44,12 +45,12 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='courseteacher',
             name='course',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='teachers', to='courses.course'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='teachers', to=COURSES_TABLE),
         ),
         migrations.AlterField(
             model_name='enrollment',
             name='course',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='enrollments', to='courses.course'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='enrollments', to=COURSES_TABLE),
         ),
         migrations.CreateModel(
             name='Module',
@@ -60,7 +61,7 @@ class Migration(migrations.Migration):
                 ('is_deleted', models.BooleanField(default=False)),
                 ('title', models.CharField(max_length=255)),
                 ('order', models.PositiveIntegerField(default=0)),
-                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='modules', to='courses.course')),
+                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='modules', to=COURSES_TABLE)),
             ],
             options={
                 'ordering': ['order'],
