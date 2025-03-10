@@ -1,8 +1,10 @@
 import os
 from django.test import TestCase
-from .models import Course, CourseTeacher, Enrollment
 from accounts.models import User
 import django
+from decouple import config
+
+from .models import Course, CourseTeacher, Enrollment
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
 django.setup()
@@ -40,7 +42,8 @@ class CourseModelTest(TestCase):
 class CourseTeacherModelTest(TestCase):
     def setUp(self):
         self.course = Course.objects.create(title="Python 101")
-        self.teacher = User.objects.create_user(username="teacher1", password="testpass", email="test@mail.com")
+        self.teacher = User.objects.create_user(username="teacher1", password=config("TEST_PASS"),
+                                                email="test@mail.com")
 
     def test_course_teacher_creation(self):
         course_teacher = CourseTeacher.objects.create(course=self.course, teacher=self.teacher, role="teacher")
@@ -62,7 +65,8 @@ class CourseTeacherModelTest(TestCase):
 class EnrollmentModelTest(TestCase):
     def setUp(self):
         self.course = Course.objects.create(title="Django Fundamentals")
-        self.student = User.objects.create_user(username="student1", password="testpass", email="test@gmail.com")
+        self.student = User.objects.create_user(username="student1", password=config("TEST_PASS"),
+                                                email="test@gmail.com")
 
     def test_enrollment_creation(self):
         enrollment = Enrollment.objects.create(course=self.course, student=self.student, status="active")
