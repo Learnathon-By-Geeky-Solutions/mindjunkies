@@ -1,5 +1,7 @@
 {% extends 'lecturebase.html' %}
 {% load static %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
 
 {% block lecture_content %}
     <!-- Main Content with Responsive Layout -->
@@ -15,22 +17,15 @@
             <div id="newTopicForm" class="card bg-base-100 shadow-xl mb-8 hidden">
                 <div class="card-body">
                     <h2 class="card-title">Create New Topic</h2>
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text">Topic Title</span>
-                        </label>
-                        <input type="text" placeholder="Enter topic title" class="input input-bordered" />
-                    </div>
-                    <div class="form-control mt-4">
-                        <label class="label">
-                            <span class="label-text">Content</span>
-                        </label>
-                        <textarea class="textarea textarea-bordered h-24" placeholder="Write your post here..."></textarea>
-                    </div>
-                    <div class="card-actions justify-end mt-4">
-                        <button id="cancelNewTopic" class="btn btn-ghost">Cancel</button>
-                        <button class="btn btn-primary">Post Topic</button>
-                    </div>
+                    <form method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="form-control mt-4">
+                            <button type="submit" class="btn btn-primary w-full">
+                              Post
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -173,55 +168,80 @@
     <!-- JavaScript for toggle functionality -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            console.log("Forum script loaded");
+    
             // Toggle for New Topic Form
             const newTopicBtn = document.getElementById('newTopicBtn');
             const newTopicForm = document.getElementById('newTopicForm');
-            const cancelNewTopic = document.getElementById('cancelNewTopic');
             
-            newTopicBtn.addEventListener('click', function() {
-                newTopicForm.classList.toggle('hidden');
-            });
-            
-            cancelNewTopic.addEventListener('click', function() {
-                newTopicForm.classList.add('hidden');
-            });
-            
+            if (newTopicBtn && newTopicForm) {
+                newTopicBtn.addEventListener('click', function() {
+                    newTopicForm.classList.toggle('hidden');
+                    console.log("New topic form toggled");
+                });
+            } else {
+                console.warn("New topic button or form not found");
+            }
+    
             // Toggle for Replies
             const toggleRepliesButtons = document.querySelectorAll('.toggle-replies');
+            console.log("Reply toggle buttons found:", toggleRepliesButtons.length);
+    
             toggleRepliesButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const targetId = this.getAttribute('data-target');
+                    console.log('Trying to toggle:', targetId);
                     const targetElement = document.getElementById(targetId);
-                    targetElement.classList.toggle('hidden');
+                    if (targetElement) {
+                        targetElement.classList.toggle('hidden');
+                        console.log('Toggled element:', targetId);
+                    } else {
+                        console.error('Target element not found:', targetId);
+                    }
                 });
             });
-            
+    
             // Close replies when cancel is clicked
             const closeRepliesButtons = document.querySelectorAll('.close-replies');
+            console.log("Close replies buttons found:", closeRepliesButtons.length);
+    
             closeRepliesButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const targetId = this.getAttribute('data-target');
                     const repliesContainer = document.getElementById(targetId);
-                    repliesContainer.classList.add('hidden');
+                    if (repliesContainer) {
+                        repliesContainer.classList.add('hidden');
+                        console.log('Closed replies for:', targetId);
+                    } else {
+                        console.error('Replies container not found:', targetId);
+                    }
                 });
             });
-            
+    
             // Toggle for individual reply forms
             const toggleReplyFormButtons = document.querySelectorAll('.toggle-reply-form');
             toggleReplyFormButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const targetId = this.getAttribute('data-target');
                     const targetElement = document.getElementById(targetId);
-                    targetElement.classList.toggle('hidden');
+                    if (targetElement) {
+                        targetElement.classList.toggle('hidden');
+                    } else {
+                        console.error('Reply form not found:', targetId);
+                    }
                 });
             });
-            
+    
             // Cancel individual reply
             const cancelReplyButtons = document.querySelectorAll('.cancel-reply');
             cancelReplyButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const replyForm = this.closest('[id^="reply-form-"]');
-                    replyForm.classList.add('hidden');
+                    if (replyForm) {
+                        replyForm.classList.add('hidden');
+                    } else {
+                        console.error('Reply form not found for cancellation');
+                    }
                 });
             });
         });
