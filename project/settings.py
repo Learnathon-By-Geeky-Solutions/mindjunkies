@@ -23,7 +23,8 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = [
-    config('ALLOWED_HOSTS', default='localhost'),
+    config('ALLOWED_HOSTS'),
+    'localhost',
 ]
 
 INTERNAL_IPS = [
@@ -151,6 +152,9 @@ STATICFILES_DIRS = [
     BASE_DIR / "theme/static",
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 # Default primary key field type

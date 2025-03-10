@@ -4,9 +4,7 @@
 *.pyc
 __pycache__
 db.sqlite3
-# media
-/media/lecture_pdfs
-/media/lecture_videos
+ media
 
 # Backup files
 *.bak
@@ -49,6 +47,7 @@ pip-log.txt
 coverage.xml
 htmlcov/
 nosetests.xml
+tox.ini
 
 # pyenv
 .python-version
