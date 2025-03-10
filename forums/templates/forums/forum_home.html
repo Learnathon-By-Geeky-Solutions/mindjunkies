@@ -66,11 +66,11 @@
                                 
                                 <!-- Reactions -->
                                 <div class="flex gap-4 mt-4">
-                                    <button class="btn btn-sm btn-ghost gap-1">
+                                    <button class="btn btn-sm btn-ghost gap-1 reaction-button" data-reply-id="{{topic.id}}" data-reaction="like">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75A2.25 2.25 0 0116.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.904M14.25 9h2.25M5.904 18.75c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 01-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 10.203 4.167 9.75 5 9.75h1.053c.472 0 .745.556.5.96a8.958 8.958 0 00-1.302 4.665c0 1.194.232 2.333.654 3.375z" />
                                         </svg>
-                                        Like ({{topic.like_count|default:"0"}})
+                                        Like <span class="reaction-count">({{topic.like_count|default:"0"}})</span>
                                     </button>
                                     <button class="btn btn-sm btn-ghost gap-1 toggle-replies" data-target="replies-container-{{topic.id}}">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -99,12 +99,13 @@
                     <div id="replies-container-{{topic.id}}" class="hidden">
                         <div class="divider px-8 my-0"></div>
                         
-                        <!-- First level replies (no parent) -->
+                        <!-- All replies (including nested) -->
                         {% for reply in topic.replies.all %}
-                            {% if not reply.parent_reply %}
-                                {% include "forums/reply.html" with reply=reply topic=topic %}
-                            {% endif %}
-                        {% endfor %}
+                        {% if not reply.parent_reply %}
+                            {% include "forums/reply.html" with reply=reply topic=topic %}
+                        {% endif %}
+                    {% endfor %}
+                    
                         
                         <!-- Comment Input Box -->
                         <div class="px-8 py-6 bg-base-200 rounded-b-xl">
@@ -169,7 +170,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             console.log("Forum script loaded");
-    
+
             // Toggle for New Topic Form
             const newTopicBtn = document.getElementById('newTopicBtn');
             const newTopicForm = document.getElementById('newTopicForm');
@@ -182,11 +183,11 @@
             } else {
                 console.warn("New topic button or form not found");
             }
-    
+
             // Toggle for Replies
             const toggleRepliesButtons = document.querySelectorAll('.toggle-replies');
             console.log("Reply toggle buttons found:", toggleRepliesButtons.length);
-    
+
             toggleRepliesButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const targetId = this.getAttribute('data-target');
@@ -200,51 +201,58 @@
                     }
                 });
             });
-    
+
+           // Handle reply to comment
+            const replyButtons = document.querySelectorAll('.toggle-reply-form');
+            replyButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const commentAuthor = this.getAttribute('data-author');
+                    const replyId = this.getAttribute('data-reply-id');
+                    const topicId = this.closest('[id^="replies-container-"]').id.split('-').pop();
+                    const replyForm = document.querySelector(`#replies-container-${topicId} form`);
+                    if (replyForm) {
+                        const textarea = replyForm.querySelector('textarea[name="content"]');
+                        const parentReplyInput = replyForm.querySelector('input[name="parent_reply_id"]');
+                        textarea.value = `@${commentAuthor} `;
+                        parentReplyInput.value = replyId;
+                        textarea.focus();
+                        // Scroll to the reply form
+                        replyForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            });
+
+            // Handle reactions
+            const reactionButtons = document.querySelectorAll('.reaction-button');
+            reactionButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const replyId = this.getAttribute('data-reply-id');
+                    const reactionType = this.getAttribute('data-reaction');
+                    // Here you would typically send an AJAX request to update the reaction
+                    console.log(`Reaction ${reactionType} for reply ${replyId}`);
+                    // For now, we'll just update the UI
+                    const countSpan = this.querySelector('.reaction-count');
+                    let count = parseInt(countSpan.textContent.replace(/[()]/g, ''));
+                    countSpan.textContent = `(${count + 1})`;
+                });
+            });
+
             // Close replies when cancel is clicked
             const closeRepliesButtons = document.querySelectorAll('.close-replies');
-            console.log("Close replies buttons found:", closeRepliesButtons.length);
-    
             closeRepliesButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const targetId = this.getAttribute('data-target');
                     const repliesContainer = document.getElementById(targetId);
                     if (repliesContainer) {
                         repliesContainer.classList.add('hidden');
-                        console.log('Closed replies for:', targetId);
-                    } else {
-                        console.error('Replies container not found:', targetId);
-                    }
-                });
-            });
-    
-            // Toggle for individual reply forms
-            const toggleReplyFormButtons = document.querySelectorAll('.toggle-reply-form');
-            toggleReplyFormButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const targetId = this.getAttribute('data-target');
-                    const targetElement = document.getElementById(targetId);
-                    if (targetElement) {
-                        targetElement.classList.toggle('hidden');
-                    } else {
-                        console.error('Reply form not found:', targetId);
-                    }
-                });
-            });
-    
-            // Cancel individual reply
-            const cancelReplyButtons = document.querySelectorAll('.cancel-reply');
-            cancelReplyButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const replyForm = this.closest('[id^="reply-form-"]');
-                    if (replyForm) {
-                        replyForm.classList.add('hidden');
-                    } else {
-                        console.error('Reply form not found for cancellation');
+                        // Clear the reply form
+                        const replyForm = repliesContainer.querySelector('form textarea[name="content"]');
+                        if (replyForm) replyForm.value = '';
                     }
                 });
             });
         });
     </script>
 {% endblock lecture_content %}
-
