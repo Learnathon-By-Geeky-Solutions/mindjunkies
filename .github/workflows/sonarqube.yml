@@ -53,6 +53,7 @@ jobs:
           echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> .env
           
           echo "TEST_PASS=${{ secrets.TEST_PASS }}" >> .env
+          echo "NPM_BIN_PATH=${{ secrets.NPM_BIN_PATH }}" >> .env
         shell: bash
 
       - name: Run Tests and Generate Coverage Report
