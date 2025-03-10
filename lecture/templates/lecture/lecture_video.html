@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block extra_head %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.7.0/video-js.min.css" rel="stylesheet"/>
+{% endblock extra_head %}
+
+{% block main_content %}
+    <div class="drawer lg:drawer-open">
+        <input id="my-drawer" type="checkbox" class="drawer-toggle"/>
+        <div class="drawer-content flex flex-col">
+            <!-- Page content here -->
+            <div class="navbar bg-base-100 lg:hidden">
+                <div class="flex-none">
+                    <label for="my-drawer" class="btn btn-square btn-ghost drawer-button" aria-label="Toggle-Drawer">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                             class="inline-block w-5 h-5 stroke-current">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </label>
+                </div>
+                <div class="flex-1">
+                    <a class="btn btn-ghost normal-case text-xl">{{ module.title }}</a>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="flex-1 overflow-y-auto">
+                <!-- Breadcrumb Navigation -->
+                <div class="flex items-center justify-between p-4 border-b bg-base-100">
+                    <div class="flex items-center gap-2 text-sm">
+                        <a href="#" class="text-primary hover:underline">Supervised Machine Learning: Regression and
+                            Classification</a>
+                        <span class="text-base-content/70">›</span>
+                        <a href="#" class="text-primary hover:underline">Week 1</a>
+                        <span class="text-base-content/70">›</span>
+                        <span>Welcome to machine learning!</span>
+                    </div>
+                    <a href="#" class="btn btn-primary btn-sm">Next</a>
+                </div>
+
+                <!-- Video Content -->
+                <div class="p-4">
+                    <div class="rounded-xl bg-base-200">
+                        <div class="">
+                            <div class="video-container">
+                                <video id="video" class="video-js vjs-default-skin w-[800px] h-[450px]" controls
+                                       preload="auto">
+                                    <source src="{{ hls_url }}" type="application/x-mpegURL">
+                                    <track src="https://example.com/subtitles-en.vtt" kind="subtitles" srclang="en"
+                                           label="English" default>
+                                </video>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <button class="btn btn-ghost btn-sm text-primary">
+                                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/>
+                                </svg>
+                                Report an issue
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <div class="drawer-side">
+            <label for="my-drawer" class="drawer-overlay" aria-label="Closed-Drawer"></label>
+            <aside class="w-80 bg-base-100 border-r flex-shrink-0 h-screen">
+                <!-- Sidebar content here -->
+                <div class="p-4">
+                    <h2 class="font-bold text-lg mb-4">Course Content</h2>
+
+                    <div class="space-y-2">
+                        <!-- Week 1 Dropdown -->
+                        {% for lecture in module.lectures.all %}
+                            <div class="collapse collapse-arrow bg-base-200">
+                                <input type="checkbox" checked/>
+                                <div class="collapse-title font-medium">
+                                    Week {{ lecture.order }}: {{ lecture.title }}
+                                </div>
+                                <div class="collapse-content">
+                                    <div class="space-y-2">
+                                        <!-- Video Item -->
+                                        {% for video in lecture.videos.all %}
+                                            <a href="{% url 'lecture_video_content' course.slug module.id video.id %}"
+                                               class="flex items-start p-2 rounded-lg hover:bg-base-300">
+                                                <div class="flex-shrink-0 mt-1">
+                                                    <svg class="h-5 w-5 text-primary" viewBox="0 0 24 24"
+                                                         fill="currentColor">
+                                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+                                                    </svg>
+                                                </div>
+                                                <div class="ml-3 flex-1">
+                                                    <p class="text-sm font-medium">{{ video.video_title }}</p>
+                                                    <span class="text-xs text-base-content/70">2 min</span>
+                                                </div>
+                                            </a>
+                                        {% endfor %}
+
+                                        <!-- Reading Item -->
+                                        {% for pdf in lecture.pdf_files.all %}
+                                            <a href="{{ pdf.pdf_file.url }}"
+                                               class="flex items-start p-2 rounded-lg hover:bg-base-300" download="">
+                                                <div class="flex-shrink-0 mt-1">
+                                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                                                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z"/>
+                                                    </svg>
+                                                </div>
+                                                <div class="ml-3 flex-1">
+                                                    <p class="text-sm font-medium">{{ pdf.pdf_title }}</p>
+                                                    <span class="text-xs text-base-content/70">5 min read</span>
+                                                </div>
+                                            </a>
+                                        {% endfor %}
+
+                                        <!-- Quiz Item -->
+                                        <a href="#" class="flex items-start p-2 rounded-lg hover:bg-base-300">
+                                            <div class="flex-shrink-0 mt-1">
+                                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                                                </svg>
+                                            </div>
+                                            <div class="ml-3 flex-1">
+                                                <p class="text-sm font-medium">Practice Quiz: ML Basics</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.7.0/video.min.js"
+            integrity="sha256-uNxDfF9Tdb1GQ9Gb7DRVcWD6uDY/vNyhvuspnJP567I=" crossorigin="anonymous"></script>
+    <script>
+        const player = videojs('video', {
+            controls: true,
+            autoplay: false,
+            preload: 'auto',
+            playbackRates: [0.5, 1, 1.5, 2, 2.5] // Playback speed options
+        });
+
+        player.ready(function () {
+            console.log("Video.js Player is Ready!");
+        });
+    </script>
+{% endblock %}
+
+{% block extra_js %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const drawer = document.getElementById('my-drawer');
+            const mediaQuery = window.matchMedia('(min-width: 1024px)');
+
+            function handleDrawerState(e) {
+                if (e.matches) {
+                    drawer.checked = true;
+                } else {
+                    drawer.checked = false;
+                }
+            }
+
+            mediaQuery.addListener(handleDrawerState);
+            handleDrawerState(mediaQuery);
+        });
+    </script>
+{% endblock %}

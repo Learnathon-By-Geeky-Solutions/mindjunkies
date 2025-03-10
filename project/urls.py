@@ -18,14 +18,16 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
+from lecture.views import serve_hls_segment
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls')),
     path('accounts/', include('accounts.urls')),
-    path('course/', include('courses.urls')),
-    path('lecture/', include('lecture.urls')),
-    path('meet/', include('videoConf.urls')),
+    path('courses/', include('courses.urls')),
+    path('dashboard/', include('dashboard.urls')),
+    path('live-classes/', include('liveclasses.urls')),
 ]
 
 if settings.DEBUG:

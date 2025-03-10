@@ -6,6 +6,7 @@ __pycache__
 db.sqlite3
 # media
 /media/lecture_pdfs
+/media/lecture_videos
 
 # Backup files
 *.bak
@@ -77,3 +78,5 @@ venv/
 .vscode
 
 /node_modules/
+
+liveclasses/private.pem

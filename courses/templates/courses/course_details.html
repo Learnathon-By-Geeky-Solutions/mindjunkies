@@ -2,100 +2,298 @@
 {% load static %}
 {% load courses_tags %}
 
+{% block head_title %}{{ course_detail.title }} - MindJunkies{% endblock %}
+
 {% block main_content %}
-    <div class="mx-auto">
-        <!-- Banner -->
-        <div class="h-[300px] bg-black text-white m-4 rounded-lg relative flex flex-col justify-center p-6">
-            <div class="w-[400px] text-white font-bold hidden sm:block">
-                <h1 class="text-3xl font-bold">{{ course_detail.title }}</h1>
-                <p class="text-xs font-semibold mt-2">{{ course_detail.short_introduction }}</p>
-                <p class="text-sm mt-2">Created by: Farhana Islam</p>
-            </div>
-
-            <!-- Hidden on Large Screens, Visible on Small Screens -->
-            <div class="sm:hidden mt-4 p-4 w-full block">
-                <p class="text-sm"><strong>Published on:</strong> {{ course_detail.published_on|date:"F j, Y" }}</p>
-                <p class="text-sm"><strong>Tags:</strong> Python, Beginner, Programming</p>
-                <p class="text-sm"><strong>Categories:</strong> Tech, Software Dev</p>
-                <p class="text-sm"><strong>Rating:</strong> ⭐ {{ course_detail.total_rating }}</p>
-                <p class="text-sm"><strong>Price:</strong> ${{ course_detail.course_price }}</p>
-                <div class="mt-3">
-                    <a href="{{ course_detail.preview_video_link }}" class="btn btn-primary w-full" target="_blank">Watch
-                        Preview</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Fixed Card (Hidden on Small Screens) -->
-        <div class="hidden sm:block fixed top-20 right-5 w-80 h-[500px] bg-base-100 shadow-xl border border-gray-300 rounded-lg p-4">
-            <div class="card-body">
-                <!-- If preview video link exists, show the video, else show the image -->
-                <figure class="mt-3">
-                    {% if course_detail.preview_video_link %}
-
-                        <iframe
-                                class="rounded-lg h-40 w-full border-0"
-                                src="{{ course_detail.preview_video_link }}"
-                                allow="autoplay; encrypted-media"
-                                allowfullscreen
-                                title="Course Preview Video">
-                        </iframe>
-
-                    {% else %}
-                        <img src="/static/images/course.jpg" alt="Course Thumbnail"
-                             class="rounded-lg h-40 object-cover w-full"/>
-                    {% endif %}
-                </figure>
-                <p class="text-sm text-gray-600"><strong>Published
-                    on:</strong> {{ course_detail.published_on|date:"F j, Y" }}</p>
-                <p class="text-sm text-gray-600"><strong>Tags:</strong> Python, Beginner, Programming</p>
-                <p class="text-sm text-gray-600"><strong>Categories:</strong> Tech, Software Dev</p>
-                <p class="text-sm text-gray-600"><strong>Rating:</strong> ⭐ {{ course_detail.total_rating }}</p>
-                <p class="text-sm text-gray-600"><strong>Price:</strong> ${{ course_detail.course_price }}</p>
-                <div class="card-actions justify-center mt-4">
-                    <a href="{{ course_detail.preview_video_link }}" class="btn btn-primary w-full" target="_blank">Watch
-                        Preview</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Course Details -->
-        <div class="bg-white shadow-lg rounded-lg overflow-hidden m-4 sm:w-[75%]">
-            <div class="flex items-center p-4">
-                <img src="/static/images/course.jpg" alt="Course Thumbnail"
-                     class="w-12 h-12 rounded-full object-cover"/>
-                <div class="ml-4">
-                    <p class="font-semibold text-gray-800">{{ course_detail.title }}</p>
-                    <p class="text-sm text-gray-500">Published on: {{ course_detail.published_on|date:"F j, Y" }}</p>
-                </div>
-            </div>
-            <div class="p-4">
-                <div class="prose">
-                    {{ course_detail.course_description | markdown }}
-                </div>
-                <div class=" w-[600px] font-bold">
-                    <h2 class="text-2xl my-4 text-gray-700">This Course Includes:</h2>
-                    <ul class="grid grid-cols-1 sm:grid-cols-2  gap-2 list-disc">
-                        <!-- grid-cols-2 will ensure two columns -->
-                        <div class="bg-gray-200 p-2 rounded-lg">61 hours on-demand video</div>
-                        <div class="bg-gray-200 p-2 rounded-lg">194 downloadable resources</div>
-                        <div class="bg-gray-200 p-2 rounded-lg">7 coding exercises</div>
-                        <div class="bg-gray-200 p-2 rounded-lg">Access on mobile and TV</div>
-
+    <div class="bg-base-200 min-h-screen pb-12">
+    <!-- Course Header -->
+    <div class="bg-black text-primary-content py-16">
+        <div class="container mx-auto px-4 max-w-7xl">
+            <div class="flex flex-col lg:flex-row justify-between items-start">
+                <div class="lg:w-2/3 mb-6 lg:mb-0 lg:pr-8">
+                    <h1 class="text-4xl font-bold mb-4">{{ course_detail.title }}</h1>
+                    <p class="text-xl mb-6">{{ course_detail.short_introduction }}</p>
+                    <div class="flex flex-wrap items-center gap-4 mb-6">
+                        <div class="badge badge-secondary">{{ course_detail.category }}</div>
+                        <div class="flex items-center">
+                            <span class="text-yellow-400 mr-1">★</span>
+                            <span>{{ course_detail.total_rating }} ({{ course_detail.num_reviews }} reviews)</span>
+                        </div>
+                        <div>{{ course_detail.num_students }} {{ course_detail.number_of_enrollments }} students enrolled</div>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <img src="{% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'images/default-avatar.jpg' %}{% endif %}"
+                             alt="{{ instructor.username }}" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <p>Created by </p>
+                            <p class="font-semibold">{{ instructor.username }}</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                                 fill="currentColor">
+                                <path fill-rule="evenodd"
+                                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                            Last updated {{ course_detail.last_updated|date:"F Y" }}
+                        </div>
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                                 fill="currentColor">
+                                <path fill-rule="evenodd"
+                                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                            {{ course_detail.language }} English
+                        </div>
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                                 fill="currentColor">
+                                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/>
+                            </svg>
+                            {{ course_detail.level }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Course Content -->
+    <div class="container mx-auto px-4 max-w-7xl py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Content -->
+            <div class="lg:col-span-2">
+
+                <!-- What you'll learn -->
+                <div class="card bg-base-100 shadow-xl mb-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-2xl mb-4">What you'll learn</h2>
+                        <ul class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            {% for objective in course_detail.objectives.all %}
+                                <li class="flex items-start">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="h-6 w-6 mr-2 flex-shrink-0 text-success" fill="none"
+                                         viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    {{ objective }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Course content -->
+                <div class="card bg-base-100 shadow-xl mb-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-2xl mb-4">Course content</h2>
+                        <p class="mb-4">{{ course_detail.num_sections }} sections • {{ course_detail.num_lectures }}
+                            lectures • {{ course_detail.total_length }} total length</p>
+                        {% for section in course_detail.sections %}
+                            <div class="collapse collapse-arrow bg-base-200 mb-2">
+                                <input type="checkbox"/>
+                                <div class="collapse-title text-xl font-medium">
+                                    {{ section.title }}
+                                </div>
+                                <div class="collapse-content">
+                                    <ul class="menu bg-base-100 w-full rounded-box">
+                                        {% for lecture in section.lectures %}
+                                            <li>
+                                                <a class="flex justify-between">
+                                                    <span>{{ lecture.title }}</span>
+                                                    <span class="text-base-content/70">{{ lecture.length }}</span>
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Requirements -->
+                <div class="card bg-base-100 shadow-xl mb-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-2xl mb-4">Requirements</h2>
+                        <ul class="list-disc list-inside">
+                            {% for line in course_detail.requirements.all %}
+                                <li>{{ line }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="card bg-base-100 shadow-xl mb-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-2xl mb-4">Description</h2>
+                        <div class="prose max-w-none">
+                            {{ course_detail.course_description | markdown }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instructor -->
+                <div class="card bg-base-100 shadow-xl mb-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-2xl mb-4">Instructor</h2>
+                        <div class="flex items-center mb-4">
+                            <img src="
+                                    {% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'images/default-avatar.jpg' %}{% endif %}"
+                                 alt="{{ instructor.username }}" class="w-24 h-24 rounded-full mr-6">
+                            <div>
+                                <h3 class="text-xl font-semibold mb-2">{{ instructor.username }}</h3>
+                                <p class="text-base-content/70">{{ instructor.title }}</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-4 mb-4">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                                     fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                                {{ instructor.rating }} Instructor Rating
+                            </div>
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                                     fill="currentColor">
+                                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                                </svg>
+                                {{ course_detail.instructor.num_reviews }} Reviews
+                            </div>
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                                     fill="currentColor">
+                                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
+                                </svg>
+                                {{ course_detail.instructor.num_students }} Students
+                            </div>
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                                     fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                          d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm3 2h6v4H7V5zm8 8v2h1v-2h-1zm-2-2H7v4h6v-4zm2 0h1V9h-1v2zm1-4V5h-1v2h1zM5 5v2H4V5h1zm0 4H4v2h1V9zm-1 4h1v2H4v-2z"
+                                          clip-rule="evenodd"/>
+                                </svg>
+                                {{ course_detail.instructor.num_courses }} Courses
+                            </div>
+                        </div>
+                        <p class="mb-4">{{ course_detail.instructor.bio }}</p>
+                    </div>
+                </div>
 
 
+                <!-- Teacher Actions -->
+                {% if teacher %}
+                    <div class="container mx-auto px-4 max-w-7xl mb-8">
+                        <div class="card bg-base-100 shadow-xl">
+                            <div class="card-body">
+                                <h2 class="card-title text-2xl mb-4">Teacher Actions</h2>
+                                <div class="flex gap-4">
+                                    <a href="{% url 'edit_course' %}?slug={{ course_detail.slug }}"
+                                       class="btn btn-primary">Edit
+                                        Course</a>
+                                    <a href="{% url 'lecture_home' course_detail.slug %}"
+                                       class="btn btn-secondary">Manage
+                                        Lectures</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
 
-    <!-- Edit Button -->
-    <div class="p-4 flex gap-2">
-    {% if teacher %}
-        <a href="{% url 'edit_course' %}?slug={{ course_detail.slug }}" class="btn btn-primary">Edit Course</a>
-        {% endif %}
-        <a href="{% url 'lecture_home' %}?slug={{ course_detail.slug }}" class="btn btn-primary">Enter Course</a>
-    </div>
+            <!-- Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="sticky top-8 flex flex-col gap-8">
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            {% if course_detail.preview_video_link %}
+                                <div class="aspect-w-16 aspect-h-9 mb-4">
+                                    <iframe class="rounded-lg w-full" src="{{ course_detail.preview_video_link }}"
+                                            title="Course Preview"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowfullscreen></iframe>
+                                </div>
+                            {% else %}
+                                <img src="{% static 'images/course.jpg' %}" alt="Course Thumbnail"
+                                     class="rounded-lg w-full h-auto max-h-48 object-cover mb-4">
+                            {% endif %}
+                            <div class="text-3xl font-bold mb-4">${{ course_detail.course_price }}</div>
+                            
+                            {% if not accessed %}
+                            <a href="{% url 'lecture_home' course_detail.slug %}
+                             "class="btn btn-primary btn-block mb-4">Add to cart</a>
+                             {% else %}
+                             <a href="{% url 'lecture_home' course_detail.slug %}
+                             "class="btn btn-primary btn-block mb-4">View</a>
+                            {% endif %}
+                            {% comment %} <a href="{{ course_detail.preview_video_link }}" class="btn btn-outline btn-block mb-4"
+                               target="_blank">Watch Preview</a> {% endcomment %}
+                            <p class="text-center text-sm mb-4">30-Day Money-Back Guarantee</p>
+                        </div>
+                    </div>
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h3 class="font-semibold text-lg mb-4">This course includes:</h3>
+                            <div class="space-y-2">
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                                         fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                              d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                                              clip-rule="evenodd"/>
+                                    </svg>
+                                    {{ course_detail.total_length }} of on-demand video
+                                </div>
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                                         fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                              d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+                                              clip-rule="evenodd"/>
+                                    </svg>
+                                    {{ course_detail.num_articles }} articles
+                                </div>
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                                         fill="currentColor">
+                                        <path d="M10 3.5a1.5 1.5 0 013 0V4a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-.5a1.5 1.5 0 000 3h.5a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-.5a1.5 1.5 0 00-3 0v.5a1 1 0 01-1 1H6a1 1 0 01-1-1v-3a1 1 0 00-1-1h-.5a1.5 1.5 0 010-3H4a1 1 0 001-1V6a1 1 0 011-1h3a1 1 0 001-1v-.5z"/>
+                                    </svg>
+                                    {{ course_detail.num_resources }} downloadable resources
+                                </div>
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                                         fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                              clip-rule="evenodd"/>
+                                    </svg>
+                                    Full lifetime access
+                                </div>
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                                         fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                              clip-rule="evenodd"/>
+                                    </svg>
+                                    Certificate of completion
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+        </div>
     </div>
 {% endblock main_content %}

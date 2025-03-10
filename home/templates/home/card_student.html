@@ -1,7 +1,9 @@
 {% load static %}
-<div class="card bg-base-100 shadow-xl">
-    <img src="{{ course.course_image.url }}" alt="Course Thumbnail"
-         class="rounded-lg w-full object-cover"/>
+{% load cloudinary %}
+<div class="card bg-base-100 shadow-xl max-w-72">
+    <div class="rounded-lg object-cover">
+        {% cloudinary course.course_image quality='auto' crop='pad' width=400 %}
+    </div>
     <div class="card-body">
         <h3 class="card-title">{{ course.title }}</h3>
         <p>{{ course.short_introduction }}</p>

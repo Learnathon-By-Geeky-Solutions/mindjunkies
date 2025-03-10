@@ -1,10 +1,12 @@
 {% load static %}
+{% load cloudinary %}
 <div class="card bg-base-100 shadow-xl">
-    <img src="{{ course.course_image.url }}" alt="Course Thumbnail"
-         class="rounded-lg w-full object-cover"/>
+    <div class="rounded-lg object-cover">
+        {% cloudinary course.course_image quality='auto' crop='pad' width=400 %}
+    </div>
     <div class="card-body">
         <h3 class="card-title">{{ course.title }}</h3>
-        <p>{{ course.short_introduction }}</p>
+        <p>{{ course.short_introduction|truncatewords:30 }}</p>
         <div class="card-actions justify-end">
             <a href="{% url 'edit_course' %}?slug={{ course.slug }}">
                 <button class="btn btn-primary">Edit course</button>
