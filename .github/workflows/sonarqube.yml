@@ -31,8 +31,10 @@ jobs:
           pipenv install --dev
 
       - name: Run Tests and Generate Coverage Report
+        env:
+          DJANGO_SETTINGS_MODULE: project.settings
         run: |
-          pipenv run coverage run -m unittest discover
+          pipenv run coverage run manage.py test
           pipenv run coverage xml -o coverage.xml
           ls -l coverage.xml  # Check if coverage.xml exists
 
