@@ -1,3 +1,9 @@
+import os
+import mimetypes
+from django.utils.encoding import smart_str
+from django.conf import settings
+
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView,FormView,UpdateView
@@ -12,7 +18,6 @@ from django.http import FileResponse, HttpRequest, HttpResponse, HttpResponseFor
 from .forms import LectureForm, LecturePDFForm, ModuleForm, LectureVideoForm
 from courses.models import Course, Module
 from .models import Lecture, LectureVideo, LecturePDF
-import os
 
 @login_required
 @require_http_methods(["GET"])
@@ -47,30 +52,56 @@ def serve_hls_playlist(request, course_slug, video_id):
         video = get_object_or_404(LectureVideo, pk=video_id)
         hls_playlist_path = video.hls
 
-        with open(hls_playlist_path, 'r') as m3u8_file:
+        if not os.path.exists(hls_playlist_path) or not os.path.abspath(hls_playlist_path).startswith(settings.MEDIA_ROOT):
+            return HttpResponse("Invalid file path", status=400)
+
+        with open(hls_playlist_path, 'r', encoding='utf-8') as m3u8_file:
             m3u8_content = m3u8_file.read()
 
         base_url = request.build_absolute_uri('/') + 'courses'
         serve_hls_segment_url = base_url + f"/{course_slug}/serve_hls_segment/" + str(video_id)
         m3u8_content = m3u8_content.replace('{{ dynamic_path }}', serve_hls_segment_url)
 
-        return HttpResponse(m3u8_content, content_type='application/vnd.apple.mpegurl')
+        response = HttpResponse(m3u8_content, content_type='application/vnd.apple.mpegurl')
+        response["X-Content-Type-Options"] = "nosniff"
+        return response
     except (LectureVideo.DoesNotExist, FileNotFoundError):
         return HttpResponse("Video or HLS playlist not found", status=404)
 
 @require_http_methods(["GET"])
-def serve_hls_segment(video_id, segment_name):
+def serve_hls_segment(request, course_slug, video_id, segment_name):
+    print("hello world")
+
     try:
         video = get_object_or_404(LectureVideo, pk=video_id)
         hls_directory = os.path.join(os.path.dirname(video.video_file.path), 'hls_output')
-        segment_path = os.path.join(hls_directory, segment_name)
+        # Validate and sanitize segment name
+        safe_segment_name = os.path.basename(segment_name)  
+        segment_path = os.path.join(hls_directory, safe_segment_name)
 
         print("Segment path:", segment_path)
 
+        if not segment_path.startswith(hls_directory):
+            return HttpResponseForbidden("Access denied")
+
+        if not os.path.exists(segment_path):
+            return HttpResponse("Video or HLS segment not found", status=404)
+        
+
+        content_type, _ = mimetypes.guess_type(segment_path)
+        content_type = content_type or 'application/octet-stream'
+
         # Serve the HLS segment as a binary file response
-        return FileResponse(open(segment_path, 'rb'))
-    except (LectureVideo.DoesNotExist, FileNotFoundError):
-        return HttpResponse("Video or HLS segment not found", status=404)
+        response = FileResponse(open(segment_path, 'rb'), content_type=content_type)
+        response['Content-Disposition'] = f'inline; filename="{smart_str(safe_segment_name)}"'
+        return response
+    
+    except LectureVideo.DoesNotExist:
+        return HttpResponse("Video not found", status=404)
+    except FileNotFoundError:
+        return HttpResponse("Segment file not found", status=404)
+    except ValueError as e:
+        return HttpResponse(f"Error: {str(e)}", status=500)
 
 
 @login_required
