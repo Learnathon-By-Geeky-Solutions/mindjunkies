@@ -41,7 +41,7 @@ jobs:
           echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
           
           echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> .env
-          echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .env
+          echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >>   .env
           echo "DEFAULT_FROM_EMAIL=${{ secrets.DEFAULT_FROM_EMAIL }}" >> .env
           
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
@@ -57,6 +57,12 @@ jobs:
           echo "TEST_PASS=${{ secrets.TEST_PASS }}" >> .env
           echo "NPM_BIN_PATH=${{ secrets.NPM_BIN_PATH }}" >> .env
         shell: bash
+
+      - name: Create .coveragerc to Exclude Files
+        run: |
+          echo "[run]" > .coveragerc
+          echo "omit =" >> .coveragerc
+          echo "    lecture/management/commands/encode.py" >> .coveragerc
 
       - name: Run Tests and Generate Coverage Report
         env:
