@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.text import slugify
-from .models import ForumTopic
+from .models import ForumTopic,ForumReply
 
 class ForumTopicForm(forms.ModelForm):
     class Meta:
@@ -13,3 +13,9 @@ class ForumTopicForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
+class ForumReplyForm(forms.ModelForm):
+    class Meta:
+        model=ForumReply
+        fields=['content']
+        
