@@ -9,6 +9,7 @@ db.sqlite3
 # Backup files
 *.bak
 
+
 # Python
 *.py[cod]
 *$py.class
@@ -48,6 +49,7 @@ coverage.xml
 htmlcov/
 nosetests.xml
 tox.ini
+coverage.html
 
 # pyenv
 .python-version
@@ -74,7 +76,7 @@ venv/
 .DS_Store
 .idea
 .vscode
-
+/media/
 /node_modules/
 
 liveclasses/private.pem
