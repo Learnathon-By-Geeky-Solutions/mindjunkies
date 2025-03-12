@@ -1,69 +1,166 @@
-/* Forum thread connection lines */
+
+    /* Elegant Forum Thread Design */
+
+/* Base container for all replies */
+
 .reply-container {
-    position: relative;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+/* Reply content styling */
+.reply-content {
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  margin-bottom: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.reply-content:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.dark .reply-content:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Child reply specific styling */
+.child-reply {
+  border-left: 1px solid transparent;
+}
+
+/* Thread line styling - the vertical connector */
+.thread-line {
+  position: absolute;
+  left: -1.25rem;
+  top: 0;
+  height: 100%;
+  width: 2px;
+  background: linear-gradient(to bottom, #e5e7eb 0%, #e5e7eb 100%);
+  border-radius: 1px;
+}
+
+/* Add the horizontal connector */
+.reply-container.ml-10::before {
+  content: "";
+  position: absolute;
+  top: 1.5rem;
+  left: -1.25rem;
+  width: 1rem;
+  height: 2px;
+  background-color: #e5e7eb;
+  border-radius: 1px;
+}
+
+/* Improved spacing for nested replies */
+.reply-container .reply-container {
+  margin-top: 0.25rem;
+}
+
+/* Reply reference styling */
+.reply-reference {
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.reply-reference:hover {
+  opacity: 1;
+}
+
+/* Avatar styling */
+.avatar .ring-base-200 {
+  transition: all 0.3s ease;
+}
+
+.reply-content:hover .avatar .ring-base-200 {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* Reaction button styling */
+.reaction-btn {
+  transition: all 0.2s ease;
+  opacity: 0.8;
+}
+
+.reaction-btn:hover {
+  opacity: 1;
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .thread-line {
+    background: linear-gradient(to bottom, #374151 0%, #374151 100%);
   }
-  
-  /* Vertical line for nested replies */
-  .reply-container.ml-8 .absolute {
-    position: absolute;
-    left: -1rem;
-    top: 0;
-    height: 100%;
-    width: 2px;
-    background-color: #e5e7eb; /* gray-200 */
+
+  .reply-container.ml-10::before {
+    background-color: #374151;
   }
-  
-  /* Horizontal connector line for nested replies */
-  .reply-container.ml-8::before {
-    content: "";
-    position: absolute;
-    top: 1.5rem; /* Aligns with the avatar center */
-    left: -1rem;
-    width: 0.75rem;
-    height: 2px;
-    background-color: #e5e7eb; /* gray-200 */
-  }
-  
-  /* Improved spacing for nested replies */
-  .reply-container .reply-container {
-    margin-top: 0.5rem;
-  }
-  
-  /* Dark mode support */
-  @media (prefers-color-scheme: dark) {
-    .reply-container.ml-8 .absolute,
-    .reply-container.ml-8::before {
-      background-color: #374151; /* gray-700 */
-    }
-  }
-  
-  /* Custom dark mode */
-  .dark .reply-container.ml-8 .absolute,
-  .dark .reply-container.ml-8::before {
-    background-color: #374151; /* gray-700 */
-  }
-  
-  /* Enhanced New Topic Button */
-  #newTopicBtn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    transition: all 0.3s ease;
-  }
-  
-  #newTopicBtn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  }
-  
-  #newTopicBtn svg {
-    transition: transform 0.3s ease;
-  }
-  
-  #newTopicBtn:hover svg {
-    transform: rotate(90deg);
-  }
-  
-  
+}
+
+/* Custom dark mode */
+.dark .thread-line {
+  background: linear-gradient(to bottom, #374151 0%, #374151 100%);
+}
+
+.dark .reply-container.ml-10::before {
+  background-color: #374151;
+}
+
+/* Enhanced New Topic Button */
+#newTopicBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+#newTopicBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+#newTopicBtn svg {
+  transition: transform 0.3s ease;
+}
+
+#newTopicBtn:hover svg {
+  transform: rotate(90deg);
+}
+
+/* Nested depth styling - different indentation for each level */
+.reply-container .reply-container .reply-container {
+  margin-left: 0.5rem;
+}
+
+.reply-container .reply-container .reply-container .reply-container {
+  margin-left: 0.25rem;
+}
+
+/* Animated thread lines on hover */
+.reply-container:hover > .thread-line {
+  background: linear-gradient(to bottom, #3b82f6 0%, #e5e7eb 100%);
+}
+
+.dark .reply-container:hover > .thread-line {
+  background: linear-gradient(to bottom, #3b82f6 0%, #374151 100%);
+}
+
+/* Animated horizontal connector on hover */
+.reply-container.ml-10:hover::before {
+  background-color: #3b82f6;
+}
+
+/* Debug styles */
+.debug-info {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  margin-top: 0.5rem;
+  padding: 0.25rem;
+  background-color: #f3f4f6;
+  border-radius: 0.25rem;
+}
+
+
