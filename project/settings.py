@@ -57,7 +57,7 @@ INSTALLED_APPS = [
     'mindjunkies.forums',
 
     # third party mindjunkies
-    'tailwind',
+    'django_tailwind_cli',
     'django_browser_reload',
     'crispy_forms',
     'crispy_tailwind',
@@ -159,7 +159,6 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "mindjunkies/static",
-    BASE_DIR / "mindjunkies/theme/static",
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
@@ -211,8 +210,6 @@ SOCIALACCOUNT_PROVIDERS = {
     },
 }
 
-# Tailwind settings
-TAILWIND_APP_NAME = 'mindjunkies.theme'
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
@@ -227,6 +224,3 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
 JITSI_APP_ID = config("JITSI_APP_ID")
 JITSI_SECRET = config("JITSI_SECRET")
-
-NPM_BIN_PATH = config("NPM_BIN_PATH")
-

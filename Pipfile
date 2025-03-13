@@ -23,6 +23,7 @@ cloudinary = "*"
 
 [dev-packages]
 coverage = "*"
+django-tailwind-cli = "*"
 
 [requires]
 python_version = "3.12"
