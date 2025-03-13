@@ -18,21 +18,21 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
-from lecture.views import serve_hls_segment
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('home.urls')),
-    path('accounts/', include('accounts.urls')),
-    path('courses/', include('courses.urls')),
-    path('dashboard/', include('dashboard.urls')),
-    path('live-classes/', include('liveclasses.urls')),
-    
+    path('', include('mindjunkies.home.urls')),
+    path('accounts/', include('mindjunkies.accounts.urls')),
+    path('courses/', include('mindjunkies.courses.urls')),
+    path('dashboard/', include('mindjunkies.dashboard.urls')),
+    path('live_classes/', include('mindjunkies.live_classes.urls')),
+    path('forums/', include('mindjunkies.forums.urls')),
 ]
+
 
 if settings.DEBUG:
     urlpatterns += [
         path("__reload__/", include("django_browser_reload.urls")),
     ]
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

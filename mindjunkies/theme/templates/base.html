@@ -1,0 +1,39 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Add these to the head tag of your HTML -->
+  
+
+    <title>
+        {% block head_title %}LMS{% endblock head_title %}
+    </title>
+    {% block extra_head %}{% endblock extra_head %}
+    {% tailwind_css %}
+<link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="min-h-screen flex flex-col">
+
+{% include 'includes/header.html' %}
+
+{% if messages %}
+    <div class="fixed top-24 right-12 max-w-xs w-full">
+        {% for message in messages %}
+            <div role="alert" class="alert alert-info">
+                <span>{{ message | safe }}</span>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<main class="">
+    {% block main_content %}{% endblock main_content %}
+</main>
+
+{% include 'includes/footer.html' %}
+
+</body>
+</html>
