@@ -13,10 +13,12 @@ from django.utils.encoding import smart_str
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 from django.views.generic.edit import CreateView, FormView, UpdateView
+from typing import Any
 
 from courses.models import Course, Module
 from .forms import LectureForm, LecturePDFForm, ModuleForm, LectureVideoForm
 from .models import Lecture, LectureVideo, LecturePDF
+
 
 
 @login_required

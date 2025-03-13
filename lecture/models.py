@@ -19,8 +19,8 @@ class Lecture(BaseModel):
 
     title = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
-   
-    learning_objective= models.TextField(null=True, blank=True)
+
+    learning_objective = models.TextField(null=True, blank=True)
     order = models.PositiveIntegerField(default=0)
 
     slug = models.SlugField(max_length=255, unique=True, blank=True)

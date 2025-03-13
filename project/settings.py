@@ -23,7 +23,8 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = [
-    config('ALLOWED_HOSTS', default='localhost'),
+    config('ALLOWED_HOSTS'),
+    'localhost',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -157,6 +158,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "theme/static",
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

@@ -4,12 +4,11 @@
 *.pyc
 __pycache__
 db.sqlite3
-# media
-/media/lecture_pdfs
-/media/lecture_videos
+ media
 
 # Backup files
 *.bak
+
 
 # Python
 *.py[cod]
@@ -48,6 +47,8 @@ pip-log.txt
 coverage.xml
 htmlcov/
 nosetests.xml
+tox.ini
+coverage.html
 
 # pyenv
 .python-version
@@ -74,6 +75,6 @@ venv/
 .DS_Store
 .idea
 .vscode
-
+/media/
 /node_modules/
 
