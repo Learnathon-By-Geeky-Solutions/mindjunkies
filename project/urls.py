@@ -26,6 +26,7 @@ urlpatterns = [
     path('courses/', include('mindjunkies.courses.urls')),
     path('dashboard/', include('mindjunkies.dashboard.urls')),
     path('live_classes/', include('mindjunkies.live_classes.urls')),
+    path('forums/', include('mindjunkies.forums.urls')),
 ]
 
 

@@ -23,6 +23,7 @@ db.sqlite3
 .eggs/
 .installed.cfg
 develop-eggs/
+dist/
 downloads/
 eggs/
 lib/
@@ -69,7 +70,7 @@ venv/
 
 # Misc
 .mypy_cache
-#/staticfiles
+/staticfiles
 
 # IDEs
 .DS_Store
