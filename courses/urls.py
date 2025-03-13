@@ -10,6 +10,7 @@ urlpatterns = [
 
     path('<str:slug>/', views.course_details, name='course_details'),
     path('<str:course_slug>/', include('lecture.urls')),
+    path('<str:course_slug>/forum/',include('forums.urls')),
 
     path('course_view/<str:slug>/', views.course_view, name='course_view'),
 ]

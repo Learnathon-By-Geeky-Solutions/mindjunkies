@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'lecture',
     'dashboard',
     'liveclasses',
+    'forums',
     # third party apps
     'tailwind',
     'django_browser_reload',
@@ -206,7 +207,8 @@ SOCIALACCOUNT_PROVIDERS = {
 
 # Tailwind settings
 TAILWIND_APP_NAME = 'theme'
-NPM_BIN_PATH = config('NPM_BIN_PATH')
+NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
+
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
