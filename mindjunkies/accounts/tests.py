@@ -3,8 +3,10 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from mindjunkies.home.views import home
 from mindjunkies.courses.models import Course, Enrollment, CourseTeacher
+from decouple import config
 
 User = get_user_model()  # Use custom User model
+
 
 class HomeViewTest(TestCase):
     def setUp(self):
@@ -13,7 +15,7 @@ class HomeViewTest(TestCase):
         self.user = User.objects.create_user(
             username="testuser",
             email="testuser@example.com",  # Fix missing email
-            password="testpass"
+            password=config("TEST_PASS")
         )
 
     def test_home_view_unauthenticated(self):
@@ -26,7 +28,7 @@ class HomeViewTest(TestCase):
 
     def test_home_view_authenticated_no_courses(self):
         """Test home view for an authenticated user with no enrollments"""
-        self.client.login(username="testuser", password="testpass")  # Log in user
+        self.client.login(username="testuser", password=config("TEST_PASS"))  # Log in user
 
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
@@ -38,7 +40,7 @@ class HomeViewTest(TestCase):
         course = Course.objects.create(title="Test Course")
         Enrollment.objects.create(student=self.user, course=course)
 
-        self.client.login(username="testuser", password="testpass")  # Log in user
+        self.client.login(username="testuser", password=config("TEST_PASS"))  # Log in user
 
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
@@ -49,7 +51,7 @@ class HomeViewTest(TestCase):
         course = Course.objects.create(title="Teaching Course")
         CourseTeacher.objects.create(teacher=self.user, course=course)
 
-        self.client.login(username="testuser", password="testpass")  # Log in user
+        self.client.login(username="testuser", password=config("TEST_PASS"))  # Log in user
 
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
