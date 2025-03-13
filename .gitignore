@@ -79,3 +79,7 @@ venv/
 /media/
 /node_modules/
 
+
+# Media files
+lecture_pdfs/
+lecture_videos/

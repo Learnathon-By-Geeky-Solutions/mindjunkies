@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.utils.text import slugify
-from courses.models import Course, Module
+from mindjunkies.courses.models import Course, Module
 from .models import Lecture, LecturePDF, LectureVideo
 from django.core.files.uploadedfile import SimpleUploadedFile
 

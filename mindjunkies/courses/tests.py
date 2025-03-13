@@ -1,6 +1,6 @@
 import os
 from django.test import TestCase
-from accounts.models import User
+from mindjunkies.accounts.models import User
 import django
 from decouple import config
 

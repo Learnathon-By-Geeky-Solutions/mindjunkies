@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from home.views import home
-from courses.models import Course, Enrollment, CourseTeacher
+from mindjunkies.home.views import home
+from mindjunkies.courses.models import Course, Enrollment, CourseTeacher
 
 User = get_user_model()  # Use custom User model
 
