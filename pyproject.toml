@@ -1,0 +1,29 @@
+[project]
+name = "mindjunkies"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "authlib>=1.5.1",
+    "cloudinary>=1.42.2",
+    "crispy-tailwind>=1.0.3",
+    "dj-database-url>=2.3.0",
+    "django>=5.1.7",
+    "django-allauth[socialaccount]>=65.4.1",
+    "django-crispy-forms>=2.3",
+    "markdown>=3.7",
+    "pillow>=11.1.0",
+    "psycopg2-binary>=2.9.10",
+    "python-decouple>=3.8",
+]
+
+[dependency-groups]
+dev = [
+    "coverage>=7.6.12",
+    "django-tailwind-cli>=4.1.0",
+]
+prod = [
+    "gunicorn>=23.0.0",
+    "whitenoise>=6.9.0",
+]
