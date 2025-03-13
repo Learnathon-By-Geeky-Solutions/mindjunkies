@@ -18,8 +18,6 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
-from lecture.views import serve_hls_segment
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,8 +25,10 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('courses/', include('courses.urls')),
     path('dashboard/', include('dashboard.urls')),
-    path('live-classes/', include('liveclasses.urls')),
+    path('liveclasses/', include('liveclasses.urls')),
 ]
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:
     urlpatterns += [

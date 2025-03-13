@@ -27,6 +27,12 @@ ALLOWED_HOSTS = [
     'localhost',
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://mindjunkies.up.railway.app",
+]
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
@@ -153,9 +159,6 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / "media"
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -206,7 +209,6 @@ SOCIALACCOUNT_PROVIDERS = {
 
 # Tailwind settings
 TAILWIND_APP_NAME = 'theme'
-NPM_BIN_PATH = config('NPM_BIN_PATH')
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
