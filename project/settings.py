@@ -45,15 +45,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "django.contrib.sites",
-    # custom apps
-    'home',
-    'accounts',
-    'courses',
-    'theme',
-    'lecture',
-    'dashboard',
-    'liveclasses',
-    # third party apps
+    # custom mindjunkies
+    'mindjunkies.home',
+    'mindjunkies.accounts',
+    'mindjunkies.courses',
+    'mindjunkies.theme',
+    'mindjunkies.lecture',
+    'mindjunkies.dashboard',
+    'mindjunkies.live_classes',
+    # third party mindjunkies
     'tailwind',
     'django_browser_reload',
     'crispy_forms',
@@ -85,8 +85,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / "templates",
-            BASE_DIR / "accounts/templates/accounts/",
+            BASE_DIR / "mindjunkies/templates",
+            BASE_DIR / "mindjunkies/accounts/templates/accounts/",
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -154,8 +154,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
-    BASE_DIR / "theme/static",
+    BASE_DIR / "mindjunkies/static",
+    BASE_DIR / "mindjunkies/theme/static",
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 

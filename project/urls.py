@@ -21,17 +21,17 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('home.urls')),
-    path('accounts/', include('accounts.urls')),
-    path('courses/', include('courses.urls')),
-    path('dashboard/', include('dashboard.urls')),
-    path('liveclasses/', include('liveclasses.urls')),
+    path('', include('mindjunkies.home.urls')),
+    path('accounts/', include('mindjunkies.accounts.urls')),
+    path('courses/', include('mindjunkies.courses.urls')),
+    path('dashboard/', include('mindjunkies.dashboard.urls')),
+    path('live_classes/', include('mindjunkies.live_classes.urls')),
 ]
 
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:
     urlpatterns += [
         path("__reload__/", include("django_browser_reload.urls")),
     ]
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
