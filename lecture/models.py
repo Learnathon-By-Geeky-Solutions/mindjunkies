@@ -19,8 +19,8 @@ class Lecture(BaseModel):
 
     title = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
-   
-    learning_objective= models.TextField(null=True, blank=True)
+
+    learning_objective = models.TextField(null=True, blank=True)
     order = models.PositiveIntegerField(default=0)
 
     slug = models.SlugField(max_length=255, unique=True, blank=True)
@@ -49,16 +49,18 @@ class LecturePDF(BaseModel):
     def __str__(self):
         return f"PDF for {self.lecture.title}"
 
+
 class LectureVideo(BaseModel):
     PENDING = 'Pending'
     PROCESSING = 'Processing'
     COMPLETED = 'Completed'
-    
+
     STATUS_CHOICES = (
         (PENDING, 'Pending'),
         (PROCESSING, 'Processing'),
         (COMPLETED, 'Completed'),
     )
+
     lecture=models.ForeignKey('Lecture',on_delete=models.CASCADE,related_name='videos')
     video_file=models.FileField(upload_to='lecture_videos/')
     video_title=models.CharField(max_length=255)

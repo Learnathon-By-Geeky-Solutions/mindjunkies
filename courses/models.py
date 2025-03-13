@@ -24,7 +24,7 @@ class Course(BaseModel):
         null=True,
         blank=True
     )
-    preview_video_link = models.URLField(max_length=200, null=True, blank=True)
+    preview_video_link = models.URLField(max_length=200, blank=True, default='')
 
     published = models.BooleanField(default=False)
     upcoming = models.BooleanField(default=False)
