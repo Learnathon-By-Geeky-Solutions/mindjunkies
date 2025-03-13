@@ -58,12 +58,6 @@ jobs:
           echo "NPM_BIN_PATH=${{ secrets.NPM_BIN_PATH }}" >> .env
         shell: bash
 
-      - name: Create .coveragerc to Exclude Files
-        run: |
-          echo "[run]" > .coveragerc
-          echo "omit =" >> .coveragerc
-          echo "    lecture/management/commands/encode.py" >> .coveragerc
-
       - name: Run Tests and Generate Coverage Report
         env:
           DJANGO_SETTINGS_MODULE: project.settings

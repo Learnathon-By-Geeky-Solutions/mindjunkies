@@ -45,21 +45,25 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "django.contrib.sites",
-    # custom apps
-    'home',
-    'accounts',
-    'courses',
-    'theme',
-    'lecture',
-    'dashboard',
-    'liveclasses',
-    # third party apps
+
+    # custom mindjunkies
+    'mindjunkies.home',
+    'mindjunkies.accounts',
+    'mindjunkies.courses',
+    'mindjunkies.theme',
+    'mindjunkies.lecture',
+    'mindjunkies.dashboard',
+    'mindjunkies.live_classes',
+    'mindjunkies.forums',
+
+    # third party mindjunkies
     'tailwind',
     'django_browser_reload',
     'crispy_forms',
     'crispy_tailwind',
     'django_extensions',
     'cloudinary',
+
     # allauth
     "allauth",
     "allauth.account",
@@ -85,8 +89,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / "templates",
-            BASE_DIR / "accounts/templates/accounts/",
+            BASE_DIR / "mindjunkies/templates",
+            BASE_DIR / "mindjunkies/accounts/templates/accounts/",
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -154,8 +158,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
-    BASE_DIR / "theme/static",
+    BASE_DIR / "mindjunkies/static",
+    BASE_DIR / "mindjunkies/theme/static",
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
@@ -208,7 +212,7 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 # Tailwind settings
-TAILWIND_APP_NAME = 'theme'
+TAILWIND_APP_NAME = 'mindjunkies.theme'
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
@@ -223,3 +227,6 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
 JITSI_APP_ID = config("JITSI_APP_ID")
 JITSI_SECRET = config("JITSI_SECRET")
+
+NPM_BIN_PATH = config("NPM_BIN_PATH")
+

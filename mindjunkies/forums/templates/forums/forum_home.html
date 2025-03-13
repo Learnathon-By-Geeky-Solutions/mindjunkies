@@ -1,0 +1,249 @@
+{% extends 'lecture/base.html' %}
+{% load static %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+<!-- {% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/forum.css' %}">
+{% endblock %} -->
+
+{% block lecture_content %}
+
+    <!-- Main Content with Responsive Layout -->
+    <main class="flex flex-col lg:flex-row flex-grow overflow-auto">
+        <!-- Discussion Forum Section -->
+        <div class="w-full max-w-4xl mx-auto px-4 py-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-primary">Course Discussion Forum</h1>
+                <!-- Enhanced New Topic Button -->
+                <button id="newTopicBtn" class="btn btn-primary flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 hover:shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus">
+                        <path d="M12 5v14M5 12h14"></path>
+                    </svg>
+                    <span>New Topic</span>
+                </button>
+            </div>
+
+            <!-- New Topic Form (Hidden by default) -->
+            <div id="newTopicForm" class="card bg-base-100 shadow-xl mb-8 hidden">
+                <div class="card-body">
+                    <h2 class="card-title">Create New Topic</h2>
+                    <form method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="form-control mt-4">
+                            <button type="submit" class="btn btn-primary w-full">
+                              Post
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Discussion Threads -->
+            {% if forum_topics %}
+                {% for topic in forum_topics %}
+                <div class="card bg-base-100 shadow-xl mb-8">
+                    <!-- Original Post -->
+                    <div class="card-body">
+                        <div class="flex items-start gap-4">
+                            <div class="avatar">
+                                <div class="w-12 h-12 rounded-full">
+                                    <img src="https://ui-avatars.com/api/?name={{topic.author|default:'User'}}&background=random" alt="User avatar" />
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="font-bold text-lg">{{topic.title}}</h3>
+                                        <p class="text-sm text-base-content/70">Posted by <span class="font-medium">{{topic.author}}</span> • {{topic.created_at}}</p>
+                                    </div>
+                                    <div class="dropdown dropdown-end">
+                                        <label tabindex="0" class="btn btn-ghost btn-circle btn-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
+                                            </svg>
+                                        </label>
+                                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                                            <li><a>Edit Post</a></li>
+                                            <li><a>Delete Post</a></li>
+                                            <li><a>Report</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="mt-3 prose max-w-none">
+                                    <p>{{topic.content}}</p>
+                                </div>
+                                
+                                <!-- Reactions -->
+                                <div class="flex gap-4 mt-4">
+                                    <button class="btn btn-sm btn-ghost gap-1 reaction-button" data-reply-id="{{topic.id}}" data-reaction="like">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75A2.25 2.25 0 0116.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.904M14.25 9h2.25M5.904 18.75c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 01-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 10.203 4.167 9.75 5 9.75h1.053c.472 0 .745.556.5.96a8.958 8.958 0 00-1.302 4.665c0 1.194.232 2.333.654 3.375z" />
+                                        </svg>
+                                        Like <span class="reaction-count">({{topic.like_count|default:"0"}})</span>
+                                    </button>
+                                    <button class="btn btn-sm btn-ghost gap-1 toggle-replies" data-target="replies-container-{{topic.id}}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                                        </svg>
+                                        Reply ({{topic.get_reply_count}})
+                                    </button>
+                                    <button class="btn btn-sm btn-ghost gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+                                        </svg>
+                                        Share
+                                    </button>
+                                    <button class="btn btn-sm btn-ghost gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
+                                        </svg>
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reply Section (Hidden by default) -->
+                    <div id="replies-container-{{topic.id}}" class="hidden">
+                        <div class="divider px-8 my-0"></div>
+                        
+                        <!-- All replies (including nested) -->
+                        {% for reply in topic.replies.all %}
+                            {% if not reply.parent_reply %}
+                                {% include "forums/reply.html" with reply=reply topic=topic %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        <!-- Comment Input Box -->
+                        <div class="px-8 py-6 bg-base-200 rounded-b-xl">
+                            <h3 class="font-medium mb-3">Add Your Reply</h3>
+                            <form method="post" action="">
+                                {% csrf_token %}
+                                <div class="flex gap-4">
+                                    <div class="avatar">
+                                        <div class="w-10 h-10 rounded-full">
+                                            <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt="Your avatar" />
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        {{ reply_form.content|as_crispy_field }}
+                                        <input type="hidden" name="topic_id" value="{{topic.id}}">
+                                        <input type="hidden" name="parent_reply_id" value="">
+                                        <div class="flex justify-between mt-3">
+                                            <div class="flex gap-2">
+                                                <!-- ... (keep the existing button icons) ... -->
+                                            </div>
+                                            <div>
+                                                <button type="button" class="btn btn-sm btn-ghost close-replies" data-target="replies-container-{{topic.id}}">Cancel</button>
+                                                <button type="submit" class="btn btn-sm btn-primary ml-2">Post Reply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-12">
+                    <h3 class="text-lg font-medium text-gray-500">No discussions yet</h3>
+                    <p class="mt-2 text-sm text-gray-400">Be the first to start a discussion!</p>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <!-- JavaScript for toggle functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Forum script loaded");
+
+            // Toggle for New Topic Form
+            const newTopicBtn = document.getElementById('newTopicBtn');
+            const newTopicForm = document.getElementById('newTopicForm');
+            
+            if (newTopicBtn && newTopicForm) {
+                newTopicBtn.addEventListener('click', function() {
+                    newTopicForm.classList.toggle('hidden');
+                    console.log("New topic form toggled");
+                });
+            } else {
+                console.warn("New topic button or form not found");
+            }
+
+            // Toggle for Replies
+            const toggleRepliesButtons = document.querySelectorAll('.toggle-replies');
+            console.log("Reply toggle buttons found:", toggleRepliesButtons.length);
+
+            toggleRepliesButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    console.log('Trying to toggle:', targetId);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.classList.toggle('hidden');
+                        console.log('Toggled element:', targetId);
+                    } else {
+                        console.error('Target element not found:', targetId);
+                    }
+                });
+            });
+
+           // Handle reply to comment
+            const replyButtons = document.querySelectorAll('.toggle-reply-form');
+            replyButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const commentAuthor = this.getAttribute('data-author');
+                    const replyId = this.getAttribute('data-reply-id');
+                    const topicId = this.closest('[id^="replies-container-"]').id.split('-').pop();
+                    const replyForm = document.querySelector(`#replies-container-${topicId} form`);
+                    if (replyForm) {
+                        const textarea = replyForm.querySelector('textarea[name="content"]');
+                        const parentReplyInput = replyForm.querySelector('input[name="parent_reply_id"]');
+                        textarea.value = `@${commentAuthor} `;
+                        parentReplyInput.value = replyId;
+                        textarea.focus();
+                        // Scroll to the reply form
+                        replyForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            });
+
+            // Handle reactions
+            const reactionButtons = document.querySelectorAll('.reaction-button');
+            reactionButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const replyId = this.getAttribute('data-reply-id');
+                    const reactionType = this.getAttribute('data-reaction');
+                    // Here you would typically send an AJAX request to update the reaction
+                    console.log(`Reaction ${reactionType} for reply ${replyId}`);
+                    // For now, we'll just update the UI
+                    const countSpan = this.querySelector('.reaction-count');
+                    let count = parseInt(countSpan.textContent.replace(/[()]/g, ''));
+                    countSpan.textContent = `(${count + 1})`;
+                });
+            });
+
+            // Close replies when cancel is clicked
+            const closeRepliesButtons = document.querySelectorAll('.close-replies');
+            closeRepliesButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const repliesContainer = document.getElementById(targetId);
+                    if (repliesContainer) {
+                        repliesContainer.classList.add('hidden');
+                        // Clear the reply form
+                        const replyForm = repliesContainer.querySelector('form textarea[name="content"]');
+                        if (replyForm) replyForm.value = '';
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock lecture_content %}
