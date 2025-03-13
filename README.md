@@ -28,9 +28,8 @@
 Follow these steps to set up the project locally:
 
 ### Prerequisites
-- Python 3.8+
-- Node.js and npm
-- pipenv
+- Python 3.13+
+- uv
 - 
 1. Clone the repository:
     ```sh
@@ -39,19 +38,16 @@ Follow these steps to set up the project locally:
     ```
 2. Install dependencies:
     ```sh
-    pip install pipenv
-    pipenv install
+    pip install uv
+    uv sync
     ```
 3. Start development:
     ```sh
-    pipenv shell
     cp .env.example .env # Modify the environment variables
     python manage.py migrate
-    python manage.py runscript seed_data # Seed initial data (optional)
     python manage.py createsuperuser
-    python manage.py tailwind install
     python manage.py runserver
-    python manage.py tailwind start
+    python manage.py tailwind watch
     ```
 4. Open [http://localhost:8000](http://localhost:8000) in your browser.
 
@@ -80,6 +76,7 @@ Follow these steps to set up the project locally:
 ## Project Structure
 
 ```plaintext
+# TODO: Update the project structure
 mindjunkies/
 ├── accounts/       # User authentication and profile management
 ├── courses/        # Course creation, management, and participation
@@ -99,9 +96,9 @@ mindjunkies/
 ## Tools and Technologies
 - Django
 - Tailwind CSS
-- Django Channels
+- DaisyUI
 - SQLite (Development), PostgreSQL (Production)
-- Heroku (Deployment)
+- AWS (Deployment)
 - Git and GitHub
 
 ## License
