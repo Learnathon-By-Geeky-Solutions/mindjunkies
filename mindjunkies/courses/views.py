@@ -1,14 +1,14 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
-from django.http import HttpRequest, HttpResponse
 from django.views.generic.edit import CreateView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import Course, CourseTeacher, Enrollment
 from .forms import CourseForm
+from .models import Course, CourseTeacher, Enrollment
 
 
 @require_http_methods(["GET"])
@@ -29,7 +29,7 @@ def course_list(request: HttpRequest) -> HttpResponse:
     context = {
         "courses": courses,
         "enrolled_classes": enrolled_classes,
-        'teacher_classes': teacher_classes,
+        "teacher_classes": teacher_classes,
         "role": role,
     }
     return render(request, "courses/course_list.html", context)
@@ -48,7 +48,9 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
         return redirect(reverse("course_details", kwargs={"slug": saved_course.slug}))
 
     def form_invalid(self, form):
-        messages.error(self.request, f"There was an error processing the form: {form.errors}")
+        messages.error(
+            self.request, f"There was an error processing the form: {form.errors}"
+        )
         return self.render_to_response(self.get_context_data(form=form))
 
 
@@ -68,7 +70,9 @@ class CourseUpdateView(LoginRequiredMixin, UpdateView):
 
     def form_invalid(self, form):
         print("Form errors:", form.errors)  # Log the errors to the console
-        messages.error(self.request, f"There was an error processing the form: {form.errors}")
+        messages.error(
+            self.request, f"There was an error processing the form: {form.errors}"
+        )
         return self.render_to_response(self.get_context_data(form=form))
 
 
@@ -83,11 +87,10 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     if request.user == course_teacher or enrolled:
         accessed = True
     context = {
-        'course_detail': course,
-        'accessed': accessed,
-        'instructor': course_teacher,
-        'teacher': request.user == course_teacher,
-
+        "course_detail": course,
+        "accessed": accessed,
+        "instructor": course_teacher,
+        "teacher": request.user == course_teacher,
     }
     return render(request, "courses/course_details.html", context)
 

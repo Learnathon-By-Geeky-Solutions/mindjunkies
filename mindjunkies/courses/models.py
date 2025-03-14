@@ -1,6 +1,6 @@
+from cloudinary.models import CloudinaryField
 from django.db import models
 from django.utils.text import slugify
-from cloudinary.models import CloudinaryField
 
 from config.models import BaseModel
 from mindjunkies.accounts.models import User
@@ -8,23 +8,23 @@ from mindjunkies.accounts.models import User
 
 class Course(BaseModel):
     LEVEL_CHOICES = [
-        ('beginner', 'Beginner'),
-        ('intermediate', 'Intermediate'),
-        ('advanced', 'Advanced'),
+        ("beginner", "Beginner"),
+        ("intermediate", "Intermediate"),
+        ("advanced", "Advanced"),
     ]
     title = models.CharField(max_length=255)
     short_introduction = models.CharField(max_length=500)
     course_description = models.TextField()
-    level = models.CharField(max_length=15, choices=LEVEL_CHOICES, default='beginner')
+    level = models.CharField(max_length=15, choices=LEVEL_CHOICES, default="beginner")
 
     course_image = CloudinaryField(
-        folder='course_images/',
+        folder="course_images/",
         resource_type="image",
         overwrite=True,
         null=True,
-        blank=True
+        blank=True,
     )
-    preview_video_link = models.URLField(max_length=200, blank=True, default='')
+    preview_video_link = models.URLField(max_length=200, blank=True, default="")
 
     published = models.BooleanField(default=False)
     upcoming = models.BooleanField(default=False)
@@ -55,7 +55,9 @@ class Course(BaseModel):
 
 
 class CourseRequirement(BaseModel):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='requirements')
+    course = models.ForeignKey(
+        Course, on_delete=models.CASCADE, related_name="requirements"
+    )
     requirement = models.CharField(max_length=255)
 
     def __str__(self):
@@ -63,7 +65,9 @@ class CourseRequirement(BaseModel):
 
 
 class CourseObjective(BaseModel):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='objectives')
+    course = models.ForeignKey(
+        Course, on_delete=models.CASCADE, related_name="objectives"
+    )
     objective = models.CharField(max_length=255)
 
     def __str__(self):
@@ -72,19 +76,19 @@ class CourseObjective(BaseModel):
 
 class CourseTeacher(BaseModel):
     ROLE_CHOICES = [
-        ('teacher', 'Teacher'),
-        ('assistant', 'Teaching Assistant'),
+        ("teacher", "Teacher"),
+        ("assistant", "Teaching Assistant"),
     ]
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='teachers')
-    teacher = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='teaching_roles'
+    course = models.ForeignKey(
+        Course, on_delete=models.CASCADE, related_name="teachers"
     )
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='teacher')
+    teacher = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="teaching_roles"
+    )
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="teacher")
 
     class Meta:
-        unique_together = ['course', 'teacher']
+        unique_together = ["course", "teacher"]
 
     def __str__(self):
         return f"{self.teacher.username} teaches {self.course.title}"
@@ -92,34 +96,25 @@ class CourseTeacher(BaseModel):
 
 class Enrollment(BaseModel):
     STATUS_CHOICES = [
-        ('active', 'Active'),
-        ('pending', 'Pending'),
-        ('withdrawn', 'Withdrawn'),
+        ("active", "Active"),
+        ("pending", "Pending"),
+        ("withdrawn", "Withdrawn"),
     ]
 
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
-    student = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='enrolled'
+    course = models.ForeignKey(
+        Course, on_delete=models.CASCADE, related_name="enrollments"
     )
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name="enrolled")
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
 
     class Meta:
-        unique_together = ['course', 'student']
+        unique_together = ["course", "student"]
 
     def __str__(self):
         return f"{self.student.username} enrolled in {self.course.title}"
-    
-    def save(self, *args, **kwargs):
-        if self.pk is None:  # Check if the enrollment is being created
-            self.course.number_of_enrollments += 1
-            self.course.save()
-        super().save(*args, **kwargs)
 
     def save(self, *args, **kwargs):
         if self.pk is None:
-            print("course name is", self.course)
             self.course.number_of_enrollments += 1
             self.course.save()
         super().save(*args, **kwargs)
@@ -127,11 +122,11 @@ class Enrollment(BaseModel):
 
 class Module(BaseModel):
     title = models.CharField(max_length=255)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='modules')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="modules")
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ['order']
+        ordering = ["order"]
 
     def __str__(self):
         return f"{self.title} - {self.course.title}"

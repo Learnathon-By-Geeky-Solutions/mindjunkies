@@ -6,23 +6,31 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('lecture', '0002_lecturepdf_pdf_title_lecturevideo_video_title'),
+        ("lecture", "0002_lecturepdf_pdf_title_lecturevideo_video_title"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='lecturevideo',
-            name='hls',
+            model_name="lecturevideo",
+            name="hls",
             field=models.CharField(blank=True, max_length=500, null=True),
         ),
         migrations.AddField(
-            model_name='lecturevideo',
-            name='status',
-            field=models.CharField(choices=[('Pending', 'Pending'), ('Processing', 'Processing'), ('Completed', 'Completed')], default='Pending', max_length=20),
+            model_name="lecturevideo",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("Pending", "Pending"),
+                    ("Processing", "Processing"),
+                    ("Completed", "Completed"),
+                ],
+                default="Pending",
+                max_length=20,
+            ),
         ),
         migrations.AddField(
-            model_name='lecturevideo',
-            name='thumbnail',
-            field=models.ImageField(blank=True, null=True, upload_to='thumbnails'),
+            model_name="lecturevideo",
+            name="thumbnail",
+            field=models.ImageField(blank=True, null=True, upload_to="thumbnails"),
         ),
     ]

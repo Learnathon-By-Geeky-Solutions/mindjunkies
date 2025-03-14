@@ -1,0 +1,13 @@
+[flake8]
+ignore = A005,C101,A003,I100,I201,W503,B017
+exclude = .git,__pycache__,.venv,migrations,
+
+filename = *.py
+accept-encodings = utf-8
+inline-quotes = double
+max-complexity = 12
+max-linenumber = 500
+max-line-length = 119
+multiline-quotes = double
+per-file-ignores =
+    mindjunkies/accounts/migrations/*:E501

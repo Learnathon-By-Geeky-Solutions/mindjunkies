@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('lecture', '0003_lecturevideo_hls_lecturevideo_status_and_more'),
+        ("lecture", "0003_lecturevideo_hls_lecturevideo_status_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='lecturevideo',
-            name='is_running',
+            model_name="lecturevideo",
+            name="is_running",
             field=models.BooleanField(default=False),
         ),
     ]

@@ -1,14 +1,17 @@
-from django import forms
-from .models import Lecture, LecturePDF, LectureVideo
-from django.utils.text import slugify
-from mindjunkies.courses.models import Module
 import os
+
+from django import forms
+from django.utils.text import slugify
+
+from mindjunkies.courses.models import Module
+
+from .models import Lecture, LecturePDF, LectureVideo
 
 
 class LectureForm(forms.ModelForm):
     class Meta:
         model = Lecture
-        fields = ['title', 'description', 'learning_objective', 'order']
+        fields = ["title", "description", "learning_objective", "order"]
 
         def save(self, commit=True):
             instance = super(LectureForm, self).save(commit=False)
@@ -22,7 +25,7 @@ class LectureForm(forms.ModelForm):
 class LecturePDFForm(forms.ModelForm):
     class Meta:
         model = LecturePDF
-        fields = ['pdf_file', 'pdf_title']
+        fields = ["pdf_file", "pdf_title"]
 
     def clean_pdf_file(self):
         pdf_file = self.cleaned_data.get("pdf_file")
@@ -62,7 +65,9 @@ class LectureVideoForm(forms.ModelForm):
             ext = os.path.splitext(video_file.name)[1].lower()
             allowed_extensions = [".mp4", ".avi", ".mov", ".mkv"]
             if ext not in allowed_extensions:
-                raise forms.ValidationError("Only video files (.mp4, .avi, .mov, .mkv) are allowed.")
+                raise forms.ValidationError(
+                    "Only video files (.mp4, .avi, .mov, .mkv) are allowed."
+                )
 
             # # Validate file size (e.g., max 50MB)
             # max_size = 50 * 1024 * 1024  # 50MB
@@ -75,7 +80,7 @@ class LectureVideoForm(forms.ModelForm):
 class ModuleForm(forms.ModelForm):
     class Meta:
         model = Module
-        fields = ['title', 'order']
+        fields = ["title", "order"]
 
         def save(self, commit=True):
             instance = super(ModuleForm, self).save(commit=False)

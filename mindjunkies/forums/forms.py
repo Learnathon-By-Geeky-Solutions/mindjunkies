@@ -1,11 +1,13 @@
 from django import forms
 from django.utils.text import slugify
-from .models import ForumTopic,ForumReply
+
+from .models import ForumReply, ForumTopic
+
 
 class ForumTopicForm(forms.ModelForm):
     class Meta:
         model = ForumTopic
-        fields = ['title', 'content']
+        fields = ["title", "content"]
 
     def save(self, commit=True):
         instance = super(ForumTopicForm, self).save(commit=False)
@@ -14,8 +16,8 @@ class ForumTopicForm(forms.ModelForm):
             instance.save()
         return instance
 
+
 class ForumReplyForm(forms.ModelForm):
     class Meta:
-        model=ForumReply
-        fields=['content']
-        
+        model = ForumReply
+        fields = ["content"]

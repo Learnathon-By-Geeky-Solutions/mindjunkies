@@ -74,7 +74,7 @@
                                 <div class="mt-3 prose max-w-none">
                                     <p>{{topic.content}}</p>
                                 </div>
-                                
+
                                 <!-- Reactions -->
                                 <div class="flex gap-4 mt-4">
                                     <button class="btn btn-sm btn-ghost gap-1 reaction-button" data-reply-id="{{topic.id}}" data-reaction="like">
@@ -105,18 +105,18 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Reply Section (Hidden by default) -->
                     <div id="replies-container-{{topic.id}}" class="hidden">
                         <div class="divider px-8 my-0"></div>
-                        
+
                         <!-- All replies (including nested) -->
                         {% for reply in topic.replies.all %}
                             {% if not reply.parent_reply %}
                                 {% include "forums/reply.html" with reply=reply topic=topic %}
                             {% endif %}
                         {% endfor %}
-                        
+
                         <!-- Comment Input Box -->
                         <div class="px-8 py-6 bg-base-200 rounded-b-xl">
                             <h3 class="font-medium mb-3">Add Your Reply</h3>
@@ -165,7 +165,7 @@
             // Toggle for New Topic Form
             const newTopicBtn = document.getElementById('newTopicBtn');
             const newTopicForm = document.getElementById('newTopicForm');
-            
+
             if (newTopicBtn && newTopicForm) {
                 newTopicBtn.addEventListener('click', function() {
                     newTopicForm.classList.toggle('hidden');
