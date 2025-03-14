@@ -7,13 +7,15 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('courses', '0005_remove_course_learning_objectives_and_more'),
+        ("courses", "0005_remove_course_learning_objectives_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='course',
-            name='course_image',
-            field=cloudinary.models.CloudinaryField(blank=True, max_length=255, null=True, verbose_name='course_images/'),
+            model_name="course",
+            name="course_image",
+            field=cloudinary.models.CloudinaryField(
+                blank=True, max_length=255, null=True, verbose_name="course_images/"
+            ),
         ),
     ]

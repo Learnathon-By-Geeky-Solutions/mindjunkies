@@ -30,7 +30,7 @@ Follow these steps to set up the project locally:
 ### Prerequisites
 - Python 3.13+
 - uv
-- 
+-
 1. Clone the repository:
     ```sh
     git clone https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies

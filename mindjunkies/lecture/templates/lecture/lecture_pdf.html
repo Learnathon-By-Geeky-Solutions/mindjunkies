@@ -16,8 +16,8 @@
           <a class="btn btn-ghost normal-case text-xl">{{lecture.title}}</a>
         </div>
       </div>
-  
-    
+
+
     <!-- Main Content -->
     <main class="flex-1 overflow-y-auto">
       <!-- Breadcrumb Navigation -->
@@ -37,9 +37,9 @@
         <div class="rounded-xl overflow-hidden bg-base-200">
           <div class="aspect-w-16 aspect-h-9">
             {% if video.url %}
-              <video 
+              <video
                 id="videoPlayer"
-                class="w-full h-full" 
+                class="w-full h-full"
                 controls
                 poster="{% static 'images/course-thumbnail.jpg' %}"
               >
@@ -60,9 +60,8 @@
         </div>
       </div>
     </main>
-  </div> 
+  </div>
    <!-- Sidebar Content -->
   {% include 'lecture/lecture_content.html' %}
 </div>
 {% endblock %}
-

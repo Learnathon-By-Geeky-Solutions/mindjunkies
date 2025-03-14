@@ -1,5 +1,6 @@
-from django.db import models
 import uuid
+
+from django.db import models
 
 
 class BaseModel(models.Model):
@@ -10,4 +11,4 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ['-created_at', '-updated_at']
+        ordering = ["-created_at", "-updated_at"]

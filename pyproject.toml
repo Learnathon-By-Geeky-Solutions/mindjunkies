@@ -22,8 +22,25 @@ dependencies = [
 dev = [
     "coverage>=7.6.12",
     "django-tailwind-cli>=4.1.0",
+    "pre-commit>=4.1.0",
+    "ruff>=0.9.10",
 ]
 prod = [
     "gunicorn>=23.0.0",
     "whitenoise>=6.9.0",
+]
+
+[tool.ruff]
+exclude = ["migrations", ".venv", ".git", ".vscode", ".idea", "__pycache__", ".pytest_cache", ".mypy_cache", ".coverage"]
+line-length = 119
+
+[tool.ruff.lint]
+extend-select = [
+    "E501",
+#    "UP", # pyupgrade
+    "F", # Pyflakes
+    "E", # pycodestyle-errors
+    "W", # pycodestyle-warnings
+    "N", # pep8-naming
+    "I", # isort
 ]

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block lecture_content %}
-    
+
 
                 <!-- Main Content with Responsive Layout -->
                 <main class="flex flex-col lg:flex-row flex-grow overflow-auto">
@@ -61,14 +61,14 @@
                                             </svg>
                                             <span>45m of readings left</span>
                                         </div>
-                                      
+
                                         <div class="flex items-center gap-2 text-sm">
                                             <svg class="h-4 w-4 text-indigo-600" viewBox="0 0 24 24" fill="currentColor">
                                                 <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
                                             </svg>
                                             <span>2 graded assessments left</span>
                                         </div>
-                                        
+
                                         <div class="flex flex-wrap gap-2 ml-auto">
                                             {% if isTeacher %}
                                             <a href="{% url 'create_content' course.slug lecture.slug  'attachment' %}"
@@ -81,7 +81,7 @@
                                                     Add Attachment
                                                 </button>
                                             </a>
-                                            
+
                                             <a href="{% url 'create_content' course.slug lecture.slug 'video' %}"
                                                class="inline-block action-link">
                                                 <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-1.5 px-3 rounded-md shadow-sm transition duration-200 flex items-center">
@@ -219,11 +219,11 @@
                                         Live Classes
                                     </h2>
                                     <div class="mt-4 space-y-2">
-                                        <a href="{% url 'create_live_class' course.slug %}" 
+                                        <a href="{% url 'create_live_class' course.slug %}"
                                            class="btn bg-indigo-600 hover:bg-indigo-700 text-white w-full font-medium">
                                             Schedule a live session
                                         </a>
-                                        <a href="{% url 'list_live_classes' course.slug %}" 
+                                        <a href="{% url 'list_live_classes' course.slug %}"
                                            class="btn btn-outline border-indigo-200 hover:bg-indigo-50 text-indigo-600 w-full font-medium">
                                             Join a live session
                                         </a>
@@ -367,9 +367,8 @@
                         </div>
                     </div>
                 </main>
-        
+
 
             <!-- Left Sidebar -->
-      
-{% endblock lecture_content %}
 
+{% endblock lecture_content %}

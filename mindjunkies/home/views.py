@@ -1,14 +1,14 @@
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
-from mindjunkies.courses.models import Course, Enrollment, CourseTeacher
+from mindjunkies.courses.models import Course, CourseTeacher, Enrollment
 
 
 @require_http_methods(["GET"])
 def home(request):
     featured_course = Course.objects.all()
     context = {
-        'course_list': featured_course,
+        "course_list": featured_course,
     }
     enrolled_classes = []
     teacher_classes = []
@@ -20,4 +20,4 @@ def home(request):
         context["enrolled_classes"] = enrolled_classes
         context["teacher_classes"] = teacher_classes
 
-    return render(request, 'home/index.html', context)
+    return render(request, "home/index.html", context)

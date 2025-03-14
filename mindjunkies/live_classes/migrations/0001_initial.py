@@ -10,23 +10,59 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('courses', '0002_course_alter_courseteacher_course_and_more'),
+        ("courses", "0002_course_alter_courseteacher_course_and_more"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='LiveClass',
+            name="LiveClass",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('topic', models.CharField(max_length=255)),
-                ('meeting_id', models.CharField(blank=True, max_length=50, unique=True)),
-                ('scheduled_at', models.DateTimeField()),
-                ('duration', models.IntegerField(default=60)),
-                ('status', models.CharField(choices=[('Upcoming', 'Upcoming'), ('Ongoing', 'Ongoing'), ('Completed', 'Completed')], default='Upcoming', max_length=10)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='live_classes', to='courses.course')),
-                ('teacher', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='live_classes', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("topic", models.CharField(max_length=255)),
+                (
+                    "meeting_id",
+                    models.CharField(blank=True, max_length=50, unique=True),
+                ),
+                ("scheduled_at", models.DateTimeField()),
+                ("duration", models.IntegerField(default=60)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("Upcoming", "Upcoming"),
+                            ("Ongoing", "Ongoing"),
+                            ("Completed", "Completed"),
+                        ],
+                        default="Upcoming",
+                        max_length=10,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "course",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="live_classes",
+                        to="courses.course",
+                    ),
+                ),
+                (
+                    "teacher",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="live_classes",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

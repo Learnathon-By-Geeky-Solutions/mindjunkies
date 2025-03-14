@@ -1,8 +1,10 @@
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.utils.text import slugify
+
 from mindjunkies.courses.models import Course, Module
+
 from .models import Lecture, LecturePDF, LectureVideo
-from django.core.files.uploadedfile import SimpleUploadedFile
 
 # Constants
 COURSE_TITLE = "Advanced Python Course"
@@ -20,13 +22,15 @@ PDF_CONTENT = b"PDF content"
 class LectureModelTest(TestCase):
     def setUp(self):
         self.sample_course = Course.objects.create(title=COURSE_TITLE)
-        self.sample_module = Module.objects.create(title=MODULE_TITLE, course=self.sample_course)
+        self.sample_module = Module.objects.create(
+            title=MODULE_TITLE, course=self.sample_course
+        )
         self.sample_lecture = Lecture.objects.create(
             course=self.sample_course,
             module=self.sample_module,
             title=LECTURE_TITLE,
             description=LECTURE_DESC,
-            order=1
+            order=1,
         )
 
     def test_lecture_creation(self):
@@ -39,22 +43,24 @@ class LectureModelTest(TestCase):
         self.assertEqual(self.sample_lecture.slug, slugify(LECTURE_TITLE))
 
     def test_str_representation(self):
-        self.assertEqual(str(self.sample_lecture), f"{self.sample_course.title} - {LECTURE_TITLE}")
+        self.assertEqual(
+            str(self.sample_lecture), f"{self.sample_course.title} - {LECTURE_TITLE}"
+        )
 
 
 class LecturePDFModelTest(TestCase):
     def setUp(self):
         self.sample_course = Course.objects.create(title=COURSE_TITLE)
-        self.sample_module = Module.objects.create(title=MODULE_TITLE, course=self.sample_course)
+        self.sample_module = Module.objects.create(
+            title=MODULE_TITLE, course=self.sample_course
+        )
         self.sample_lecture = Lecture.objects.create(
-            course=self.sample_course,
-            module=self.sample_module,
-            title=LECTURE_TITLE
+            course=self.sample_course, module=self.sample_module, title=LECTURE_TITLE
         )
         self.sample_pdf = LecturePDF.objects.create(
             lecture=self.sample_lecture,
             pdf_file=SimpleUploadedFile(PDF_FILE_NAME, PDF_CONTENT),
-            pdf_title=PDF_TITLE
+            pdf_title=PDF_TITLE,
         )
 
     def test_pdf_creation(self):
@@ -68,18 +74,18 @@ class LecturePDFModelTest(TestCase):
 class LectureVideoModelTest(TestCase):
     def setUp(self):
         self.sample_course = Course.objects.create(title=COURSE_TITLE)
-        self.sample_module = Module.objects.create(title=MODULE_TITLE, course=self.sample_course)
+        self.sample_module = Module.objects.create(
+            title=MODULE_TITLE, course=self.sample_course
+        )
         self.sample_lecture = Lecture.objects.create(
-            course=self.sample_course,
-            module=self.sample_module,
-            title=LECTURE_TITLE
+            course=self.sample_course, module=self.sample_module, title=LECTURE_TITLE
         )
         self.sample_video = LectureVideo.objects.create(
             lecture=self.sample_lecture,
             video_file=SimpleUploadedFile(VIDEO_FILE_NAME, VIDEO_CONTENT),
             video_title=VIDEO_TITLE,
             status=LectureVideo.PENDING,
-            is_running=False
+            is_running=False,
         )
 
     def test_video_creation(self):

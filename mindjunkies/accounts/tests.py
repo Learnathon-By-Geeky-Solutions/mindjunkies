@@ -1,9 +1,9 @@
-from django.test import TestCase
-from django.contrib.auth import get_user_model
-from django.urls import reverse
-from mindjunkies.home.views import home
-from mindjunkies.courses.models import Course, Enrollment, CourseTeacher
 from decouple import config
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+from django.urls import reverse
+
+from mindjunkies.courses.models import Course, CourseTeacher, Enrollment
 
 User = get_user_model()  # Use custom User model
 
@@ -15,22 +15,26 @@ class HomeViewTest(TestCase):
         self.user = User.objects.create_user(
             username="testuser",
             email="testuser@example.com",  # Fix missing email
-            password=config("TEST_PASS")
+            password=config("TEST_PASS"),
         )
 
     def test_home_view_unauthenticated(self):
         """Test home view for an unauthenticated user"""
-        response = self.client.get(reverse('home'))  # Simulate GET request
+        response = self.client.get(reverse("home"))  # Simulate GET request
         self.assertEqual(response.status_code, 200)
-        self.assertIn("course_list", response.context)  # Ensure template receives course_list
+        self.assertIn(
+            "course_list", response.context
+        )  # Ensure template receives course_list
         self.assertNotIn("enrolled_classes", response.context)
         self.assertNotIn("teacher_classes", response.context)
 
     def test_home_view_authenticated_no_courses(self):
         """Test home view for an authenticated user with no enrollments"""
-        self.client.login(username="testuser", password=config("TEST_PASS"))  # Log in user
+        self.client.login(
+            username="testuser", password=config("TEST_PASS")
+        )  # Log in user
 
-        response = self.client.get(reverse('home'))
+        response = self.client.get(reverse("home"))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["enrolled_classes"], [])
         self.assertEqual(response.context["teacher_classes"], [])
@@ -40,9 +44,11 @@ class HomeViewTest(TestCase):
         course = Course.objects.create(title="Test Course")
         Enrollment.objects.create(student=self.user, course=course)
 
-        self.client.login(username="testuser", password=config("TEST_PASS"))  # Log in user
+        self.client.login(
+            username="testuser", password=config("TEST_PASS")
+        )  # Log in user
 
-        response = self.client.get(reverse('home'))
+        response = self.client.get(reverse("home"))
         self.assertEqual(response.status_code, 200)
         self.assertIn(course, response.context["enrolled_classes"])
 
@@ -51,8 +57,10 @@ class HomeViewTest(TestCase):
         course = Course.objects.create(title="Teaching Course")
         CourseTeacher.objects.create(teacher=self.user, course=course)
 
-        self.client.login(username="testuser", password=config("TEST_PASS"))  # Log in user
+        self.client.login(
+            username="testuser", password=config("TEST_PASS")
+        )  # Log in user
 
-        response = self.client.get(reverse('home'))
+        response = self.client.get(reverse("home"))
         self.assertEqual(response.status_code, 200)
         self.assertIn(course, response.context["teacher_classes"])

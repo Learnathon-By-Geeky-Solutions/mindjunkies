@@ -1,1 +1,1 @@
-default_app_config = 'courses.mindjunkies.CoursesConfig'
+default_app_config = "courses.mindjunkies.CoursesConfig"
