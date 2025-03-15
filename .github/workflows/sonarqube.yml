@@ -62,8 +62,8 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: project.settings
         run: |
-          pipenv run coverage run manage.py test --keepdb
-          pipenv run coverage xml -o coverage.xml
+          uv run coverage run manage.py test --keepdb
+          uv run coverage xml -o coverage.xml
           ls -l coverage.xml  # Check if coverage.xml exists
 
       - name: SonarCloud Scan
