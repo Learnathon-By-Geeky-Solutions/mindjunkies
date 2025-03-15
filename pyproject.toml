@@ -11,6 +11,7 @@ dependencies = [
     "dj-database-url>=2.3.0",
     "django>=5.1.7",
     "django-allauth[socialaccount]>=65.4.1",
+    "django-categories>=2.0.0",
     "django-crispy-forms>=2.3",
     "markdown>=3.7",
     "pillow>=11.1.0",
