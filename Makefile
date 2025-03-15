@@ -10,6 +10,10 @@ install-pre-commit:
 lint:
 	uv run pre-commit run --all-files
 
+.PHONY: tailwind
+tailwind:
+	uv run python manage.py tailwind watch
+
 .PHONY: migrations
 migrations:
 	uv run python manage.py makemigrations

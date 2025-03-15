@@ -1,9 +1,20 @@
+from categories.models import CategoryBase
 from cloudinary.models import CloudinaryField
 from django.db import models
 from django.utils.text import slugify
 
 from config.models import BaseModel
 from mindjunkies.accounts.models import User
+
+
+class CourseCategory(CategoryBase):
+    description = models.TextField(blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = "Course Categories"
+
+    def __str__(self):
+        return self.name
 
 
 class Course(BaseModel):
@@ -16,6 +27,9 @@ class Course(BaseModel):
     short_introduction = models.CharField(max_length=500)
     course_description = models.TextField()
     level = models.CharField(max_length=15, choices=LEVEL_CHOICES, default="beginner")
+    category = models.ForeignKey(
+        CourseCategory, on_delete=models.SET_NULL, related_name="courses", null=True
+    )
 
     course_image = CloudinaryField(
         folder="course_images/",
