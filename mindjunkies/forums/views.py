@@ -49,9 +49,14 @@ class ForumHomeView(LoginRequiredMixin, TemplateView):
         course = get_object_or_404(Course, slug=course_slug)
 
         # Check if this is a topic submission or a reply submission
-        if "topic_id" in request.POST:
+        if "replies" in request.POST:
             # This is a reply submission
             return self.handle_reply_submission(request, course_slug)
+           #This is a react submission
+        elif "reaction" in request.POST:
+            print("this is saima")
+            return self.handle_reaction_submission(request, course_slug)
+
         else:
             # This is a new topic submission
             return self.handle_topic_submission(request, course, course_slug)
@@ -76,6 +81,7 @@ class ForumHomeView(LoginRequiredMixin, TemplateView):
         topic_id = request.POST.get("topic_id")
         parent_reply_id = request.POST.get("parent_reply_id")
         content = request.POST.get("content")
+        print("from reply")
 
         # Validate required fields
         if not topic_id or not content:
@@ -99,3 +105,24 @@ class ForumHomeView(LoginRequiredMixin, TemplateView):
         return HttpResponseRedirect(
             f"{reverse('forum_home', kwargs={'course_slug': course_slug})}#replies-container-{topic_id}"
         )
+    def handle_reaction_submission(self, request, course_slug):
+        topic_id = request.POST.get("topic_id")
+        topic = get_object_or_404(ForumTopic, id=topic_id)
+        
+        if topic.reaction.filter(email=request.user.email).exists():
+            # User is un-reacting
+            topic.reaction.remove(request.user)
+            # Update like_count
+            # topic.like_count = max(0, topic.like_count - 1)  # Ensure it doesn't go below 0
+            topic.save()
+        else:
+            # User is reacting
+            topic.reaction.add(request.user)
+            # Update like_count
+            # topic.like_count += 1
+            topic.save()
+            
+        return HttpResponseRedirect(
+            f"{reverse('forum_home', kwargs={'course_slug': course_slug})}"
+        )
+    
