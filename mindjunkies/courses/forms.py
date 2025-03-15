@@ -22,6 +22,7 @@ class CourseForm(forms.ModelForm):
             "title",
             "short_introduction",
             "course_description",
+            "category",
             "requirements",
             "learning_objectives",
             "level",

@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     "mindjunkies.home",
     "mindjunkies.accounts",
     "mindjunkies.courses",
-    "mindjunkies.theme",
     "mindjunkies.lecture",
     "mindjunkies.dashboard",
     "mindjunkies.live_classes",
@@ -58,8 +57,9 @@ INSTALLED_APPS = [
     "django_browser_reload",
     "crispy_forms",
     "crispy_tailwind",
-    "django_extensions",
     "cloudinary",
+    "categories",
+    "categories.editor",
     # allauth
     "allauth",
     "allauth.account",
@@ -69,7 +69,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",  # allauth
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -77,6 +76,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 ROOT_URLCONF = "project.urls"

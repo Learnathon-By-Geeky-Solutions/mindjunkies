@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic.edit import CreateView, UpdateView
 
 from .forms import CourseForm
-from .models import Course, CourseTeacher, Enrollment
+from .models import Course, CourseCategory, CourseTeacher, Enrollment
 
 
 @require_http_methods(["GET"])
@@ -114,12 +114,12 @@ def user_course_list(request: HttpRequest) -> HttpResponse:
     return render(request, "courses/course_list.html", context)
 
 
-@login_required
-@require_http_methods(["GET"])
-def course_view(request: HttpRequest, slug: str) -> HttpResponse:
-    print(slug)
-    course = get_object_or_404(Course, slug=slug)
-    context = {
-        "course": course,
-    }
-    return render(request, "courses/course_view.html", context)
+def category_courses(request, slug):
+    category = get_object_or_404(CourseCategory, slug=slug)
+    sub_categories = category.get_descendants(include_self=True)
+    courses = Course.objects.filter(category__in=sub_categories)
+    return render(
+        request,
+        "courses/category_courses.html",
+        {"category": category, "courses": courses},
+    )

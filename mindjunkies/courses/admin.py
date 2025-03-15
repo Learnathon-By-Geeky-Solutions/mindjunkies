@@ -1,6 +1,7 @@
+from categories.admin import CategoryBaseAdmin
 from django.contrib import admin
 
-from .models import Course, CourseTeacher, Enrollment, Module
+from .models import Course, CourseCategory, CourseTeacher, Enrollment, Module
 
 
 @admin.register(Course)
@@ -28,3 +29,8 @@ class ModuleAdmin(admin.ModelAdmin):
     model = Module
     list_display = ("title", "course", "order")
     list_filter = ("course",)
+
+
+@admin.register(CourseCategory)
+class CourseCategoryAdmin(CategoryBaseAdmin):
+    pass

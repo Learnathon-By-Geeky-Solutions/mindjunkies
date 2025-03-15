@@ -11,6 +11,7 @@ dependencies = [
     "dj-database-url>=2.3.0",
     "django>=5.1.7",
     "django-allauth[socialaccount]>=65.4.1",
+    "django-categories>=2.0.0",
     "django-crispy-forms>=2.3",
     "markdown>=3.7",
     "pillow>=11.1.0",
@@ -21,6 +22,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "coverage>=7.6.12",
+    "django-browser-reload>=1.18.0",
     "django-tailwind-cli>=4.1.0",
     "pre-commit>=4.1.0",
     "ruff>=0.9.10",

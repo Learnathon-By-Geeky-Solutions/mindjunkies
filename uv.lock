@@ -251,6 +251,31 @@ socialaccount = [
 ]
 
 [[package]]
+name = "django-browser-reload"
+version = "1.18.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "asgiref" },
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3b/41/84eaa4f2b7f764e56e01c4ee49aa12bdea30ae50fd0d3ef7c2690b0c4ec2/django_browser_reload-1.18.0.tar.gz", hash = "sha256:c5f0b134723cbf2a0dc9ae1ee1d38e42db28fe23c74cdee613ba3ef286d04735", size = 14319 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e4/9d/1322dc4bce4982d1eadd3a62802c996ae0303aad13d9ad88c1d35025f73d/django_browser_reload-1.18.0-py3-none-any.whl", hash = "sha256:ed4cc2fb83c3bf6c30b54107a1a6736c0b896e62e4eba666d81005b9f2ecf6f8", size = 12230 },
+]
+
+[[package]]
+name = "django-categories"
+version = "2.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django-mptt" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/2d/d3/ee479d468a6f7dc5901cbc76ac459912bb90999e350984951dd7463fa18f/django-categories-2.0.0.tar.gz", hash = "sha256:8c719e89ed5f19c109ae2592aa52fad9593e56ee04d013f2bf91a8011a1cfc28", size = 126219 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/54/7b/8e8fc75fb54ad4edb825d416f8b5b3d57bf940a28f44e6bd73eb47f88b78/django_categories-2.0.0-py2.py3-none-any.whl", hash = "sha256:0cb2d366b25f200084015a9f8bf1096d8939fcac881144c50dc361b2f2b7b307", size = 97765 },
+]
+
+[[package]]
 name = "django-crispy-forms"
 version = "2.3"
 source = { registry = "https://pypi.org/simple" }
@@ -260,6 +285,30 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/04/f6/5bce7ae3512171c7c0ca3de31689e2a1ced8b030f156fcf13d2870e5468e/django_crispy_forms-2.3.tar.gz", hash = "sha256:2db17ae08527201be1273f0df789e5f92819e23dd28fec69cffba7f3762e1a38", size = 278849 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/4c/3b/5dc3faf8739d1ce7a73cedaff508b4af8f6aa1684120ded6185ca0c92734/django_crispy_forms-2.3-py3-none-any.whl", hash = "sha256:efc4c31e5202bbec6af70d383a35e12fc80ea769d464fb0e7fe21768bb138a20", size = 31411 },
+]
+
+[[package]]
+name = "django-js-asset"
+version = "3.1.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e6/91/c63f136f553ec24fc46ccf20ac7292a8df04815b383975b6f3f7f0060217/django_js_asset-3.1.2.tar.gz", hash = "sha256:1fc7584199ed1941ed7c8e7b87ca5524bb0f2ba941561d2a104e88ee9f07bedd", size = 9471 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a6/cf/b208767db5e56b5189829f753eec6a14ee75d074922dc2bd19220b22a34d/django_js_asset-3.1.2-py3-none-any.whl", hash = "sha256:b5ffe376aebbd73b7af886d675ac9f43ca63b39540190fa8409c9f8e79145f68", size = 5905 },
+]
+
+[[package]]
+name = "django-mptt"
+version = "0.16.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django-js-asset" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/06/58/11dcda841c5570cecab15d52362096e36bf61c0a7013df903e9747bc6a6c/django_mptt-0.16.0.tar.gz", hash = "sha256:56c9606bf0b329b5f5afd55dd8bfd073612ea1d5999b10903b09de62bee84c8e", size = 69886 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/45/27/61a39b0d716e52be2df7d9fed6e35fe10eb3faaf207cdfaac3f9f68ecb1a/django_mptt-0.16.0-py3-none-any.whl", hash = "sha256:8716849ba3318d94e2e100ed0923a05c1ffdf8195f8472b690dbaf737d2af3b5", size = 115934 },
 ]
 
 [[package]]
@@ -351,6 +400,7 @@ dependencies = [
     { name = "dj-database-url" },
     { name = "django" },
     { name = "django-allauth", extra = ["socialaccount"] },
+    { name = "django-categories" },
     { name = "django-crispy-forms" },
     { name = "markdown" },
     { name = "pillow" },
@@ -361,6 +411,7 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "coverage" },
+    { name = "django-browser-reload" },
     { name = "django-tailwind-cli" },
     { name = "pre-commit" },
     { name = "ruff" },
@@ -378,6 +429,7 @@ requires-dist = [
     { name = "dj-database-url", specifier = ">=2.3.0" },
     { name = "django", specifier = ">=5.1.7" },
     { name = "django-allauth", extras = ["socialaccount"], specifier = ">=65.4.1" },
+    { name = "django-categories", specifier = ">=2.0.0" },
     { name = "django-crispy-forms", specifier = ">=2.3" },
     { name = "markdown", specifier = ">=3.7" },
     { name = "pillow", specifier = ">=11.1.0" },
@@ -388,6 +440,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "coverage", specifier = ">=7.6.12" },
+    { name = "django-browser-reload", specifier = ">=1.18.0" },
     { name = "django-tailwind-cli", specifier = ">=4.1.0" },
     { name = "pre-commit", specifier = ">=4.1.0" },
     { name = "ruff", specifier = ">=0.9.10" },
