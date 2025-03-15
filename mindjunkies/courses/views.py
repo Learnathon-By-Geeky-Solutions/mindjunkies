@@ -114,6 +114,7 @@ def user_course_list(request: HttpRequest) -> HttpResponse:
     return render(request, "courses/course_list.html", context)
 
 
+@require_http_methods(["GET"])
 def category_courses(request, slug):
     category = get_object_or_404(CourseCategory, slug=slug)
     sub_categories = category.get_descendants(include_self=True)

@@ -10,7 +10,7 @@
                     {% for category in categories %}
                         <div class="dropdown dropdown-hover">
                             <a href="{% url 'category_courses' category.slug %}">
-                                <div tabindex="0" role="button" class="p-2">
+                                <div tabindex="0" class="p-2">
                                     {{ category.name }}
                                 </div>
                             </a>
