@@ -20,7 +20,7 @@ class ForumTopic(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    reaction=models.ManyToManyField(settings.AUTH_USER_MODEL,related_name="posts")
+    reaction = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="posts")
 
     class Meta:
         ordering = ["-created_at"]
