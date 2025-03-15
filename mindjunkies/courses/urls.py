@@ -10,5 +10,4 @@ urlpatterns = [
     path("<str:slug>/", views.course_details, name="course_details"),
     path("<str:course_slug>/", include("mindjunkies.lecture.urls")),
     path("<str:course_slug>/forums/",include("mindjunkies.forums.urls")),
-    path("course_view/<str:slug>/", views.course_view, name="course_view"),
 ]

@@ -1,14 +1,16 @@
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
-from mindjunkies.courses.models import Course, CourseTeacher, Enrollment
+from mindjunkies.courses.models import Course, CourseCategory, CourseTeacher, Enrollment
 
 
 @require_http_methods(["GET"])
 def home(request):
     featured_course = Course.objects.all()
+    course_categories = CourseCategory.objects.filter(parent__isnull=True)
     context = {
         "course_list": featured_course,
+        "categories": course_categories,
     }
     enrolled_classes = []
     teacher_classes = []
