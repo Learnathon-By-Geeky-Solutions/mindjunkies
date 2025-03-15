@@ -9,5 +9,5 @@ urlpatterns = [
     path("edit_course/", views.CourseUpdateView.as_view(), name="edit_course"),
     path("<str:slug>/", views.course_details, name="course_details"),
     path("<str:course_slug>/", include("mindjunkies.lecture.urls")),
-    path("<str:course_slug>/forums/",include("mindjunkies.forums.urls")),
+    path("<str:course_slug>/forums/", include("mindjunkies.forums.urls")),
 ]
