@@ -10,11 +10,11 @@
                     {% for category in categories %}
                         <div class="dropdown dropdown-hover">
                             <a href="{% url 'category_courses' category.slug %}">
-                                <div tabindex="0" class="p-2">
+                                <div class="p-2">
                                     {{ category.name }}
                                 </div>
                             </a>
-                            <ul tabindex="0"
+                            <ul
                                 class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                                 {% for child in category.children.all %}
                                     <li><a href="{% url 'category_courses' child.slug %}">{{ child.name }}</a></li>
