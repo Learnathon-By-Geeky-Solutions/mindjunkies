@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block main_content %}
+    <div class="relative z-10 border-t border-base-content/10">
+        <div class="bg-base-100/50 shadow-sm">
+            <div class="container mx-auto">
+                <ul class="flex justify-center items-center gap-6" id="categoryBar">
+                    <div class="p-2">
+                        {{ category.name }}
+                    </div>
+                    <svg width="18" height="56" viewBox="0 0 16 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 0.5L17 27.7432L1 56.5" stroke="#DCDACB" stroke="currentColor" stroke-width="1" />
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="56" viewBox="0 0 24 24" fill="none"
+                         stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-chevron-right">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                    {% for child in category.children.all %}
+                        <li><a href="{% url 'category_courses' child.slug %}">{{ child.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <section id="courses" class="py-16 bg-base-200">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">{{ category.name }} Courses</h2>
+            <p class="text-center">{{ category.description }}</p>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                {% for course in courses %}
+                    {% include 'home/card.html' %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock main_content %}

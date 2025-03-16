@@ -10,12 +10,16 @@
     <title>
         {% block head_title %}LMS{% endblock head_title %}
     </title>
+    <script src="https://unpkg.com/htmx.org@2.0.4"
+            integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+"
+            crossorigin="anonymous"></script>
     {% block extra_head %}{% endblock extra_head %}
     {% tailwind_css %}
 </head>
 <body class="min-h-screen flex flex-col">
 
 {% include 'includes/header.html' %}
+
 
 {% if messages %}
     <div class="fixed top-24 right-12 max-w-xs w-full">

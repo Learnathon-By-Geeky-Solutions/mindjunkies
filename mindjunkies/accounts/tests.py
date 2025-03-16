@@ -11,7 +11,6 @@ User = get_user_model()  # Use custom User model
 class HomeViewTest(TestCase):
     def setUp(self):
         """Set up test environment"""
-        self.client = self.client  # Use Django’s test client
         self.user = User.objects.create_user(
             username="testuser",
             email="testuser@example.com",  # Fix missing email
