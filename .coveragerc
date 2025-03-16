@@ -1,0 +1,9 @@
+[run]
+relative_files = True
+omit =
+    */migrations/*
+    */tests/*
+    project/settings.py
+    project/wsgi.py
+    project/asgi.py
+    */__init__.py

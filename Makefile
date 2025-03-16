@@ -30,6 +30,9 @@ run-server:
 superuser:
 	uv run python manage.py createsuperuser
 
+.PHONY: test
+test:
+	uv run pytest -v -rs -n auto
 
 .PHONY: update
 update: sync migrate install-pre-commit;
