@@ -62,8 +62,7 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: project.settings
         run: |
-          uv run coverage run manage.py test --keepdb
-          uv run coverage xml -o coverage.xml
+          uv run pytest --cov=mindjunkies --cov-report=xml --reuse-db
           ls -l coverage.xml  # Check if coverage.xml exists
 
       - name: SonarCloud Scan
