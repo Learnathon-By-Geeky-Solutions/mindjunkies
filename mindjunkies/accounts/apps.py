@@ -6,4 +6,4 @@ class AccountsConfig(AppConfig):
     name = "mindjunkies.accounts"
 
     def ready(self):
-        pass
+        import mindjunkies.accounts.signals  # noqa: F401

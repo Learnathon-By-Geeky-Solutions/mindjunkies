@@ -52,7 +52,7 @@ class ForumHomeView(LoginRequiredMixin, TemplateView):
         if "replies" in request.POST:
             # This is a reply submission
             return self.handle_reply_submission(request, course_slug)
-           #This is a react submission
+        # This is a react submission
         elif "reaction" in request.POST:
             print("this is saima")
             return self.handle_reaction_submission(request, course_slug)
@@ -105,10 +105,11 @@ class ForumHomeView(LoginRequiredMixin, TemplateView):
         return HttpResponseRedirect(
             f"{reverse('forum_home', kwargs={'course_slug': course_slug})}#replies-container-{topic_id}"
         )
+
     def handle_reaction_submission(self, request, course_slug):
         topic_id = request.POST.get("topic_id")
         topic = get_object_or_404(ForumTopic, id=topic_id)
-        
+
         if topic.reaction.filter(email=request.user.email).exists():
             # User is un-reacting
             topic.reaction.remove(request.user)
@@ -121,8 +122,7 @@ class ForumHomeView(LoginRequiredMixin, TemplateView):
             # Update like_count
             # topic.like_count += 1
             topic.save()
-            
+
         return HttpResponseRedirect(
             f"{reverse('forum_home', kwargs={'course_slug': course_slug})}"
         )
-    
