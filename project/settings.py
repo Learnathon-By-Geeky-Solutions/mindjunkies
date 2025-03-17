@@ -46,23 +46,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     # custom mindjunkies
-<<<<<<< HEAD
-    "mindjunkies.home",
-    "mindjunkies.accounts",
-    "mindjunkies.courses",
-    "mindjunkies.lecture",
-    "mindjunkies.dashboard",
-    "mindjunkies.live_classes",
-    "mindjunkies.forums",
-    # third party mindjunkies
-    "django_tailwind_cli",
-    "django_browser_reload",
-    "crispy_forms",
-    "crispy_tailwind",
-    "cloudinary",
-    "categories",
-    "categories.editor",
-=======
     'mindjunkies.home',
     'mindjunkies.accounts',
     'mindjunkies.courses',
@@ -80,7 +63,6 @@ INSTALLED_APPS = [
     # 'django_extensions',
     'cloudinary',
 
->>>>>>> ce896f2 (did some dirty work)
     # allauth
     "allauth",
     "allauth.account",
@@ -90,16 +72,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",  # allauth
-<<<<<<< HEAD
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
-=======
     # "django_browser_reload.middleware.BrowserReloadMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -108,7 +80,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
->>>>>>> ce896f2 (did some dirty work)
 ]
 
 ROOT_URLCONF = "project.urls"
