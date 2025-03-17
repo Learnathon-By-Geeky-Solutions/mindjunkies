@@ -2,11 +2,7 @@ from cloudinary.forms import CloudinaryFileField
 from django import forms
 from django.utils.text import slugify
 
-<<<<<<< HEAD
-from .models import Course, CourseObjective, CourseRequirement
-=======
 from .models import Course, CourseTeacher, CourseRequirement, CourseObjective, CourseToken
->>>>>>> ce896f2 (did some dirty work)
 
 
 class CourseForm(forms.ModelForm):
