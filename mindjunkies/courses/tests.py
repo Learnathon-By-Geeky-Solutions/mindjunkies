@@ -3,10 +3,11 @@ import os
 import django
 from decouple import config
 from django.test import TestCase
+from django.urls import reverse
 
 from mindjunkies.accounts.models import User
 
-from .models import Course, CourseTeacher, Enrollment
+from .models import Course, CourseCategory, CourseTeacher, Enrollment
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
 django.setup()
@@ -104,3 +105,79 @@ class EnrollmentModelTest(TestCase):
         )
         expected_str = f"{self.student.username} enrolled in {self.course.title}"
         self.assertEqual(str(enrollment), expected_str)
+
+
+class CategoryCoursesViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        """Set up initial test data for category and courses."""
+        cls.user = User.objects.create_user(
+            username="testuser",
+            password=config("TEST_PASS"),
+            email="testuser@gmali.com",
+        )
+
+        cls.parent_category = CourseCategory.objects.create(
+            name="Programming", slug="programming"
+        )
+
+        cls.child_category1 = CourseCategory.objects.create(
+            name="Python", slug="python", parent=cls.parent_category
+        )
+        cls.child_category2 = CourseCategory.objects.create(
+            name="Django", slug="django", parent=cls.child_category1
+        )
+
+        cls.course1 = Course.objects.create(
+            title="Intro to Python",
+            category=cls.child_category1,
+            course_description="Python basics",
+        )
+        cls.course2 = Course.objects.create(
+            title="Django for Beginners",
+            category=cls.child_category2,
+            course_description="Django basics",
+        )
+        cls.course3 = Course.objects.create(
+            title="Advanced Django",
+            category=cls.child_category2,
+            course_description="Advanced Django course",
+        )
+
+    def test_category_courses_view_status_code(self):
+        """Test that the view returns a 200 status code for a valid category."""
+        response = self.client.get(
+            reverse("category_courses", args=[self.parent_category.slug])
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_category_courses_template_used(self):
+        """Test that the correct template is used."""
+        response = self.client.get(
+            reverse("category_courses", args=[self.parent_category.slug])
+        )
+        self.assertTemplateUsed(response, "courses/category_courses.html")
+
+    def test_category_courses_list_includes_subcategories(self):
+        """Test that the view includes courses from subcategories."""
+        response = self.client.get(
+            reverse("category_courses", args=[self.parent_category.slug])
+        )
+        self.assertContains(response, "Intro to Python")
+        self.assertContains(response, "Django for Beginners")
+        self.assertContains(response, "Advanced Django")
+
+    def test_category_courses_empty_category(self):
+        """Test an empty category with no courses."""
+        new_category = CourseCategory.objects.create(
+            name="Empty Category", slug="empty-category"
+        )
+        response = self.client.get(
+            reverse("category_courses", args=[new_category.slug])
+        )
+        self.assertEqual(len(response.context["courses"]), 0)
+
+    def test_invalid_category_returns_404(self):
+        """Test that an invalid category slug returns a 404 response."""
+        response = self.client.get(reverse("category_courses", args=["non-existent"]))
+        self.assertEqual(response.status_code, 404)
