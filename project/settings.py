@@ -22,8 +22,9 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = [
-    config("ALLOWED_HOSTS"),
-    "localhost",
+    config('ALLOWED_HOSTS'),
+    'localhost',
+    '127.0.0.1',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     # custom mindjunkies
+<<<<<<< HEAD
     "mindjunkies.home",
     "mindjunkies.accounts",
     "mindjunkies.courses",
@@ -60,6 +62,25 @@ INSTALLED_APPS = [
     "cloudinary",
     "categories",
     "categories.editor",
+=======
+    'mindjunkies.home',
+    'mindjunkies.accounts',
+    'mindjunkies.courses',
+    # 'mindjunkies.theme',
+    'mindjunkies.lecture',
+    'mindjunkies.dashboard',
+    'mindjunkies.live_classes',
+    'mindjunkies.forums',
+
+    # third party mindjunkies
+    'django_tailwind_cli',
+    # 'django_browser_reload',
+    'crispy_forms',
+    'crispy_tailwind',
+    # 'django_extensions',
+    'cloudinary',
+
+>>>>>>> ce896f2 (did some dirty work)
     # allauth
     "allauth",
     "allauth.account",
@@ -69,6 +90,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",  # allauth
+<<<<<<< HEAD
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -77,6 +99,16 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
+=======
+    # "django_browser_reload.middleware.BrowserReloadMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+>>>>>>> ce896f2 (did some dirty work)
 ]
 
 ROOT_URLCONF = "project.urls"

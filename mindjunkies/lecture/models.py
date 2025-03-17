@@ -37,8 +37,8 @@ class LecturePDF(BaseModel):
     lecture = models.ForeignKey(
         Lecture, on_delete=models.CASCADE, related_name="pdf_files"
     )
-    pdf_file = models.FileField(upload_to="lecture_pdfs/")
-    pdf_title = models.CharField(max_length=255)
+    pdf_file = models.FileField(upload_to='lecture_pdfs/')
+    pdf_title= models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f"PDF for {self.lecture.title}"
@@ -55,13 +55,11 @@ class LectureVideo(BaseModel):
         (COMPLETED, "Completed"),
     )
 
-    lecture = models.ForeignKey(
-        "Lecture", on_delete=models.CASCADE, related_name="videos"
-    )
-    video_file = models.FileField(upload_to="lecture_videos/")
-    video_title = models.CharField(max_length=255)
-    thumbnail = models.ImageField(upload_to="thumbnails", null=True, blank=True)
-    hls = models.CharField(max_length=500, blank=True, null=True)
+    lecture=models.ForeignKey('Lecture',on_delete=models.CASCADE,related_name='videos')
+    video_file=models.FileField(upload_to='lecture_videos/')
+    video_title=models.CharField(max_length=255, null=True, blank=True)
+    thumbnail = models.ImageField(upload_to="thumbnails",null=True,blank=True)
+    hls = models.CharField(max_length=500,blank=True,null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
     is_running = models.BooleanField(default=False)
 

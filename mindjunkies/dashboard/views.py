@@ -17,7 +17,7 @@ def content_list(request: HttpRequest) -> HttpResponse:
     context = {
         "courses": courses,
     }
-    return render(request, "templates/dashboard.html", context)
+    return render(request, "dashboard.html", context)
 
 
 @login_required

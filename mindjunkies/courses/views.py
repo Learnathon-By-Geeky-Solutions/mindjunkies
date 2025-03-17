@@ -5,10 +5,19 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
+<<<<<<< HEAD
 from django.views.generic.edit import CreateView, UpdateView
 
 from .forms import CourseForm
 from .models import Course, CourseCategory, CourseTeacher, Enrollment
+=======
+from django.http import HttpRequest, HttpResponse
+from django.views.generic.edit import CreateView, UpdateView, FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+from .models import Course, CourseTeacher, Enrollment, CourseToken
+from .forms import CourseForm, CourseTokenForm
+>>>>>>> ce896f2 (did some dirty work)
 
 
 @require_http_methods(["GET"])
@@ -39,6 +48,12 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
     model = Course
     form_class = CourseForm
     template_name = "courses/create_course.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if CourseToken.objects.filter(user=request.user, status="pending").exists():
+            messages.warning(request, "You have a pending course token. Complete it before creating a new course.")
+            return redirect(reverse("create_course_token"))  
+        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         saved_course = form.save()
@@ -124,3 +139,27 @@ def category_courses(request, slug):
         "courses/category_courses.html",
         {"category": category, "courses": courses},
     )
+def course_view(request: HttpRequest, slug: str) -> HttpResponse:
+    print(slug)
+    course = get_object_or_404(Course, slug=slug)
+    context = {
+        "course": course,
+    }
+    return render(request, "courses/course_view.html", context)
+
+
+
+class CreateCourseTokenView(LoginRequiredMixin, FormView):
+    template_name = "course_token_form.html"
+    form_class = CourseTokenForm
+
+    def form_valid(self, form):
+        token = form.save(commit=False)
+        token.user = self.request.user  # Automatically assign logged-in user
+        token.save()
+        messages.success(self.request, "Course token created successfully!")
+        return redirect(reverse("success_page"))  # Redirect to a success page
+
+    def form_invalid(self, form):
+        messages.error(self.request, "There was an error processing the form.")
+        return self.render_to_response(self.get_context_data(form=form))

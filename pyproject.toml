@@ -13,6 +13,7 @@ dependencies = [
     "django-allauth[socialaccount]>=65.4.1",
     "django-categories>=2.0.0",
     "django-crispy-forms>=2.3",
+    "django-tailwind-cli>=4.1.0",
     "markdown>=3.7",
     "pillow>=11.1.0",
     "psycopg2-binary>=2.9.10",
