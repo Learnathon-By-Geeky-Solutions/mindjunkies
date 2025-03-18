@@ -144,7 +144,7 @@
                         <h2 class="card-title text-2xl mb-4">Instructor</h2>
                         <div class="flex items-center mb-4">
                             <img src="
-                                    {% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'images/default-avatar.jpg' %}{% endif %}"
+                                    {% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}"
                                  alt="{{ instructor.username }}" class="w-24 h-24 rounded-full mr-6">
                             <div>
                                 <h3 class="text-xl font-semibold mb-2">{{ instructor.username }}</h3>
@@ -190,7 +190,7 @@
 <div class="card bg-base-100 shadow-xl mb-8">
     <div class="card-body">
         <h2 class="card-title text-2xl mb-4">Student Reviews</h2>
-        
+
         <!-- Review Summary -->
         <div class="card bg-base-200">
             <div class="card-body">
@@ -212,7 +212,7 @@
                     <div class="stat-desc mt-1 text-white">Based on 1,350 reviews</div>
                   </div>
                 </div>
-                
+
                 <!-- Rating Distribution -->
                 <div class="flex-1">
                   <h4 class="font-medium mb-4">Rating Distribution</h4>
@@ -225,7 +225,7 @@
                       </div>
                       <div class="w-12 text-sm text-right">75%</div>
                     </div>
-                    
+
                     <!-- 4 stars -->
                     <div class="flex items-center gap-3">
                       <div class="w-16 text-sm">4 stars</div>
@@ -234,7 +234,7 @@
                       </div>
                       <div class="w-12 text-sm text-right">18%</div>
                     </div>
-                    
+
                     <!-- 3 stars -->
                     <div class="flex items-center gap-3">
                       <div class="w-16 text-sm">3 stars</div>
@@ -243,7 +243,7 @@
                       </div>
                       <div class="w-12 text-sm text-right">5%</div>
                     </div>
-                    
+
                     <!-- 2 stars -->
                     <div class="flex items-center gap-3">
                       <div class="w-16 text-sm">2 stars</div>
@@ -252,7 +252,7 @@
                       </div>
                       <div class="w-12 text-sm text-right">1%</div>
                     </div>
-                    
+
                     <!-- 1 star -->
                     <div class="flex items-center gap-3">
                       <div class="w-16 text-sm">1 star</div>
@@ -266,7 +266,7 @@
               </div>
             </div>
           </div>
-        
+
         <!-- Individual Reviews -->
         <div class="space-y-6">
             <!-- Review 1 -->
@@ -283,7 +283,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Review 2 -->
             <div class=" border-base-300 ">
                 <div class="flex items-start gap-4">
@@ -298,7 +298,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Review 3 -->
             <div class="border-base-300 pb-6">
                 <div class="flex items-start gap-4">
@@ -314,7 +314,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Pagination -->
         <div class="flex justify-center mt-8">
             <div class="join">
@@ -371,8 +371,7 @@
                             <a href="{% url 'checkout' course_detail.slug %}
                              "class="btn btn-primary btn-block mb-4">Enroll</a>
                              {% else %}
-                             <a href="{% url 'lecture_home' course_detail.slug %}
-                             "class="btn btn-primary btn-block mb-4">View</a>
+                             <a href="{% url 'lecture_home' course_detail.slug %}" class="btn btn-primary btn-block mb-4">View</a>
                             {% endif %}
                             {% comment %} <a href="{{ course_detail.preview_video_link }}" class="btn btn-outline btn-block mb-4"
                                target="_blank">Watch Preview</a> {% endcomment %}

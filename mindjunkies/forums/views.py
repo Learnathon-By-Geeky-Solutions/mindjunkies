@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import TemplateView
 
@@ -113,14 +113,16 @@ class ForumHomeView(LoginRequiredMixin, TemplateView):
         if topic.reaction.filter(email=request.user.email).exists():
             # User is un-reacting
             topic.reaction.remove(request.user)
-           
+
             topic.save()
         else:
             # User is reacting
             topic.reaction.add(request.user)
-          
+
             topic.save()
 
-        return HttpResponseRedirect(
-            f"{reverse('forum_home', kwargs={'course_slug': course_slug})}"
+        return render(
+            request,
+            "forums/partials/like_button.html",
+            context=self.get_context_data(course=topic.course, topic=topic),
         )

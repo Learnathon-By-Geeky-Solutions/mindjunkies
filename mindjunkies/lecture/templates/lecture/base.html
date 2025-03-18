@@ -1,6 +1,6 @@
 {% load static tailwind_cli %}
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,7 +19,7 @@
 {% include 'includes/header.html' %}
 
 {% if messages %}
-    <div class="fixed top-24 right-12 max-w-xs w-full">
+    <div class="fixed top-24 right-12 max-w-xs w-full z-100">
         {% for message in messages %}
             <div role="alert" class="alert alert-info">
                 <span>{{ message | safe }}</span>
