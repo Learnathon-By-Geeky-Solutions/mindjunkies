@@ -113,14 +113,12 @@ class ForumHomeView(LoginRequiredMixin, TemplateView):
         if topic.reaction.filter(email=request.user.email).exists():
             # User is un-reacting
             topic.reaction.remove(request.user)
-            # Update like_count
-            # topic.like_count = max(0, topic.like_count - 1)  # Ensure it doesn't go below 0
+           
             topic.save()
         else:
             # User is reacting
             topic.reaction.add(request.user)
-            # Update like_count
-            # topic.like_count += 1
+          
             topic.save()
 
         return HttpResponseRedirect(

@@ -9,7 +9,7 @@
 
 {% block lecture_content %}
 <!-- Main Content with Responsive Layout -->
-    <main class="flex flex-col lg:flex-row flex-grow overflow-auto text-white">
+    <main class="flex flex-col lg:flex-row flex-grow overflow-auto bg-base-50">
         <!-- Discussion Forum Section -->
         <div class="w-full max-w-4xl mx-auto px-4 py-6">
             <div class="flex justify-between items-center mb-6">
@@ -42,7 +42,7 @@
             <!-- Discussion Threads -->
             {% if forum_topics %}
                 {% for topic in forum_topics %}
-                <div class="card bg-base-100 shadow-xl mb-8">
+                <div class="card  shadow-xl mb-8">
                     <!-- Original Post -->
                     <div class="card-body">
                         <div class="flex items-start gap-4">
@@ -55,7 +55,7 @@
                                 <div class="flex justify-between items-start">
                                     <div>
                                         <h3 class="font-bold text-lg">{{topic.title}}</h3>
-                                        <p class="text-sm text-base-content/70">Posted by <span class="font-medium">{{topic.author}}</span> • {{topic.created_at}}</p>
+                                        <p class="text-sm ">Posted by <span class="font-medium">{{topic.author}}</span> • {{topic.created_at}}</p>
                                     </div>
                                     <div class="dropdown dropdown-end">
                                         <div tabindex="-1" class="btn btn-ghost btn-circle btn-sm">
