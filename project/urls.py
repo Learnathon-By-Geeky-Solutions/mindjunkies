@@ -13,6 +13,7 @@ urlpatterns = [
     path("dashboard/", include("mindjunkies.dashboard.urls")),
     path("live_classes/", include("mindjunkies.live_classes.urls")),
     path("category/<slug:slug>/", category_courses, name="category_courses"),
+    path("payment/", include("mindjunkies.payments.urls")),
 ]
 
 if settings.DEBUG:

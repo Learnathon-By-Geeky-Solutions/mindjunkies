@@ -83,7 +83,7 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     enrolled_courses = CourseTeacher.objects.get(course=course)
     course_teacher = enrolled_courses.teacher
     accessed = False
-    enrolled = course.enrollments.filter(student=request.user).exists()
+    enrolled = course.enrollments.filter(student=request.user, status="active").exists()
     if request.user == course_teacher or enrolled:
         accessed = True
     context = {

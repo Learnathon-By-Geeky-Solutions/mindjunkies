@@ -141,30 +141,7 @@ class Enrollment(BaseModel):
         return f"{self.student.username} enrolled in {self.course.title}"
 
     def save(self, *args, **kwargs):
-        is_new = self.pk is None
-
-        # Fetch the previous state of the object (before saving)
-        if not is_new:
-            old_instance = Enrollment.objects.get(pk=self.pk)
-            previous_status = old_instance.payment_status
-        else:
-            previous_status = None
-
-        super().save(*args, **kwargs)  # Save first before updating course
-
-        if (
-            is_new or (not is_new and previous_status != "completed")
-        ) and self.payment_status == "completed":
-            self.course.number_of_enrollments += 1
-            self.course.save()
-
-        elif (
-            not is_new
-            and previous_status == "completed"
-            and self.payment_status != "completed"
-        ):
-            self.course.number_of_enrollments -= 1
-            self.course.save()
+        super().save(*args, **kwargs)
 
 
 class Module(BaseModel):
