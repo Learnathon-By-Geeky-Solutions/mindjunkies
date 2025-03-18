@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "mindjunkies.dashboard",
     "mindjunkies.live_classes",
     "mindjunkies.forums",
+    "mindjunkies.payments",
     # third party mindjunkies
     "django_tailwind_cli",
     "django_browser_reload",
