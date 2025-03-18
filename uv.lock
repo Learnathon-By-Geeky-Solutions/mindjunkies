@@ -424,6 +424,7 @@ dependencies = [
     { name = "pillow" },
     { name = "psycopg2-binary" },
     { name = "python-decouple" },
+    { name = "sslcommerz-lib" },
 ]
 
 [package.dev-dependencies]
@@ -457,6 +458,7 @@ requires-dist = [
     { name = "pillow", specifier = ">=11.1.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
     { name = "python-decouple", specifier = ">=3.8" },
+    { name = "sslcommerz-lib", specifier = ">=1.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -784,6 +786,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/e5/40/edede8dd6977b0d3da179a342c198ed100dd2aba4be081861ee5911e4da4/sqlparse-0.5.3.tar.gz", hash = "sha256:09f67787f56a0b16ecdbde1bfc7f5d9c3371ca683cfeaa8e6ff60b4807ec9272", size = 84999 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a9/5c/bfd6bd0bf979426d405cc6e71eceb8701b148b16c21d2dc3c261efc61c7b/sqlparse-0.5.3-py3-none-any.whl", hash = "sha256:cf2196ed3418f3ba5de6af7e82c694a9fbdbfecccdfc72e281548517081f16ca", size = 44415 },
+]
+
+[[package]]
+name = "sslcommerz-lib"
+version = "1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0e/df/198e5af5f9d11b7ab59894444cccef70a14000f3d37eca4c385376728598/sslcommerz-lib-1.0.tar.gz", hash = "sha256:b77f1a88a6c320ab161d76c85f7c73b2741f0c49c4fe2df35e8bc1b50dc4ce3e", size = 5418 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ad/65/4c0e711173734f716db13ea0c6024a9d7ceca928d78fc702ac2da8274ca2/sslcommerz_lib-1.0-py3-none-any.whl", hash = "sha256:24751cabe79da0e7ea27076827db4f8bbc02d70df79aff5efea14266281c5e40", size = 17225 },
 ]
 
 [[package]]

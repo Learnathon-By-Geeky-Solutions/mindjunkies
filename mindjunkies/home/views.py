@@ -16,7 +16,7 @@ def home(request):
     enrolled_classes = []
     teacher_classes = []
     if request.user.is_authenticated:
-        enrolled = Enrollment.objects.filter(student=request.user)
+        enrolled = Enrollment.objects.filter(student=request.user, status="active")
         enrolled_classes = [ec.course for ec in enrolled]
         teaching = CourseTeacher.objects.filter(teacher=request.user)
         teacher_classes = [ec.course for ec in teaching]

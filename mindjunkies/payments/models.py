@@ -33,6 +33,9 @@ class Transaction(BaseModel):
     risk_level = models.CharField(max_length=15)
     risk_title = models.CharField(max_length=25)
 
+    class Meta:
+        unique_together = ("user", "course")
+
     def __str__(self):
         return self.user.username + " - " + self.course.title
 

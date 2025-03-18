@@ -368,8 +368,8 @@
                             <div class="text-3xl font-bold mb-4">${{ course_detail.course_price }}</div>
 
                             {% if not accessed %}
-                            <a href="{% url 'lecture_home' course_detail.slug %}
-                             "class="btn btn-primary btn-block mb-4">Add to cart</a>
+                            <a href="{% url 'checkout' course_detail.slug %}
+                             "class="btn btn-primary btn-block mb-4">Enroll</a>
                              {% else %}
                              <a href="{% url 'lecture_home' course_detail.slug %}
                              "class="btn btn-primary btn-block mb-4">View</a>
