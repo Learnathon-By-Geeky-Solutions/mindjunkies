@@ -1,7 +1,7 @@
 <form method="post"
-      hx-post="{% url 'forum_home' course.slug %}"
-      hx-target="#like-button"
-      hx-swap="innerHTML"
+hx-post="{% url 'forum_home' course.slug %}"
+hx-target="#like-button-{{topic.id}}"
+hx-swap="innerHTML"
 >
     {% csrf_token %}
     <input type="hidden" name="reaction" value="like">

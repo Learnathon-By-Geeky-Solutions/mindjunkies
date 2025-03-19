@@ -88,7 +88,7 @@
 
                                     <!-- Reactions -->
                                     <div class="flex gap-4 mt-4">
-                                        <div id="like-button">
+                                        <div id="like-button-{{topic.id}}">
                                             {% include 'forums/partials/like_button.html' %}
                                         </div>
                                         <button class="btn btn-sm btn-ghost gap-1 toggle-replies"
@@ -140,7 +140,7 @@
                                     <div class="flex gap-4">
                                         <div class="avatar">
                                             <div class="w-10 h-10 rounded-full">
-                                                <img src="" alt="Your avatar"/>
+                                                <img src="https://ui-avatars.com/api/?name={{ topic.author|default:'User' }}&background=random"/>
                                             </div>
                                         </div>
                                         <div class="flex-1">
@@ -234,36 +234,14 @@
                 });
             });
 
-            // Handle reactions
-            const reactionButtons = document.querySelectorAll('.reaction-button');
-            reactionButtons.forEach(button => {
-                button.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const replyId = this.getAttribute('data-reply-id');
-                    const reactionType = this.getAttribute('data-reaction');
-                    // Here you would typically send an AJAX request to update the reaction
-                    console.log(`Reaction ${reactionType} for reply ${replyId}`);
-                    // For now, we'll just update the UI
-                    const countSpan = this.querySelector('.reaction-count');
-                    let count = parseInt(countSpan.textContent.replace(/[()]/g, ''));
-                    countSpan.textContent = `(${count + 1})`;
-                });
-            });
+        
+        document.body.addEventListener('htmx:configRequest', (event) => {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            event.detail.headers['X-CSRFToken'] = csrfToken;
+        });
 
-            // Close replies when cancel is clicked
-            const closeRepliesButtons = document.querySelectorAll('.close-replies');
-            closeRepliesButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const targetId = this.getAttribute('data-target');
-                    const repliesContainer = document.getElementById(targetId);
-                    if (repliesContainer) {
-                        repliesContainer.classList.add('hidden');
-                        // Clear the reply form
-                        const replyForm = repliesContainer.querySelector('form textarea[name="content"]');
-                        if (replyForm) replyForm.value = '';
-                    }
-                });
-            });
+
+          
         });
     </script>
 {% endblock lecture_content %}
