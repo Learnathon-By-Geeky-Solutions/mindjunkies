@@ -65,7 +65,7 @@ class ForumReply(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     # Simple reaction counter
-    reaction = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="posts")
+    reaction = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="liked_forum_topics")
 
     class Meta:
         ordering = ["created_at"]

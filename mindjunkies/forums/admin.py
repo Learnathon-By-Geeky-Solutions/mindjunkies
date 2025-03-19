@@ -14,7 +14,7 @@ class ForumTopicAdmin(admin.ModelAdmin):
 
 @admin.register(ForumReply)
 class ForumReplyAdmin(admin.ModelAdmin):
-    list_display = ("topic", "author", "created_at", "like_count")
+    list_display = ("topic", "author", "created_at")
     search_fields = ("content", "author__username", "topic__title")
     list_filter = ("created_at",)
     raw_id_fields = ("author", "topic", "parent_reply")
