@@ -140,7 +140,7 @@
                                     <div class="flex gap-4">
                                         <div class="avatar">
                                             <div class="w-10 h-10 rounded-full">
-                                                <img src="https://ui-avatars.com/api/?name={{ topic.author|default:'User' }}&background=random"/>
+                                                <img src="https://ui-avatars.com/api/?name={{ topic.author|default:'User' }}&background=random" alt="User Profile"/>
                                             </div>
                                         </div>
                                         <div class="flex-1">
@@ -234,14 +234,14 @@
                 });
             });
 
-        
+
         document.body.addEventListener('htmx:configRequest', (event) => {
             const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
             event.detail.headers['X-CSRFToken'] = csrfToken;
         });
 
 
-          
+
         });
     </script>
 {% endblock lecture_content %}

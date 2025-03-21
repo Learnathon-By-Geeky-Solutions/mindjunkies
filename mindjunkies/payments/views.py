@@ -1,10 +1,11 @@
-import random
+import secrets
 import string
 
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET
 from django.views.generic import View
 from sslcommerz_lib import SSLCOMMERZ
 
@@ -17,9 +18,10 @@ from .models import PaymentGateway, Transaction
 def unique_transaction_id_generator(
     size=10, chars=string.ascii_uppercase + string.digits
 ):
-    return "".join(random.choice(chars) for _ in range(size))
+    return "".join(secrets.choice(chars) for _ in range(size))
 
 
+@require_GET
 def checkout(request, course_slug):
     user = request.user
     course = get_object_or_404(Course, slug=course_slug)
