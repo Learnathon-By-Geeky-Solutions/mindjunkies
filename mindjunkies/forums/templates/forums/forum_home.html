@@ -2,246 +2,92 @@
 {% load static %}
 {% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
-
-{% block extra_head %}
-    <link rel="stylesheet" href="{% static 'css/forum.css' %}">
-    <script src="https://unpkg.com/htmx.org@2.0.4"
-            integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+"
-            crossorigin="anonymous"></script>
-{% endblock %}
-
 {% block lecture_content %}
-    <!-- Main Content with Responsive Layout -->
-    <main class="flex flex-col lg:flex-row flex-grow overflow-auto bg-base-50">
-        <!-- Discussion Forum Section -->
-        <div class="w-full max-w-4xl mx-auto px-4 py-6">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-bold text-primary">Course Discussion Forum</h1>
-                <!-- Enhanced New Topic Button -->
-                <button id="newTopicBtn"
-                        class="btn btn-primary flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 hover:shadow-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                         class="lucide lucide-plus">
-                        <path d="M12 5v14M5 12h14"></path>
-                    </svg>
-                    <span>New Topic</span>
-                </button>
-            </div>
+<div class="container mx-auto px-4 py-6">
+  <!-- Navigation Tabs -->
+  <div class="border-b border-gray-200 mb-8">
+    <div class="flex space-x-6 text-sm font-medium">
+      <a href="#" class="text-blue-600 border-b-2 border-blue-600 pb-2">All forums</a>
+      <a href="#" class="text-gray-600 hover:text-blue-600 pb-2">Posts for you</a>
+      <a href="#" class="text-gray-600 hover:text-blue-600 pb-2">Your activity</a>
+    </div>
+  </div>
 
-            <!-- New Topic Form (Hidden by default) -->
-            <div id="newTopicForm" class="card  shadow-xl mb-8 hidden">
-                <div class="card-body">
-                    <h2 class="card-title">Create New Topic</h2>
-                    <form method="post" enctype="multipart/form-data" novalidate>
-                        {% csrf_token %}
-                        {{ form|crispy }}
-                        <div class="form-control mt-4">
-                            <button type="submit" class="btn btn-primary w-full">
-                                Post
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Discussion Threads -->
-            {% if forum_topics %}
-                {% for topic in forum_topics %}
-                    <div class="card  shadow-xl mb-8">
-                        <!-- Original Post -->
-                        <div class="card-body">
-                            <div class="flex items-start gap-4">
-                                <div class="avatar">
-                                    <div class="w-12 h-12 rounded-full">
-                                        <img
-                                            src="https://ui-avatars.com/api/?name={{ topic.author|default:'User' }}&background=random"
-                                            alt="User avatar"/>
-                                    </div>
-                                </div>
-                                <div class="flex-1">
-                                    <div class="flex justify-between items-start">
-                                        <div>
-                                            <h3 class="font-bold text-lg">{{ topic.title }}</h3>
-                                            <p class="text-sm ">Posted by <span
-                                                class="font-medium">{{ topic.author }}</span> • {{ topic.created_at }}
-                                            </p>
-                                        </div>
-                                        <div class="dropdown dropdown-end">
-                                            <div tabindex="-1" class="btn btn-ghost btn-circle btn-sm">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                     stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                          d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"/>
-                                                </svg>
-                                            </div>
-                                            <ul class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                                                <li><a>Edit Post</a></li>
-                                                <li><a>Delete Post</a></li>
-                                                <li><a>Report</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="mt-3 prose max-w-none">
-                                        <p>{{ topic.content }}</p>
-                                    </div>
-
-                                    <!-- Reactions -->
-                                    <div class="flex gap-4 mt-4">
-                                        <div id="like-button-{{topic.id}}">
-                                            {% include 'forums/partials/like_button.html' %}
-                                        </div>
-                                        <button class="btn btn-sm btn-ghost gap-1 toggle-replies"
-                                                data-target="replies-container-{{ topic.id }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                      d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/>
-                                            </svg>
-                                            Reply ({{ topic.get_reply_count }})
-                                        </button>
-                                        <button class="btn btn-sm btn-ghost gap-1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                      d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"/>
-                                            </svg>
-                                            Share
-                                        </button>
-                                        <button class="btn btn-sm btn-ghost gap-1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                      d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"/>
-                                            </svg>
-                                            Save
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Reply Section (Hidden by default) -->
-                        <div id="replies-container-{{ topic.id }}" class="hidden">
-                            <div class="divider px-8 my-0"></div>
-
-                            <!-- All replies (including nested) -->
-                            {% for reply in topic.replies.all %}
-                                {% if not reply.parent_reply %}
-                                    {% include "forums/reply.html" with reply=reply topic=topic %}
-                                {% endif %}
-                            {% endfor %}
-
-                            <!-- Comment Input Box -->
-                            <div class="px-8 py-6 bg-base-200 rounded-b-xl">
-                                <h3 class="font-medium mb-3">Add Your Reply</h3>
-                                <form method="post" action="">
-                                    {% csrf_token %}
-                                    <div class="flex gap-4">
-                                        <div class="avatar">
-                                            <div class="w-10 h-10 rounded-full">
-                                                <img src="https://ui-avatars.com/api/?name={{ topic.author|default:'User' }}&background=random"/>
-                                            </div>
-                                        </div>
-                                        <div class="flex-1">
-                                            {{ reply_form.content|as_crispy_field }}
-                                            <input type="hidden" name="replies" value="">
-                                            <input type="hidden" name="topic_id" value="{{ topic.id }}">
-                                            <input type="hidden" name="parent_reply_id" value="">
-                                            <div class="flex justify-between mt-3">
-                                                <div class="flex gap-2">
-                                                    <!-- ... (keep the existing button icons) ... -->
-                                                </div>
-                                                <div>
-                                                    <button type="button" class="btn btn-sm btn-ghost close-replies"
-                                                            data-target="replies-container-{{ topic.id }}">Cancel
-                                                    </button>
-                                                    <button type="submit" class="btn btn-sm btn-primary ml-2">Post
-                                                        Reply
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <div class="text-center py-12">
-                    <h3 class="text-lg font-medium text-gray-500">No discussions yet</h3>
-                    <p class="mt-2 text-sm text-gray-400">Be the first to start a discussion!</p>
-                </div>
-            {% endif %}
+  <!-- Main Content -->
+  <div class="flex flex-col lg:flex-row gap-8">
+    <!-- Forum Threads -->
+    <div class="w-full md:w-2/3 space-y-4">
+      <!-- Thread: Module 1 -->
+      <div class="border border-gray-200 rounded-lg p-5">
+        <div class="flex justify-between items-start">
+          <div>
+            <h2 class="text-lg font-semibold text-gray-900">Module 1</h2>
+            <p class="text-gray-700 text-sm mt-1">Discuss this week's modules here.</p>
+            <p class="text-sm text-gray-500 mt-2">Last post 3 hours ago</p>
+          </div>
+          <div class="text-right">
+            <p class="text-sm font-medium text-gray-700">994 threads</p>
+          </div>
         </div>
-    </main>
+      </div>
 
-    <!-- JavaScript for toggle functionality -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log("Forum script loaded");
+      <!-- Thread: Module 2 -->
+      <div class="border border-gray-200 rounded-lg p-5">
+        <div class="flex justify-between items-start">
+          <div>
+            <h2 class="text-lg font-semibold text-gray-900">Module 2</h2>
+            <p class="text-gray-700 text-sm mt-1">Discuss lecture notes and assignments.</p>
+            <p class="text-sm text-gray-500 mt-2">Last post 11 hours ago</p>
+          </div>
+          <div class="text-right">
+            <p class="text-sm font-medium text-gray-700">243 threads</p>
+          </div>
+        </div>
+      </div>
 
-            // Toggle for New Topic Form
-            const newTopicBtn = document.getElementById('newTopicBtn');
-            const newTopicForm = document.getElementById('newTopicForm');
+      <!-- Thread: Module 3 -->
+        <a href="{% url 'forum_thread' course.slug%}"><div class="border border-gray-200 rounded-lg p-5">
+        <div class="flex justify-between items-start">
+         <div>
+            <h2 class="text-lg font-semibold text-gray-900">Module 3</h2>
+            <p class="text-gray-700 text-sm mt-1">Share resources and helpful tips.</p>
+            <p class="text-sm text-gray-500 mt-2">Last post 16 days ago</p>
+          </div>
+          <div class="text-right">
+            <p class="text-sm font-medium text-gray-700">65 threads</p>
+          </div>
+        </div>
+      </div></a>
+    </div>
 
-            if (newTopicBtn && newTopicForm) {
-                newTopicBtn.addEventListener('click', function () {
-                    newTopicForm.classList.toggle('hidden');
-                    console.log("New topic form toggled");
-                });
-            } else {
-                console.warn("New topic button or form not found");
-            }
+    <!-- Sidebar -->
+    <div class="w-full lg:w-1/3 space-y-6">
+      <!-- Featured Discussion -->
+      <div class="border border-gray-200 rounded-lg p-5">
+        <h3 class="text-base font-semibold text-gray-800 mb-1">Featured Discussion</h3>
+        <p class="text-sm text-gray-600 mb-4">243 threads · Last post 11 hours ago</p>
+        <a href="#" class="inline-flex items-center text-blue-600 border border-blue-600 px-4 py-2 rounded hover:bg-blue-50 transition-colors text-sm font-medium">
+          Go to discussion 
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </a>
+      </div>
 
-            // Toggle for Replies
-            const toggleRepliesButtons = document.querySelectorAll('.toggle-replies');
-            console.log("Reply toggle buttons found:", toggleRepliesButtons.length);
-
-            toggleRepliesButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const targetId = this.getAttribute('data-target');
-                    console.log('Trying to toggle:', targetId);
-                    const targetElement = document.getElementById(targetId);
-                    if (targetElement) {
-                        targetElement.classList.toggle('hidden');
-                        console.log('Toggled element:', targetId);
-                    } else {
-                        console.error('Target element not found:', targetId);
-                    }
-                });
-            });
-
-            // Handle reply to comment
-            const replyButtons = document.querySelectorAll('.toggle-reply-form');
-            replyButtons.forEach(button => {
-                button.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const commentAuthor = this.getAttribute('data-author');
-                    const replyId = this.getAttribute('data-reply-id');
-                    const topicId = this.closest('[id^="replies-container-"]').id.split('-').pop();
-                    const replyForm = document.querySelector(`#replies-container-${topicId} form`);
-                    if (replyForm) {
-                        const textarea = replyForm.querySelector('textarea[name="content"]');
-                        const parentReplyInput = replyForm.querySelector('input[name="parent_reply_id"]');
-                        textarea.value = `@${commentAuthor} `;
-                        parentReplyInput.value = replyId;
-                        textarea.focus();
-                        // Scroll to the reply form
-                        replyForm.scrollIntoView({behavior: 'smooth', block: 'center'});
-                    }
-                });
-            });
-
-        
-        document.body.addEventListener('htmx:configRequest', (event) => {
-            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            event.detail.headers['X-CSRFToken'] = csrfToken;
-        });
-
-
-          
-        });
-    </script>
+      <!-- Description -->
+      <div class="border border-gray-200 rounded-lg p-5">
+        <h3 class="text-base font-semibold text-gray-800 mb-3">Description</h3>
+        <p class="text-sm text-gray-700 mb-4 leading-relaxed">
+          Welcome to the course discussion forums! Ask questions, debate ideas, and find classmates who share your goals. Browse popular threads or explore other forums using the tabs above.
+        </p>
+        <a href="#" class="text-blue-600 hover:underline text-sm flex items-center">
+          Forum guidelines
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock lecture_content %}

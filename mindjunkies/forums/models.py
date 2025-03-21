@@ -2,7 +2,8 @@ from django.conf import settings
 from django.db import models
 from django.utils.text import slugify
 
-from mindjunkies.courses.models import Course
+from mindjunkies.courses.models import Course,Module
+
 
 
 class ForumTopic(models.Model):
@@ -12,11 +13,12 @@ class ForumTopic(models.Model):
     slug = models.SlugField(max_length=255, unique=True, blank=True)
     content = models.TextField()
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="forum_topics"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="posts"
     )
     course = models.ForeignKey(
-        Course, on_delete=models.CASCADE, related_name="forum_topics"
-    )
+        Course, on_delete=models.CASCADE, related_name="posts"
+    ),
+    module=models.ForeignKey(Module,on_delete=models.CASCADE,related_name="posts")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

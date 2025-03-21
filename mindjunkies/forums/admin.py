@@ -5,7 +5,7 @@ from .models import ForumNotification, ForumReply, ForumTopic
 
 @admin.register(ForumTopic)
 class ForumTopicAdmin(admin.ModelAdmin):
-    list_display = ("title", "author", "course", "created_at")
+    list_display = ("title", "author", "course","module", "created_at")
     search_fields = ("title", "content", "author__username", "course__title")
     list_filter = ("created_at", "course")
     prepopulated_fields = {"slug": ("title",)}
