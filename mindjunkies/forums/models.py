@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.text import slugify
 
-from mindjunkies.courses.models import Course
+from mindjunkies.courses.models import Course, Module
 
 
 class ForumTopic(models.Model):
@@ -15,12 +15,17 @@ class ForumTopic(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="forum_topics"
     )
     course = models.ForeignKey(
-        Course, on_delete=models.CASCADE, related_name="forum_topics"
+        Course, on_delete=models.CASCADE, related_name="forum_posts"
+    )  # Removed trailing comma
+    module = models.ForeignKey(
+        Module, on_delete=models.CASCADE, related_name="forum_posts"
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    reaction = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="posts")
+    reactions = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="forum_topic_reactions", blank=True
+    )  # Changed related_name to be unique
 
     class Meta:
         ordering = ["-created_at"]
@@ -34,7 +39,7 @@ class ForumTopic(models.Model):
         super().save(*args, **kwargs)
 
     def get_reply_count(self):
-        return self.replies.count()
+        return self.replies.count()  # Ensuring 'replies' is the related_name for ForumReply
 
     def get_last_activity(self):
         """Returns the datetime of the most recent activity (post or reply)"""
@@ -64,8 +69,9 @@ class ForumReply(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    # Simple reaction counter
-    reaction = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="liked_forum_topics")
+    reactions = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="forum_reply_reactions", blank=True
+    )  # Changed related_name to be unique
 
     class Meta:
         ordering = ["created_at"]
@@ -75,35 +81,3 @@ class ForumReply(models.Model):
         return f"Reply by {self.author.username} on {self.topic.title}"
 
 
-class ForumNotification(models.Model):
-    """Model for forum notifications"""
-
-    NOTIFICATION_TYPES = (
-        ("reply", "New Reply"),
-        ("mention", "Mention"),
-        ("reaction", "Reaction"),
-    )
-
-    recipient = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="forum_notifications",
-    )
-    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
-    topic = models.ForeignKey(
-        ForumTopic, on_delete=models.CASCADE, null=True, blank=True
-    )
-    reply = models.ForeignKey(
-        ForumReply, on_delete=models.CASCADE, null=True, blank=True
-    )
-    actor = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="forum_actions"
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_read = models.BooleanField(default=False)
-
-    class Meta:
-        ordering = ["-created_at"]
-
-    def __str__(self):
-        return f"Notification for {self.recipient.username}: {self.get_notification_type_display()}"

@@ -1,7 +1,6 @@
 import mimetypes
 import os
 from typing import Any
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -14,42 +13,68 @@ from django.utils.encoding import smart_str
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 from django.views.generic.edit import CreateView, FormView, UpdateView
-
+from django.utils import timezone
 from mindjunkies.courses.models import Course, Module
-
+from datetime import timedelta
 from .forms import LectureForm, LecturePDFForm, LectureVideoForm, ModuleForm
 from .models import Lecture, LecturePDF, LectureVideo
+from django.utils.timezone import localtime, now
+from django.views.generic import TemplateView
 
 
-@login_required
-@require_http_methods(["GET"])
-def lecture_home(request: HttpRequest, course_slug: str) -> HttpResponse:
-    """View to show lectures for a course."""
-    course = get_object_or_404(Course, slug=course_slug)
+class LectureHomeView(LoginRequiredMixin, TemplateView):
+    template_name = "lecture/lecture_home.html"
 
-    teacher = (
-        request.user.is_staff or course.teachers.filter(teacher=request.user).exists()
-    )
+    def get_course(self):
+        return get_object_or_404(Course, slug=self.kwargs["course_slug"])
 
-    module_id = request.GET.get("module_id")
-    if module_id:
-        current_module = get_object_or_404(Module, id=module_id)
-    else:
-        current_module = course.modules.first()
+    def get_is_teacher(self, course):
+        return self.request.user.is_staff or course.teachers.filter(teacher=self.request.user).exists()
 
-    if not current_module:
-        messages.warning(request, "No lectures available for this course.")
+    def get_today_range(self):
+        today = localtime(now())
+        start = today.replace(hour=0, minute=0, second=0, microsecond=0)
+        end = today.replace(hour=23, minute=59, second=59, microsecond=999999)
+        return start, end
 
-    context = {
-        "course": course,
-        "modules": course.modules.all(),
-        "current_module": current_module,
-        "isTeacher": teacher,
-    }
+    def get_current_module(self, course):
+        module_id = self.request.GET.get("module_id")
+        if module_id:
+            return get_object_or_404(Module, id=module_id)
+        return course.modules.first()
 
-    return render(request, "lecture/lecture_home.html", context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        course = self.get_course()
+        is_teacher = self.get_is_teacher(course)
+        today_start, today_end = self.get_today_range()
 
+        # Use cached queryset to avoid repeating filters
+        live_classes_today = list(course.live_classes.filter(
+            scheduled_at__range=(today_start, today_end)
+        ).order_by('scheduled_at'))
+        
+        now = timezone.now()
+        current_live_class = None
+        for live_class in course.live_classes.all():
+            end_time = live_class.scheduled_at + timedelta(minutes=live_class.duration)
+            if live_class.scheduled_at <= now <= end_time:
+                current_live_class = live_class
+                break
 
+        current_module = self.get_current_module(course)
+        if not current_module:
+            messages.warning(self.request, "No lectures available for this course.")
+
+        context.update({
+            "course": course,
+            "modules": course.modules.all(),
+            "current_module": current_module,
+            "isTeacher": is_teacher,
+            "current_live_class": current_live_class,
+            "todays_live_classes": live_classes_today,  # consistent naming
+        })
+        return context
 @require_http_methods(["GET"])
 def serve_hls_playlist(request, course_slug, video_id):
     try:
@@ -181,6 +206,7 @@ class CreateLectureView(LoginRequiredMixin, CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         """Ensure the course exists before proceeding"""
+        
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -285,12 +311,9 @@ class CreateModuleView(LoginRequiredMixin, CreateView):
     form_class = ModuleForm
     template_name = "lecture/create_module.html"
 
-    def __init__(self, **kwargs: Any):
-        super().__init__(kwargs)
-        self.course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
-
     def dispatch(self, request, *args, **kwargs):
         """Ensure the course exists before proceeding"""
+        self.course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
