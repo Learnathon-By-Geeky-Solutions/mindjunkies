@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ForumNotification, ForumReply, ForumTopic
+from .models import  ForumReply, ForumTopic
 
 
 @admin.register(ForumTopic)
@@ -20,14 +20,4 @@ class ForumReplyAdmin(admin.ModelAdmin):
     raw_id_fields = ("author", "topic", "parent_reply")
 
 
-@admin.register(ForumNotification)
-class ForumNotificationAdmin(admin.ModelAdmin):
-    list_display = ("recipient", "notification_type", "actor", "created_at", "is_read")
-    search_fields = (
-        "recipient__username",
-        "actor__username",
-        "topic__title",
-        "reply__content",
-    )
-    list_filter = ("notification_type", "created_at", "is_read")
-    raw_id_fields = ("recipient", "actor", "topic", "reply")
+
