@@ -10,26 +10,26 @@
       <p class="text-base-content/70 mt-2">{{ course.title }}</p>
       <div class="divider"></div>
     </div>
-    
+
     <!-- Form Section -->
     <form method="post" class="space-y-6">
       {% csrf_token %}
-      
+
       <!-- Topic Input -->
       <div class="form-control">
         <label class="label">
           <span class="label-text font-medium">Class Topic</span>
         </label>
-        <input 
-          type="text" 
-          name="topic" 
-          id="topic" 
-          placeholder="Enter the topic of your live class" 
-          required 
+        <input
+          type="text"
+          name="topic"
+          id="topic"
+          placeholder="Enter the topic of your live class"
+          required
           class="input input-bordered w-full focus:input-primary"
         >
       </div>
-      
+
       <!-- Date and Time Section -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Schedule Time -->
@@ -38,37 +38,37 @@
             <span class="label-text font-medium">Date & Time</span>
           </label>
           <div class="relative">
-            <input 
-              type="datetime-local" 
-              id="scheduled_at" 
-              name="scheduled_at" 
-              required 
+            <input
+              type="datetime-local"
+              id="scheduled_at"
+              name="scheduled_at"
+              required
               class="input input-bordered w-full pr-10 focus:input-primary"
             >
             <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-              
+
             </div>
           </div>
           <label class="label">
             <span class="label-text-alt text-base-content/60">Select the date and time for your class</span>
           </label>
         </div>
-        
+
         <!-- Duration -->
         <div class="form-control">
           <label class="label">
             <span class="label-text font-medium">Duration</span>
           </label>
           <div class="relative">
-            <input 
-              type="number" 
-              name="duration" 
-              id="duration" 
-              value="60" 
-              min="15" 
-              max="180" 
-              step="15" 
-              required 
+            <input
+              type="number"
+              name="duration"
+              id="duration"
+              value="60"
+              min="15"
+              max="180"
+              step="15"
+              required
               class="input input-bordered w-full pr-16 focus:input-primary"
             >
             <div class="absolute inset-y-0 right-0 flex items-center">
@@ -82,20 +82,20 @@
           </label>
         </div>
       </div>
-      
+
       <!-- Additional Information (Optional) -->
       <div class="form-control">
         <label class="label">
           <span class="label-text font-medium">Description (Optional)</span>
         </label>
-        <textarea 
-          name="description" 
-          id="description" 
-          placeholder="Provide additional details about what will be covered in this class" 
+        <textarea
+          name="description"
+          id="description"
+          placeholder="Provide additional details about what will be covered in this class"
           class="textarea textarea-bordered h-24 focus:textarea-primary"
         ></textarea>
       </div>
-      
+
       <!-- Submit Button Section -->
       <div class="pt-4">
         <div class="divider"></div>
@@ -110,7 +110,7 @@
         </div>
       </div>
     </form>
-    
+
     <!-- Helpful Tips -->
     <div class="mt-8 p-4 bg-base-200 rounded-lg">
       <div class="flex items-start">
