@@ -11,20 +11,20 @@
 {% endblock %}
 
 {% block lecture_content %}
-<div class="max-w-4xl mx-auto px-4 py-8">
+<div class="max-w-5xl px-4 py-8">
   
   <!-- Breadcrumb -->
   <div class="text-sm breadcrumbs">
     <ul>
-      <li><a href="#" class="text-blue-500">Home</a></li> 
-      <li>Module 1</li>
+      <li><a href="{% url 'forum_home' course.slug %}" class="text-blue-500">Home</a></li> 
+      <li>Module {{module.order}}</li>
     </ul>
   </div>
 
   <!-- Header & Subscribe -->
   <div class="flex items-center justify-between mt-4">
     <div>
-      <h1 class="text-3xl font-bold">Module 1</h1>
+      <h1 class="text-3xl font-bold">Module {{module.order}}: {{module.title}}</h1>
       <p class="text-gray-600">Discuss this week's modules here.</p>
     </div>
     <a class="text-blue-600 font-medium hover:underline" href="#">Subscribe</a>
@@ -43,10 +43,11 @@
     <div class="flex items-center space-x-2">
       <span class="font-semibold">Forum:</span>
       <div class="dropdown">
-        <label tabindex="0" class="btn btn-sm btn-outline">Module 1</label>
+        <label tabindex="0" class="btn btn-sm btn-outline">Module {{module.order}}</label>
         <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-          <li><a>Module 1</a></li>
-          <li><a>Module 2</a></li>
+          {% for module in course.modules.all %}
+         <li><a href="{% url 'forum_thread' course.slug module.id %}">Module {{module.order}}</a></li>
+          {% endfor %}
         </ul>
       </div>
     </div>
@@ -71,12 +72,18 @@
   </div>
 
   <!-- Forum Thread Card -->
-  <div class="mt-8 border-t border-gray-200 pt-6 space-y-8">
+  <div class=" mt-8 border-t border-gray-200 pt-6 space-y-8">
 
-    <div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
-        <a href="#" class="text-blue-600 font-bold text-lg hover:underline">I want to make a new friend</a>
+   {% for post in module.forum_posts.all%}
+    <div class="w-[1000px] bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+        <a href="{% url 'forum_thread_details' course.slug post.slug %}" class="text-blue-600 font-bold text-lg hover:underline">{{post.title}}</a>
         <p class="mt-2 text-gray-700 text-base">
-          Hello everyone, My name is Riza Adan, I'm from the Philippines. Nice meeting you all. I want to make a new friend here.
+          <p class="mt-2 text-gray-700 text-base">
+            {{ post.content|truncatewords:100 }} 
+            {% if post.content|wordcount > 100 %}
+              <a href="{% url 'forum_post_detail' post.id %}" class="text-blue-500 hover:underline">See Details</a>
+            {% endif %}
+          </p>
         </p>
       
         <div class="flex items-center justify-between mt-4 text-sm text-gray-500">
@@ -84,7 +91,7 @@
             <button class="flex items-center gap-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded-md transition-all">
               <i class="fa-regular fa-thumbs-up"></i> Like
             </button>
-            <a href="{% url 'forum_thread_details' course.slug %}"><button class="flex cursor-pointer  gap-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded-md transition-all">
+            <a href="{% url 'forum_thread_details' course.slug post.slug %}"><button class="flex cursor-pointer  gap-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded-md transition-all">
               <i class="fa-regular fa-comment-dots"></i> Reply 3
             </button></a>
           </div>
@@ -94,29 +101,21 @@
                 FS
               </div>
             </div>
-            <span class="text-sm text-gray-500">Farhana Islam Saima · replied 5 hours ago</span>
+            <span class="text-sm text-gray-500">Replied on {{ post.get_last_activity|date:"F j, Y, g:i a" }}</span>
           </div>
         </div>
       </div>
+      {% endfor %}
   </div>
 
   <!-- Dialog for New Topic Form - Fixed for DaisyUI -->
   <dialog id="newTopicModal" class="modal">
     <div class="modal-box">
       <h2 class="text-xl font-bold mb-4">Create New Topic</h2>
-      <form method="post" enctype="multipart/form-data" novalidate>
+      <form method="post" action="{% url 'forum_submission' course_slug=course.slug module_id=module.id %}" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
         
-        <!-- Input fields for the topic creation form -->
-        <div class="mb-4">
-          <label for="title" class="block text-sm font-semibold text-gray-700">Title</label>
-          <input type="text" id="title" name="title" class="input input-bordered w-full" placeholder="Enter the title of your topic" required>
-        </div>
-
-        <div class="mb-4">
-          <label for="content" class="block text-sm font-semibold text-gray-700">Content</label>
-          <textarea id="content" name="content" class="textarea textarea-bordered w-full" rows="4" placeholder="Enter the content of your topic" required></textarea>
-        </div>
+        {{form|crispy}}
 
         <div class="form-control mt-4">
           <button type="submit" class="btn btn-primary w-full">

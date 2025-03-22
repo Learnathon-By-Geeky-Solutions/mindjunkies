@@ -18,10 +18,11 @@
     <!-- Forum Threads -->
     <div class="w-full md:w-2/3 space-y-4">
       <!-- Thread: Module 1 -->
-      <div class="border border-gray-200 rounded-lg p-5">
+       {% for module in course.modules.all %}
+      <a href="{% url 'forum_thread' course.slug module.id %}"><div class="border cursor-pointer border-gray-200 rounded-lg p-5">
         <div class="flex justify-between items-start">
           <div>
-            <h2 class="text-lg font-semibold text-gray-900">Module 1</h2>
+            <h2 class="text-lg font-semibold text-gray-900">Module {{module.order}}: {{module.title}}</h2>
             <p class="text-gray-700 text-sm mt-1">Discuss this week's modules here.</p>
             <p class="text-sm text-gray-500 mt-2">Last post 3 hours ago</p>
           </div>
@@ -29,35 +30,11 @@
             <p class="text-sm font-medium text-gray-700">994 threads</p>
           </div>
         </div>
-      </div>
-
-      <!-- Thread: Module 2 -->
-      <div class="border border-gray-200 rounded-lg p-5">
-        <div class="flex justify-between items-start">
-          <div>
-            <h2 class="text-lg font-semibold text-gray-900">Module 2</h2>
-            <p class="text-gray-700 text-sm mt-1">Discuss lecture notes and assignments.</p>
-            <p class="text-sm text-gray-500 mt-2">Last post 11 hours ago</p>
-          </div>
-          <div class="text-right">
-            <p class="text-sm font-medium text-gray-700">243 threads</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Thread: Module 3 -->
-        <a href="{% url 'forum_thread' course.slug%}"><div class="border border-gray-200 rounded-lg p-5">
-        <div class="flex justify-between items-start">
-         <div>
-            <h2 class="text-lg font-semibold text-gray-900">Module 3</h2>
-            <p class="text-gray-700 text-sm mt-1">Share resources and helpful tips.</p>
-            <p class="text-sm text-gray-500 mt-2">Last post 16 days ago</p>
-          </div>
-          <div class="text-right">
-            <p class="text-sm font-medium text-gray-700">65 threads</p>
-          </div>
-        </div>
       </div></a>
+      {% endfor %}
+
+   
+
     </div>
 
     <!-- Sidebar -->
