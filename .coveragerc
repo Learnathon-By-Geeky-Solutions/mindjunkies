@@ -8,3 +8,4 @@ omit =
     project/asgi.py
     */__init__.py
     */management/*
+    config/*

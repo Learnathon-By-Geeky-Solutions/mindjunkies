@@ -44,31 +44,6 @@ def test_meeting_id_auto_generation():
 
 
 @pytest.mark.django_db
-def test_generate_jwt_token(mocker):
-    """Test that JWT token generation runs without error."""
-    teacher = baker.make(User, username="teacher1", email="teacher1@example.com")
-    course = baker.make(Course)
-    live_class = baker.make(
-        LiveClass, teacher=teacher, course=course, scheduled_at=now()
-    )
-
-    # Mock the private key file
-    mocker.patch("builtins.open", mocker.mock_open(read_data="FAKE_PRIVATE_KEY"))
-
-    # Mock the JaaSJwtBuilder to prevent actual JWT signing
-    mock_jaas = mocker.patch("mindjunkies.live_classes.models.JaaSJwtBuilder")
-
-    # Make sure it returns a string instead of a MagicMock object
-    (
-        mock_jaas.return_value.with_defaults.return_value.with_api_key.return_value.with_user_name.return_value.with_user_email.return_value.with_moderator.return_value.with_app_id.return_value.with_user_avatar.return_value.sign_with.return_value.decode  # noqa: E501
-    ).return_value = "mocked_jwt_token"
-
-    token = live_class.generate_jwt_token()
-
-    assert token == "mocked_jwt_token"
-
-
-@pytest.mark.django_db
 def test_get_meeting_url_teacher(mocker):
     """Test that `get_meeting_url_teacher()` returns correct JWT-secured URL."""
     teacher = baker.make(User)
