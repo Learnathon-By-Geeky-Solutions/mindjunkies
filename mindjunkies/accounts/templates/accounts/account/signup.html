@@ -1,4 +1,4 @@
-{% extends "accounts/account/base_entrance.html" %}
+{% extends "account/base_entrance.html" %}
 {% load crispy_forms_filters %}
 {% load allauth i18n %}
 
@@ -8,36 +8,38 @@
 
 {% block content %}
     <div class="card w-96 bg-base-100 shadow-xl">
-    <div class="card-body">
-    <h2 class="card-title text-2xl font-bold text-center mb-6">Sign In to Nexora</h2>
-    {% if not SOCIALACCOUNT_ONLY %}
-        {% url 'account_signup' as action_url %}
-        {% element form form=form method="post" action=action_url tags="entrance,signup" %}
-            {% slot body %}
-                {% csrf_token %}
-                {{ form|crispy }}
-                {{ redirect_field }}
-            {% endslot %}
-            {% slot actions %}
-                <div class="form-control mt-6">
-                    {% element button type="submit" tags="prominent,signup" class="btn-accent" %}
-                        {% trans "Sign Up" %}
-                    {% endelement %}
+        <div class="card-body">
+            <h2 class="card-title text-2xl font-bold text-center mb-6">Sign In to Nexora</h2>
+            {% if not SOCIALACCOUNT_ONLY %}
+                {% url 'account_signup' as action_url %}
+                {% element form form=form method="post" action=action_url tags="entrance,signup" %}
+                    {% slot body %}
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        {{ redirect_field }}
+                    {% endslot %}
+                    {% slot actions %}
+                        <div class="form-control mt-6">
+                            {% element button type="submit" tags="prominent,signup" class="btn-accent" %}
+                                {% trans "Sign Up" %}
+                            {% endelement %}
+                        </div>
+                    {% endslot %}
+                {% endelement %}
+                <div class="text-center mt-6">
+                    <p>Already have an account? <a href="{{ login_url }}" class="link link-primary">Login</a></p>
                 </div>
-            {% endslot %}
-        {% endelement %}
-        <div class="text-center mt-6">
-            <p>Already have an account? <a href="{{ login_url }}" class="link link-primary">Login</a></p>
+            {% endif %}
+            {% if PASSKEY_SIGNUP_ENABLED %}
+                {% element hr %}
+                {% endelement %}
+                {% element button href=signup_by_passkey_url tags="prominent,signup,outline,primary" %}
+                    {% trans "Sign up using a passkey" %}
+                {% endelement %}
+            {% endif %}
+            {% if SOCIALACCOUNT_ENABLED %}
+                {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+            {% endif %}
         </div>
-    {% endif %}
-    {% if PASSKEY_SIGNUP_ENABLED %}
-        {% element hr %}
-        {% endelement %}
-        {% element button href=signup_by_passkey_url tags="prominent,signup,outline,primary" %}
-            {% trans "Sign up using a passkey" %}
-        {% endelement %}
-    {% endif %}
-    {% if SOCIALACCOUNT_ENABLED %}
-        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-    {% endif %}
+    </div>
 {% endblock content %}

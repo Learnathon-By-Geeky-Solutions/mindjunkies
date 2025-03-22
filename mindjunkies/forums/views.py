@@ -54,7 +54,7 @@ class ForumHomeView(LoginRequiredMixin, TemplateView):
             return self.handle_reply_submission(request, course_slug)
         # This is a react submission
         elif "reaction" in request.POST:
-            
+
             return self.handle_reaction_submission(request, course_slug)
 
         else:
