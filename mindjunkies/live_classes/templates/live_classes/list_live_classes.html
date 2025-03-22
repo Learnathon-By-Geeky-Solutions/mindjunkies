@@ -1,18 +1,135 @@
 {% extends 'base.html' %}
 
 {% block main_content %}
-    <div class="p-3 mb-2 bg-light text-dark">
-        <h2 class="text-xl font-bold">Live Classes for {{ course.title }}</h2>
-        {% for live_class in live_classes %}
-            <div class="border-dashed border-2 p-2 m-2">
-                <p class="mb-2"><strong>{{ live_class.topic }}</strong> ({{ live_class.scheduled_at }})</p>
-                <a class="btn btn-secondary" href="{% url 'join_live_class' live_class.meeting_id %}">Join Class</a>
-            </div>
-        {% empty %}
-            <p>No live classes scheduled.</p>
-        {% endfor %}
-        {% if request.user.role == "teacher" %}
-            <a href="{% url 'create_live_class' course.id %}">Schedule a Live Class</a>
-        {% endif %}
+<div class="max-w-5xl mx-auto py-8 px-4 sm:px-6">
+  <!-- Header Section -->
+  <div class="mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+      <div>
+        
+        <p class="mt-1 text-base-content/70">{{ course.title }}</p>
+      </div>
+      
+      {% if request.user.role == "teacher" %}
+      <div class="mt-4 md:mt-0">
+        <a href="{% url 'create_live_class' course.id %}" class="btn btn-primary gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Schedule a Live Class
+        </a>
+      </div>
+      {% endif %}
     </div>
+    <div class="divider"></div>
+  </div>
+  
+  <!-- Live Classes Section -->
+  {% if live_classes %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for live_class in live_classes %}
+        <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <div class="card-body">
+            <!-- Status Badge -->
+            {% now "Y-m-d H:i:s" as current_time %}
+            {% if live_class.scheduled_at|date:"Y-m-d H:i:s" > current_time %}
+              <div class="badge badge-accent ">Upcoming</div>
+            {% else %}
+              <div class="badge badge-secondary ">Live Now</div>
+            {% endif %}
+            
+            <!-- Class Content -->
+            <h2 class="card-title text-lg font-bold">{{ live_class.topic }}</h2>
+            
+            <div class="flex items-center mt-2 text-base-content/70">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span>{{ live_class.scheduled_at|date:"D, M d, Y" }}</span>
+            </div>
+            
+            <div class="flex items-center mt-1 text-base-content/70">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{{ live_class.scheduled_at|date:"g:i A" }}</span>
+            </div>
+            
+            {% if live_class.duration %}
+            <div class="flex items-center mt-1 text-base-content/70">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{{ live_class.duration }} minutes</span>
+            </div>
+            {% endif %}
+            
+            <div class="card-actions justify-end mt-4">
+              <a href="{% url 'join_live_class' live_class.meeting_id %}" class="btn btn-primary gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Join Class
+              </a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <!-- Empty State -->
+    <div class="flex flex-col items-center justify-center py-12 px-4 text-center bg-base-200 rounded-xl">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-base-content/30 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+      </svg>
+      <h3 class="text-xl font-medium mb-2">No Live Classes Scheduled</h3>
+      <p class="text-base-content/70 max-w-md mb-6">There are currently no live classes scheduled for this course.</p>
+      
+      {% if request.user.role == "teacher" %}
+        <a href="{% url 'create_live_class' course.id %}" class="btn btn-primary gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Schedule Your First Class
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+  
+  <!-- Upcoming Classes Calendar View (Optional) -->
+  {% if live_classes and live_classes|length > 3 %}
+    <div class="mt-12">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold">Class Schedule</h2>
+        <div class="badge badge-outline p-3">All times are in your local timezone</div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>Topic</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Duration</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for live_class in live_classes %}
+              <tr>
+                <td>{{ live_class.topic }}</td>
+                <td>{{ live_class.scheduled_at|date:"D, M d, Y" }}</td>
+                <td>{{ live_class.scheduled_at|date:"g:i A" }}</td>
+                <td>{{ live_class.duration }} min</td>
+                <td>
+                  <a href="{% url 'join_live_class' live_class.meeting_id %}" class="btn btn-sm btn-primary">Join</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endif %}
+</div>
 {% endblock %}

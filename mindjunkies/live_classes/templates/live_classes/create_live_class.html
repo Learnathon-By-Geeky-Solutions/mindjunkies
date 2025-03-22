@@ -1,23 +1,131 @@
-<h2 class="text-2xl font-bold mb-4">Schedule a Live Class for {{ course.title }}</h2>
-<form method="post" class="space-y-4">
-    {% csrf_token %}
-    <div class="form-control">
-        <label class="label" for="topic">
-            <span class="label-text">Topic:</span>
-        </label>
-        <input type="text" name="topic" id="topic" required class="input input-bordered w-full">
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% block main_content %}
+<div class="max-w-3xl mx-auto p-6 bg-base-100 rounded-xl shadow-lg">
+    <!-- Header Section -->
+    <div class="mb-8 text-center">
+      <h2 class="text-3xl font-bold text-primary">Schedule a Live Class</h2>
+      <p class="text-base-content/70 mt-2">{{ course.title }}</p>
+      <div class="divider"></div>
     </div>
-    <div class="form-control">
-        <label class="label" for="scheduled_at">
-            <span class="label-text">Schedule Time:</span>
+    
+    <!-- Form Section -->
+    <form method="post" class="space-y-6">
+      {% csrf_token %}
+      
+      <!-- Topic Input -->
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text font-medium">Class Topic</span>
         </label>
-        <input type="datetime-local" id="scheduled_at" name="scheduled_at" required class="input input-bordered w-full">
-    </div>
-    <div class="form-control">
-        <label class="label" for="duration">
-            <span class="label-text">Duration (Minutes):</span>
+        <input 
+          type="text" 
+          name="topic" 
+          id="topic" 
+          placeholder="Enter the topic of your live class" 
+          required 
+          class="input input-bordered w-full focus:input-primary"
+        >
+      </div>
+      
+      <!-- Date and Time Section -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Schedule Time -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text font-medium">Date & Time</span>
+          </label>
+          <div class="relative">
+            <input 
+              type="datetime-local" 
+              id="scheduled_at" 
+              name="scheduled_at" 
+              required 
+              class="input input-bordered w-full pr-10 focus:input-primary"
+            >
+            <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+              
+            </div>
+          </div>
+          <label class="label">
+            <span class="label-text-alt text-base-content/60">Select the date and time for your class</span>
+          </label>
+        </div>
+        
+        <!-- Duration -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text font-medium">Duration</span>
+          </label>
+          <div class="relative">
+            <input 
+              type="number" 
+              name="duration" 
+              id="duration" 
+              value="60" 
+              min="15" 
+              max="180" 
+              step="15" 
+              required 
+              class="input input-bordered w-full pr-16 focus:input-primary"
+            >
+            <div class="absolute inset-y-0 right-0 flex items-center">
+              <span class="bg-base-300 text-base-content px-3 h-full flex items-center rounded-r-md border-l">
+                Minutes
+              </span>
+            </div>
+          </div>
+          <label class="label">
+            <span class="label-text-alt text-base-content/60">Recommended: 30-90 minutes</span>
+          </label>
+        </div>
+      </div>
+      
+      <!-- Additional Information (Optional) -->
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text font-medium">Description (Optional)</span>
         </label>
-        <input type="number" name="duration" id="duration" value="60" required class="input input-bordered w-full">
+        <textarea 
+          name="description" 
+          id="description" 
+          placeholder="Provide additional details about what will be covered in this class" 
+          class="textarea textarea-bordered h-24 focus:textarea-primary"
+        ></textarea>
+      </div>
+      
+      <!-- Submit Button Section -->
+      <div class="pt-4">
+        <div class="divider"></div>
+        <div class="flex flex-col sm:flex-row gap-4 justify-end">
+          <button type="button" class="btn btn-ghost">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Schedule Live Class
+          </button>
+        </div>
+      </div>
+    </form>
+    
+    <!-- Helpful Tips -->
+    <div class="mt-8 p-4 bg-base-200 rounded-lg">
+      <div class="flex items-start">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-info mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div>
+          <h3 class="font-medium text-base-content">Tips for a successful live class:</h3>
+          <ul class="mt-2 text-sm text-base-content/70 list-disc list-inside space-y-1">
+            <li>Schedule at least 48 hours in advance to give students time to prepare</li>
+            <li>Choose a specific topic rather than a general overview</li>
+            <li>Test your audio and video equipment before the class</li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <button type="submit" class="btn btn-primary w-full">Create Live Class</button>
-</form>
+  </div>
+  {% endblock main_content %}

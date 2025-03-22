@@ -22,7 +22,7 @@
 
 
 {% if messages %}
-    <div class="fixed top-24 right-12 max-w-xs w-full">
+    <div class="fixed top-24 right-12 max-w-xs w-full z-100">
         {% for message in messages %}
             <div role="alert" class="alert alert-info">
                 <span>{{ message | safe }}</span>
@@ -36,6 +36,9 @@
 </main>
 
 {% include 'includes/footer.html' %}
+
+{% block extra_js %}
+{% endblock extra_js %}
 
 </body>
 </html>

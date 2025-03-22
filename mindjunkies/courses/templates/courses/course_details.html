@@ -144,7 +144,7 @@
                         <h2 class="card-title text-2xl mb-4">Instructor</h2>
                         <div class="flex items-center mb-4">
                             <img src="
-                                    {% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'images/default-avatar.jpg' %}{% endif %}"
+                                    {% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}"
                                  alt="{{ instructor.username }}" class="w-24 h-24 rounded-full mr-6">
                             <div>
                                 <h3 class="text-xl font-semibold mb-2">{{ instructor.username }}</h3>
@@ -157,21 +157,21 @@
                                      fill="currentColor">
                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                 </svg>
-                                {{ instructor.rating }} Instructor Rating
+                                4.9 Instructor Rating
                             </div>
                             <div class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
                                      fill="currentColor">
                                     <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
                                 </svg>
-                                {{ course_detail.instructor.num_reviews }} Reviews
+                               1,350 Reviews
                             </div>
                             <div class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
                                      fill="currentColor">
                                     <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
                                 </svg>
-                                {{ course_detail.instructor.num_students }} Students
+                                28,500 Students
                             </div>
                             <div class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
@@ -180,12 +180,153 @@
                                           d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm3 2h6v4H7V5zm8 8v2h1v-2h-1zm-2-2H7v4h6v-4zm2 0h1V9h-1v2zm1-4V5h-1v2h1zM5 5v2H4V5h1zm0 4H4v2h1V9zm-1 4h1v2H4v-2z"
                                           clip-rule="evenodd"/>
                                 </svg>
-                                {{ course_detail.instructor.num_courses }} Courses
+                                12 Courses
                             </div>
                         </div>
                         <p class="mb-4">{{ course_detail.instructor.bio }}</p>
                     </div>
                 </div>
+                <!-- Reviews -->
+<div class="card bg-base-100 shadow-xl mb-8">
+    <div class="card-body">
+        <h2 class="card-title text-2xl mb-4">Student Reviews</h2>
+
+        <!-- Review Summary -->
+        <div class="card bg-base-200">
+            <div class="card-body">
+              <div class="flex flex-col md:flex-row gap-8">
+                <!-- Rating Overview using stats -->
+                <div class="stats bg-primary text-white shadow">
+                  <div class="stat">
+                    <div class="stat-title text-white">Course Rating</div>
+                    <div class="stat-value text-4xl">4.8</div>
+                    <div class="stat-desc mt-2">
+                      <div class="rating rating-md">
+                        <input type="radio" name="rating-7" class="mask mask-star-2 bg-yellow-400" checked disabled />
+                        <input type="radio" name="rating-7" class="mask mask-star-2 bg-yellow-400" checked disabled />
+                        <input type="radio" name="rating-7" class="mask mask-star-2 bg-yellow-400" checked disabled />
+                        <input type="radio" name="rating-7" class="mask mask-star-2 bg-yellow-400" checked disabled />
+                        <input type="radio" name="rating-7" class="mask mask-star-2 bg-yellow-400" checked disabled />
+                      </div>
+                    </div>
+                    <div class="stat-desc mt-1 text-white">Based on 1,350 reviews</div>
+                  </div>
+                </div>
+
+                <!-- Rating Distribution -->
+                <div class="flex-1">
+                  <h4 class="font-medium mb-4">Rating Distribution</h4>
+                  <div class="space-y-4">
+                    <!-- 5 stars -->
+                    <div class="flex items-center gap-3">
+                      <div class="w-16 text-sm">5 stars</div>
+                      <div class="flex-1">
+                        <progress class="progress progress-warning w-full" value="75" max="100"></progress>
+                      </div>
+                      <div class="w-12 text-sm text-right">75%</div>
+                    </div>
+
+                    <!-- 4 stars -->
+                    <div class="flex items-center gap-3">
+                      <div class="w-16 text-sm">4 stars</div>
+                      <div class="flex-1">
+                        <progress class="progress progress-warning w-full" value="18" max="100"></progress>
+                      </div>
+                      <div class="w-12 text-sm text-right">18%</div>
+                    </div>
+
+                    <!-- 3 stars -->
+                    <div class="flex items-center gap-3">
+                      <div class="w-16 text-sm">3 stars</div>
+                      <div class="flex-1">
+                        <progress class="progress progress-warning w-full" value="5" max="100"></progress>
+                      </div>
+                      <div class="w-12 text-sm text-right">5%</div>
+                    </div>
+
+                    <!-- 2 stars -->
+                    <div class="flex items-center gap-3">
+                      <div class="w-16 text-sm">2 stars</div>
+                      <div class="flex-1">
+                        <progress class="progress progress-warning w-full" value="1" max="100"></progress>
+                      </div>
+                      <div class="w-12 text-sm text-right">1%</div>
+                    </div>
+
+                    <!-- 1 star -->
+                    <div class="flex items-center gap-3">
+                      <div class="w-16 text-sm">1 star</div>
+                      <div class="flex-1">
+                        <progress class="progress progress-warning w-full" value="1" max="100"></progress>
+                      </div>
+                      <div class="w-12 text-sm text-right">1%</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        <!-- Individual Reviews -->
+        <div class="space-y-6">
+            <!-- Review 1 -->
+            <div class="border-base-300 pb-6">
+                <div class="flex items-start gap-4">
+                    <img src="https://ui-avatars.com/api/?name=saima&background=random" alt="Student" class="w-12 h-12 rounded-full">
+                    <div class="flex-1">
+                        <h4 class="font-semibold">Sarah Johnson</h4>
+                        <div class="flex text-yellow-400 my-1">
+                            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                        </div>
+                        <div class="text-sm text-base-content/70 mb-2">2 months ago</div>
+                        <p>This course exceeded my expectations! The instructor explains complex concepts in a way that's easy to understand. I've already applied several techniques from this course to my work.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 2 -->
+            <div class=" border-base-300 ">
+                <div class="flex items-start gap-4">
+                    <img src="https://ui-avatars.com/api/?name=michael&background=random" alt="Student" class="w-12 h-12 rounded-full">
+                    <div class="flex-1">
+                        <h4 class="font-semibold">Michael Chen</h4>
+                        <div class="flex text-yellow-400 my-1">
+                            <span>★</span><span>★</span><span>★</span><span>★</span><span>☆</span>
+                        </div>
+                        <div class="text-sm text-base-content/70 mb-2">1 month ago</div>
+                        <p>Great content and well-structured course. I would have liked more practical exercises, but overall I learned a lot and would recommend it to others in the field.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 3 -->
+            <div class="border-base-300 pb-6">
+                <div class="flex items-start gap-4">
+                    <img src="https://ui-avatars.com/api/?name=emily&background=random" alt="Student" class="w-12 h-12 rounded-full">
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-blue-500">Emily Rodriguez</h4>
+                        <div class="flex text-yellow-400 my-1">
+                            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                        </div>
+                        <div class="text-sm text-base-content/70 mb-2">3 weeks ago</div>
+                        <p>As a beginner, I was worried this might be too advanced, but the instructor does an amazing job of breaking down each topic. The downloadable resources are incredibly helpful too!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-center mt-8">
+            <div class="join">
+                <button class="join-item btn btn-sm">«</button>
+                <button class="join-item btn btn-sm btn-active">1</button>
+                <button class="join-item btn btn-sm">2</button>
+                <button class="join-item btn btn-sm">3</button>
+                <button class="join-item btn btn-sm">»</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
                 <!-- Teacher Actions -->
@@ -227,11 +368,10 @@
                             <div class="text-3xl font-bold mb-4">${{ course_detail.course_price }}</div>
 
                             {% if not accessed %}
-                            <a href="{% url 'lecture_home' course_detail.slug %}
-                             "class="btn btn-primary btn-block mb-4">Add to cart</a>
+                            <a href="{% url 'checkout' course_detail.slug %}
+                             "class="btn btn-primary btn-block mb-4">Enroll</a>
                              {% else %}
-                             <a href="{% url 'lecture_home' course_detail.slug %}
-                             "class="btn btn-primary btn-block mb-4">View</a>
+                             <a href="{% url 'lecture_home' course_detail.slug %}" class="btn btn-primary btn-block mb-4">View</a>
                             {% endif %}
                             {% comment %} <a href="{{ course_detail.preview_video_link }}" class="btn btn-outline btn-block mb-4"
                                target="_blank">Watch Preview</a> {% endcomment %}

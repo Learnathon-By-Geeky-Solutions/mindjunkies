@@ -115,11 +115,24 @@ class Enrollment(BaseModel):
         ("withdrawn", "Withdrawn"),
     ]
 
+    PAYMENT_STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("completed", "Completed"),
+        ("failed", "Failed"),
+    ]
+
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name="enrollments"
     )
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name="enrolled")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
+
+    payment_status = models.CharField(
+        max_length=10, choices=PAYMENT_STATUS_CHOICES, default="pending"
+    )
+    transaction_id = models.CharField(
+        max_length=100, unique=True, null=True, blank=True
+    )
 
     class Meta:
         unique_together = ["course", "student"]
@@ -128,9 +141,6 @@ class Enrollment(BaseModel):
         return f"{self.student.username} enrolled in {self.course.title}"
 
     def save(self, *args, **kwargs):
-        if self.pk is None:
-            self.course.number_of_enrollments += 1
-            self.course.save()
         super().save(*args, **kwargs)
 
 

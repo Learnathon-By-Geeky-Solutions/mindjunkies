@@ -7,3 +7,4 @@ omit =
     project/wsgi.py
     project/asgi.py
     */__init__.py
+    */management/*

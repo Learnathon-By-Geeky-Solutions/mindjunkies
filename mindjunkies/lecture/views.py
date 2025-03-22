@@ -211,12 +211,11 @@ class CreateLectureView(LoginRequiredMixin, CreateView):
 class CreateContentView(LoginRequiredMixin, FormView):
     template_name = "lecture/create_content.html"
 
-    def __init__(self, **kwargs: Any):
-        super().__init__(kwargs)
-        self.lecture = get_object_or_404(Lecture, slug=self.kwargs["lecture_slug"])
+    def dispatch(self, request, *args, **kwargs):
+        self.lecture = get_object_or_404(Lecture, slug=kwargs["lecture_slug"])
+        return super().dispatch(request, *args, **kwargs)
 
     def get_form_class(self):
-        """Dynamically choose the form based on the 'type' parameter"""
         content_type = self.kwargs.get("format")
         if content_type == "attachment":
             return LecturePDFForm
@@ -226,12 +225,7 @@ class CreateContentView(LoginRequiredMixin, FormView):
             messages.error(self.request, "Invalid content type specified.")
             return redirect("lecture_home", course_slug=self.kwargs["course_slug"])
 
-    def dispatch(self, request, *args, **kwargs):
-        """Ensure the lecture exists before proceeding"""
-        return super().dispatch(request, *args, **kwargs)
-
     def form_valid(self, form):
-        """Save the content, attach it to the lecture, and show success message"""
         saved_content = form.save(commit=False)
         saved_content.lecture = self.lecture
         saved_content.save()
@@ -242,7 +236,6 @@ class CreateContentView(LoginRequiredMixin, FormView):
         return redirect("lecture_home", course_slug=self.kwargs["course_slug"])
 
     def form_invalid(self, form):
-        """Display errors if the form is invalid"""
         messages.error(
             self.request,
             "There was an error processing the form. Please check the fields below.",
@@ -250,7 +243,6 @@ class CreateContentView(LoginRequiredMixin, FormView):
         return self.render_to_response(self.get_context_data(form=form))
 
     def get_context_data(self, **kwargs):
-        """Add additional context to the template"""
         context = super().get_context_data(**kwargs)
         context["content_type"] = self.kwargs["format"]
         return context
