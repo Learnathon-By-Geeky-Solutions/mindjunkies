@@ -43,7 +43,7 @@ class ForumTopic(models.Model):
 
     def get_last_activity(self):
         """Returns the datetime of the most recent activity (post or reply)"""
-        latest_reply = self.replies.order_by("-created_at").first()
+        latest_reply = self.comments.order_by("-created_at").first()
         if latest_reply:
             return max(latest_reply.created_at, self.updated_at)
         return self.updated_at
