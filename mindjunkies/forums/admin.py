@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import  ForumReply, ForumTopic
+from .models import  ForumComment, ForumTopic
 
 
 @admin.register(ForumTopic)
@@ -12,12 +12,12 @@ class ForumTopicAdmin(admin.ModelAdmin):
     raw_id_fields = ("author", "course")
 
 
-@admin.register(ForumReply)
+@admin.register(ForumComment)
 class ForumReplyAdmin(admin.ModelAdmin):
     list_display = ("topic", "author", "created_at")
     search_fields = ("content", "author__username", "topic__title")
     list_filter = ("created_at",)
-    raw_id_fields = ("author", "topic", "parent_reply")
+    raw_id_fields = ("author", "topic")
 
 
 

@@ -49,7 +49,7 @@ class ForumTopic(models.Model):
         return self.updated_at
 
 
-class ForumReply(models.Model):
+class ForumComment(models.Model):
     """Model for replies to forum topics"""
 
     topic = models.ForeignKey(
@@ -59,19 +59,11 @@ class ForumReply(models.Model):
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="forum_replies"
     )
-    parent_reply = models.ForeignKey(
-        "self",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name="child_replies",
-    )
+  
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    reactions = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name="forum_reply_reactions", blank=True
-    )  # Changed related_name to be unique
+   
 
     class Meta:
         ordering = ["created_at"]

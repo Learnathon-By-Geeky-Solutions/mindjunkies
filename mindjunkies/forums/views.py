@@ -7,7 +7,7 @@ from django.views.generic import TemplateView
 from mindjunkies.courses.models import Course,Module
 
 from .forms import ForumReplyForm, ForumTopicForm
-from .models import ForumReply, ForumTopic
+from .models import ForumComment, ForumTopic
 
 
 from django.shortcuts import get_object_or_404
@@ -56,6 +56,7 @@ class ForumThreadView(LoginRequiredMixin,CourseContextMixin,TemplateView):
         context["module"]=self.get_module()
         course_slug = self.kwargs.get("course_slug")
         context["form"] = ForumTopicForm(course_slug=course_slug)
+       
         return context
     
         
@@ -67,6 +68,7 @@ class ForumThreadDetailsView(LoginRequiredMixin, CourseContextMixin, TemplateVie
     def get_context_data(self, **kwargs):
         context=super().get_context_data(**kwargs)
         context["topic"]=self.get_topic()
+        context["replyForm"]=ForumReplyForm()
         return context
          
 
@@ -98,15 +100,15 @@ class TopicSubmissionView(LoginRequiredMixin,View):
 class ReplySubmissionView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         course_slug = self.kwargs.get("course_slug", "")
-        topic_id = request.POST.get("topic_id")
+        topic_slug = self.kwargs.get("topic_slug")
         parent_reply_id = request.POST.get("parent_reply_id")
         content = request.POST.get("content")
 
-        if not topic_id or not content:
+        if not topic_slug or not content:
             messages.error(request, "Missing required fields for reply.")
-            return redirect("forum_home", course_slug=course_slug)
+            return redirect("forum_thread_details", course_slug=course_slug,topic_slug=topic_slug)
 
-        topic = get_object_or_404(ForumTopic, id=topic_id)
+        topic = get_object_or_404(ForumTopic, slug=topic_slug)
         reply = ForumReply(topic=topic, author=request.user, content=content)
 
         if parent_reply_id:
@@ -114,7 +116,7 @@ class ReplySubmissionView(LoginRequiredMixin, View):
             reply.parent_reply = parent_reply
 
         reply.save()
-        return redirect("forum_home", course_slug=course_slug)
+        return redirect("forum_thread_details", course_slug=course_slug,topic_slug=topic_slug)
 
 
 # mindjunkies/forums/views.py
@@ -123,7 +125,7 @@ class ReplySubmissionView(LoginRequiredMixin, View):
 class ReactionSubmissionView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         course_slug = self.kwargs.get("course_slug", "")
-        print("Course slug: ", course_slug)
+        
         topic_id = request.POST.get("topic_id")
         topic = get_object_or_404(ForumTopic, id=topic_id)
 

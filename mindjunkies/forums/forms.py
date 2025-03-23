@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.text import slugify
 
-from .models import ForumReply, ForumTopic
+from .models import ForumComment, ForumTopic
 from mindjunkies.courses.models import Module,Course
 from django.shortcuts import get_object_or_404
 
@@ -30,5 +30,5 @@ class ForumTopicForm(forms.ModelForm):
 
 class ForumReplyForm(forms.ModelForm):
     class Meta:
-        model = ForumReply
+        model = ForumComment
         fields = ["content"]
