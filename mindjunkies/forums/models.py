@@ -73,3 +73,19 @@ class ForumComment(models.Model):
         return f"Reply by {self.author.username} on {self.topic.title}"
 
 
+class Reply(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="replies")
+    parent_comment = models.ForeignKey(ForumComment, on_delete=models.CASCADE, related_name="replies")
+    body = models.CharField(max_length=150)
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='likedreplies', through='LikedReply')
+    created = models.DateTimeField(auto_now_add=True)
+    
+
+    def __str__(self):
+        try:
+            return f'{self.author.username} : {self.body[:30]}'
+        except:
+            return f'no author : {self.body[:30]}'
+
+    class Meta:
+        ordering = ['created']
