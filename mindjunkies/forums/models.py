@@ -53,11 +53,11 @@ class ForumComment(models.Model):
     """Model for replies to forum topics"""
 
     topic = models.ForeignKey(
-        ForumTopic, on_delete=models.CASCADE, related_name="replies"
+        ForumTopic, on_delete=models.CASCADE, related_name="comments"
     )
     content = models.TextField()
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="forum_replies"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="forum_comments"
     )
   
     created_at = models.DateTimeField(auto_now_add=True)
@@ -72,7 +72,14 @@ class ForumComment(models.Model):
     def __str__(self):
         return f"Reply by {self.author.username} on {self.topic.title}"
 
-
+class LikedComment(models.Model):
+    comment = models.ForeignKey(ForumComment, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f'{self.user.username} : {self.comment.body[:30]}'
+    
 class Reply(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="replies")
     parent_comment = models.ForeignKey(ForumComment, on_delete=models.CASCADE, related_name="replies")
@@ -89,3 +96,11 @@ class Reply(models.Model):
 
     class Meta:
         ordering = ['created']
+
+class LikedReply(models.Model):
+    reply = models.ForeignKey(Reply, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f'{self.user.username} : {self.reply.body[:30]}'        
