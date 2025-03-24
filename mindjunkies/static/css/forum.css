@@ -1,8 +1,6 @@
-
-    /* Elegant Forum Thread Design */
+/* Elegant Forum Thread Design */
 
 /* Base container for all replies */
-
 .reply-container {
   position: relative;
   transition: all 0.2s ease;
@@ -41,7 +39,11 @@
 }
 
 /* Add the horizontal connector */
-.reply-container.ml-10::before {
+.reply-container.ml-10::before,
+.reply-container.ml-12::before,
+.reply-container.ml-24::before,
+.reply-container.ml-36::before,
+.reply-container.ml-48::before {
   content: "";
   position: absolute;
   top: 1.5rem;
@@ -93,7 +95,11 @@
     background: linear-gradient(to bottom, #374151 0%, #374151 100%);
   }
 
-  .reply-container.ml-10::before {
+  .reply-container.ml-10::before,
+  .reply-container.ml-12::before,
+  .reply-container.ml-24::before,
+  .reply-container.ml-36::before,
+  .reply-container.ml-48::before {
     background-color: #374151;
   }
 }
@@ -103,7 +109,11 @@
   background: linear-gradient(to bottom, #374151 0%, #374151 100%);
 }
 
-.dark .reply-container.ml-10::before {
+.dark .reply-container.ml-10::before,
+.dark .reply-container.ml-12::before,
+.dark .reply-container.ml-24::before,
+.dark .reply-container.ml-36::before,
+.dark .reply-container.ml-48::before {
   background-color: #374151;
 }
 
@@ -130,15 +140,6 @@
   transform: rotate(90deg);
 }
 
-/* Nested depth styling - different indentation for each level */
-.reply-container .reply-container .reply-container {
-  margin-left: 0.5rem;
-}
-
-.reply-container .reply-container .reply-container .reply-container {
-  margin-left: 0.25rem;
-}
-
 /* Animated thread lines on hover */
 .reply-container:hover > .thread-line {
   background: linear-gradient(to bottom, #3b82f6 0%, #e5e7eb 100%);
@@ -149,7 +150,11 @@
 }
 
 /* Animated horizontal connector on hover */
-.reply-container.ml-10:hover::before {
+.reply-container.ml-10:hover::before,
+.reply-container.ml-12:hover::before,
+.reply-container.ml-24:hover::before,
+.reply-container.ml-36:hover::before,
+.reply-container.ml-48:hover::before {
   background-color: #3b82f6;
 }
 
@@ -162,3 +167,4 @@
   background-color: #f3f4f6;
   border-radius: 0.25rem;
 }
+

@@ -81,7 +81,7 @@ class LikedComment(models.Model):
         return f'{self.user.username} : {self.comment.body[:30]}'
     
 class Reply(models.Model):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="replies")
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,null=True, related_name="replies")
     parent_comment = models.ForeignKey(ForumComment, on_delete=models.CASCADE, related_name="replies",null=True,blank=True)
     parent_reply=models.ForeignKey('Reply', on_delete=models.CASCADE, related_name="replies",null=True,blank=True)
     body = models.CharField(max_length=150)

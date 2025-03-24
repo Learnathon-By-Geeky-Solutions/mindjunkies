@@ -144,12 +144,14 @@ class ReplyFormView(LoginRequiredMixin, CourseContextMixin,View):
         reply_id = self.kwargs.get("reply_id")
         print(f"Reply ID received: {reply_id}")
         reply = get_object_or_404(Reply, id=reply_id)
+        if not reply:
+            reply=get_object_or_404(ForumComment,id=reply_id)
         replyForm = ForumReplyForm()
-        course=get_object_or_404(Course,slug=self.kwargs.get('course_slug'))
+
         context = {
             "reply": reply,
             "replyForm": replyForm,
-             "course":course
+             
         }
         return render(request, "forums/reply_form.html", context)
 
@@ -161,14 +163,15 @@ class ReplyFormView(LoginRequiredMixin, CourseContextMixin,View):
         
         if replyForm.is_valid():
             new_reply = replyForm.save(commit=False)
-            new_reply.user = request.user  # Assuming replies are linked to a user
+            new_reply.author = request.user  # Assuming replies are linked to a user
             new_reply.parent_reply = reply  # Assuming a reply can have a parent reply
             new_reply.save()
-            return redirect(request,"forums/reply.html",{'reply':new_reply})  # Replace with the actual view name after posting
+            return render(request,"forums/reply.html",{'reply':new_reply}) 
         
         context = {
             "reply": reply,
             "replyForm": replyForm,
+            
             
         }
         return render(request, "forums/reply_form.html", context)
