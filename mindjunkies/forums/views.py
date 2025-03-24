@@ -138,7 +138,8 @@ class ReplySubmissionView(LoginRequiredMixin, View):
 
         comment.save()
         return redirect("forum_thread_details", course_slug=course_slug,topic_slug=topic_slug)
-    
+
+
 class ReplyFormView(LoginRequiredMixin, CourseContextMixin,View):
     def get(self, request, *args, **kwargs):
         reply_id = self.kwargs.get("reply_id")
@@ -180,18 +181,9 @@ class ReplyFormView(LoginRequiredMixin, CourseContextMixin,View):
 
 
 
-class LikedPostView(LoginRequiredMixin, View):
-    def post(self, request, topic_id):
-            topic = get_object_or_404(ForumTopic, id=topic_id)
-            liked_post, created = LikedPost.objects.get_or_create(topic=topic, user=request.user)
+   
 
-            if not created:
-                liked_post.delete()
-                liked = False
-            else:
-                liked = True
-
-            # Render only the like button section
-            return render(request, "forums/partials/like_button.html", {"topic": topic, "liked": liked})
+            
+            
         
         
