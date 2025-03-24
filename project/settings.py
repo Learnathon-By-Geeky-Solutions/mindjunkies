@@ -78,6 +78,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
+    # custom middleware here
+    "mindjunkies.dashboard.middleware.TeacherVerificationMiddleware",
 ]
 
 ROOT_URLCONF = "project.urls"

@@ -5,6 +5,9 @@ from django.views.decorators.http import require_http_methods
 
 from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course, CourseTeacher, Enrollment
+from .models import TeacherVerificationRequest
+from .forms import TeacherVerificationForm
+
 
 # Create your views here.
 
@@ -17,7 +20,7 @@ def content_list(request: HttpRequest) -> HttpResponse:
     context = {
         "courses": courses,
     }
-    return render(request, "templates/dashboard.html", context)
+    return render(request, "dashboard.html", context)
 
 
 @login_required
@@ -33,7 +36,7 @@ def enrollment_list(request: HttpRequest, slug: str) -> HttpResponse:
         "course": course,
         "students": students,
     }
-    return render(request, "templates/enrollmentList.html", context)
+    return render(request, "enrollmentList.html", context)
 
 
 @login_required
@@ -54,3 +57,25 @@ def remove_enrollment(
     t_enrollment.delete()
 
     return redirect("teacher_dashboard_enrollments", course.slug)
+
+
+
+
+@login_required
+def teacher_verification_view(request):
+    try:
+        verification_request = TeacherVerificationRequest.objects.get(user=request.user)
+    except TeacherVerificationRequest.DoesNotExist:
+        verification_request = None
+
+    if request.method == "POST":
+        form = TeacherVerificationForm(request.POST, request.FILES, instance=verification_request)
+        if form.is_valid():
+            verification_request = form.save(commit=False)
+            verification_request.user = request.user
+            verification_request.save()
+            return redirect("dashboard")  # Redirect after submission
+    else:
+        form = TeacherVerificationForm(instance=verification_request)
+
+    return render(request, "teacher_verification.html", {"form": form})
