@@ -68,8 +68,8 @@
   
   <!-- Child Replies - Recursive Call -->
   <div class="{% if depth == 0 %}ml-20{% else %}ml-2{% endif %} mb-{% if depth == 0 %}14{% else %}4{% endif %}">
-    <!-- {% for child_reply in reply.replies.all %}
-      {% include "components/comment.html" with reply=child_reply depth=depth|add:1 %}
-    {% endfor %} -->
+    {% for child_reply in reply.replies.all %}
+      {% include "forums/reply.html" with reply=child_reply depth=depth|add:1 %}
+    {% endfor %}
   </div>
 </div>

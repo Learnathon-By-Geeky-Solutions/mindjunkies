@@ -139,17 +139,40 @@ class ReplySubmissionView(LoginRequiredMixin, View):
         comment.save()
         return redirect("forum_thread_details", course_slug=course_slug,topic_slug=topic_slug)
     
-class ReplyFormView(LoginRequiredMixin,View):
-    def get(self,request,*args,**kwargs):
-        reply_id=self.kwargs.get("reply_id")
-        print(f"Reply ID received: {reply_id}") 
-        reply=get_object_or_404(Reply,id=reply_id)
-        replyForm=ForumReplyForm()
-        context={
-            "reply":reply,
-            "replyForm":replyForm
+class ReplyFormView(LoginRequiredMixin, CourseContextMixin,View):
+    def get(self, request, *args, **kwargs):
+        reply_id = self.kwargs.get("reply_id")
+        print(f"Reply ID received: {reply_id}")
+        reply = get_object_or_404(Reply, id=reply_id)
+        replyForm = ForumReplyForm()
+        course=get_object_or_404(Course,slug=self.kwargs.get('course_slug'))
+        context = {
+            "reply": reply,
+            "replyForm": replyForm,
+             "course":course
         }
-        return render(request,"forums/reply_form.html",context)
+        return render(request, "forums/reply_form.html", context)
+
+    def post(self, request, *args, **kwargs):
+        
+        reply_id = self.kwargs.get("reply_id")
+        reply = get_object_or_404(Reply, id=reply_id)
+        replyForm = ForumReplyForm(request.POST)
+        
+        if replyForm.is_valid():
+            new_reply = replyForm.save(commit=False)
+            new_reply.user = request.user  # Assuming replies are linked to a user
+            new_reply.parent_reply = reply  # Assuming a reply can have a parent reply
+            new_reply.save()
+            return redirect(request,"forums/reply.html",{'reply':new_reply})  # Replace with the actual view name after posting
+        
+        context = {
+            "reply": reply,
+            "replyForm": replyForm,
+            
+        }
+        return render(request, "forums/reply_form.html", context)
+
 # mindjunkies/forums/views.py
 
 
