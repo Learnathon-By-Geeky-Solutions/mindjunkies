@@ -65,6 +65,7 @@ def remove_enrollment(
 def teacher_verification_view(request):
     try:
         verification_request = TeacherVerificationRequest.objects.get(user=request.user)
+        # return redirect("teacher_wait")
     except TeacherVerificationRequest.DoesNotExist:
         verification_request = None
 
@@ -74,8 +75,14 @@ def teacher_verification_view(request):
             verification_request = form.save(commit=False)
             verification_request.user = request.user
             verification_request.save()
-            return redirect("dashboard")  # Redirect after submission
+            return redirect("home")  # Redirect after submission
     else:
         form = TeacherVerificationForm(instance=verification_request)
 
     return render(request, "teacher_verification.html", {"form": form})
+
+
+
+@login_required
+def verification_wait(request):
+    return render(request, "verification_wait.html")

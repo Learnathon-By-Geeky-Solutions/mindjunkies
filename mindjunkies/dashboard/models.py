@@ -9,6 +9,7 @@ class TeacherVerificationRequest(models.Model):
     portfolio_link = models.URLField(blank=True, null=True)
     certificates = models.FileField(upload_to="teacher_certificates/", blank=True, null=True)
     is_verified = models.BooleanField(default=False)
+    create_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
+    def str(self):
         return f"{self.user.username} - Verified: {self.is_verified}"
