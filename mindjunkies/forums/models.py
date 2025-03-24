@@ -67,7 +67,7 @@ class ForumComment(models.Model):
 
     class Meta:
         ordering = ["created_at"]
-        verbose_name_plural = "Forum replies"
+        verbose_name_plural = "Forum Comment"
 
     def __str__(self):
         return f"Reply by {self.author.username} on {self.topic.title}"
@@ -83,6 +83,7 @@ class LikedComment(models.Model):
 class Reply(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="replies")
     parent_comment = models.ForeignKey(ForumComment, on_delete=models.CASCADE, related_name="replies")
+    parent_reply=models.ForeignKey('Reply', on_delete=models.CASCADE, related_name="replies",null=True,blank=True)
     body = models.CharField(max_length=150)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='likedreplies', through='LikedReply')
     created = models.DateTimeField(auto_now_add=True)

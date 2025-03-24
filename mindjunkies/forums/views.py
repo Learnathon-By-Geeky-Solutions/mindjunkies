@@ -6,8 +6,8 @@ from django.views.generic import TemplateView
 
 from mindjunkies.courses.models import Course,Module
 
-from .forms import ForumReplyForm, ForumTopicForm
-from .models import ForumComment, ForumTopic
+
+from .models import ForumComment, ForumTopic,Reply
 
 
 from django.shortcuts import get_object_or_404
@@ -15,7 +15,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView,CreateView
 
 from .models import Course, ForumTopic
-from .forms import ForumTopicForm, ForumReplyForm
+from .forms import ForumTopicForm, ForumCommentForm,ForumReplyForm
 
 
 class CourseContextMixin:
@@ -68,7 +68,9 @@ class ForumThreadDetailsView(LoginRequiredMixin, CourseContextMixin, TemplateVie
     def get_context_data(self, **kwargs):
         context=super().get_context_data(**kwargs)
         context["topic"]=self.get_topic()
+        context["commentForm"]=ForumCommentForm()
         context["replyForm"]=ForumReplyForm()
+        
         return context
          
 
@@ -97,11 +99,11 @@ class TopicSubmissionView(LoginRequiredMixin,View):
 # mindjunkies/forums/views.py
 
 
-class ReplySubmissionView(LoginRequiredMixin, View):
+class CommentSubmissionView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         course_slug = self.kwargs.get("course_slug", "")
         topic_slug = self.kwargs.get("topic_slug")
-        parent_reply_id = request.POST.get("parent_reply_id")
+        
         content = request.POST.get("content")
 
         if not topic_slug or not content:
@@ -109,16 +111,45 @@ class ReplySubmissionView(LoginRequiredMixin, View):
             return redirect("forum_thread_details", course_slug=course_slug,topic_slug=topic_slug)
 
         topic = get_object_or_404(ForumTopic, slug=topic_slug)
-        reply = ForumReply(topic=topic, author=request.user, content=content)
+        comment = ForumComment(topic=topic, author=request.user, content=content)
 
-        if parent_reply_id:
-            parent_reply = get_object_or_404(ForumReply, id=parent_reply_id)
-            reply.parent_reply = parent_reply
+        
 
-        reply.save()
+        comment.save()
         return redirect("forum_thread_details", course_slug=course_slug,topic_slug=topic_slug)
 
+class ReplySubmissionView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        course_slug = self.kwargs.get("course_slug", "")
+        comment_id = self.kwargs.get("comment_id")
+        topic_slug=self.kwargs.get("topic_slug")
+        
+        body = request.POST.get("body", "").strip()  # Ensure it's not None or empty
 
+        if not body:  # If body is empty, return an error
+            messages.error(request, "Reply cannot be empty.")
+            return redirect("forum_thread_details", course_slug=course_slug, topic_slug=topic_slug)
+        
+
+        comment = get_object_or_404(ForumComment, id=comment_id)
+        comment = Reply(parent_comment=comment, author=request.user, body=body)
+
+        
+
+        comment.save()
+        return redirect("forum_thread_details", course_slug=course_slug,topic_slug=topic_slug)
+    
+class ReplyFormView(LoginRequiredMixin,View):
+    def get(self,request,*args,**kwargs):
+        reply_id=self.kwargs.get("reply_id")
+        print(f"Reply ID received: {reply_id}") 
+        reply=get_object_or_404(Reply,id=reply_id)
+        replyForm=ForumReplyForm()
+        context={
+            "reply":reply,
+            "replyForm":replyForm
+        }
+        return render(request,"forums/reply_form.html",context)
 # mindjunkies/forums/views.py
 
 

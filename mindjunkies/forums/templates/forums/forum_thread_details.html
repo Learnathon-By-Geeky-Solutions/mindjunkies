@@ -80,11 +80,11 @@
     <!-- Main Reply Form (initially hidden) -->
     <div id="main-reply-form" class="mb-8 hidden">
       <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-        <form method="post" action="">
+        <form method="post" action="{% url 'forum_thread_comment' course.slug topic.slug %}">
           {% csrf_token %}
           <input type="hidden" name="topic_id" value="{{topic.id}}">
           
-          {{replyForm|crispy}}
+          {{commentForm|crispy}}
           <div class="flex justify-end mt-3 space-x-2">
             <button type="button" class="btn btn-sm btn-ghost" onclick="toggleReplyForm('main-reply-form')">Cancel</button>
             <button type="submit" class="btn btn-sm btn-primary">Submit</button>
@@ -118,6 +118,9 @@
     </div>
     
     <!-- Top-level Replies -->
+     {% for comment in topic.comments.all %}
+     {% include 'forums/comment.html' %}
+     {% endfor %}
   
   </div>
   
