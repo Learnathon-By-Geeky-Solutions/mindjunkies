@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import  ForumComment, ForumTopic,Reply
+from .models import  ForumComment, ForumTopic,Reply,LikedPost
 
 
 @admin.register(ForumTopic)
@@ -27,4 +27,8 @@ class ReplyAdmin(admin.ModelAdmin):
     raw_id_fields = ("author", "parent_comment")    
 
 
-
+@admin.register(LikedPost)
+class LikedPostAdmin(admin.ModelAdmin):
+    list_display = ('topic', 'user', 'created')
+    list_filter = ('created', 'user')
+    search_fields = ('topic__title', 'user__username')

@@ -8,7 +8,7 @@ urlpatterns = [path("<str:course_slug>/home", views.ForumHomeView.as_view(), nam
                path("<str:course_slug>/<str:topic_slug>/thread/details",views.ForumThreadDetailsView.as_view(),name="forum_thread_details"),
                path("<str:course_slug>/<str:topic_slug>/thread/comment",views.CommentSubmissionView.as_view(),name="forum_thread_comment"),
                path("<str:course_slug>/<str:topic_slug>/<str:comment_id>/thread/reply",views.ReplySubmissionView.as_view(),name="forum_thread_reply"),
-               path("<int:reply_id>/thread/reply-form",views.ReplyFormView.as_view(),name="reply_form")
-            
+               path("<int:reply_id>/thread/reply-form",views.ReplyFormView.as_view(),name="reply_form"),
+               path('like/<int:topic_id>/', views.LikedPostView.as_view(), name='like_post'),
             
                ]

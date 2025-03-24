@@ -47,7 +47,14 @@ class ForumTopic(models.Model):
         if latest_reply:
             return max(latest_reply.created_at, self.updated_at)
         return self.updated_at
-
+    
+class LikedPost(models.Model):
+    topic = models.ForeignKey(ForumTopic, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f'{self.user.username} : {self.topic.content[:30]}'
 
 class ForumComment(models.Model):
     """Model for replies to forum topics"""

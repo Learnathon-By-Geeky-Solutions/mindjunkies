@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView,CreateView
 
-from .models import Course, ForumTopic
+from .models import Course, ForumTopic ,LikedPost
 from .forms import ForumTopicForm, ForumCommentForm,ForumReplyForm
 
 
@@ -179,21 +179,19 @@ class ReplyFormView(LoginRequiredMixin, CourseContextMixin,View):
 # mindjunkies/forums/views.py
 
 
-class ReactionSubmissionView(LoginRequiredMixin, View):
-    def post(self, request, *args, **kwargs):
-        course_slug = self.kwargs.get("course_slug", "")
+
+class LikedPostView(LoginRequiredMixin, View):
+    def post(self, request, topic_id):
+            topic = get_object_or_404(ForumTopic, id=topic_id)
+            liked_post, created = LikedPost.objects.get_or_create(topic=topic, user=request.user)
+
+            if not created:
+                liked_post.delete()
+                liked = False
+            else:
+                liked = True
+
+            # Render only the like button section
+            return render(request, "forums/partials/like_button.html", {"topic": topic, "liked": liked})
         
-        topic_id = request.POST.get("topic_id")
-        topic = get_object_or_404(ForumTopic, id=topic_id)
-
-        if topic.reaction.filter(email=request.user.email).exists():
-            topic.reaction.remove(request.user)
-        else:
-            topic.reaction.add(request.user)
-
-        topic.save()
-        return render(
-            request,
-            "forums/partials/like_button.html",
-            context={"course": topic.course, "topic": topic},
-        )
+        
