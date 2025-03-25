@@ -7,13 +7,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('forums', '0006_alter_forumcomment_options_reply_parent_reply'),
+        ("forums", "0006_alter_forumcomment_options_reply_parent_reply"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='reply',
-            name='parent_comment',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='replies', to='forums.forumcomment'),
+            model_name="reply",
+            name="parent_comment",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="replies",
+                to="forums.forumcomment",
+            ),
         ),
     ]

@@ -243,7 +243,7 @@
                                class="btn bg-indigo-600 hover:bg-indigo-700 text-white w-full font-medium">
                                 Schedule a live session
                             </a>
-                           
+
                         </div>
 
                         <!-- Current Live Class (Blinking) -->
@@ -279,7 +279,7 @@
                                 <div class="collapse-title text-sm font-medium text-slate-700 bg-slate-50">
                                     Today's Classes
                                 </div>
-                                
+
                                 {% for classes in  todays_live_classes %}
                                 <div class="collapse-content">
                                     <div class="card bg-white shadow-sm mt-2 border border-slate-100 rounded-lg">
@@ -369,7 +369,7 @@
                         </div>
 
                         <div class="mt-5">
-                            <a href="#"
+                            <a href="{% url 'list_live_classes' course.slug %}"
                                class="btn btn-outline w-full border-indigo-200 hover:bg-indigo-50 text-indigo-600">View
                                 All Classes</a>
                         </div>

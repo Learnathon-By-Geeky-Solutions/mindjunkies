@@ -1,6 +1,8 @@
 import mimetypes
 import os
+from datetime import timedelta
 from typing import Any
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -8,18 +10,19 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import FileResponse, HttpRequest, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.encoding import smart_str
+from django.utils.timezone import localtime, now
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
+from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, FormView, UpdateView
-from django.utils import timezone
+
 from mindjunkies.courses.models import Course, Module
-from datetime import timedelta
+
 from .forms import LectureForm, LecturePDFForm, LectureVideoForm, ModuleForm
 from .models import Lecture, LecturePDF, LectureVideo
-from django.utils.timezone import localtime, now
-from django.views.generic import TemplateView
 
 
 class LectureHomeView(LoginRequiredMixin, TemplateView):
@@ -29,7 +32,10 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
         return get_object_or_404(Course, slug=self.kwargs["course_slug"])
 
     def get_is_teacher(self, course):
-        return self.request.user.is_staff or course.teachers.filter(teacher=self.request.user).exists()
+        return (
+            self.request.user.is_staff
+            or course.teachers.filter(teacher=self.request.user).exists()
+        )
 
     def get_today_range(self):
         today = localtime(now())
@@ -50,10 +56,12 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
         today_start, today_end = self.get_today_range()
 
         # Use cached queryset to avoid repeating filters
-        live_classes_today = list(course.live_classes.filter(
-            scheduled_at__range=(today_start, today_end)
-        ).order_by('scheduled_at'))
-        
+        live_classes_today = list(
+            course.live_classes.filter(
+                scheduled_at__range=(today_start, today_end)
+            ).order_by("scheduled_at")
+        )
+
         now = timezone.now()
         current_live_class = None
         for live_class in course.live_classes.all():
@@ -66,15 +74,19 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
         if not current_module:
             messages.warning(self.request, "No lectures available for this course.")
 
-        context.update({
-            "course": course,
-            "modules": course.modules.all(),
-            "current_module": current_module,
-            "isTeacher": is_teacher,
-            "current_live_class": current_live_class,
-            "todays_live_classes": live_classes_today,  # consistent naming
-        })
+        context.update(
+            {
+                "course": course,
+                "modules": course.modules.all(),
+                "current_module": current_module,
+                "isTeacher": is_teacher,
+                "current_live_class": current_live_class,
+                "todays_live_classes": live_classes_today,  # consistent naming
+            }
+        )
         return context
+
+
 @require_http_methods(["GET"])
 def serve_hls_playlist(request, course_slug, video_id):
     try:
@@ -206,7 +218,7 @@ class CreateLectureView(LoginRequiredMixin, CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         """Ensure the course exists before proceeding"""
-        
+
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):

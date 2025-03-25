@@ -11,24 +11,24 @@
     <!-- Avatar with initials -->
     <div class="flex-shrink-0 mr-3">
       <div class="avatar placeholder mr-3 {% if depth > 0 %}w-5 h-5{% else %}w-8 h-8{% endif %}">
-        <img src="https://ui-avatars.com/api/?name={{reply.author}}&background=random" 
-             alt="{{reply.author}}" 
+        <img src="https://ui-avatars.com/api/?name={{reply.author}}&background=random"
+             alt="{{reply.author}}"
              class="{% if depth > 0 %}w-6 h-6{% else %}w-8 h-8{% endif %} rounded-full">
       </div>
     </div>
-    
+
     <div class="flex-grow">
       <!-- Comment Header -->
       <div class="flex items-center mb-1">
         <span class="font-medium mr-2">{{ reply.author }}</span>
         <span class="badge badge-primary badge-sm text-xs">Learner</span>
       </div>
-      
+
       <!-- Comment Content -->
       <div class="text-gray-800 mb-2">
         <p>{{ reply.body }}</p>
       </div>
-      
+
       <!-- Comment Actions -->
       <div class="flex items-center space-x-4 mb-3">
         <button class="btn btn-ghost btn-xs flex items-center text-blue-600 hover:text-blue-800">
@@ -37,10 +37,10 @@
           </svg>
           Like
         </button>
-       
-        <a class="btn btn-ghost btn-xs flex cursor-pointer items-center text-blue-600 hover:text-blue-800" 
-                hx-get="{% url 'reply_form'  reply.id %}" 
-                hx-target="#reply-form-container-{{reply.id}}" 
+
+        <a class="btn btn-ghost btn-xs flex cursor-pointer items-center text-blue-600 hover:text-blue-800"
+                hx-get="{% url 'reply_form'  reply.id %}"
+                hx-target="#reply-form-container-{{reply.id}}"
                 hx-swap="innerHTML"
                 hx-trigger="click">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -48,7 +48,7 @@
           </svg>
           Reply{% if depth > 0 %} {{ depth }}{% endif %}
         </a>
-        
+
         <div class="dropdown dropdown-end">
           <label tabindex="0" class="btn btn-ghost btn-xs flex items-center text-blue-600 hover:text-blue-800 cursor-pointer">
             <span>More</span>
@@ -65,10 +65,10 @@
           </ul>
         </div>
       </div>
-      
+
       <!-- Reply Form Container -->
       <div id="reply-form-container-{{reply.id}}" class="mb-4"></div>
-      
+
       <!-- Child Replies Container -->
       <div class="mb-2">
         {% for child_reply in reply.replies.all %}
@@ -78,4 +78,3 @@
     </div>
   </div>
 </div>
-

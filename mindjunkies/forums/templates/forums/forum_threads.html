@@ -7,17 +7,17 @@
 {% block extra_head %}
     <link rel="stylesheet" href="{% static 'css/forum.css' %}">
     <script src="https://unpkg.com/htmx.org@2.0.4"
-            integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" 
+            integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+"
             crossorigin="anonymous"></script>
 {% endblock %}
 
 {% block lecture_content %}
 <div class="max-w-5xl px-4 py-8">
-  
+
   <!-- Breadcrumb -->
   <div class="text-sm breadcrumbs">
     <ul>
-      <li><a href="{% url 'forum_home' course.slug %}" class="text-blue-500">Home</a></li> 
+      <li><a href="{% url 'forum_home' course.slug %}" class="text-blue-500">Home</a></li>
       <li>Module {{module.order}}</li>
     </ul>
   </div>
@@ -80,13 +80,13 @@
         <a href="{% url 'forum_thread_details' course.slug post.slug %}" class="text-blue-600 font-bold text-lg hover:underline">{{post.title}}</a>
         <p class="mt-2 text-gray-700 text-base">
           <p class="mt-2 text-gray-700 text-base">
-            {{ post.content|truncatewords:100 }} 
+            {{ post.content|truncatewords:100 }}
             {% if post.content|wordcount > 100 %}
               <a href="{% url 'forum_post_detail' post.id %}" class="text-blue-500 hover:underline">See Details</a>
             {% endif %}
           </p>
         </p>
-      
+
         <div class="flex items-center justify-between mt-4 text-sm text-gray-500">
           <div class="flex space-x-4">
             <button class="flex items-center gap-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded-md transition-all">
@@ -115,7 +115,7 @@
       <h2 class="text-xl font-bold mb-4">Create New Topic</h2>
       <form method="post" action="{% url 'forum_submission' course_slug=course.slug module_id=module.id %}" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
-        
+
         {{form|crispy}}
 
         <div class="form-control mt-4">
