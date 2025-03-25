@@ -6,10 +6,10 @@
   <div class="mb-8">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between">
       <div>
-        
+
         <p class="mt-1 text-base-content/70">{{ course.title }}</p>
       </div>
-      
+
       {% if request.user.role == "teacher" %}
       <div class="mt-4 md:mt-0">
         <a href="{% url 'create_live_class' course.id %}" class="btn btn-primary gap-2">
@@ -23,7 +23,7 @@
     </div>
     <div class="divider"></div>
   </div>
-  
+
   <!-- Live Classes Section -->
   {% if live_classes %}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -37,24 +37,24 @@
             {% else %}
               <div class="badge badge-secondary ">Live Now</div>
             {% endif %}
-            
+
             <!-- Class Content -->
             <h2 class="card-title text-lg font-bold">{{ live_class.topic }}</h2>
-            
+
             <div class="flex items-center mt-2 text-base-content/70">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
               <span>{{ live_class.scheduled_at|date:"D, M d, Y" }}</span>
             </div>
-            
+
             <div class="flex items-center mt-1 text-base-content/70">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <span>{{ live_class.scheduled_at|date:"g:i A" }}</span>
             </div>
-            
+
             {% if live_class.duration %}
             <div class="flex items-center mt-1 text-base-content/70">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -63,7 +63,7 @@
               <span>{{ live_class.duration }} minutes</span>
             </div>
             {% endif %}
-            
+
             <div class="card-actions justify-end mt-4">
               <a href="{% url 'join_live_class' live_class.meeting_id %}" class="btn btn-primary gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -84,7 +84,7 @@
       </svg>
       <h3 class="text-xl font-medium mb-2">No Live Classes Scheduled</h3>
       <p class="text-base-content/70 max-w-md mb-6">There are currently no live classes scheduled for this course.</p>
-      
+
       {% if request.user.role == "teacher" %}
         <a href="{% url 'create_live_class' course.id %}" class="btn btn-primary gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -95,7 +95,7 @@
       {% endif %}
     </div>
   {% endif %}
-  
+
   <!-- Upcoming Classes Calendar View (Optional) -->
   {% if live_classes and live_classes|length > 3 %}
     <div class="mt-12">

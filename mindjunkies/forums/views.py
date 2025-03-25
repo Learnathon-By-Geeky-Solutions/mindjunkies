@@ -79,6 +79,7 @@ class TopicSubmissionView(LoginRequiredMixin,View):
         course_slug = self.kwargs.get("course_slug", "")
         module_id = self.kwargs.get("module_id", "")
         course = get_object_or_404(Course, slug=course_slug)
+
         form = ForumTopicForm(request.POST,course_slug=course_slug)
         if form.is_valid():
             forum_topic = form.save(commit=False)
@@ -176,14 +177,3 @@ class ReplyFormView(LoginRequiredMixin, CourseContextMixin,View):
             
         }
         return render(request, "forums/reply_form.html", context)
-
-# mindjunkies/forums/views.py
-
-
-
-   
-
-            
-            
-        
-        
