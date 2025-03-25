@@ -14,8 +14,6 @@ class User(AbstractUser):
 
     REQUIRED_FIELDS = ["email", "first_name", "last_name"]
     is_teacher = models.BooleanField(default=False)
-    objects = UserManager()
-
 
     def __str__(self):
         return f"{self.username} - {self.email}"
