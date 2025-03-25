@@ -46,6 +46,8 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
                 "You have a pending course token. Please wait for it to be approved.",
             )
             return redirect(reverse("dashboard"))
+        else:
+            return super().get(request)
 
 
     def form_valid(self, form):
