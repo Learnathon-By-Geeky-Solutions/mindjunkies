@@ -8,7 +8,9 @@ from mindjunkies.courses.models import Course, CourseCategory, CourseTeacher, En
 @require_http_methods(["GET"])
 def home(request):
     featured_course = Course.objects.all()
-    course_categories = CourseCategory.objects.filter(parent__isnull=True)
+    course_categories = CourseCategory.objects.filter(
+        parent__isnull=True
+    ).prefetch_related("children")
     context = {
         "course_list": featured_course,
         "categories": course_categories,
@@ -16,9 +18,13 @@ def home(request):
     enrolled_classes = []
     teacher_classes = []
     if request.user.is_authenticated:
-        enrolled = Enrollment.objects.filter(student=request.user, status="active")
+        enrolled = Enrollment.objects.filter(
+            student=request.user, status="active"
+        ).prefetch_related("course")
         enrolled_classes = [ec.course for ec in enrolled]
-        teaching = CourseTeacher.objects.filter(teacher=request.user)
+        teaching = CourseTeacher.objects.filter(teacher=request.user).prefetch_related(
+            "course"
+        )
         teacher_classes = [ec.course for ec in teaching]
         context["enrolled_classes"] = enrolled_classes
         context["teacher_classes"] = teacher_classes
@@ -27,7 +33,7 @@ def home(request):
 
 
 @require_http_methods(["GET"])
-def search_results(request):
+def search_view(request):
     query = request.GET.get("search", "")
     highlighted_courses = []
     if query and query != "":

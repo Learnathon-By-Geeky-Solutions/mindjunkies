@@ -11,7 +11,7 @@
                     {% csrf_token %}
                     <input type="search" placeholder="Search for anything" id="search-input" name="search" autocomplete="off"
                            hx-get="{% url 'search_results' %}"
-                           hx-trigger="keyup delay:500ms changed"
+                           hx-trigger="keyup delay:300ms changed"
                            hx-target="#search-results"
                            hx-swap="outerHTML"
                            hx-indicator=".htmx-indicator"

@@ -21,9 +21,9 @@
                     {{ redirect_field }}
                 {% endslot %}
                 {% slot actions %}
-                    {% element button type="submit" class="btn-error" %}
-                        {% trans 'Yes, Sign Out' %}
-                    {% endelement %}
+                        <button type="submit" class="btn-error">
+                            {% trans 'Yes, Sign Out' %}
+                        </button>
                 {% endslot %}
             {% endelement %}
             </div>

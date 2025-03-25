@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
+    "django.contrib.postgres",
     # custom mindjunkies
     "mindjunkies.home",
     "mindjunkies.accounts",
@@ -61,6 +62,9 @@ INSTALLED_APPS = [
     "cloudinary",
     "categories",
     "categories.editor",
+    "silk",
+    "django_htmx",
+    "template_partials",
     # allauth
     "allauth",
     "allauth.account",
@@ -69,6 +73,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "silk.middleware.SilkyMiddleware",
     "allauth.account.middleware.AccountMiddleware",  # allauth
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -78,6 +83,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = "project.urls"

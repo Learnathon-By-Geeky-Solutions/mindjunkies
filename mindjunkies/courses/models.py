@@ -1,5 +1,7 @@
 from categories.models import CategoryBase
 from cloudinary.models import CloudinaryField
+from django.contrib.postgres.indexes import GinIndex
+from django.contrib.postgres.search import SearchVectorField
 from django.db import models
 from django.utils.text import slugify
 
@@ -51,6 +53,11 @@ class Course(BaseModel):
     number_of_ratings = models.PositiveIntegerField(default=0)
     number_of_enrollments = models.PositiveIntegerField(default=0)
 
+    searchable = SearchVectorField(null=True, blank=True)
+
+    class Meta:
+        indexes = [GinIndex(fields=["searchable"])]
+
     def __str__(self):
         return self.title
 
@@ -60,9 +67,16 @@ class Course(BaseModel):
         return 0.0
 
     def save(self, *args, **kwargs):
+        from django.db import connection
+
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"UPDATE courses_course SET searchable = to_tsvector('english', title || ' ' || short_introduction ) WHERE id = {self.id}"  # noqa: E501
+            )
 
     def get_teachers(self):
         return self.teachers.all()
