@@ -20,4 +20,3 @@
     - Add a clear title and description.
     - Mention the issue number (if any) in the description.
     - Assign the PR to the appropriate reviewer.
-
