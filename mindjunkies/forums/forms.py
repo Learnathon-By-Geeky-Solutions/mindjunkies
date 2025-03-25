@@ -1,13 +1,24 @@
 from django import forms
 from django.utils.text import slugify
 
-from .models import ForumReply, ForumTopic
-
+from .models import ForumComment, ForumTopic,Reply
+from mindjunkies.courses.models import Module,Course
+from django.shortcuts import get_object_or_404
 
 class ForumTopicForm(forms.ModelForm):
     class Meta:
         model = ForumTopic
-        fields = ["title", "content"]
+        fields = ["title", "content","module"]
+
+    def __init__(self, *args, **kwargs):
+        # Get the course object from kwargs (passed when initializing the form)
+        course_slug = kwargs.pop('course_slug', None)
+        super().__init__(*args, **kwargs)
+
+        # If course is provided, filter the available modules based on the course
+        if course_slug:
+            course = get_object_or_404(Course, slug=course_slug)
+            self.fields['module'].queryset = Module.objects.filter(course=course)    
 
     def save(self, commit=True):
         instance = super(ForumTopicForm, self).save(commit=False)
@@ -17,7 +28,12 @@ class ForumTopicForm(forms.ModelForm):
         return instance
 
 
+class ForumCommentForm(forms.ModelForm):
+    class Meta:
+        model = ForumComment
+        fields = ["content"]
+
 class ForumReplyForm(forms.ModelForm):
     class Meta:
-        model = ForumReply
-        fields = ["content"]
+        model = Reply
+        fields = ["body"]

@@ -1,129 +1,179 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
+from django.views import View
 from django.views.generic import TemplateView
 
-from mindjunkies.courses.models import Course
-
-from .forms import ForumReplyForm, ForumTopicForm
-from .models import ForumReply, ForumTopic
+from mindjunkies.courses.models import Course,Module
 
 
-class ForumHomeView(LoginRequiredMixin, TemplateView):
+from .models import ForumComment, ForumTopic,Reply
+
+
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView,CreateView
+
+from .models import Course, ForumTopic ,LikedPost
+from .forms import ForumTopicForm, ForumCommentForm,ForumReplyForm
+
+
+class CourseContextMixin:
+    """
+    Mixin to add the course object to the context based on `course_slug`.
+    """
+    def get_course(self):
+        return get_object_or_404(
+            Course.objects.prefetch_related("modules"),
+            slug=self.kwargs.get("course_slug")
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["course"] = self.get_course()
+        return context
+
+
+class ForumHomeView(LoginRequiredMixin, CourseContextMixin, TemplateView):
     template_name = "forums/forum_home.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Get course_slug from URL
-        course_slug = self.kwargs.get("course_slug", "")
-        context["course_slug"] = course_slug
-
-        if not course_slug:
-            context["error_message"] = "Course slug is missing."
-            return context
-
-        # Fetch the course object
-        course = get_object_or_404(Course, slug=course_slug)
-        context["course"] = course
-
-        # Get all forum topics for the course
-        forum_topics = (
-            ForumTopic.objects.filter(course=course)
-            .select_related("author")
-            .prefetch_related("replies", "replies__author")
-        )
-        context["forum_topics"] = forum_topics
-
-        # Initialize the forms
-        context["form"] = ForumTopicForm()
-        context["reply_form"] = ForumReplyForm()
+        course = context["course"]
+       
 
         return context
 
+
+class ForumThreadView(LoginRequiredMixin,CourseContextMixin,TemplateView):
+    template_name = "forums/forum_threads.html"
+    def get_module(self):
+        return get_object_or_404(Module.objects.prefetch_related("forum_posts"),id=self.kwargs.get("module_id"))
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        print(self.get_module().forum_posts.all()) 
+        context["module"]=self.get_module()
+        course_slug = self.kwargs.get("course_slug")
+        context["form"] = ForumTopicForm(course_slug=course_slug)
+       
+        return context
+    
+        
+
+class ForumThreadDetailsView(LoginRequiredMixin, CourseContextMixin, TemplateView):
+    template_name = "forums/forum_thread_details.html"
+    def get_topic(self):
+        return get_object_or_404(ForumTopic,slug=self.kwargs.get("topic_slug"))
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        context["topic"]=self.get_topic()
+        context["commentForm"]=ForumCommentForm()
+        context["replyForm"]=ForumReplyForm()
+        
+        return context
+         
+
+class TopicSubmissionView(LoginRequiredMixin,View):
     def post(self, request, *args, **kwargs):
-        # Get course_slug from URL
         course_slug = self.kwargs.get("course_slug", "")
+        module_id = self.kwargs.get("module_id", "")
         course = get_object_or_404(Course, slug=course_slug)
 
-        # Check if this is a topic submission or a reply submission
-        if "replies" in request.POST:
-            # This is a reply submission
-            return self.handle_reply_submission(request, course_slug)
-        # This is a react submission
-        elif "reaction" in request.POST:
-
-            return self.handle_reaction_submission(request, course_slug)
-
-        else:
-            # This is a new topic submission
-            return self.handle_topic_submission(request, course, course_slug)
-
-    def handle_topic_submission(self, request, course, course_slug):
-        form = ForumTopicForm(request.POST)
+        form = ForumTopicForm(request.POST,course_slug=course_slug)
         if form.is_valid():
             forum_topic = form.save(commit=False)
             forum_topic.author = request.user
             forum_topic.course = course
             forum_topic.save()
             messages.success(request, "Your topic was posted successfully!")
-            return redirect("forum_home", course_slug=course_slug)
+            return redirect("forum_thread", course_slug=course_slug, module_id=module_id)
 
-        # If form is not valid, return with errors and topics
-        forum_topics = ForumTopic.objects.filter(course=course)
-        return self.render_to_response(
-            self.get_context_data(course=course, forum_topics=forum_topics, form=form)
-        )
+        messages.error(request, "There was an error posting your topic.")
+        return redirect("forum_thread", course_slug=course_slug, module_id=module_id)
+    
 
-    def handle_reply_submission(self, request, course_slug):
-        topic_id = request.POST.get("topic_id")
-        parent_reply_id = request.POST.get("parent_reply_id")
+
+
+
+
+# mindjunkies/forums/views.py
+
+
+class CommentSubmissionView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        course_slug = self.kwargs.get("course_slug", "")
+        topic_slug = self.kwargs.get("topic_slug")
+        
         content = request.POST.get("content")
-        print("from reply")
 
-        # Validate required fields
-        if not topic_id or not content:
+        if not topic_slug or not content:
             messages.error(request, "Missing required fields for reply.")
-            return redirect("forum_home", course_slug=course_slug)
+            return redirect("forum_thread_details", course_slug=course_slug,topic_slug=topic_slug)
 
-        # Get the topic
-        topic = get_object_or_404(ForumTopic, id=topic_id)
+        topic = get_object_or_404(ForumTopic, slug=topic_slug)
+        comment = ForumComment(topic=topic, author=request.user, content=content)
 
-        # Create the reply
-        reply = ForumReply(topic=topic, author=request.user, content=content)
+        
 
-        # If parent_reply_id is provided, set the parent reply
-        if parent_reply_id:
-            parent_reply = get_object_or_404(ForumReply, id=parent_reply_id)
-            reply.parent_reply = parent_reply
+        comment.save()
+        return redirect("forum_thread_details", course_slug=course_slug,topic_slug=topic_slug)
 
-        reply.save()
+class ReplySubmissionView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        course_slug = self.kwargs.get("course_slug", "")
+        comment_id = self.kwargs.get("comment_id")
+        topic_slug=self.kwargs.get("topic_slug")
+        
+        body = request.POST.get("body", "").strip()  # Ensure it's not None or empty
 
-        # Redirect back to the forum home with the replies section open
-        return HttpResponseRedirect(
-            f"{reverse('forum_home', kwargs={'course_slug': course_slug})}#replies-container-{topic_id}"
-        )
+        if not body:  # If body is empty, return an error
+            messages.error(request, "Reply cannot be empty.")
+            return redirect("forum_thread_details", course_slug=course_slug, topic_slug=topic_slug)
+        
 
-    def handle_reaction_submission(self, request, course_slug):
-        topic_id = request.POST.get("topic_id")
-        print("hello")
-        topic = get_object_or_404(ForumTopic, id=topic_id)
+        comment = get_object_or_404(ForumComment, id=comment_id)
+        comment = Reply(parent_comment=comment, author=request.user, body=body)
 
-        if topic.reaction.filter(email=request.user.email).exists():
-            # User is un-reacting
-            topic.reaction.remove(request.user)
+        
 
-            topic.save()
-        else:
-            # User is reacting
-            topic.reaction.add(request.user)
+        comment.save()
+        return redirect("forum_thread_details", course_slug=course_slug,topic_slug=topic_slug)
 
-            topic.save()
 
-        return render(
-            request,
-            "forums/partials/like_button.html",
-            context=self.get_context_data(course=topic.course, topic=topic),
-        )
+class ReplyFormView(LoginRequiredMixin, CourseContextMixin,View):
+    def get(self, request, *args, **kwargs):
+        reply_id = self.kwargs.get("reply_id")
+        print(f"Reply ID received: {reply_id}")
+        reply = get_object_or_404(Reply, id=reply_id)
+        if not reply:
+            reply=get_object_or_404(ForumComment,id=reply_id)
+        replyForm = ForumReplyForm()
+
+        context = {
+            "reply": reply,
+            "replyForm": replyForm,
+             
+        }
+        return render(request, "forums/reply_form.html", context)
+
+    def post(self, request, *args, **kwargs):
+        
+        reply_id = self.kwargs.get("reply_id")
+        reply = get_object_or_404(Reply, id=reply_id)
+        replyForm = ForumReplyForm(request.POST)
+        
+        if replyForm.is_valid():
+            new_reply = replyForm.save(commit=False)
+            new_reply.author = request.user  # Assuming replies are linked to a user
+            new_reply.parent_reply = reply  # Assuming a reply can have a parent reply
+            new_reply.save()
+            return render(request,"forums/reply.html",{'reply':new_reply}) 
+        
+        context = {
+            "reply": reply,
+            "replyForm": replyForm,
+            
+            
+        }
+        return render(request, "forums/reply_form.html", context)
