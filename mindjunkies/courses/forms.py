@@ -2,7 +2,7 @@ from cloudinary.forms import CloudinaryFileField
 from django import forms
 from django.utils.text import slugify
 
-from .models import Course, CourseObjective, CourseRequirement
+from .models import Course, CourseObjective, CourseRequirement, CourseToken
 
 
 class CourseForm(forms.ModelForm):
@@ -56,6 +56,19 @@ class CourseForm(forms.ModelForm):
 
         return instance
 
+
+
+class CourseTokenForm(forms.ModelForm):
+    class Meta:
+        model = CourseToken
+        fields = ['course']  # Only allow selecting a course; status & user are handled automatically.
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['course'].empty_label = "Select a course"
+        self.fields['course'].widget.attrs.update({
+            'class': 'block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500',
+        })
 
 class RatingForm(forms.Form):
     rating = forms.IntegerField(min_value=1, max_value=5)

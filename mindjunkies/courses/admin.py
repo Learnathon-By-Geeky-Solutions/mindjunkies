@@ -1,7 +1,7 @@
 from categories.admin import CategoryBaseAdmin
 from django.contrib import admin
 
-from .models import Course, CourseCategory, CourseTeacher, Enrollment, Module
+from .models import Course, CourseCategory, CourseTeacher, Enrollment, Module, CourseToken
 
 
 @admin.register(Course)
@@ -34,3 +34,10 @@ class ModuleAdmin(admin.ModelAdmin):
 @admin.register(CourseCategory)
 class CourseCategoryAdmin(CategoryBaseAdmin):
     pass
+
+
+@admin.register(CourseToken)
+class CourseTokeneAdmin(admin.ModelAdmin):
+    model = CourseToken
+    list_display = ("user", "course", "status")
+    list_filter = ("course",)
