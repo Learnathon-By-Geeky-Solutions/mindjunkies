@@ -61,6 +61,7 @@ class Course(BaseModel):
         return 0.0
 
     def save(self, *args, **kwargs):
+
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
