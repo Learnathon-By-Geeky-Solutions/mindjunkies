@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.views.generic.edit import CreateView, UpdateView, FormView
 from .forms import CourseForm, CourseTokenForm
-from .models import Course, CourseCategory, CourseTeacher, Enrollment, CourseToken
+from .models import Course, CourseCategory, Enrollment, CourseToken
 
 
 @require_http_methods(["GET"])
@@ -20,8 +20,6 @@ def course_list(request: HttpRequest) -> HttpResponse:
     if request.user.is_authenticated:
         enrolled = Enrollment.objects.filter(student=request.user)
         enrolled_classes = [ec.course for ec in enrolled]
-        teaching = CourseTeacher.objects.filter(teacher=request.user)
-        teacher_classes = [ec.course for ec in teaching]
 
     print(teacher_classes)
 
@@ -51,9 +49,8 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
 
 
     def form_valid(self, form):
-        saved_course = form.save()
-        # LoginRequiredMixin ensures that the user is authenticated
-        CourseTeacher.objects.create(course=saved_course, teacher=self.request.user)
+        form.instance.teacher = self.request.user
+        form.save()
         messages.success(self.request, "Course saved successfully!")
         return redirect(reverse("create_course_token"))
 
@@ -90,20 +87,9 @@ class CourseUpdateView(LoginRequiredMixin, UpdateView):
 def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     """View to show course details."""
     course = get_object_or_404(Course, slug=slug)
-    enrolled_courses = CourseTeacher.objects.get(course=course)
-    course_teacher = enrolled_courses.teacher
-    accessed = False
-    teacher = request.user == course_teacher
     enrolled = course.enrollments.filter(student=request.user, status="active").exists()
-    if request.user == course_teacher or enrolled:
-        accessed = True
-    if CourseToken.objects.filter(user=request.user, status="pending", course=course).exists():
-        teacher = False
     context = {
         "course_detail": course,
-        "accessed": accessed,
-        "instructor": course_teacher,
-        "teacher": teacher,
     }
     return render(request, "courses/course_details.html", context)
 
@@ -111,11 +97,9 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
 @login_required
 @require_http_methods(["GET"])
 def user_course_list(request: HttpRequest) -> HttpResponse:
-    teaching = CourseTeacher.objects.filter(teacher=request.user)
-    courses = [ec.course for ec in teaching]
 
     enrolled = Enrollment.objects.filter(student=request.user)
-    courses = courses + [ec.course for ec in enrolled]
+    courses = [ec.course for ec in enrolled]
 
     print(courses)
     print("enrolled", enrolled)

@@ -2,7 +2,7 @@ from cloudinary.forms import CloudinaryFileField
 from django import forms
 from django.utils.text import slugify
 
-from .models import Course, CourseObjective, CourseRequirement, CourseToken
+from .models import Course, CourseToken
 
 
 class CourseForm(forms.ModelForm):
@@ -27,35 +27,21 @@ class CourseForm(forms.ModelForm):
             "learning_objectives",
             "level",
             "course_image",
-            "preview_video_link",
+            "preview_video",
             "upcoming",
             "published",
             "paid_course",
             "course_price",
         ]
 
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop("user", None)
-        super(CourseForm, self).__init__(*args, **kwargs)
-
-    def save(self, commit=True):
-        instance = super(CourseForm, self).save(commit=False)
+    def save(self, commit=True, teacher=None):
+        instance = super().save(commit=False)
         instance.slug = slugify(instance.title)
+        if teacher:
+            instance.teacher = teacher
         if commit:
             instance.save()
-            CourseRequirement.objects.filter(course=instance).delete()
-            CourseObjective.objects.filter(course=instance).delete()
-
-            for req in self.cleaned_data["requirements"].split("\n"):
-                if req.strip():
-                    CourseRequirement.objects.create(course=instance, requirement=req)
-
-            for obj in self.cleaned_data["learning_objectives"].split("\n"):
-                if obj.strip():
-                    CourseObjective.objects.create(course=instance, objective=obj)
-
         return instance
-
 
 
 class CourseTokenForm(forms.ModelForm):
@@ -69,6 +55,7 @@ class CourseTokenForm(forms.ModelForm):
         self.fields['course'].widget.attrs.update({
             'class': 'block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500',
         })
+
 
 class RatingForm(forms.Form):
     rating = forms.IntegerField(min_value=1, max_value=5)

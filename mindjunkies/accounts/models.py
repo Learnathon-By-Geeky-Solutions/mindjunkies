@@ -13,7 +13,6 @@ class User(AbstractUser):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     REQUIRED_FIELDS = ["email", "first_name", "last_name"]
-    is_teacher = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.username} - {self.email}"

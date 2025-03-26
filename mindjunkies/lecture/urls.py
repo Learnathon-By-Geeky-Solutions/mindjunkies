@@ -6,7 +6,7 @@ urlpatterns = [
     path("home", views.LectureHomeView.as_view(), name="lecture_home"),
     path("module/create", views.CreateModuleView.as_view(), name="create_module"),
     path(
-        "<str:module_id>/lecture/create",
+        "<int:module_id>/lecture/create",
         views.CreateLectureView.as_view(),
         name="create_lecture",
     ),

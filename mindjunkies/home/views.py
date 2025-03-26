@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.utils.safestring import mark_safe
 from django.views.decorators.http import require_http_methods
 
-from mindjunkies.courses.models import Course, CourseCategory, CourseTeacher, Enrollment
+from mindjunkies.courses.models import Course, CourseCategory, Enrollment
 
 
 @require_http_methods(["GET"])
@@ -22,12 +22,7 @@ def home(request):
             student=request.user, status="active"
         ).prefetch_related("course")
         enrolled_classes = [ec.course for ec in enrolled]
-        teaching = CourseTeacher.objects.filter(teacher=request.user).prefetch_related(
-            "course"
-        )
-        teacher_classes = [ec.course for ec in teaching]
         context["enrolled_classes"] = enrolled_classes
-        context["teacher_classes"] = teacher_classes
 
     return render(request, "home/index.html", context)
 

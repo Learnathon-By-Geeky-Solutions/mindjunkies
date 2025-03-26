@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
 
 from mindjunkies.accounts.models import User
-from mindjunkies.courses.models import Course, CourseTeacher, Enrollment
+from mindjunkies.courses.models import Course, Enrollment
 from .models import TeacherVerificationRequest
 from .forms import TeacherVerificationForm
 
