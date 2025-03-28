@@ -197,7 +197,29 @@
                                     </div>
                                 {% endfor %}
 
-                                
+                                <div
+                                    class="flex items-center p-4 hover:bg-slate-50 rounded-lg transition-all border border-slate-100 hover:shadow-sm">
+                                    <div class="mr-4 bg-indigo-100 p-2 rounded-full text-indigo-600">
+                                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                                            <path
+                                                d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-medium text-slate-800">
+                                            <a href="#" class="hover:text-indigo-600 transition-colors">
+                                                Module {{ week_num }} Quiz: {% if week_num == "1" %}Machine
+                                                Learning Basics{% elif week_num == "2" %}Supervised Learning
+                                                Concepts{% else %}Unsupervised Learning Techniques{% endif %}
+                                            </a>
+                                        </h4>
+                                        <p class="text-xs text-slate-500">Graded Assessment</p>
+                                    </div>
+                                    <a href="#"
+                                       class="inline-flex items-center justify-center h-8 px-4 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors duration-200 shadow-sm">
+                                        Start
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -1,10 +1,11 @@
-import random
+import secrets
 import string
 
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET
 from django.views.generic import View
 from sslcommerz_lib import SSLCOMMERZ
 
@@ -17,10 +18,12 @@ from .models import PaymentGateway, Transaction
 def unique_transaction_id_generator(
     size=10, chars=string.ascii_uppercase + string.digits
 ):
-    return "".join(random.choice(chars) for _ in range(size))
+    return "".join(secrets.choice(chars) for _ in range(size))
 
 
+@require_GET
 def checkout(request, course_slug):
+    """Initiate checkout and redirect to SSLCommerz payment gateway."""
     user = request.user
     course = get_object_or_404(Course, slug=course_slug)
 
@@ -29,19 +32,21 @@ def checkout(request, course_slug):
         student=user,
         course=course,
     )
-    if created:
-        enrollment.transaction_id = transaction_id
 
     if enrollment.payment_status == "completed":
         enrollment.status = "active"
         messages.success(request, "You have already enrolled in this course")
         return redirect("home")
-    else:
-        enrollment.status = "pending"
 
+    enrollment.status = "pending"
+    enrollment.transaction_id = transaction_id
     enrollment.save()
 
-    gateway = PaymentGateway.objects.all().first()
+    gateway = PaymentGateway.objects.first()
+    if not gateway:
+        messages.error(request, "Payment gateway not configured.")
+        return redirect("home")
+
     sslcz_settings = {
         "store_id": gateway.store_id,
         "store_pass": gateway.store_pass,
@@ -67,33 +72,41 @@ def checkout(request, course_slug):
     post_body["multi_card_name"] = ""
     post_body["num_of_item"] = 1
     post_body["product_name"] = course.title
-    post_body["product_category"] = course.category
+    post_body["product_category"] = str(course.category)
     post_body["product_profile"] = "general"
 
     post_body["value_a"] = user.username
     post_body["value_b"] = course.slug
 
-    response = sslcommez.createSession(post_body)
-    return redirect(response["GatewayPageURL"])
+    try:
+        response = sslcommez.createSession(post_body)
+        if response["status"] == "SUCCESS":
+            return redirect(response["GatewayPageURL"])
+    except Exception as e:
+        print(f"Error in initiating payment: {e}")
+
+    messages.error(request, "Payment gateway initialization failed")
+    return redirect("home")
 
 
 @method_decorator(csrf_exempt, name="dispatch")
 class CheckoutSuccessView(View):
-    model = Transaction
+    """Handles payment success response from SSLCommerz."""
+
     template_name = "payments/checkout_success.html"
 
     def post(self, request, *args, **kwargs):
+        """Process successful payments and update enrollment status."""
         data = self.request.POST
         try:
-            print(data["value_a"])
-            print(data["value_b"])
             user = get_object_or_404(User, username=data["value_a"])
             course = get_object_or_404(Course, slug=data["value_b"])
             enrollment = get_object_or_404(Enrollment, student=user, course=course)
+
             Transaction.objects.create(
                 user=user,
                 course=course,
-                name=data["value_a"],
+                name=user.username,
                 tran_id=data["tran_id"],
                 val_id=data["val_id"],
                 amount=data["amount"],
@@ -114,25 +127,46 @@ class CheckoutSuccessView(View):
                 risk_title=data["risk_title"],
                 risk_level=data["risk_level"],
             )
-            messages.success(request, "Payment Successfull")
+
+            # Update enrollment status
             enrollment.status = "active"
             enrollment.payment_status = "completed"
             enrollment.save()
+
+            messages.success(request, "Payment Successful")
             return render(request, self.template_name, {"enrollment": enrollment})
 
         except Exception as e:
-            print("Error in success view")
-            print(e)
-            messages.success(request, "Something Went Wrong")
-        return redirect("home")
+            print(f"Error in processing success response: {e}")
+            messages.error(
+                request, "Something went wrong while processing the payment."
+            )
+            return redirect("home")
 
 
 @method_decorator(csrf_exempt, name="dispatch")
 class CheckoutFailedView(View):
+    """Handles failed payment responses."""
+
     template_name = "payments/failed.html"
 
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
-
     def post(self, request, *args, **kwargs):
+        """Process failed payments."""
+        data = self.request.POST
+        print(f"Payment Failed Response: {data}")
+
+        try:
+            user = get_object_or_404(User, username=data["value_a"])
+            course = get_object_or_404(Course, slug=data["value_b"])
+            enrollment = get_object_or_404(Enrollment, student=user, course=course)
+
+            # Mark transaction as failed
+            enrollment.payment_status = "failed"
+            enrollment.save()
+
+            messages.error(request, "Payment Failed. Please try again.")
+        except Exception as e:
+            print(f"Error in processing failed payment: {e}")
+            messages.error(request, "Payment failure processing error.")
+
         return render(request, self.template_name)

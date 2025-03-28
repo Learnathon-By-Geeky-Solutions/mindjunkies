@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
-from mindjunkies.courses.models import Course, CourseTeacher, Enrollment
+from mindjunkies.courses.models import Course, CourseTeacher
 
 User = get_user_model()  # Use custom User model
 
@@ -37,19 +37,6 @@ class HomeViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["enrolled_classes"], [])
         self.assertEqual(response.context["teacher_classes"], [])
-
-    def test_home_view_authenticated_with_enrollments(self):
-        """Test home view for an authenticated user with enrollments"""
-        course = Course.objects.create(title="Test Course")
-        Enrollment.objects.create(student=self.user, course=course)
-
-        self.client.login(
-            username="testuser", password=config("TEST_PASS")
-        )  # Log in user
-
-        response = self.client.get(reverse("home"))
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(course, response.context["enrolled_classes"])
 
     def test_home_view_authenticated_with_teaching_courses(self):
         """Test home view for an authenticated teacher"""

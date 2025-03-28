@@ -7,11 +7,11 @@ urlpatterns = [
     path(
         "<slug:course_slug>/success/",
         CheckoutSuccessView.as_view(),
-        name="checkout-success",
+        name="checkout_success",
     ),
     path(
         "<slug:course_slug>/failed/",
         CheckoutFailedView.as_view(),
-        name="checkout-failed",
+        name="checkout_failed",
     ),
 ]

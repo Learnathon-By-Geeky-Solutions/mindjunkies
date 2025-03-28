@@ -4,10 +4,9 @@ import uuid
 from django.conf import settings
 from django.db import models
 
+from config.jass_jwt import JaaSJwtBuilder
 from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course
-
-from .jass_jwt import JaaSJwtBuilder
 
 
 class LiveClass(models.Model):
