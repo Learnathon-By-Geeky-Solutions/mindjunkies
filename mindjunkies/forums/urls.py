@@ -9,6 +9,8 @@ urlpatterns = [path("<str:course_slug>/home", views.ForumHomeView.as_view(), nam
                path("<str:course_slug>/<str:topic_slug>/thread/comment",views.CommentSubmissionView.as_view(),name="forum_thread_comment"),
                path("<str:course_slug>/<str:topic_slug>/<str:comment_id>/thread/reply",views.ReplySubmissionView.as_view(),name="forum_thread_reply"),
                path("<int:reply_id>/thread/reply-form",views.ReplyFormView.as_view(),name="reply_form"),
-               
+               path("<str:pk>/liked_post",views.LikePostView.as_view(),name="liked_post"),
+               path("<str:pk>/liked_comment",views.LikeCommentView.as_view(),name="liked_comment"),
+               path("<str:pk>/liked_reply",views.LikeReplyView.as_view(),name="liked_reply")
             
                ]

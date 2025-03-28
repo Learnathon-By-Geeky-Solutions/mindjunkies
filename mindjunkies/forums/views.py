@@ -17,7 +17,8 @@ from django.views.generic import TemplateView,CreateView
 from .models import Course, ForumTopic ,LikedPost
 from .forms import ForumTopicForm, ForumCommentForm,ForumReplyForm
 
-
+from django.http import HttpResponse
+from django.template.loader import render_to_string
 class CourseContextMixin:
     """
     Mixin to add the course object to the context based on `course_slug`.
@@ -176,8 +177,59 @@ class ReplyFormView(LoginRequiredMixin, CourseContextMixin,View):
             
         }
         return render(request, "forums/reply_form.html", context)
+    
+class LikeToggleView(LoginRequiredMixin, View):
+    """Base view for toggling likes on objects"""
+    model = None
+    template_name = None
+    context_object_name = None
+    
+    def get_object(self):
+        return get_object_or_404(self.model, id=self.kwargs.get('pk'))
+    
+    def post(self, request, *args, **kwargs):
+        obj = self.get_object()
+        user_exist = obj.likes.filter(username=request.user.username).exists()
+        if user_exist:
+            obj.likes.remove(request.user)
+        else:
+            obj.likes.add(request.user)
+        
+     
+         
+        
+        context = {self.context_object_name: obj}
+        return render(request, self.template_name, context)
+    
+    # For compatibility with GET requests
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
-# mindjunkies/forums/views.py
+
+class LikePostView(LikeToggleView):
+    """View for toggling likes on Post objects"""
+    model = ForumTopic
+    template_name = 'forums/partials/like_topic.html'
+    context_object_name = 'topic'
+
+
+class LikeCommentView(LikeToggleView):
+    """View for toggling likes on Comment objects"""
+    model = ForumComment
+    template_name = 'forums/partials/like_comment.html'
+    context_object_name = 'comment'
+
+
+class LikeReplyView(LikeToggleView):
+    """View for toggling likes on Reply objects"""
+    model = Reply
+    template_name = 'forums/partials/like_reply.html'
+    context_object_name = 'reply'
+      
+
+
+
+
 
 
 
