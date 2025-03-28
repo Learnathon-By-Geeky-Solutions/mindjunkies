@@ -18,6 +18,9 @@ class CourseCategory(CategoryBase):
 
 
 class Course(BaseModel):
+    """Model for storing course details."""
+    slug = models.SlugField(max_length=255, unique=True)
+
     LEVEL_CHOICES = [
         ("beginner", "Beginner"),
         ("intermediate", "Intermediate"),
@@ -31,6 +34,10 @@ class Course(BaseModel):
         CourseCategory, on_delete=models.SET_NULL, related_name="courses", null=True
     )
 
+    teacher = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="courses_taught"
+    )
+
     course_image = CloudinaryField(
         folder="course_images/",
         resource_type="image",
@@ -38,74 +45,78 @@ class Course(BaseModel):
         null=True,
         blank=True,
     )
-    preview_video_link = models.URLField(max_length=200, blank=True, default="")
 
     published = models.BooleanField(default=False)
-    upcoming = models.BooleanField(default=False)
     published_on = models.DateTimeField(null=True, blank=True)
+
     paid_course = models.BooleanField(default=False)
     course_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
 
-    slug = models.SlugField(max_length=255, unique=True)
+    upcoming = models.BooleanField(default=False)
+
+    preview_video = models.URLField(max_length=200, blank=True, default="")
+
     total_rating = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     number_of_ratings = models.PositiveIntegerField(default=0)
-    number_of_enrollments = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.title
 
-    def average_rating(self):
-        if self.number_of_ratings > 0:
-            return self.total_rating / self.number_of_ratings
-        return 0.0
-
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
+        if not self.teacher:
+            raise ValueError("Teacher is required.")
         super().save(*args, **kwargs)
 
-    def get_teachers(self):
-        return self.teachers.all()
+    def update_rating(self):
+        """Recalculate average course rating."""
+        ratings = self.ratings.all()
+        self.number_of_ratings = ratings.count()
+        self.total_rating = sum(
+            r.rating for r in ratings) / self.number_of_ratings if self.number_of_ratings > 0 else 0
+        self.save(update_fields=["total_rating", "number_of_ratings"])
 
 
-class CourseRequirement(BaseModel):
-    course = models.ForeignKey(
-        Course, on_delete=models.CASCADE, related_name="requirements"
+class CourseInfo(BaseModel):
+    course = models.OneToOneField(
+        Course, on_delete=models.CASCADE, related_name="info"
     )
-    requirement = models.CharField(max_length=255)
+    what_you_will_learn = models.TextField()
+    who_this_course_is_for = models.TextField()
+    requirements = models.TextField()
 
     def __str__(self):
-        return self.requirement
+        return self.course.title + " - Course Info"
 
 
-class CourseObjective(BaseModel):
+class Rating(BaseModel):
+    """Stores ratings and reviews for courses."""
+
+    student = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="ratings"
+    )
     course = models.ForeignKey(
-        Course, on_delete=models.CASCADE, related_name="objectives"
+        Course, on_delete=models.CASCADE, related_name="ratings"
     )
-    objective = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.objective
-
-
-class CourseTeacher(BaseModel):
-    ROLE_CHOICES = [
-        ("teacher", "Teacher"),
-        ("assistant", "Teaching Assistant"),
-    ]
-    course = models.ForeignKey(
-        Course, on_delete=models.CASCADE, related_name="teachers"
+    rating = models.PositiveSmallIntegerField(
+        choices=[(i, str(i)) for i in range(1, 6)], default=5  # 1 to 5 stars
     )
-    teacher = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="teaching_roles"
-    )
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="teacher")
+    review = models.TextField(blank=True, null=True)
 
     class Meta:
-        unique_together = ["course", "teacher"]
+        unique_together = ("student", "course")
+        indexes = [
+            models.Index(fields=["course"])
+        ]
 
     def __str__(self):
-        return f"{self.teacher.username} teaches {self.course.title}"
+        return f"{self.student.username} rated {self.course.title} {self.rating}/5"
+
+    def save(self, *args, **kwargs):
+        """Update course rating when a new rating is saved."""
+        super().save(*args, **kwargs)
+        self.course.update_rating()
 
 
 class Enrollment(BaseModel):
@@ -115,24 +126,11 @@ class Enrollment(BaseModel):
         ("withdrawn", "Withdrawn"),
     ]
 
-    PAYMENT_STATUS_CHOICES = [
-        ("pending", "Pending"),
-        ("completed", "Completed"),
-        ("failed", "Failed"),
-    ]
-
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name="enrollments"
     )
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name="enrolled")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
-
-    payment_status = models.CharField(
-        max_length=10, choices=PAYMENT_STATUS_CHOICES, default="pending"
-    )
-    transaction_id = models.CharField(
-        max_length=100, unique=True, null=True, blank=True
-    )
 
     class Meta:
         unique_together = ["course", "student"]
@@ -146,6 +144,7 @@ class Enrollment(BaseModel):
 
 class Module(BaseModel):
     title = models.CharField(max_length=255)
+    details = models.TextField()
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="modules")
     order = models.PositiveIntegerField(default=0)
 
@@ -154,3 +153,20 @@ class Module(BaseModel):
 
     def __str__(self):
         return f"{self.title} - {self.course.title}"
+
+
+class CourseToken(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('running', 'Running'),
+    ]
+
+    status = models.CharField(
+        max_length=10, choices=STATUS_CHOICES, default='pending'
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.get_status_display()}"

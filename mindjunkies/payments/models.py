@@ -12,6 +12,7 @@ class Transaction(BaseModel):
     course = models.ForeignKey(
         Course, on_delete=models.DO_NOTHING, related_name="transactions"
     )
+
     name = models.CharField(max_length=150)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     tran_id = models.CharField(max_length=15)

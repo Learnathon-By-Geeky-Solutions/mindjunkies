@@ -1,4 +1,5 @@
 {% load static tailwind_cli %}
+{% load django_htmx %}
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -15,8 +16,9 @@
             crossorigin="anonymous"></script>
     {% block extra_head %}{% endblock extra_head %}
     {% tailwind_css %}
+    {% htmx_script %}
 </head>
-<body class="min-h-screen flex flex-col">
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="min-h-screen flex flex-col justify-center">
 
 {% include 'includes/header.html' %}
 

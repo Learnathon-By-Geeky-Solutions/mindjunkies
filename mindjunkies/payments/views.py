@@ -28,18 +28,16 @@ def checkout(request, course_slug):
     course = get_object_or_404(Course, slug=course_slug)
 
     transaction_id = unique_transaction_id_generator()
-    enrollment, created = Enrollment.objects.get_or_create(
+    enrollment, _ = Enrollment.objects.get_or_create(
         student=user,
         course=course,
     )
 
-    if enrollment.payment_status == "completed":
-        enrollment.status = "active"
+    if enrollment.status == "active":
         messages.success(request, "You have already enrolled in this course")
         return redirect("home")
 
     enrollment.status = "pending"
-    enrollment.transaction_id = transaction_id
     enrollment.save()
 
     gateway = PaymentGateway.objects.first()
