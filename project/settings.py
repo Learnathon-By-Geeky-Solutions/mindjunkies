@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "silk",
     "django_htmx",
     "template_partials",
+    "django_extensions",
     # allauth
     "allauth",
     "allauth.account",

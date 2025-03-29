@@ -25,6 +25,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "django-browser-reload>=1.18.0",
+    "django-extensions>=3.2.3",
     "django-silk>=5.3.2",
     "django-tailwind-cli>=4.1.0",
     "freezegun>=1.5.1",
@@ -63,4 +64,4 @@ DJANGO_SETTINGS_MODULE = "project.settings"
 django_find_project = true
 python_files = ["test_*.py", "*_tests.py", "tests.py"]
 testpaths = ["tests", "mindjunkies"]
-addopts = "--reuse-db --tb=short --capture=no --cov=mindjunkies --cov-report=term-missing --cov-report=xml --cov-config=.coveragerc"
+addopts = "--reuse-db --tb=short --capture=no --cov=mindjunkies --cov-report=xml --cov-config=.coveragerc"

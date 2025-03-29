@@ -22,7 +22,7 @@ class LiveClassListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         course = get_object_or_404(Course, slug=self.kwargs["slug"])
         context["course"] = course
-        context["teacher"] = course.teachers.filter(teacher=self.request.user).exists()
+        context["teacher"] = course.teacher
         return context
 
 

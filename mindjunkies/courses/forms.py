@@ -4,44 +4,41 @@ from django.utils.text import slugify
 
 from .models import Course, CourseToken
 
+from django.forms import inlineformset_factory
+from .models import Course, CourseInfo
+
 
 class CourseForm(forms.ModelForm):
-    requirements = forms.CharField(
-        widget=forms.Textarea(attrs={"rows": 3}),
-        help_text="Enter each requirement in a new line.",
-    )
-    learning_objectives = forms.CharField(
-        widget=forms.Textarea(attrs={"rows": 3}),
-        help_text="Enter each objective in a new line.",
-    )
-    course_image = CloudinaryFileField()
-
     class Meta:
         model = Course
         fields = [
             "title",
             "short_introduction",
             "course_description",
-            "category",
-            "requirements",
-            "learning_objectives",
             "level",
+            "category",
             "course_image",
-            "preview_video",
-            "upcoming",
             "published",
             "paid_course",
             "course_price",
+            "upcoming",
+            "preview_video",
         ]
 
-    def save(self, commit=True, teacher=None):
-        instance = super().save(commit=False)
-        instance.slug = slugify(instance.title)
-        if teacher:
-            instance.teacher = teacher
-        if commit:
-            instance.save()
-        return instance
+
+class CourseInfoForm(forms.ModelForm):
+    class Meta:
+        model = CourseInfo
+        fields = [
+            "what_you_will_learn",
+            "who_this_course_is_for",
+            "requirements"
+        ]
+
+
+CourseInfoFormSet = inlineformset_factory(
+    Course, CourseInfo, form=CourseInfoForm, extra=1, can_delete=False
+)
 
 
 class CourseTokenForm(forms.ModelForm):

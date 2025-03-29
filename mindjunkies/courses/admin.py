@@ -24,13 +24,15 @@ class ModuleAdmin(admin.ModelAdmin):
     list_filter = ("course",)
 
 
-@admin.register(CourseCategory)
-class CourseCategoryAdmin(CategoryBaseAdmin):
-    pass
-
-
 @admin.register(CourseToken)
-class CourseTokeneAdmin(admin.ModelAdmin):
+class CourseTokenAdmin(admin.ModelAdmin):
     model = CourseToken
     list_display = ("user", "course", "status")
     list_filter = ("course",)
+
+
+@admin.register(CourseCategory)
+class CourseCategoryAdmin(CategoryBaseAdmin):
+    model = CourseCategory
+    list_display = ("name", "description")
+    search_fields = ("name",)

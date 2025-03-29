@@ -36,7 +36,7 @@ def test_checkout_successful_redirect(client):
     # Check that an enrollment was created
     enrollment = Enrollment.objects.filter(student=user, course=course).first()
     assert enrollment is not None
-    assert enrollment.payment_status == "pending"
+    assert enrollment.payments == "pending"
 
 
 @pytest.mark.django_db
@@ -64,7 +64,7 @@ def test_checkout_already_enrolled(client):
     baker.make(PaymentGateway, store_id="test_store", store_pass="test_pass")
 
     # Create a completed enrollment
-    baker.make(Enrollment, student=user, course=course, payment_status="completed")
+    baker.make(Enrollment, student=user, course=course, status="active")
 
     client.force_login(user)
     url = reverse("checkout", kwargs={"course_slug": course.slug})
@@ -86,8 +86,7 @@ def test_checkout_successful_payment(client):
         Enrollment,
         student=user,
         course=course,
-        transaction_id="TXN123",
-        payment_status="pending",
+        status="pending",
     )
 
     client.force_login(user)
@@ -139,8 +138,7 @@ def test_checkout_failed_payment(client):
         Enrollment,
         student=user,
         course=course,
-        transaction_id="TXN123",
-        payment_status="pending",
+        status="pending",
     )
 
     client.force_login(user)

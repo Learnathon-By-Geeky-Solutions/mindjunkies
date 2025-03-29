@@ -3,7 +3,7 @@ from django.urls import reverse
 from model_bakery import baker
 
 from mindjunkies.accounts.models import User
-from mindjunkies.courses.models import Course, CourseTeacher
+from mindjunkies.courses.models import Course
 from mindjunkies.live_classes.models import LiveClass
 
 
@@ -17,8 +17,6 @@ def user():
 @pytest.fixture
 def course(user):
     course = baker.make(Course)
-    # Create a CourseTeacher instance linking the user as a teacher to the course
-    CourseTeacher.objects.create(course=course, teacher=user)
     return course
 
 

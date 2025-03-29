@@ -3,10 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.decorators.http import require_http_methods
 from django.views.generic.edit import CreateView, UpdateView, FormView
-from .forms import CourseForm, CourseTokenForm
+from .forms import CourseForm, CourseTokenForm, CourseInfoFormSet
 from .models import Course, CourseCategory, Enrollment, CourseToken
 
 
@@ -36,6 +36,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
     model = Course
     form_class = CourseForm
     template_name = "courses/create_course.html"
+    success_url = reverse_lazy("course_list")
 
     def get(self, request):
         if CourseToken.objects.filter(user=request.user, status="pending").exists():
@@ -47,18 +48,27 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
         else:
             return super().get(request)
 
+    def get_context_data(self, **kwargs):
+        """Add the formset to the context"""
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context["formset"] = CourseInfoFormSet(self.request.POST)
+        else:
+            context["formset"] = CourseInfoFormSet()
+        return context
 
     def form_valid(self, form):
+        """Save the Course and CourseInfo forms together"""
         form.instance.teacher = self.request.user
-        form.save()
-        messages.success(self.request, "Course saved successfully!")
-        return redirect(reverse("create_course_token"))
+        self.object = form.save()
 
-    def form_invalid(self, form):
-        messages.error(
-            self.request, f"There was an error processing the form: {form.errors}"
-        )
-        return self.render_to_response(self.get_context_data(form=form))
+        formset = CourseInfoFormSet(self.request.POST, instance=self.object)
+        if formset.is_valid():
+            formset.save()
+        else:
+            return self.render_to_response(self.get_context_data(form=form, formset=formset))
+
+        return redirect(self.get_success_url())
 
 
 class CourseUpdateView(LoginRequiredMixin, UpdateView):
@@ -97,7 +107,6 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
 @login_required
 @require_http_methods(["GET"])
 def user_course_list(request: HttpRequest) -> HttpResponse:
-
     enrolled = Enrollment.objects.filter(student=request.user)
     courses = [ec.course for ec in enrolled]
 
@@ -121,7 +130,6 @@ def category_courses(request, slug):
         "courses/category_courses.html",
         {"category": category, "courses": courses},
     )
-
 
 
 class CreateCourseTokenView(LoginRequiredMixin, FormView):

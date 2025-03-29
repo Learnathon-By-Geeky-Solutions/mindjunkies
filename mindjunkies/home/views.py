@@ -7,22 +7,27 @@ from mindjunkies.courses.models import Course, CourseCategory, Enrollment
 
 @require_http_methods(["GET"])
 def home(request):
-    featured_course = Course.objects.all()
-    course_categories = CourseCategory.objects.filter(
-        parent__isnull=True
-    ).prefetch_related("children")
-    context = {
-        "course_list": featured_course,
-        "categories": course_categories,
-    }
-    enrolled_classes = []
-    teacher_classes = []
     if request.user.is_authenticated:
-        enrolled = Enrollment.objects.filter(
+        enrollments = Enrollment.objects.filter(
             student=request.user, status="active"
         ).prefetch_related("course")
-        enrolled_classes = [ec.course for ec in enrolled]
-        context["enrolled_classes"] = enrolled_classes
+        enrolled_courses = [enrollment.course for enrollment in enrollments]
+    else:
+        enrolled_courses = []
+
+    new_courses = Course.objects.exclude(id__in=[course.id for course in enrolled_courses]).order_by("-created_at")[:3]
+    courses = Course.objects.exclude(id__in=new_courses.values_list('id', flat=True)).exclude(
+        id__in=[course.id for course in enrolled_courses]
+    )
+
+    categories = CourseCategory.objects.filter(parent__isnull=True).prefetch_related("children")
+
+    context = {
+        "new_courses": new_courses,
+        "courses": courses,
+        "categories": categories,
+        "enrolled_courses": enrolled_courses,
+    }
 
     return render(request, "home/index.html", context)
 
