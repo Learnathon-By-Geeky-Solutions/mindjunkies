@@ -367,12 +367,9 @@
                             {% endif %}
                             <div class="text-3xl font-bold mb-4">${{ course_detail.course_price }}</div>
 
-                            {% if not accessed %}
-                            <a href="{% url 'checkout' course_detail.slug %}
-                             "class="btn btn-primary btn-block mb-4">Enroll</a>
-                             {% else %}
+                          
                              <a href="{% url 'lecture_home' course_detail.slug %}" class="btn btn-primary btn-block mb-4">View</a>
-                            {% endif %}
+                           
                             {% comment %} <a href="{{ course_detail.preview_video_link }}" class="btn btn-outline btn-block mb-4"
                                target="_blank">Watch Preview</a> {% endcomment %}
                             <p class="text-center text-sm mb-4">30-Day Money-Back Guarantee</p>

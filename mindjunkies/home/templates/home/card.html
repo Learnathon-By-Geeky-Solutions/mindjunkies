@@ -1,17 +1,64 @@
 {% load static %}
 {% load cloudinary %}
 
-<div class="card bg-base-100 shadow-xl">
-    <div class="rounded-lg object-cover">
-        {% cloudinary course.course_image quality='auto' crop='pad' width=400 %}
-    </div>
-    <div class="card-body">
-        <h3 class="card-title">{{ course.title }}</h3>
-        <p>{{ course.short_introduction }}</p>
-        <div class="card-actions justify-end">
-            <a href="{% url 'course_details' course.slug %}">
-                <button class="btn btn-primary">Enroll Now</button>
-            </a>
+<div class="card bg-base-100 hover:shadow-xl transition-shadow duration-300  h-[400px] flex flex-col overflow-hidden rounded-xl border border-base-200">
+  <!-- Card Image with explicit object-fit styling -->
+<!-- Card Image with fixed dimensions and no cropping -->
+<figure class="relative w-full overflow-hidden flex justify-center">
+  {% if course.course_image %}
+  <div class="w-[300px] h-[200px] mx-auto">
+    {% cloudinary course.course_image fetch_format="auto" quality="auto" width=300 height=200 crop="pad" background="auto" class=" mt-3"%}
+  </div>
+  {% else %}
+  <div class="w-[300px] h-[200px] mx-auto bg-primary/10 flex items-center justify-center">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    </svg>
+  </div>
+  {% endif %}
+</figure>
+
+
+  
+  <div class="card-body p-4 flex flex-col flex-grow">
+    <!-- Institution Logo and Name - FIXED SIZE -->
+    <div class="flex items-center gap-2 mb-3">
+      {% if course.institution.logo %}
+        <div class="flex-shrink-0">
+          <!-- Smaller logo - both container and image size reduced -->
+          <div class="w-5 h-5 rounded-full overflow-hidden">
+            {% cloudinary course.institution.logo transformation="c_fill,g_auto,w_20,h_20,q_auto,f_auto" style="width: 100%; height: 100%; object-fit: cover;" %}
+          </div>
         </div>
+      {% else %}
+        <div class="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+          <span class="text-xs text-primary font-bold">{{ course.institution.name|slice:":1" }}</span>
+        </div>
+      {% endif %}
+      <span class="text-sm text-base-content/70">{{ course.institution.name }}</span>
     </div>
+    
+    <!-- Course Title (if not displayed on image) -->
+    {% if not course.display_title_on_image %}
+      <h3 class="font-bold text-lg mb-2 line-clamp-2">{{ course.title }}</h3>
+    {% endif %}
+    
+    <!-- Course Description -->
+    <p class="text-sm text-base-content/70 mb-4 line-clamp-3">{{ course.short_introduction }}</p>
+    
+    <!-- Course Type Badge -->
+    <div class="mt-auto pt-2 flex justify-between items-center">
+      <span class="text-xs px-3 py-1 rounded-full bg-base-200 text-base-content/70">
+        {% if course.course_type == 'specialization' %}
+          Specialization
+        {% else %}
+          Course
+        {% endif %}
+      </span>
+      
+      <a href="{% url 'course_details' course.slug %}" class="btn btn-sm btn-primary">
+        Enroll Now
+      </a>
+    </div>
+  </div>
 </div>

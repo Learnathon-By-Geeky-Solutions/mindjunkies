@@ -62,11 +62,13 @@
 
                             <nav class="space-y-2">
                                 <!-- Course Material Section -->
+                                
                                 <div class="collapse collapse-arrow bg-slate-50 rounded-lg overflow-hidden">
                                     <input type="checkbox" checked/>
                                     <div class="collapse-title font-medium text-slate-800">
                                         <div class="flex flex-row items-center gap-2">
                                             <p class="inline-block">Course Material</p>
+                                           
                                             {% if isTeacher %}
                                                 <a href="{% url 'create_module' course.slug %}" class="z-10 edit-link transition-transform hover:scale-110">
                                                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
@@ -77,6 +79,7 @@
                                                     </svg>
                                                 </a>
                                             {% endif %}
+                                            
                                         </div>
                                     </div>
                                     <div class="collapse-content px-0 pt-1">
@@ -102,6 +105,7 @@
                                         {% endfor %}
                                     </div>
                                 </div>
+                                
 
                                 <a href="#" class="flex items-center py-2 px-4 hover:bg-indigo-50 rounded-md transition-colors text-slate-700">
                                     <svg class="h-5 w-5 mr-3 text-indigo-600" viewBox="0 0 24 24" fill="currentColor">

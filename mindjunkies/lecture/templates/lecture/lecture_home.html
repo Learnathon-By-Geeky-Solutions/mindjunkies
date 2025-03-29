@@ -3,6 +3,7 @@
 
 {% block lecture_content %}
     <!-- Main Content with Responsive Layout -->
+    {% if current_module %}
     <main class="flex flex-col lg:flex-row flex-grow overflow-auto bg-slate-50">
         <!-- Center Content Area -->
         <div class="flex-grow p-4 lg:p-8 overflow-y-auto">
@@ -26,6 +27,7 @@
             </div>
 
             <!-- Weeks/Lectures in Module -->
+            
             {% for lecture in current_module.lectures.all %}
                 <div
                     class="collapse collapse-arrow bg-white border border-slate-100 rounded-xl mb-5 shadow-sm overflow-hidden transition-all hover:shadow-md">
@@ -80,35 +82,7 @@
                                 </div>
                             </div>
 
-                            <div class="w-full mt-3 flex justify-end">
-                                {% if isTeacher %}
-                                    <div class="flex items-center space-x-2">
-                                        <div class="relative group">
-                                            <a href="{% url 'create_content' course.slug lecture.slug 'attachment' %}"
-                                               class="inline-flex items-center justify-center h-9 px-4 rounded-l-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors duration-200 shadow-sm">
-                                                <svg class="h-4 w-4 mr-1.5" viewBox="0 0 24 24"
-                                                     fill="none" stroke="currentColor" stroke-width="2"
-                                                     stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/>
-                                                </svg>
-                                                Attachment
-                                            </a>
-                                        </div>
-                                        <div class="relative group">
-                                            <a href="{% url 'create_content' course.slug lecture.slug 'video' %}"
-                                               class="inline-flex items-center justify-center h-9 px-4 rounded-r-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors duration-200 shadow-sm border-l border-indigo-700">
-                                                <svg class="h-4 w-4 mr-1.5" viewBox="0 0 24 24"
-                                                     fill="none" stroke="currentColor" stroke-width="2"
-                                                     stroke-linecap="round" stroke-linejoin="round">
-                                                    <polygon points="23 7 16 12 23 17 23 7"/>
-                                                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-                                                </svg>
-                                                Video
-                                            </a>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            </div>
+                           
                         </div>
 
                         <!-- Week Description -->
@@ -138,6 +112,25 @@
                         <!-- Lecture Items -->
                         <div class="mt-5">
                             <h3 class="text-lg font-medium text-slate-800 mb-3 px-1">Learning Materials</h3>
+                            <div class="w-full mt-3 flex ">
+                                {% if isTeacher %}
+                                   
+                                        <div class="relative group">
+                                            <a href="{% url 'create_content' course.slug lecture.slug 'attachment' %}"
+                                               class="inline-flex items-center justify-center h-9 px-4 py-1 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors duration-200 shadow-sm">
+                                                <svg class="h-4 w-4 mr-1.5" viewBox="0 0 24 24"
+                                                     fill="none" stroke="currentColor" stroke-width="2"
+                                                     stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/>
+                                                </svg>
+                                               Attachment
+                                            </a>
+                                        
+                                        
+                                    </div>
+                                {% endif %}
+                            </div>
+
                             <div class="space-y-3">
                                 {% for pdf in lecture.pdf_files.all %}
                                     <div
@@ -173,6 +166,20 @@
                                         {% endif %}
                                     </div>
                                 {% endfor %}
+                                {% if isTeacher %}
+                                <div class="relative group">
+                                    <a href="{% url 'create_content' course.slug lecture.slug 'video' %}"
+                                       class="inline-flex items-center justify-center h-9 px-4 py-1 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors duration-200 shadow-sm border-l border-indigo-700">
+                                        <svg class="h-4 w-4 mr-1.5" viewBox="0 0 24 24"
+                                             fill="none" stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round">
+                                            <polygon points="23 7 16 12 23 17 23 7"/>
+                                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                                        </svg>
+                                        Video
+                                    </a>
+                                </div>
+                                {% endif %}
                                 {% for video in lecture.videos.all %}
                                     <div
                                         class="flex items-center p-4 hover:bg-slate-50 rounded-lg transition-all border border-slate-100 hover:shadow-sm">
@@ -197,34 +204,14 @@
                                     </div>
                                 {% endfor %}
 
-                                <div
-                                    class="flex items-center p-4 hover:bg-slate-50 rounded-lg transition-all border border-slate-100 hover:shadow-sm">
-                                    <div class="mr-4 bg-indigo-100 p-2 rounded-full text-indigo-600">
-                                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-                                            <path
-                                                d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
-                                        </svg>
-                                    </div>
-                                    <div class="flex-1">
-                                        <h4 class="font-medium text-slate-800">
-                                            <a href="#" class="hover:text-indigo-600 transition-colors">
-                                                Module {{ week_num }} Quiz: {% if week_num == "1" %}Machine
-                                                Learning Basics{% elif week_num == "2" %}Supervised Learning
-                                                Concepts{% else %}Unsupervised Learning Techniques{% endif %}
-                                            </a>
-                                        </h4>
-                                        <p class="text-xs text-slate-500">Graded Assessment</p>
-                                    </div>
-                                    <a href="#"
-                                       class="inline-flex items-center justify-center h-8 px-4 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors duration-200 shadow-sm">
-                                        Start
-                                    </a>
-                                </div>
+                              
                             </div>
                         </div>
                     </div>
                 </div>
             {% endfor %}
+          
+            
         </div>
 
         <!-- Right Sidebar - Live Classes Section -->
@@ -406,4 +393,28 @@
             </div>
         </div>
     </main>
+    {% else %}
+    <div class="card w-full bg-base-100 shadow-xl border border-base-300">
+        <div class="card-body items-center text-center">
+          <div class="flex flex-col items-center gap-4 py-6">
+            <!-- Empty state illustration -->
+            <div class="w-24 h-24 rounded-full bg-base-200 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-base-content opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            
+            <h2 class="card-title text-xl font-bold">No Modules Available</h2>
+            <p class="text-base-content/70 mb-4">Get started by creating your first module for this course.</p>
+            
+            <a href="{% url 'create_module' course.slug %}" class="btn btn-primary gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+              </svg>
+              Create Module
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endif %}
 {% endblock lecture_content %}

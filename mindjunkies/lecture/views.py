@@ -65,8 +65,8 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
         current_live_class = self.get_current_live_class(course)
         current_module = self.get_current_module(course)
         
-        if not current_module:
-            messages.warning(self.request, "No lectures available for this course.")
+        # if not current_module:
+        #     messages.warning(self.request, "No lectures available for this course.")
 
         context.update({
             "course": course,

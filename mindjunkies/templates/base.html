@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Add these to the head tag of your HTML -->
 
-
     <title>
         {% block head_title %}LMS{% endblock head_title %}
     </title>
@@ -18,10 +17,9 @@
     {% tailwind_css %}
     {% htmx_script %}
 </head>
-<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="min-h-screen flex flex-col justify-center">
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="min-h-screen flex flex-col">
 
 {% include 'includes/header.html' %}
-
 
 {% if messages %}
     <div class="fixed top-24 right-12 max-w-xs w-full z-100">
@@ -33,7 +31,7 @@
     </div>
 {% endif %}
 
-<main class="">
+<main class="flex-grow flex flex-col">
     {% block main_content %}{% endblock main_content %}
 </main>
 
