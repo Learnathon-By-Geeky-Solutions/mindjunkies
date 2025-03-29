@@ -87,3 +87,7 @@ lecture_videos/
 tailwind.css
 
 **/*.pem
+
+teacher_certificates
+uploads
+scripts

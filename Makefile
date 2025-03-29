@@ -22,8 +22,8 @@ migrations:
 migrate:
 	uv run python manage.py migrate
 
-.PHONY: run-server
-run-server:
+.PHONY: runserver
+runserver:
 	uv run python manage.py runserver
 
 .PHONY: superuser

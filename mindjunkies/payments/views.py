@@ -28,18 +28,16 @@ def checkout(request, course_slug):
     course = get_object_or_404(Course, slug=course_slug)
 
     transaction_id = unique_transaction_id_generator()
-    enrollment, created = Enrollment.objects.get_or_create(
+    enrollment, _ = Enrollment.objects.get_or_create(
         student=user,
         course=course,
     )
 
-    if enrollment.payment_status == "completed":
-        enrollment.status = "active"
+    if enrollment.status == "active":
         messages.success(request, "You have already enrolled in this course")
         return redirect("home")
 
     enrollment.status = "pending"
-    enrollment.transaction_id = transaction_id
     enrollment.save()
 
     gateway = PaymentGateway.objects.first()
@@ -107,6 +105,7 @@ class CheckoutSuccessView(View):
                 user=user,
                 course=course,
                 name=user.username,
+                enrollment=enrollment,
                 tran_id=data["tran_id"],
                 val_id=data["val_id"],
                 amount=data["amount"],
@@ -130,7 +129,6 @@ class CheckoutSuccessView(View):
 
             # Update enrollment status
             enrollment.status = "active"
-            enrollment.payment_status = "completed"
             enrollment.save()
 
             messages.success(request, "Payment Successful")
@@ -160,8 +158,7 @@ class CheckoutFailedView(View):
             course = get_object_or_404(Course, slug=data["value_b"])
             enrollment = get_object_or_404(Enrollment, student=user, course=course)
 
-            # Mark transaction as failed
-            enrollment.payment_status = "failed"
+            enrollment.status = "withdrawn"
             enrollment.save()
 
             messages.error(request, "Payment Failed. Please try again.")

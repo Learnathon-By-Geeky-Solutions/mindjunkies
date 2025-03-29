@@ -1,33 +1,35 @@
 from django.contrib import admin
 
-from .models import ForumNotification, ForumReply, ForumTopic
+from .models import ForumComment, ForumTopic, LikedPost, Reply
 
 
 @admin.register(ForumTopic)
 class ForumTopicAdmin(admin.ModelAdmin):
-    list_display = ("title", "author", "course", "created_at")
+    list_display = ("title", "author", "course", "module", "created_at")
     search_fields = ("title", "content", "author__username", "course__title")
     list_filter = ("created_at", "course")
     prepopulated_fields = {"slug": ("title",)}
     raw_id_fields = ("author", "course")
 
 
-@admin.register(ForumReply)
-class ForumReplyAdmin(admin.ModelAdmin):
+@admin.register(ForumComment)
+class ForumCommentAdmin(admin.ModelAdmin):
     list_display = ("topic", "author", "created_at")
     search_fields = ("content", "author__username", "topic__title")
     list_filter = ("created_at",)
-    raw_id_fields = ("author", "topic", "parent_reply")
+    raw_id_fields = ("author", "topic")
 
 
-@admin.register(ForumNotification)
-class ForumNotificationAdmin(admin.ModelAdmin):
-    list_display = ("recipient", "notification_type", "actor", "created_at", "is_read")
-    search_fields = (
-        "recipient__username",
-        "actor__username",
-        "topic__title",
-        "reply__content",
-    )
-    list_filter = ("notification_type", "created_at", "is_read")
-    raw_id_fields = ("recipient", "actor", "topic", "reply")
+@admin.register(Reply)
+class ReplyAdmin(admin.ModelAdmin):
+    list_display = ("parent_comment", "body", "author", "created")
+    search_fields = ("body", "author__username", "parent_comment__id")
+    list_filter = ("created", "parent_comment")
+    raw_id_fields = ("author", "parent_comment")
+
+
+@admin.register(LikedPost)
+class LikedPostAdmin(admin.ModelAdmin):
+    list_display = ("topic", "user", "created")
+    list_filter = ("created", "user")
+    search_fields = ("topic__title", "user__username")

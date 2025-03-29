@@ -1,0 +1,141 @@
+
+{% extends 'lecture/base.html' %}
+{% load static %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/forum.css' %}">
+    <script src="https://unpkg.com/htmx.org@2.0.4"
+            integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+"
+            crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block lecture_content %}
+<div class="max-w-5xl px-4 py-8">
+
+  <!-- Breadcrumb -->
+  <div class="text-sm breadcrumbs">
+    <ul>
+      <li><a href="{% url 'forum_home' course.slug %}" class="text-blue-500">Home</a></li>
+      <li>Module {{module.order}}</li>
+    </ul>
+  </div>
+
+  <!-- Header & Subscribe -->
+  <div class="flex items-center justify-between mt-4">
+    <div>
+      <h1 class="text-3xl font-bold">Module {{module.order}}: {{module.title}}</h1>
+      <p class="text-gray-600">Discuss this week's modules here.</p>
+    </div>
+    <a class="text-blue-600 font-medium hover:underline" href="#">Subscribe</a>
+  </div>
+
+  <!-- Search and Post -->
+  <div class="mt-6 flex items-center gap-2">
+    <input type="text" placeholder="Search" class="input input-bordered w-full sm:max-w-xs" />
+    <button class="btn btn-primary">Search</button>
+    <!-- Button to trigger the dialog for creating a new post -->
+    <button class="btn btn-outline btn-primary" onclick="document.getElementById('newTopicModal').showModal()">Create post</button>
+  </div>
+
+  <!-- Filters -->
+  <div class="mt-6 flex flex-wrap items-center justify-between">
+    <div class="flex items-center space-x-2">
+      <span class="font-semibold">Forum:</span>
+      <div class="dropdown">
+        <label tabindex="0" class="btn btn-sm btn-outline">Module {{module.order}}</label>
+        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+          {% for module in course.modules.all %}
+         <li><a href="{% url 'forum_thread' course.slug module.id %}">Module {{module.order}}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-4 mt-4 sm:mt-0">
+      <div class="dropdown dropdown-hover">
+        <label tabindex="0" class="cursor-pointer">Sort: <span class="font-medium">Recent</span></label>
+        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40">
+          <li><a>Recent</a></li>
+          <li><a>Most Liked</a></li>
+        </ul>
+      </div>
+
+      <div class="dropdown dropdown-hover">
+        <label tabindex="0" class="cursor-pointer">Filter: <span class="font-medium">All</span></label>
+        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40">
+          <li><a>All</a></li>
+          <li><a>Unread</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forum Thread Card -->
+  <div class=" mt-8 border-t border-gray-200 pt-6 space-y-8">
+
+   {% for post in module.forum_posts.all%}
+    <div class="w-[1000px] bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+        <a href="{% url 'forum_thread_details' course.slug post.slug %}" class="text-blue-600 font-bold text-lg hover:underline">{{post.title}}</a>
+        <p class="mt-2 text-gray-700 text-base">
+          <p class="mt-2 text-gray-700 text-base">
+            {{ post.content|truncatewords:100 }}
+            {% if post.content|wordcount > 100 %}
+              <a href="{% url 'forum_post_detail' post.id %}" class="text-blue-500 hover:underline">See Details</a>
+            {% endif %}
+          </p>
+        </p>
+
+        <div class="flex items-center justify-between mt-4 text-sm text-gray-500">
+          <div class="flex space-x-4">
+            <button class="flex items-center gap-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded-md transition-all">
+              <i class="fa-regular fa-thumbs-up"></i> Like
+            </button>
+            <a href="{% url 'forum_thread_details' course.slug post.slug %}"><button class="flex cursor-pointer  gap-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded-md transition-all">
+              <i class="fa-regular fa-comment-dots"></i> Reply 3
+            </button></a>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="avatar placeholder">
+              <div class="bg-gray-200 text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
+                FS
+              </div>
+            </div>
+            <span class="text-sm text-gray-500">Replied on {{ post.get_last_activity|date:"F j, Y, g:i a" }}</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+  </div>
+
+  <!-- Dialog for New Topic Form - Fixed for DaisyUI -->
+  <dialog id="newTopicModal" class="modal">
+    <div class="modal-box">
+      <h2 class="text-xl font-bold mb-4">Create New Topic</h2>
+      <form method="post" action="{% url 'forum_submission' course_slug=course.slug module_id=module.id %}" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        {{form|crispy}}
+
+        <div class="form-control mt-4">
+          <button type="submit" class="btn btn-primary w-full">
+            Post
+          </button>
+        </div>
+      </form>
+      <div class="modal-action">
+        <form method="dialog">
+          <button class="btn">Close</button>
+        </form>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
+</div>
+
+<!-- Optional: FontAwesome for icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+{% endblock lecture_content %}

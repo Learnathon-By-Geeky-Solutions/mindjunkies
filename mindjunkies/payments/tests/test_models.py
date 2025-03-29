@@ -4,7 +4,7 @@ from django.db.utils import IntegrityError
 from model_bakery import baker
 
 from mindjunkies.accounts.models import User
-from mindjunkies.courses.models import Course
+from mindjunkies.courses.models import Course, Enrollment
 from mindjunkies.payments.models import PaymentGateway, Transaction
 
 
@@ -13,10 +13,12 @@ def test_create_transaction():
     """Test creating a transaction successfully."""
     user = baker.make(User)
     course = baker.make(Course)
+    enrollment = baker.make(Enrollment)
 
     transaction = Transaction.objects.create(
         user=user,
         course=course,
+        enrollment=enrollment,
         name="SSLCommerz Payment",
         amount=1500.00,
         tran_id="TXN12345",
