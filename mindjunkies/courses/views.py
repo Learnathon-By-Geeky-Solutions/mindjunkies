@@ -1,13 +1,15 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.db import models
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.views.decorators.http import require_http_methods
-from django.views.generic.edit import CreateView, UpdateView, FormView
-from .forms import CourseForm, CourseTokenForm, CourseInfoFormSet
-from .models import Course, CourseCategory, Enrollment, CourseToken
+from django.views.generic.edit import CreateView, FormView, UpdateView
+
+from .forms import CourseForm, CourseTokenForm
+from .models import Course, CourseCategory, CourseToken, Enrollment, LastVisitedCourse
 
 
 @require_http_methods(["GET"])
@@ -36,7 +38,6 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
     model = Course
     form_class = CourseForm
     template_name = "courses/create_course.html"
-    success_url = reverse_lazy("course_list")
 
     def get(self, request):
         if CourseToken.objects.filter(user=request.user, status="pending").exists():
@@ -48,27 +49,17 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
         else:
             return super().get(request)
 
-    def get_context_data(self, **kwargs):
-        """Add the formset to the context"""
-        context = super().get_context_data(**kwargs)
-        if self.request.POST:
-            context["formset"] = CourseInfoFormSet(self.request.POST)
-        else:
-            context["formset"] = CourseInfoFormSet()
-        return context
-
     def form_valid(self, form):
-        """Save the Course and CourseInfo forms together"""
         form.instance.teacher = self.request.user
-        self.object = form.save()
+        form.save()
+        messages.success(self.request, "Course saved successfully!")
+        return redirect(reverse("create_course_token"))
 
-        formset = CourseInfoFormSet(self.request.POST, instance=self.object)
-        if formset.is_valid():
-            formset.save()
-        else:
-            return self.render_to_response(self.get_context_data(form=form, formset=formset))
-
-        return redirect(self.get_success_url())
+    def form_invalid(self, form):
+        messages.error(
+            self.request, f"There was an error processing the form: {form.errors}"
+        )
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 class CourseUpdateView(LoginRequiredMixin, UpdateView):
@@ -100,6 +91,7 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     enrolled = course.enrollments.filter(student=request.user, status="active").exists()
     context = {
         "course_detail": course,
+        "accessed": enrolled,
     }
     return render(request, "courses/course_details.html", context)
 
@@ -107,17 +99,20 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
 @login_required
 @require_http_methods(["GET"])
 def user_course_list(request: HttpRequest) -> HttpResponse:
-    enrolled = Enrollment.objects.filter(student=request.user)
-    courses = [ec.course for ec in enrolled]
 
-    print(courses)
-    print("enrolled", enrolled)
+    courses = (
+        Course.objects.filter(enrollments__student=request.user)
+        .annotate(
+            last_visited_at=models.Subquery(
+                LastVisitedCourse.objects.filter(
+                    user=request.user, course=models.OuterRef("pk")
+                ).values("last_visited")[:1]
+            )
+        )
+        .order_by("-last_visited_at", "title")
+    )  # Order by last visited time, then alphabetically
 
-    context = {
-        "courses": courses,
-        "enrolled_classes": courses,
-    }
-    return render(request, "courses/course_list.html", context)
+    return render(request, "courses/course_list.html", {"courses": courses})
 
 
 @require_http_methods(["GET"])

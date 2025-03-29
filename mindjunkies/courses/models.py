@@ -19,6 +19,7 @@ class CourseCategory(CategoryBase):
 
 class Course(BaseModel):
     """Model for storing course details."""
+
     slug = models.SlugField(max_length=255, unique=True)
 
     LEVEL_CHOICES = [
@@ -73,15 +74,16 @@ class Course(BaseModel):
         """Recalculate average course rating."""
         ratings = self.ratings.all()
         self.number_of_ratings = ratings.count()
-        self.total_rating = sum(
-            r.rating for r in ratings) / self.number_of_ratings if self.number_of_ratings > 0 else 0
+        self.total_rating = (
+            sum(r.rating for r in ratings) / self.number_of_ratings
+            if self.number_of_ratings > 0
+            else 0
+        )
         self.save(update_fields=["total_rating", "number_of_ratings"])
 
 
 class CourseInfo(BaseModel):
-    course = models.OneToOneField(
-        Course, on_delete=models.CASCADE, related_name="info"
-    )
+    course = models.OneToOneField(Course, on_delete=models.CASCADE, related_name="info")
     what_you_will_learn = models.TextField()
     who_this_course_is_for = models.TextField()
     requirements = models.TextField()
@@ -93,12 +95,8 @@ class CourseInfo(BaseModel):
 class Rating(BaseModel):
     """Stores ratings and reviews for courses."""
 
-    student = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="ratings"
-    )
-    course = models.ForeignKey(
-        Course, on_delete=models.CASCADE, related_name="ratings"
-    )
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ratings")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="ratings")
     rating = models.PositiveSmallIntegerField(
         choices=[(i, str(i)) for i in range(1, 6)], default=5  # 1 to 5 stars
     )
@@ -106,9 +104,7 @@ class Rating(BaseModel):
 
     class Meta:
         unique_together = ("student", "course")
-        indexes = [
-            models.Index(fields=["course"])
-        ]
+        indexes = [models.Index(fields=["course"])]
 
     def __str__(self):
         return f"{self.student.username} rated {self.course.title} {self.rating}/5"
@@ -157,16 +153,27 @@ class Module(BaseModel):
 
 class CourseToken(models.Model):
     STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('accepted', 'Accepted'),
-        ('running', 'Running'),
+        ("pending", "Pending"),
+        ("accepted", "Accepted"),
+        ("running", "Running"),
     ]
 
-    status = models.CharField(
-        max_length=10, choices=STATUS_CHOICES, default='pending'
-    )
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.get_status_display()}"
+
+
+class LastVisitedCourse(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    last_visited = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-last_visited"]
+        unique_together = ["course", "user"]
+
+    def __str__(self):
+        return f"{self.user.username} - {self.course.title} - {self.last_visited}"

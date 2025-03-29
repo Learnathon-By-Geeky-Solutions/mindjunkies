@@ -19,7 +19,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
-from mindjunkies.courses.models import Course, Module
+from mindjunkies.courses.models import Course, LastVisitedCourse, Module
 
 from .forms import LectureForm, LecturePDFForm, LectureVideoForm, ModuleForm
 from .models import Lecture, LecturePDF, LectureVideo
@@ -32,10 +32,7 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
         return get_object_or_404(Course, slug=self.kwargs["course_slug"])
 
     def get_is_teacher(self, course):
-        return (
-            self.request.user.is_staff
-            or course.teachers.filter(teacher=self.request.user).exists()
-        )
+        return self.request.user.is_staff or course.teacher == self.request.user
 
     def get_today_range(self):
         today = localtime(now())
@@ -54,6 +51,14 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
         course = self.get_course()
         is_teacher = self.get_is_teacher(course)
         today_start, today_end = self.get_today_range()
+
+        # Update or create last visited record
+        if not is_teacher:
+            LastVisitedCourse.objects.update_or_create(
+                user=self.request.user,
+                course=course,
+                defaults={"last_visited": timezone.now()},
+            )
 
         # Use cached queryset to avoid repeating filters
         live_classes_today = list(
