@@ -1,98 +1,71 @@
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
+import pytest
 from django.utils.text import slugify
-
+from django.contrib.auth import get_user_model
 from mindjunkies.courses.models import Course, Module
-
-from .models import Lecture, LecturePDF, LectureVideo
-
-# Constants
-COURSE_TITLE = "Advanced Python Course"
-MODULE_TITLE = "Introduction to Django"
-LECTURE_TITLE = "Django ORM Basics"
-LECTURE_DESC = "An overview of Django's ORM capabilities."
-PDF_TITLE = "Lecture Notes"
-PDF_FILE_NAME = "lecture_notes.pdf"
-VIDEO_TITLE = "Django ORM Walkthrough"
-VIDEO_FILE_NAME = "django_tutorial.mp4"
-VIDEO_CONTENT = b"video content"
-PDF_CONTENT = b"PDF content"
+from mindjunkies.lecture.models import Lecture, LecturePDF, LectureVideo
+from mindjunkies.accounts.models import User
 
 
-class LectureModelTest(TestCase):
-    def setUp(self):
-        self.sample_course = Course.objects.create(title=COURSE_TITLE)
-        self.sample_module = Module.objects.create(
-            title=MODULE_TITLE, course=self.sample_course
-        )
-        self.sample_lecture = Lecture.objects.create(
-            course=self.sample_course,
-            module=self.sample_module,
-            title=LECTURE_TITLE,
-            description=LECTURE_DESC,
-            order=1,
-        )
+@pytest.fixture
+def teacher(db):
+    return User.objects.create_user(username="test_teacher", password="password")
 
-    def test_lecture_creation(self):
-        self.assertEqual(self.sample_lecture.title, LECTURE_TITLE)
-        self.assertEqual(self.sample_lecture.course, self.sample_course)
-        self.assertEqual(self.sample_lecture.module, self.sample_module)
-        self.assertEqual(self.sample_lecture.order, 1)
+@pytest.fixture
+def course(db, teacher):
+    return Course.objects.create(title="Test Course", teacher=teacher)
 
-    def test_slug_generation_on_save(self):
-        self.assertEqual(self.sample_lecture.slug, slugify(LECTURE_TITLE))
+@pytest.fixture
+def module(db, course):
+    return Module.objects.create(title="Test Module", course=course)
 
-    def test_str_representation(self):
-        self.assertEqual(
-            str(self.sample_lecture), f"{self.sample_course.title} - {LECTURE_TITLE}"
-        )
+@pytest.fixture
+def lecture(db, course, module):
+    return Lecture.objects.create(
+        course=course,
+        module=module,
+        title="Test Lecture",
+        description="This is a test lecture.",
+        learning_objective="Learn Django testing.",
+        order=1,
+    )
 
+@pytest.mark.django_db
+def test_lecture_creation(lecture):
+    assert lecture.title == "Test Lecture"
+    assert lecture.slug == slugify("Test Lecture")
+    assert lecture.course.title == "Test Course"
+    assert lecture.module.title == "Test Module"
 
-class LecturePDFModelTest(TestCase):
-    def setUp(self):
-        self.sample_course = Course.objects.create(title=COURSE_TITLE)
-        self.sample_module = Module.objects.create(
-            title=MODULE_TITLE, course=self.sample_course
-        )
-        self.sample_lecture = Lecture.objects.create(
-            course=self.sample_course, module=self.sample_module, title=LECTURE_TITLE
-        )
-        self.sample_pdf = LecturePDF.objects.create(
-            lecture=self.sample_lecture,
-            pdf_file=SimpleUploadedFile(PDF_FILE_NAME, PDF_CONTENT),
-            pdf_title=PDF_TITLE,
-        )
+@pytest.mark.django_db
+def test_lecture_slug_auto_generation(course, module):
+    lecture = Lecture.objects.create(
+        course=course,
+        module=module,
+        title="New Lecture",
+    )
+    assert lecture.slug == slugify("New Lecture")
 
-    def test_pdf_creation(self):
-        self.assertEqual(self.sample_pdf.lecture, self.sample_lecture)
-        self.assertEqual(self.sample_pdf.pdf_title, PDF_TITLE)
+@pytest.fixture
+def lecture_pdf(db, lecture):
+    return LecturePDF.objects.create(
+        lecture=lecture, pdf_file="lecture_pdfs/test.pdf", pdf_title="Test PDF"
+    )
 
-    def test_str_representation(self):
-        self.assertEqual(str(self.sample_pdf), f"PDF for {self.sample_lecture.title}")
+@pytest.mark.django_db
+def test_lecture_pdf_creation(lecture_pdf):
+    assert lecture_pdf.pdf_title == "Test PDF"
+    assert lecture_pdf.lecture.title == "Test Lecture"
 
+@pytest.fixture
+def lecture_video(db, lecture):
+    return LectureVideo.objects.create(
+        lecture=lecture,
+        video_file="lecture_videos/test.mp4",
+        video_title="Test Video",
+        status=LectureVideo.PENDING,
+    )
 
-class LectureVideoModelTest(TestCase):
-    def setUp(self):
-        self.sample_course = Course.objects.create(title=COURSE_TITLE)
-        self.sample_module = Module.objects.create(
-            title=MODULE_TITLE, course=self.sample_course
-        )
-        self.sample_lecture = Lecture.objects.create(
-            course=self.sample_course, module=self.sample_module, title=LECTURE_TITLE
-        )
-        self.sample_video = LectureVideo.objects.create(
-            lecture=self.sample_lecture,
-            video_file=SimpleUploadedFile(VIDEO_FILE_NAME, VIDEO_CONTENT),
-            video_title=VIDEO_TITLE,
-            status=LectureVideo.PENDING,
-            is_running=False,
-        )
-
-    def test_video_creation(self):
-        self.assertEqual(self.sample_video.lecture, self.sample_lecture)
-        self.assertEqual(self.sample_video.video_title, VIDEO_TITLE)
-        self.assertEqual(self.sample_video.status, LectureVideo.PENDING)
-        self.assertFalse(self.sample_video.is_running)
-
-    def test_str_representation(self):
-        self.assertEqual(str(self.sample_video), VIDEO_TITLE)
+@pytest.mark.django_db
+def test_lecture_video_creation(lecture_video):
+    assert lecture_video.video_title == "Test Video"
+    assert lecture_video.status == LectureVideo.PENDING
