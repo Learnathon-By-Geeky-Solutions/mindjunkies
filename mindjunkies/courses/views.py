@@ -1,13 +1,15 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.db import models
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
-from django.views.generic.edit import CreateView, UpdateView, FormView
+from django.views.generic.edit import CreateView, FormView, UpdateView
+
 from .forms import CourseForm, CourseTokenForm
-from .models import Course, CourseCategory, Enrollment, CourseToken
+from .models import Course, CourseCategory, CourseToken, Enrollment, LastVisitedCourse
 
 
 @require_http_methods(["GET"])
@@ -46,7 +48,6 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
             return redirect(reverse("dashboard"))
         else:
             return super().get(request)
-
 
     def form_valid(self, form):
         form.instance.teacher = self.request.user
@@ -90,6 +91,7 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     enrolled = course.enrollments.filter(student=request.user, status="active").exists()
     context = {
         "course_detail": course,
+        "accessed": enrolled,
     }
     return render(request, "courses/course_details.html", context)
 
@@ -98,17 +100,19 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
 @require_http_methods(["GET"])
 def user_course_list(request: HttpRequest) -> HttpResponse:
 
-    enrolled = Enrollment.objects.filter(student=request.user)
-    courses = [ec.course for ec in enrolled]
+    courses = (
+        Course.objects.filter(enrollments__student=request.user)
+        .annotate(
+            last_visited_at=models.Subquery(
+                LastVisitedCourse.objects.filter(
+                    user=request.user, course=models.OuterRef("pk")
+                ).values("last_visited")[:1]
+            )
+        )
+        .order_by("-last_visited_at", "title")
+    )  # Order by last visited time, then alphabetically
 
-    print(courses)
-    print("enrolled", enrolled)
-
-    context = {
-        "courses": courses,
-        "enrolled_classes": courses,
-    }
-    return render(request, "courses/course_list.html", context)
+    return render(request, "courses/course_list.html", {"courses": courses})
 
 
 @require_http_methods(["GET"])
@@ -121,7 +125,6 @@ def category_courses(request, slug):
         "courses/category_courses.html",
         {"category": category, "courses": courses},
     )
-
 
 
 class CreateCourseTokenView(LoginRequiredMixin, FormView):
