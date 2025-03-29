@@ -105,6 +105,7 @@ class CheckoutSuccessView(View):
                 user=user,
                 course=course,
                 name=user.username,
+                enrollment=enrollment,
                 tran_id=data["tran_id"],
                 val_id=data["val_id"],
                 amount=data["amount"],
@@ -128,7 +129,6 @@ class CheckoutSuccessView(View):
 
             # Update enrollment status
             enrollment.status = "active"
-            enrollment.payment_status = "completed"
             enrollment.save()
 
             messages.success(request, "Payment Successful")
@@ -158,8 +158,7 @@ class CheckoutFailedView(View):
             course = get_object_or_404(Course, slug=data["value_b"])
             enrollment = get_object_or_404(Enrollment, student=user, course=course)
 
-            # Mark transaction as failed
-            enrollment.payment_status = "failed"
+            enrollment.status = "withdrawn"
             enrollment.save()
 
             messages.error(request, "Payment Failed. Please try again.")
