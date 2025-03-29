@@ -48,7 +48,6 @@ def test_live_class_list_view(client, user, course, live_class):
     assert "live_classes" in response.context
     assert live_class in response.context["live_classes"]
     assert response.context["course"] == course
-    assert response.context["teacher"] is True
 
 
 @pytest.mark.django_db

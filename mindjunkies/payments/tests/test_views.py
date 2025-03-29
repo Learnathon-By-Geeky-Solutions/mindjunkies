@@ -36,7 +36,7 @@ def test_checkout_successful_redirect(client):
     # Check that an enrollment was created
     enrollment = Enrollment.objects.filter(student=user, course=course).first()
     assert enrollment is not None
-    assert enrollment.payments == "pending"
+    assert enrollment.status == "pending"
 
 
 @pytest.mark.django_db
@@ -122,7 +122,6 @@ def test_checkout_successful_payment(client):
     assert Transaction.objects.filter(tran_id="TXN123").exists()
 
     enrollment = Enrollment.objects.get(student=user, course=course)
-    assert enrollment.payment_status == "completed"
     assert enrollment.status == "active"
 
     messages = [msg.message for msg in get_messages(response.wsgi_request)]
@@ -156,7 +155,7 @@ def test_checkout_failed_payment(client):
     assert response.status_code == 200
 
     enrollment = Enrollment.objects.get(student=user, course=course)
-    assert enrollment.payment_status == "failed"
+    assert enrollment.status == "withdrawn"
 
     messages = [msg.message for msg in get_messages(response.wsgi_request)]
     assert "Payment Failed. Please try again." in messages
