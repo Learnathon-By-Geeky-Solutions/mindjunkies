@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
-from mindjunkies.courses.models import Course, CourseTeacher
+from mindjunkies.courses.models import Course
 
 User = get_user_model()  # Use custom User model
 

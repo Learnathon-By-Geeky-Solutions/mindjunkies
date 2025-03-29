@@ -3,7 +3,7 @@ from django.urls import reverse
 from model_bakery import baker
 
 from mindjunkies.accounts.models import User
-from mindjunkies.courses.models import Course, CourseTeacher
+from mindjunkies.courses.models import Course
 from mindjunkies.live_classes.models import LiveClass
 
 

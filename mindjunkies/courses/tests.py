@@ -7,7 +7,7 @@ from django.urls import reverse
 
 from mindjunkies.accounts.models import User
 
-from .models import Course, CourseCategory, CourseTeacher, Enrollment
+from .models import Course, CourseCategory, Enrollment
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
 django.setup()
