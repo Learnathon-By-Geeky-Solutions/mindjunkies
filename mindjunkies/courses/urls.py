@@ -7,6 +7,7 @@ urlpatterns = [
     path("my_courses/", views.user_course_list, name="my_course_list"),
     path("create_course/", views.CreateCourseView.as_view(), name="create_course"),
     path("edit_course/", views.CourseUpdateView.as_view(), name="edit_course"),
+    path("rate/<slug:course_slug>/", views.RatingCreateView.as_view(), name="rate_course"),
 
     path('create-course-token/', views.CreateCourseTokenView.as_view(), name='create_course_token'),
 
@@ -14,5 +15,4 @@ urlpatterns = [
     path("<str:course_slug>/", include("mindjunkies.lecture.urls")),
 
     path("<str:course_slug>/forums/", include("mindjunkies.forums.urls")),
-
 ]
