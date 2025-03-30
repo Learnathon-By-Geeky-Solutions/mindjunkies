@@ -5,7 +5,7 @@ from django.utils.text import slugify
 from .models import Course, CourseToken
 
 from django.forms import inlineformset_factory
-from .models import Course, CourseInfo
+from .models import Course, CourseInfo, Rating
 
 
 class CourseForm(forms.ModelForm):
@@ -54,5 +54,7 @@ class CourseTokenForm(forms.ModelForm):
         })
 
 
-class RatingForm(forms.Form):
-    rating = forms.IntegerField(min_value=1, max_value=5)
+class RatingForm(forms.ModelForm):
+    class Meta:
+        model = Rating
+        fields = ['rating', 'review']

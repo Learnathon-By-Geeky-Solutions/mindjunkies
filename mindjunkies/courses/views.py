@@ -8,8 +8,8 @@ from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
-from .forms import CourseForm, CourseTokenForm
-from .models import Course, CourseCategory, CourseToken, Enrollment, LastVisitedCourse
+from .forms import CourseForm, CourseTokenForm, RatingForm
+from .models import Course, CourseCategory, CourseToken, Enrollment, LastVisitedCourse, Rating
 
 
 @require_http_methods(["GET"])
@@ -99,7 +99,6 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
 @login_required
 @require_http_methods(["GET"])
 def user_course_list(request: HttpRequest) -> HttpResponse:
-
     courses = (
         Course.objects.filter(enrollments__student=request.user)
         .annotate(
@@ -141,3 +140,44 @@ class CreateCourseTokenView(LoginRequiredMixin, FormView):
     def form_invalid(self, form):
         messages.error(self.request, "There was an error processing the form.")
         return self.render_to_response(self.get_context_data(form=form))
+
+
+class RatingCreateView(CreateView):
+    model = Rating
+    form_class = RatingForm
+    template_name = "courses/rate_course.html"
+
+    def get_initial(self):
+        initial = super().get_initial()
+        course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        try:
+            rating = Rating.objects.get(student=self.request.user, course=course)
+            initial.update({
+                "rating": rating.rating,
+                "review": rating.review,
+            })
+        except Rating.DoesNotExist:
+            pass
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["course"] = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        return context
+
+    def form_valid(self, form):
+        course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        student = self.request.user
+
+        rating, created = Rating.objects.update_or_create(
+            student=student,
+            course=course,
+            defaults={
+                "rating": form.cleaned_data["rating"],
+                "review": form.cleaned_data["review"],
+            },
+        )
+
+        course.update_rating()
+
+        return redirect(reverse("course_details", kwargs={"slug": course.slug}))
