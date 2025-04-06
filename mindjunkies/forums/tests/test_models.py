@@ -5,13 +5,14 @@ from mindjunkies.forums.models import (
     ForumTopic, ForumComment, Reply,
     LikedPost, LikedComment, LikedReply
 )
+from decouple import config
 
 User = get_user_model()
 
 class ForumModelTests(TestCase):
 
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.user = User.objects.create_user(username='testuser', password=config('TEST_PASS'))
 
         self.course = Course.objects.create(
             title='Test Course',
