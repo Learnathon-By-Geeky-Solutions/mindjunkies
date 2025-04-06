@@ -11,9 +11,27 @@ def home(request):
     course_categories = CourseCategory.objects.filter(
         parent__isnull=True
     ).prefetch_related("children")
+     # Determine active category
+    active_category_slug = request.GET.get('category')
+    active_category = None
+    
+    if active_category_slug:
+        # Try to get the requested category
+        try:
+            active_category = CourseCategory.objects.prefetch_related("children").get(
+                slug=active_category_slug,
+                parent__isnull=True
+            )
+        except CourseCategory.DoesNotExist:
+            pass
+    
+    # If no active category is specified or found, default to the first one
+    if not active_category and course_categories.exists():
+        active_category = course_categories.first()
     context = {
         "course_list": featured_course,
         "categories": course_categories,
+        "active_category": active_category
     }
     enrolled_classes = []
     teacher_classes = []
@@ -23,7 +41,11 @@ def home(request):
         ).prefetch_related("course")
         enrolled_classes = [ec.course for ec in enrolled]
         context["enrolled_classes"] = enrolled_classes
-
+      # Check if this is an HTMX request
+    if request.headers.get('HX-Request'):
+        # Return only the subcategories fragment
+        return render(request, "home/subcategory.html", context)
+    
     return render(request, "home/index.html", context)
 
 

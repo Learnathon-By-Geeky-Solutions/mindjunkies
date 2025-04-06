@@ -30,10 +30,14 @@ class CreateLiveClassView(LoginRequiredMixin, CreateView):
     model = LiveClass
     template_name = "live_classes/create_live_class.html"
     fields = ["topic", "scheduled_at", "duration"]
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        context["course"] = get_object_or_404(Course, slug=self.kwargs["slug"])
+        return context
 
     def form_valid(self, form):
         form.instance.teacher = self.request.user
-        form.instance.course = get_object_or_404(Course, slug=self.kwargs["slug"])
+        form.instance.course = self.get_context_data()["course"]
         if LiveClass.objects.filter(
             teacher=self.request.user, scheduled_at=form.instance.scheduled_at
         ).exists():
@@ -45,7 +49,7 @@ class CreateLiveClassView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse("list_live_classes", kwargs={"slug": self.kwargs["slug"]})
+        return reverse("lecture_home", kwargs={"course_slug": self.kwargs["slug"]})
 
 
 class JoinLiveClassView(LoginRequiredMixin, View):
