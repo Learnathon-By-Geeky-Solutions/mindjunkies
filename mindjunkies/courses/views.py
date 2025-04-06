@@ -8,8 +8,10 @@ from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
+from mindjunkies.courses.models import Course, CourseCategory, Enrollment
+
 from .forms import CourseForm, CourseTokenForm, RatingForm
-from .models import Course, CourseCategory, CourseToken, Enrollment, LastVisitedCourse, Rating
+from .models import CourseToken, LastVisitedCourse, Rating
 
 
 @require_http_methods(["GET"])
@@ -152,10 +154,12 @@ class RatingCreateView(CreateView):
         course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
         try:
             rating = Rating.objects.get(student=self.request.user, course=course)
-            initial.update({
-                "rating": rating.rating,
-                "review": rating.review,
-            })
+            initial.update(
+                {
+                    "rating": rating.rating,
+                    "review": rating.review,
+                }
+            )
         except Rating.DoesNotExist:
             pass
         return initial

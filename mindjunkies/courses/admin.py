@@ -1,7 +1,9 @@
 from categories.admin import CategoryBaseAdmin
 from django.contrib import admin
 
-from .models import Course, CourseCategory, CourseToken, Enrollment, LastVisitedCourse, Module, Rating
+from mindjunkies.courses.models import Course, CourseCategory, Enrollment
+
+from .models import CourseToken, LastVisitedCourse, Module, Rating
 
 
 @admin.register(Course)
@@ -37,7 +39,7 @@ class CourseCategoryAdmin(CategoryBaseAdmin):
 
 
 @admin.register(CourseToken)
-class CourseTokeneAdmin(admin.ModelAdmin):
+class CourseTokenAdmin(admin.ModelAdmin):
     model = CourseToken
     list_display = ("user", "course", "status")
     list_filter = ("course",)

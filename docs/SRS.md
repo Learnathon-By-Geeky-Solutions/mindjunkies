@@ -151,4 +151,3 @@ The system follows a standard MVC pattern using Django. Deployment is handled vi
 - AI-assisted course suggestions
 - Analytics dashboard for teachers and admins
 - Mobile app version
-

@@ -15,12 +15,16 @@ def home(request):
     else:
         enrolled_courses = []
 
-    new_courses = Course.objects.exclude(id__in=[course.id for course in enrolled_courses]).order_by("-created_at")[:3]
-    courses = Course.objects.exclude(id__in=new_courses.values_list('id', flat=True)).exclude(
+    new_courses = Course.objects.exclude(
         id__in=[course.id for course in enrolled_courses]
-    )
+    ).order_by("-created_at")[:3]
+    courses = Course.objects.exclude(
+        id__in=new_courses.values_list("id", flat=True)
+    ).exclude(id__in=[course.id for course in enrolled_courses])
 
-    categories = CourseCategory.objects.filter(parent__isnull=True).prefetch_related("children")
+    categories = CourseCategory.objects.filter(parent__isnull=True).prefetch_related(
+        "children"
+    )
 
     context = {
         "new_courses": new_courses,

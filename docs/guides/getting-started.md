@@ -25,4 +25,3 @@ Follow these steps to set up the project locally:
     uv run python manage.py tailwind watch
     ```
 4. Open [http://localhost:8000](http://localhost:8000) in your browser.
-

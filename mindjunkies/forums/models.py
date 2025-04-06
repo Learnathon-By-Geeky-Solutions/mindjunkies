@@ -117,10 +117,7 @@ class Reply(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        try:
-            return f"{self.author.username} : {self.body[:30]}"
-        except:
-            return f"no author : {self.body[:30]}"
+        return f"{self.author.username} : {self.body[:30]}"
 
     class Meta:
         ordering = ["created"]
