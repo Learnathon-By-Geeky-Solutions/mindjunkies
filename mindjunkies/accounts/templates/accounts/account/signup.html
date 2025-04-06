@@ -9,7 +9,7 @@
 {% block content %}
     <div class="card w-96 bg-base-100 shadow-xl">
         <div class="card-body">
-            <h2 class="card-title text-2xl font-bold text-center mb-6">Sign In to Nexora</h2>
+            <h2 class="card-title text-2xl font-bold text-center mb-6">Sign Up to Nexora</h2>
             {% if not SOCIALACCOUNT_ONLY %}
                 {% url 'account_signup' as action_url %}
                 {% element form form=form method="post" action=action_url tags="entrance,signup" %}
@@ -20,9 +20,9 @@
                     {% endslot %}
                     {% slot actions %}
                         <div class="form-control mt-6">
-                            {% element button type="submit" tags="prominent,signup" class="btn-accent" %}
-                                {% trans "Sign Up" %}
-                            {% endelement %}
+                                <button class="btn btn-accent btn-block" type="submit">
+                                    {% trans "Sign Up" %}
+                                </button>
                         </div>
                     {% endslot %}
                 {% endelement %}

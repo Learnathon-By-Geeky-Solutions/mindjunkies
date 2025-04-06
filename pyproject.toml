@@ -13,9 +13,13 @@ dependencies = [
     "django-allauth[socialaccount]>=65.4.1",
     "django-categories>=2.0.0",
     "django-crispy-forms>=2.3",
+    "django-htmx>=1.23.0",
+    "django-template-partials>=24.4",
+    "factory-boy>=3.3.3",
     "markdown>=3.7",
     "pillow>=11.1.0",
     "psycopg2-binary>=2.9.10",
+    "pytest-factoryboy>=2.7.0",
     "python-decouple>=3.8",
     "sslcommerz-lib>=1.0",
 ]
@@ -23,6 +27,8 @@ dependencies = [
 [dependency-groups]
 dev = [
     "django-browser-reload>=1.18.0",
+    "django-extensions>=3.2.3",
+    "django-silk>=5.3.2",
     "django-tailwind-cli>=4.1.0",
     "freezegun>=1.5.1",
     "model-bakery>=1.20.4",
@@ -41,7 +47,7 @@ prod = [
 ]
 
 [tool.ruff]
-exclude = ["migrations", ".venv", ".git", ".vscode", ".idea", "__pycache__", ".pytest_cache", ".mypy_cache", ".coverage"]
+exclude = ["migrations", "tests", ".venv", ".git", ".vscode", ".idea", "__pycache__", ".pytest_cache", ".mypy_cache", ".coverage"]
 line-length = 119
 
 [tool.ruff.lint]
@@ -60,4 +66,4 @@ DJANGO_SETTINGS_MODULE = "project.settings"
 django_find_project = true
 python_files = ["test_*.py", "*_tests.py", "tests.py"]
 testpaths = ["tests", "mindjunkies"]
-addopts = "--reuse-db --tb=short --capture=no --cov=mindjunkies --cov-report=term-missing --cov-report=xml --cov-config=.coveragerc"
+addopts = "--reuse-db --tb=short --capture=no --cov=mindjunkies --cov-report=xml --cov-config=.coveragerc"

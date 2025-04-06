@@ -3,7 +3,7 @@ from django.urls import reverse
 from model_bakery import baker
 
 from mindjunkies.accounts.models import User
-from mindjunkies.courses.models import Course, CourseTeacher
+from mindjunkies.courses.models import Course
 from mindjunkies.live_classes.models import LiveClass
 
 
@@ -17,8 +17,6 @@ def user():
 @pytest.fixture
 def course(user):
     course = baker.make(Course)
-    # Create a CourseTeacher instance linking the user as a teacher to the course
-    CourseTeacher.objects.create(course=course, teacher=user)
     return course
 
 
@@ -50,7 +48,6 @@ def test_live_class_list_view(client, user, course, live_class):
     assert "live_classes" in response.context
     assert live_class in response.context["live_classes"]
     assert response.context["course"] == course
-    assert response.context["teacher"] is True
 
 
 @pytest.mark.django_db

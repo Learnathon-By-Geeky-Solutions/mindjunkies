@@ -5,8 +5,8 @@ from .models import Lecture, LecturePDF, LectureVideo
 
 @admin.register(Lecture)
 class LectureAdmin(admin.ModelAdmin):
-    list_display = ("title", "course", "order", "is_deleted")
-    list_filter = ("course", "is_deleted")
+    list_display = ("title", "course", "order", "deleted_at")
+    list_filter = ("course", "deleted_at")
     search_fields = ("title", "course__title")
     ordering = ("order",)
     prepopulated_fields = {"slug": ("title",)}

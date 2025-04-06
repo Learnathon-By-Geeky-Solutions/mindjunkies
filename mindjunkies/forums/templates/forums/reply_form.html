@@ -1,0 +1,13 @@
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+<div id="reply-form-{{reply.id}}" >
+    <form
+    hx-post="{% url 'reply_form'  reply_id=reply.id %}"
+    hx-target="this"
+    hx-swap="outerHTML"
+    >
+      {% csrf_token %}
+      {{ replyForm|crispy }}
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>

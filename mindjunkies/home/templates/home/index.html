@@ -82,18 +82,32 @@
 
     {% endif %}
 
-    <section id="courses" class="py-16 bg-base-200">
+    <section id="enrolled-courses" class="bg-base-200">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-8">Popular Courses</h2>
+            <h2 class="text-xl font-bold text-center mb-8">Continue Learning</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                {% for course in course_list %}
-                    {% if course in enrolled_classes %}
-                        {% include 'home/card_student.html' %}
-                    {% elif course in teacher_classes %}
-                        {% include 'home/card_teacher.html' %}
-                    {% else %}
-                        {% include 'home/card.html' %}
-                    {% endif %}
+                {% for course in enrolled_courses %}
+                    {% include 'home/card.html' %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <section id="new-courses" class="bg-base-200">
+        <div class="container mx-auto px-4">
+            <h2 class="text-xl font-bold text-center mb-8">New Courses</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                {% for course in new_courses %}
+                    {% include 'home/card.html' %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <section id="courses" class="bg-base-200">
+        <div class="container mx-auto px-4">
+            <h2 class="text-xl font-bold text-center mb-8">Popular Courses</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                {% for course in courses %}
+                    {% include 'home/card.html' %}
                 {% endfor %}
             </div>
         </div>

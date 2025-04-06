@@ -1,69 +1,116 @@
-<div class="reply-container pl-0 {% if reply.parent_reply %}ml-10 relative{% endif %}">
-    <!-- Connection line for nested replies -->
-    {% if reply.parent_reply %}
-    <div class="thread-line"></div>
-    {% endif %}
-
-    <div class="reply-content {% if reply.parent_reply %}child-reply{% endif %}">
-        <div class="flex items-start gap-4">
-            <div class="avatar">
-                <div class="w-10 h-10 rounded-full ring-2 ring-offset-2 ring-base-200">
-                    <img src="https://ui-avatars.com/api/?name={{topic.author|default:'User'}}&background=random" alt="User avatar" />
-                </div>
-            </div>
-            <div class="flex-1">
-                <div class="flex justify-between items-start">
-                    <p class="text-sm text-base-content/70">
-                        <span class="font-medium">{{ reply.author.username }}</span> •
-                        {{ reply.created_at|timesince }} ago
-                        {% if reply.parent_reply %}
-                            <span class="text-xs text-muted-foreground ml-2 reply-reference">
-                                replying to <span class="font-medium">{{ reply.parent_reply.author.username }}</span>
-                            </span>
-                        {% endif %}
-                    </p>
-                    <div class="dropdown dropdown-end">
-                        <div tabindex="-1" class="btn btn-ghost btn-circle btn-xs">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
-                            </svg>
-                        </div>
-                        <ul class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                            <li><a>Edit Reply</a></li>
-                            <li><a>Delete Reply</a></li>
-                            <li><a>Report</a></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="mt-1 prose max-w-none text-sm">
-                    <p>{{ reply.content }}</p>
-                </div>
-
-                <!-- Reply Reactions -->
-                <div class="flex gap-3 mt-2 ">
-                    <div id="like-button-{{topic.replies.id}}">
-                        {% include 'forums/partials/like_button.html' %}
-                    </div>
-                    <button class="btn btn-xs btn-ghost gap-1 toggle-reply-form"
-                        data-author="{{ reply.author.username }}"
-                        data-reply-id="{{ reply.id }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-                        </svg>
-                        Reply
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Child replies -->
-    {% if reply.child_replies.all %}
-        <div class="child-replies-container">
-            {% for child_reply in reply.child_replies.all %}
-                {% include "forums/reply.html" with reply=child_reply topic=topic %}
-            {% endfor %}
-        </div>
-    {% endif %}
-</div>
+{% comment %} This is a recursive template for rendering comments at any nesting level Usage: {% include
+  "components/comment.html" with reply=reply depth=0 %} {% endcomment %}
+  <style></style>
+  
+  <div class="comment-container {% if depth > 0 %}ml-12{% endif %} mb-4">
+      <div class="flex">
+          <!-- Avatar with initials -->
+          <div class="flex-shrink-0 mr-3">
+              <div class="avatar placeholder mr-3 {% if depth > 0 %}w-5 h-5{% else %}w-8 h-8{% endif %}">
+                  <img
+                      src="https://ui-avatars.com/api/?name={{reply.author}}&background=random"
+                      alt="{{reply.author}}"
+                      class="{% if depth > 0 %}w-6 h-6{% else %}w-8 h-8{% endif %} rounded-full"
+                  />
+              </div>
+          </div>
+  
+          <div class="flex-grow">
+              <!-- Comment Header -->
+              <div class="flex items-center mb-1">
+                  <span class="font-medium mr-2">{{ reply.author }}</span>
+                  <span class="badge badge-primary badge-sm text-xs">Learner</span>
+                 
+              </div>
+              <div class="{% if depth > 0 %}text-xs{% else %}text-xs{% endif %} text-gray-500">{{reply.created}}</div>
+              <!-- Comment Content -->
+              <div class="text-gray-800 mb-2">
+                  <p>{{ reply.body }}</p>
+              </div>
+  
+              <!-- Comment Actions -->
+              <div class="flex items-center space-x-4 mb-3">
+                 {% include 'forums/partials/like_reply.html'%}
+  
+                  <a
+                      class="btn btn-ghost btn-xs flex cursor-pointer items-center text-blue-600 hover:text-blue-800"
+                      hx-get="{% url 'reply_form'  reply.id %}"
+                      hx-target="#reply-form-container-{{reply.id}}"
+                      hx-swap="innerHTML"
+                      hx-trigger="click"
+                      onclick="toggleReplyForm(event, '{{reply.id}}')"
+                  >
+                      <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-5 w-5 mr-1"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                      >
+                          <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                          />
+                      </svg>
+                      Reply{% if depth > 0 %} {{ depth }}{% endif %}
+                  </a>
+  
+                  <div class="dropdown dropdown-end">
+                      <label
+                          tabindex="0"
+                          class="btn btn-ghost btn-xs flex items-center text-blue-600 hover:text-blue-800 cursor-pointer"
+                      >
+                          <span>More</span>
+                          <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="h-5 w-5 ml-1"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                          >
+                              <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+                              />
+                          </svg>
+                      </label>
+                      <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-md w-52 z-10">
+                          <li><a>Report</a></li>
+                          <li><a>Copy link</a></li>
+                          {% if depth > 0 %}
+                          <li><a>Translate to English</a></li>
+                          {% endif %}
+                      </ul>
+                  </div>
+              </div>
+  
+              <!-- Reply Form Container -->
+              <div id="reply-form-container-{{reply.id}}" class="mb-4"></div>
+  
+              <!-- Child Replies Container -->
+              <div class="mb-2">
+                  {% for child_reply in reply.replies.all %} {% include "forums/reply.html" with reply=child_reply depth=depth|add:1 %} 
+                  {% endfor %}
+              </div>
+          </div>
+      </div>
+  </div>
+  <script>
+      // Function to toggle reply form visibility
+      function toggleReplyForm(event, replyId) {
+          const container = document.getElementById('reply-form-container-' + replyId);
+          
+          // If the container already has content, clear it (close the form)
+          if (container.innerHTML.trim() !== '') {
+              event.preventDefault(); // Prevent HTMX request
+              container.innerHTML = '';
+              return;
+          }
+          
+          // Otherwise, let HTMX load the form (open the form)
+      }
+      </script>

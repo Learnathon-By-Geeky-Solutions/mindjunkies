@@ -3,8 +3,7 @@ from django.urls import path
 from .views import content_list, enrollment_list, remove_enrollment
 
 urlpatterns = [
-    # Add your URL patterns here
-    path("content/", content_list, name="dashboard_content"),
+    path("content/", content_list, name="dashboard"),
     path(
         "enrollments/<str:slug>/", enrollment_list, name="teacher_dashboard_enrollments"
     ),

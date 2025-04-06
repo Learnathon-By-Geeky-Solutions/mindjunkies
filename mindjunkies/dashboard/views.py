@@ -4,20 +4,17 @@ from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
 
 from mindjunkies.accounts.models import User
-from mindjunkies.courses.models import Course, CourseTeacher, Enrollment
-
-# Create your views here.
+from mindjunkies.courses.models import Course, Enrollment
 
 
 @login_required
 @require_http_methods(["GET"])
 def content_list(request: HttpRequest) -> HttpResponse:
-    teaching = CourseTeacher.objects.filter(teacher=request.user)
-    courses = [ec.course for ec in teaching]
+    courses = Course.objects.filter(teacher=request.user)
     context = {
         "courses": courses,
     }
-    return render(request, "templates/dashboard.html", context)
+    return render(request, "dashboard.html", context)
 
 
 @login_required
@@ -28,12 +25,11 @@ def enrollment_list(request: HttpRequest, slug: str) -> HttpResponse:
     enrollments = Enrollment.objects.filter(course=course)
     students = [enrollment.student for enrollment in enrollments]
 
-    # print(course.__dict__)
     context = {
         "course": course,
         "students": students,
     }
-    return render(request, "templates/enrollmentList.html", context)
+    return render(request, "enrollmentList.html", context)
 
 
 @login_required
@@ -46,8 +42,6 @@ def remove_enrollment(
     student = User.objects.get(uuid=student_id)
     t_enrollment = Enrollment.objects.get(student=student, course=course)
     print(t_enrollment)
-
-    course.number_of_enrollments -= 1
 
     course.save()
 

@@ -2,7 +2,6 @@ from pathlib import Path
 
 import cloudinary
 import cloudinary.uploader
-import dj_database_url
 from decouple import config
 
 # Configuration
@@ -44,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
+    "django.contrib.postgres",
     # custom mindjunkies
     "mindjunkies.home",
     "mindjunkies.accounts",
@@ -61,6 +61,10 @@ INSTALLED_APPS = [
     "cloudinary",
     "categories",
     "categories.editor",
+    "silk",
+    "django_htmx",
+    "template_partials",
+    "django_extensions",
     # allauth
     "allauth",
     "allauth.account",
@@ -69,6 +73,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "silk.middleware.SilkyMiddleware",
     "allauth.account.middleware.AccountMiddleware",  # allauth
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -78,6 +83,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = "project.urls"
@@ -115,9 +121,9 @@ DATABASES = {
     }
 }
 
-db_url = config("DATABASE_URL", default=None)
-if db_url:
-    DATABASES["default"] = dj_database_url.parse(db_url)
+# db_url = config("DATABASE_URL", default=None)
+# if db_url:
+#     DATABASES["default"] = dj_database_url.parse(db_url)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
