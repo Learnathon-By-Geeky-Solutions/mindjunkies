@@ -5,18 +5,12 @@ from django.views.decorators.http import require_http_methods
 
 from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course, Enrollment
-from .models import TeacherVerificationRequest
-from .forms import TeacherVerificationForm
-
-
-# Create your views here.
 
 
 @login_required
 @require_http_methods(["GET"])
 def content_list(request: HttpRequest) -> HttpResponse:
-    teaching = CourseTeacher.objects.filter(teacher=request.user)
-    courses = [ec.course for ec in teaching]
+    courses = Course.objects.filter(teacher=request.user)
     context = {
         "courses": courses,
     }
@@ -31,7 +25,6 @@ def enrollment_list(request: HttpRequest, slug: str) -> HttpResponse:
     enrollments = Enrollment.objects.filter(course=course)
     students = [enrollment.student for enrollment in enrollments]
 
-    # print(course.__dict__)
     context = {
         "course": course,
         "students": students,
@@ -50,39 +43,8 @@ def remove_enrollment(
     t_enrollment = Enrollment.objects.get(student=student, course=course)
     print(t_enrollment)
 
-    course.number_of_enrollments -= 1
-
     course.save()
 
     t_enrollment.delete()
 
     return redirect("teacher_dashboard_enrollments", course.slug)
-
-
-
-
-@login_required
-def teacher_verification_view(request):
-    try:
-        verification_request = TeacherVerificationRequest.objects.get(user=request.user)
-        # return redirect("teacher_wait")
-    except TeacherVerificationRequest.DoesNotExist:
-        verification_request = None
-
-    if request.method == "POST":
-        form = TeacherVerificationForm(request.POST, request.FILES, instance=verification_request)
-        if form.is_valid():
-            verification_request = form.save(commit=False)
-            verification_request.user = request.user
-            verification_request.save()
-            return redirect("home")  # Redirect after submission
-    else:
-        form = TeacherVerificationForm(instance=verification_request)
-
-    return render(request, "teacher_verification.html", {"form": form})
-
-
-
-@login_required
-def verification_wait(request):
-    return render(request, "verification_wait.html")

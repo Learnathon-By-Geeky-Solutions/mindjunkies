@@ -1,10 +1,12 @@
-import pytest
-from django.urls import reverse
-from django.contrib.auth import get_user_model
-from model_bakery import baker
-from mindjunkies.courses.models import Course, Enrollment, CourseCategory
 from datetime import timedelta
+
+import pytest
+from django.contrib.auth import get_user_model
+from django.urls import reverse
 from django.utils.timezone import now
+from model_bakery import baker
+
+from mindjunkies.courses.models import Course, Enrollment
 
 User = get_user_model()
 
@@ -50,7 +52,10 @@ def test_home_view_authenticated(auth_client, create_user):
     assert "enrolled_courses" in response.context
     assert "new_courses" in response.context
     assert enrolled_course in response.context["enrolled_courses"]
-    assert all(course not in response.context["new_courses"] for course in response.context["enrolled_courses"])
+    assert all(
+        course not in response.context["new_courses"]
+        for course in response.context["enrolled_courses"]
+    )
 
 
 # ✅ Test `search_view` with a matching query

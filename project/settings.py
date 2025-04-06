@@ -2,7 +2,6 @@ from pathlib import Path
 
 import cloudinary
 import cloudinary.uploader
-import dj_database_url
 from decouple import config
 
 # Configuration
@@ -84,8 +83,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
-    # custom middleware here
-    "mindjunkies.dashboard.middleware.TeacherVerificationMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
 ]
 

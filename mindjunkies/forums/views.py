@@ -7,7 +7,7 @@ from django.views.generic import TemplateView
 from mindjunkies.courses.models import Course, Module
 
 from .forms import ForumCommentForm, ForumReplyForm, ForumTopicForm
-from .models import Course, ForumComment, ForumTopic, Reply
+from .models import ForumComment, ForumTopic, Reply
 
 
 class CourseContextMixin:
@@ -32,9 +32,6 @@ class ForumHomeView(LoginRequiredMixin, CourseContextMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        course = context["course"]
-
         return context
 
 
@@ -148,11 +145,11 @@ class ReplyFormView(LoginRequiredMixin, CourseContextMixin, View):
         reply = get_object_or_404(Reply, id=reply_id)
         if not reply:
             reply = get_object_or_404(ForumComment, id=reply_id)
-        replyForm = ForumReplyForm()
+        reply_form = ForumReplyForm()
 
         context = {
             "reply": reply,
-            "replyForm": replyForm,
+            "replyForm": reply_form,
         }
         return render(request, "forums/reply_form.html", context)
 
@@ -160,10 +157,10 @@ class ReplyFormView(LoginRequiredMixin, CourseContextMixin, View):
 
         reply_id = self.kwargs.get("reply_id")
         reply = get_object_or_404(Reply, id=reply_id)
-        replyForm = ForumReplyForm(request.POST)
+        reply_form = ForumReplyForm(request.POST)
 
-        if replyForm.is_valid():
-            new_reply = replyForm.save(commit=False)
+        if reply_form.is_valid():
+            new_reply = reply_form.save(commit=False)
             new_reply.author = request.user  # Assuming replies are linked to a user
             new_reply.parent_reply = reply  # Assuming a reply can have a parent reply
             new_reply.save()
@@ -171,6 +168,6 @@ class ReplyFormView(LoginRequiredMixin, CourseContextMixin, View):
 
         context = {
             "reply": reply,
-            "replyForm": replyForm,
+            "replyForm": reply_form,
         }
         return render(request, "forums/reply_form.html", context)

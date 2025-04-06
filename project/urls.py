@@ -1,11 +1,11 @@
 import logging
+
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
 from mindjunkies.courses.views import category_courses
-
 
 logger = logging.getLogger(__name__)
 logger.debug("Starting URL configuration--------------------------")

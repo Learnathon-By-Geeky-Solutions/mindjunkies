@@ -47,7 +47,7 @@ prod = [
 ]
 
 [tool.ruff]
-exclude = ["migrations", ".venv", ".git", ".vscode", ".idea", "__pycache__", ".pytest_cache", ".mypy_cache", ".coverage"]
+exclude = ["migrations", "tests", ".venv", ".git", ".vscode", ".idea", "__pycache__", ".pytest_cache", ".mypy_cache", ".coverage"]
 line-length = 119
 
 [tool.ruff.lint]

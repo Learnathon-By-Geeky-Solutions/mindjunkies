@@ -1,11 +1,7 @@
-from cloudinary.forms import CloudinaryFileField
 from django import forms
-from django.utils.text import slugify
-
-from .models import Course, CourseToken
-
 from django.forms import inlineformset_factory
-from .models import Course, CourseInfo, Rating
+
+from .models import Course, CourseInfo, CourseToken, Rating
 
 
 class CourseForm(forms.ModelForm):
@@ -29,11 +25,7 @@ class CourseForm(forms.ModelForm):
 class CourseInfoForm(forms.ModelForm):
     class Meta:
         model = CourseInfo
-        fields = [
-            "what_you_will_learn",
-            "who_this_course_is_for",
-            "requirements"
-        ]
+        fields = ["what_you_will_learn", "who_this_course_is_for", "requirements"]
 
 
 CourseInfoFormSet = inlineformset_factory(
@@ -44,17 +36,22 @@ CourseInfoFormSet = inlineformset_factory(
 class CourseTokenForm(forms.ModelForm):
     class Meta:
         model = CourseToken
-        fields = ['course']  # Only allow selecting a course; status & user are handled automatically.
+        fields = [
+            "course"
+        ]  # Only allow selecting a course; status & user are handled automatically.
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['course'].empty_label = "Select a course"
-        self.fields['course'].widget.attrs.update({
-            'class': 'block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500',
-        })
+        self.fields["course"].empty_label = "Select a course"
+        self.fields["course"].widget.attrs.update(
+            {
+                "class": "block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring "
+                "focus:ring-blue-500 focus:border-blue-500",
+            }
+        )
 
 
 class RatingForm(forms.ModelForm):
     class Meta:
         model = Rating
-        fields = ['rating', 'review']
+        fields = ["rating", "review"]
