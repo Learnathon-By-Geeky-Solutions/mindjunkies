@@ -7,9 +7,10 @@ from django.views.generic import TemplateView
 from mindjunkies.courses.models import Course, Module
 
 from .forms import ForumCommentForm, ForumReplyForm, ForumTopicForm
-from .models import ForumComment, ForumTopic, Reply
+from .models import Course, ForumComment, ForumTopic, Reply
 
-
+from django.http import HttpResponse
+from django.template.loader import render_to_string
 class CourseContextMixin:
     """
     Mixin to add the course object to the context based on `course_slug`.
@@ -32,6 +33,9 @@ class ForumHomeView(LoginRequiredMixin, CourseContextMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        course = context["course"]
+
         return context
 
 
@@ -145,11 +149,11 @@ class ReplyFormView(LoginRequiredMixin, CourseContextMixin, View):
         reply = get_object_or_404(Reply, id=reply_id)
         if not reply:
             reply = get_object_or_404(ForumComment, id=reply_id)
-        reply_form = ForumReplyForm()
+        replyForm = ForumReplyForm()
 
         context = {
             "reply": reply,
-            "replyForm": reply_form,
+            "replyForm": replyForm,
         }
         return render(request, "forums/reply_form.html", context)
 
@@ -157,10 +161,10 @@ class ReplyFormView(LoginRequiredMixin, CourseContextMixin, View):
 
         reply_id = self.kwargs.get("reply_id")
         reply = get_object_or_404(Reply, id=reply_id)
-        reply_form = ForumReplyForm(request.POST)
+        replyForm = ForumReplyForm(request.POST)
 
-        if reply_form.is_valid():
-            new_reply = reply_form.save(commit=False)
+        if replyForm.is_valid():
+            new_reply = replyForm.save(commit=False)
             new_reply.author = request.user  # Assuming replies are linked to a user
             new_reply.parent_reply = reply  # Assuming a reply can have a parent reply
             new_reply.save()
@@ -168,6 +172,68 @@ class ReplyFormView(LoginRequiredMixin, CourseContextMixin, View):
 
         context = {
             "reply": reply,
-            "replyForm": reply_form,
+            "replyForm": replyForm,
         }
         return render(request, "forums/reply_form.html", context)
+    
+class LikeToggleView(LoginRequiredMixin, View):
+    """Base view for toggling likes on objects"""
+    model = None
+    template_name = None
+    context_object_name = None
+    
+    def get_object(self):
+        return get_object_or_404(self.model, id=self.kwargs.get('pk'))
+    
+    def post(self, request, *args, **kwargs):
+        obj = self.get_object()
+        user_exist = obj.likes.filter(username=request.user.username).exists()
+        if user_exist:
+            obj.likes.remove(request.user)
+        else:
+            obj.likes.add(request.user)
+        
+     
+         
+        
+        context = {self.context_object_name: obj}
+        return render(request, self.template_name, context)
+    
+    # For compatibility with GET requests
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+
+class LikePostView(LikeToggleView):
+    """View for toggling likes on Post objects"""
+    model = ForumTopic
+    template_name = 'forums/partials/like_topic.html'
+    context_object_name = 'topic'
+
+
+class LikeCommentView(LikeToggleView):
+    """View for toggling likes on Comment objects"""
+    model = ForumComment
+    template_name = 'forums/partials/like_comment.html'
+    context_object_name = 'comment'
+
+
+class LikeReplyView(LikeToggleView):
+    """View for toggling likes on Reply objects"""
+    model = Reply
+    template_name = 'forums/partials/like_reply.html'
+    context_object_name = 'reply'
+      
+
+
+
+
+
+
+
+   
+
+            
+            
+        
+        
