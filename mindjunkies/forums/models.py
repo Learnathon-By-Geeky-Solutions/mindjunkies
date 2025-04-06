@@ -4,13 +4,12 @@ from django.utils.text import slugify
 
 from mindjunkies.courses.models import Course, Module
 
-
+    
 class ForumTopic(models.Model):
     """Model for forum topics/threads"""
-
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
-    content = models.TextField()
+    content = models.CharField(max_length=150)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="forum_topics"
     )
@@ -23,8 +22,8 @@ class ForumTopic(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    reactions = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name="forum_topic_reactions", blank=True
+    likes = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="likedTopics",through="LikedPost"
     )  # Changed related_name to be unique
 
     class Meta:
@@ -57,6 +56,10 @@ class LikedPost(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
+
+        return f'{self.user.username} : {self.topic.content[:30]}'
+   
+
         return f"{self.user.username} : {self.topic.content[:30]}"
 
 
@@ -66,12 +69,15 @@ class ForumComment(models.Model):
     topic = models.ForeignKey(
         ForumTopic, on_delete=models.CASCADE, related_name="comments"
     )
-    content = models.TextField()
+    content = models.CharField(max_length=150)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="forum_comments",
     )
+
+    likes=models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="likedComments",through="LikedComment")
+  
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -90,6 +96,7 @@ class LikedComment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
+
         return f"{self.user.username} : {self.comment.body[:30]}"
 
 
@@ -117,7 +124,10 @@ class Reply(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.author.username} : {self.body[:30]}"
+        try:
+            return f"{self.author.username} : {self.body[:30]}"
+        except:
+            return f"no author : {self.body[:30]}"
 
     class Meta:
         ordering = ["created"]
