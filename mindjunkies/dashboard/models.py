@@ -1,15 +1,29 @@
-# Create your models here.
 from django.db import models
 from mindjunkies.accounts.models import User
+from config.models import BaseModel
 
-# Create your models here.
-class TeacherVerificationRequest(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    subject = models.CharField(max_length=255)
-    portfolio_link = models.URLField(blank=True, null=True)
-    certificates = models.FileField(upload_to="teacher_certificates/", blank=True, null=True)
-    is_verified = models.BooleanField(default=False)
-    create_at = models.DateTimeField(auto_now_add=True)
 
-    def str(self):
-        return f"{self.user.username} - Verified: {self.is_verified}"
+class TeacherVerification(BaseModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Link to the user (teacher)
+    full_name = models.CharField(max_length=255)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20, null=True, blank=True)
+    address = models.CharField(max_length=255, null=True, blank=True)
+    portfolio_links = models.TextField(null=True, blank=True)
+    important_links = models.TextField(null=True, blank=True)
+    experience = models.TextField(null=True, blank=True)
+    social_media = models.TextField(null=True, blank=True)
+    certificates = models.ManyToManyField('Certificate', related_name='teacher_verifications')
+    verified = models.BooleanField(default=False)
+    verification_date = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.full_name
+
+
+class Certificate(BaseModel):
+    image = models.ImageField(upload_to='certificates/')
+    description = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return f"Certificate {self.id}"

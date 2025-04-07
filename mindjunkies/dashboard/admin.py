@@ -1,12 +1,10 @@
 # Register your models here.
 from django.contrib import admin
-from .models import TeacherVerificationRequest
+from .models import TeacherVerification
 
-@admin.register(TeacherVerificationRequest)
+@admin.register(TeacherVerification)
 class TeacherVerificationAdmin(admin.ModelAdmin):
-    list_display = ("user", "subject", "is_verified")
-    list_filter = ("is_verified",)
-    search_fields = ("user__username", "subject")
+    list_display = ("user", "full_name", "email", "phone", "address", "verified")
     actions = ["approve_teacher", "disapprove_teacher"]
 
     def approve_teacher(self, request, queryset):

@@ -5,8 +5,7 @@ from django.views.decorators.http import require_http_methods
 
 from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course, Enrollment
-from .models import TeacherVerificationRequest
-from .forms import TeacherVerificationForm
+from .models import TeacherVerification
 
 
 # Create your views here.
@@ -66,9 +65,9 @@ def remove_enrollment(
 @login_required
 def teacher_verification_view(request):
     try:
-        verification_request = TeacherVerificationRequest.objects.get(user=request.user)
+        verification_request = TeacherVerification.objects.get(user=request.user)
         # return redirect("teacher_wait")
-    except TeacherVerificationRequest.DoesNotExist:
+    except TeacherVerification.DoesNotExist:
         verification_request = None
 
     if request.method == "POST":
