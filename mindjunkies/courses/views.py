@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.views.generic.edit import CreateView, FormView, UpdateView
+from django.urls import reverse_lazy
 
 from .forms import CourseForm, CourseTokenForm
 from .models import Course, CourseCategory, CourseToken, Enrollment, LastVisitedCourse
@@ -40,7 +41,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
     template_name = "courses/create_course.html"
 
     def get(self, request):
-        if CourseToken.objects.filter(user=request.user, status="pending").exists():
+        if CourseToken.objects.filter(teacher=request.user, status="pending").exists():
             messages.error(
                 request,
                 "You have a pending course token. Please wait for it to be approved.",
@@ -127,22 +128,28 @@ def category_courses(request, slug):
     )
 
 
-class CreateCourseTokenView(LoginRequiredMixin, FormView):
-    template_name = "course_token_form.html"
-    form_class = CourseTokenForm
 
-    def get_object(self, queryset=None):
-        slug = self.request.GET.get("slug")
-        print("slug", slug)
-        return get_object_or_404(Course, slug=slug) if slug else None
+
+class CreateCourseTokenView(CreateView):
+    model = CourseToken
+    form_class = CourseTokenForm
+    template_name = "course_token_form.html"
+
+    def get_success_url(self):
+        # Redirect to some confirmation or success page after form submission
+        messages.success(self.request,"Your request was successfull")
+        return reverse_lazy('home')
 
     def form_valid(self, form):
-        token = form.save(commit=False)
-        token.user = self.request.user  # Automatically assign logged-in user
-        token.save()
-        messages.success(self.request, "Course token created successfully!")
-        return redirect(reverse("home"))  # Redirect to a success page
+        # Save the teacher and course info automatically
+        form.instance.teacher = self.request.user
+        slug = self.kwargs['slug']
+        course = Course.objects.get(slug=slug)
+        form.instance.course = course # Assuming 'slug' passed in URL
+        messages.success(self.request, "Course token submitted successfully!")
+        return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, "There was an error processing the form.")
-        return self.render_to_response(self.get_context_data(form=form))
+        messages.error(self.request, "There was an error in your form submission.")
+        return super().form_invalid(form)
+
