@@ -17,7 +17,7 @@
             <form method="post" enctype="multipart/form-data" novalidate>
                 {% csrf_token %}
                 {{ form|crispy }}
-                {{ formset.management_form }}
+                {% comment %} {{ formset.management_form }} {% endcomment %}
                 {% for form in formset %}
                     {{ form|crispy }}
                 {% endfor %}

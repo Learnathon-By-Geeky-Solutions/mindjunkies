@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.views.generic.edit import CreateView, FormView, UpdateView
+from django.urls import reverse_lazy
 
 from mindjunkies.courses.models import Course, CourseCategory, Enrollment
 
@@ -42,7 +43,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
     template_name = "courses/create_course.html"
 
     def get(self, request):
-        if CourseToken.objects.filter(user=request.user, status="pending").exists():
+        if CourseToken.objects.filter(teacher=request.user, status="pending").exists():
             messages.error(
                 request,
                 "You have a pending course token. Please wait for it to be approved.",
@@ -55,7 +56,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
         form.instance.teacher = self.request.user
         form.save()
         messages.success(self.request, "Course saved successfully!")
-        return redirect(reverse("create_course_token"))
+        return redirect(reverse("create_course_token", kwargs={"slug": form.instance.slug}))
 
     def form_invalid(self, form):
         messages.error(
@@ -128,60 +129,28 @@ def category_courses(request, slug):
     )
 
 
-class CreateCourseTokenView(LoginRequiredMixin, FormView):
-    template_name = "course_token_form.html"
+
+
+class CreateCourseTokenView(CreateView):
+    model = CourseToken
     form_class = CourseTokenForm
+    template_name = "course_token_form.html"
+
+    def get_success_url(self):
+        # Redirect to some confirmation or success page after form submission
+        messages.success(self.request,"Your request was successfull")
+        return reverse_lazy('home')
 
     def form_valid(self, form):
-        token = form.save(commit=False)
-        token.user = self.request.user  # Automatically assign logged-in user
-        token.save()
-        messages.success(self.request, "Course token created successfully!")
-        return redirect(reverse("home"))  # Redirect to a success page
+        # Save the teacher and course info automatically
+        form.instance.teacher = self.request.user
+        slug = self.kwargs['slug']
+        course = Course.objects.get(slug=slug)
+        form.instance.course = course # Assuming 'slug' passed in URL
+        messages.success(self.request, "Course token submitted successfully!")
+        return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, "There was an error processing the form.")
-        return self.render_to_response(self.get_context_data(form=form))
+        messages.error(self.request, "There was an error in your form submission.")
+        return super().form_invalid(form)
 
-
-class RatingCreateView(CreateView):
-    model = Rating
-    form_class = RatingForm
-    template_name = "courses/rate_course.html"
-
-    def get_initial(self):
-        initial = super().get_initial()
-        course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
-        try:
-            rating = Rating.objects.get(student=self.request.user, course=course)
-            initial.update(
-                {
-                    "rating": rating.rating,
-                    "review": rating.review,
-                }
-            )
-        except Rating.DoesNotExist:
-            pass
-        return initial
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["course"] = get_object_or_404(Course, slug=self.kwargs["course_slug"])
-        return context
-
-    def form_valid(self, form):
-        course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
-        student = self.request.user
-
-        rating, created = Rating.objects.update_or_create(
-            student=student,
-            course=course,
-            defaults={
-                "rating": form.cleaned_data["rating"],
-                "review": form.cleaned_data["review"],
-            },
-        )
-
-        course.update_rating()
-
-        return redirect(reverse("course_details", kwargs={"slug": course.slug}))
