@@ -1,11 +1,7 @@
-from cloudinary.forms import CloudinaryFileField
 from django import forms
-from django.utils.text import slugify
-
-from .models import Course, CourseToken
-
 from django.forms import inlineformset_factory
-from .models import Course, CourseInfo
+
+from .models import Course, CourseInfo, CourseToken, Rating
 
 
 class CourseForm(forms.ModelForm):
@@ -29,11 +25,7 @@ class CourseForm(forms.ModelForm):
 class CourseInfoForm(forms.ModelForm):
     class Meta:
         model = CourseInfo
-        fields = [
-            "what_you_will_learn",
-            "who_this_course_is_for",
-            "requirements"
-        ]
+        fields = ["what_you_will_learn", "who_this_course_is_for", "requirements"]
 
 
 CourseInfoFormSet = inlineformset_factory(
@@ -60,5 +52,7 @@ class CourseTokenForm(forms.ModelForm):
 
 
 
-class RatingForm(forms.Form):
-    rating = forms.IntegerField(min_value=1, max_value=5)
+class RatingForm(forms.ModelForm):
+    class Meta:
+        model = Rating
+        fields = ["rating", "review"]

@@ -31,8 +31,8 @@
                 <span class="text-gray-600">{{ course.course_price }}</span>
                 <span class="text-gray-600 text-right">
                     <a href="{% url 'teacher_dashboard_enrollments' course.slug %}"
-                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                    {{ course.number_of_enrollments }}
+                    class="link link-primary">
+                    {{ course.get_total_enrollments }}
                     </a>
                 </span>
                 <span class="text-gray-600 text-right"><a href="{% url 'edit_course' %}?slug={{ course.slug }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">edit</a></span>

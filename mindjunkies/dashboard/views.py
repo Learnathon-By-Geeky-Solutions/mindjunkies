@@ -39,7 +39,6 @@ def enrollment_list(request: HttpRequest, slug: str) -> HttpResponse:
     enrollments = Enrollment.objects.filter(course=course)
     students = [enrollment.student for enrollment in enrollments]
 
-    # print(course.__dict__)
     context = {
         "course": course,
         "students": students,
@@ -57,8 +56,6 @@ def remove_enrollment(
     student = User.objects.get(uuid=student_id)
     t_enrollment = Enrollment.objects.get(student=student, course=course)
     print(t_enrollment)
-
-    course.number_of_enrollments -= 1
 
     course.save()
 

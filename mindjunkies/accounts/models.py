@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from config.models import BaseModel
+from mindjunkies.courses.models import Enrollment, Rating
 
 
 class User(AbstractUser):
@@ -20,7 +21,31 @@ class User(AbstractUser):
 
     @property
     def name(self):
-        return f"{self.first_name} {self.last_name}"
+        return (
+            f"{self.first_name} {self.last_name}"
+            if self.first_name and self.last_name
+            else self.username
+        )
+
+    def get_number_of_reviews(self):
+        return Rating.objects.filter(course__teacher=self).count()
+
+    def get_instructor_rating(self):
+        courses = self.courses_taught.all()
+        total_rating = sum(course.total_rating for course in courses)
+        number_of_ratings = self.get_number_of_reviews()
+        return total_rating / number_of_ratings if number_of_ratings > 0 else 0
+
+    def get_number_of_students(self):
+        return (
+            Enrollment.objects.filter(course__teacher=self, status="active")
+            .values("student")
+            .distinct()
+            .count()
+        )
+
+    def get_number_of_courses(self):
+        return self.courses_taught.count()
 
 
 class Profile(BaseModel):

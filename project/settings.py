@@ -2,7 +2,6 @@ from pathlib import Path
 
 import cloudinary
 import cloudinary.uploader
-import dj_database_url
 from decouple import config
 
 # Configuration

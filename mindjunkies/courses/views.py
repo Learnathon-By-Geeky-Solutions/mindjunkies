@@ -9,8 +9,10 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.urls import reverse_lazy
 
-from .forms import CourseForm, CourseTokenForm
-from .models import Course, CourseCategory, CourseToken, Enrollment, LastVisitedCourse
+from mindjunkies.courses.models import Course, CourseCategory, Enrollment
+
+from .forms import CourseForm, CourseTokenForm, RatingForm
+from .models import CourseToken, LastVisitedCourse, Rating
 
 
 @require_http_methods(["GET"])
@@ -100,7 +102,6 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
 @login_required
 @require_http_methods(["GET"])
 def user_course_list(request: HttpRequest) -> HttpResponse:
-
     courses = (
         Course.objects.filter(enrollments__student=request.user)
         .annotate(

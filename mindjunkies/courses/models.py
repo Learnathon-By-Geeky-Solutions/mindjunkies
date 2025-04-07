@@ -9,6 +9,7 @@ from config.models import BaseModel
 from mindjunkies.accounts.models import User
 
 
+
 class CourseCategory(CategoryBase):
     description = models.TextField(blank=True, null=True)
 
@@ -38,7 +39,7 @@ class Course(BaseModel):
     )
 
     teacher = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="courses_taught"
+        "accounts.User", on_delete=models.CASCADE, related_name="courses_taught"
     )
 
     course_image = CloudinaryField(
@@ -83,6 +84,21 @@ class Course(BaseModel):
         )
         self.save(update_fields=["total_rating", "number_of_ratings"])
 
+    def get_total_enrollments(self):
+        """Get total number of enrollments for the course."""
+        return self.enrollments.filter(status="active").count()
+
+    def get_rating_distribution(self):
+        ratings = self.ratings.values("rating").annotate(count=models.Count("rating"))
+        total_ratings = self.number_of_ratings
+        distribution = {i: 0 for i in range(1, 6)}
+        for rating in ratings:
+            distribution[rating["rating"]] = (rating["count"] / total_ratings) * 100
+        return distribution
+
+    def get_individual_ratings(self):
+        return self.ratings.select_related("student").all()
+
 
 class CourseInfo(BaseModel):
     course = models.OneToOneField(Course, on_delete=models.CASCADE, related_name="info")
@@ -97,7 +113,9 @@ class CourseInfo(BaseModel):
 class Rating(BaseModel):
     """Stores ratings and reviews for courses."""
 
-    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ratings")
+    student = models.ForeignKey(
+        "accounts.User", on_delete=models.CASCADE, related_name="ratings"
+    )
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="ratings")
     rating = models.PositiveSmallIntegerField(
         choices=[(i, str(i)) for i in range(1, 6)], default=5  # 1 to 5 stars
@@ -127,7 +145,9 @@ class Enrollment(BaseModel):
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name="enrollments"
     )
-    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name="enrolled")
+    student = models.ForeignKey(
+        "accounts.User", on_delete=models.CASCADE, related_name="enrolled"
+    )
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
 
     class Meta:
@@ -165,7 +185,7 @@ class CourseToken(models.Model):
 
 
 class LastVisitedCourse(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     last_visited = models.DateTimeField(auto_now=True)
 
