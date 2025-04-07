@@ -3,10 +3,11 @@ import cloudinary.uploader
 from categories.models import CategoryBase
 from cloudinary.models import CloudinaryField
 from django.db import models
+from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 
 from config.models import BaseModel
-from mindjunkies.accounts.models import User
+
 
 
 
@@ -175,7 +176,7 @@ class Module(BaseModel):
 
 class CourseToken(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="tokens")
-    teacher = models.ForeignKey(User, on_delete=models.CASCADE)
+    teacher = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
     motivation = models.TextField(help_text="Write your motivation or plan for the course, including how you plan to organize it.")
     intro_video = CloudinaryField(resource_type='video', default="")
     status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('approved', 'Approved')], default='pending')
