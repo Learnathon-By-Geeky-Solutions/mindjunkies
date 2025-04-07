@@ -1,3 +1,5 @@
+import cloudinary
+import cloudinary.uploader
 from categories.models import CategoryBase
 from cloudinary.models import CloudinaryField
 from django.db import models
@@ -152,18 +154,14 @@ class Module(BaseModel):
 
 
 class CourseToken(models.Model):
-    STATUS_CHOICES = [
-        ("pending", "Pending"),
-        ("accepted", "Accepted"),
-        ("running", "Running"),
-    ]
-
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, blank=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="tokens")
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE)
+    motivation = models.TextField(help_text="Write your motivation or plan for the course, including how you plan to organize it.")
+    intro_video = CloudinaryField(resource_type='video', default="")
+    status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('approved', 'Approved')], default='pending')
 
     def __str__(self):
-        return f"{self.user.username} - {self.get_status_display()}"
+        return f"Token for {self.course.title} by {self.teacher.username}"
 
 
 class LastVisitedCourse(models.Model):
