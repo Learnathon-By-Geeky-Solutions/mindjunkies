@@ -3,9 +3,15 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
 
+from django.contrib import messages
+from django.core.exceptions import ValidationError
+from django.utils.timezone import now
+
+
 from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course, Enrollment
-from .models import TeacherVerification
+from .forms import TeacherVerificationForm
+from .models import TeacherVerification, Certificate
 
 
 # Create your views here.
@@ -63,25 +69,31 @@ def remove_enrollment(
 
 
 @login_required
-def teacher_verification_view(request):
-    try:
-        verification_request = TeacherVerification.objects.get(user=request.user)
-        # return redirect("teacher_wait")
-    except TeacherVerification.DoesNotExist:
-        verification_request = None
-
-    if request.method == "POST":
-        form = TeacherVerificationForm(request.POST, request.FILES, instance=verification_request)
+def teacher_verification(request):
+    if request.method == 'POST':
+        form = TeacherVerificationForm(request.POST, request.FILES)
+        
         if form.is_valid():
-            verification_request = form.save(commit=False)
-            verification_request.user = request.user
-            verification_request.save()
-            return redirect("home")  # Redirect after submission
+            # Save Teacher Verification info
+            teacher_verification = form.save(commit=False)
+            teacher_verification.user = request.user  # Link the form submission to the current user
+            teacher_verification.verification_date = now()  # Store the current time of verification
+            
+            # Handle certificate files and save them
+            certificates = request.FILES.getlist('certificates')
+            for certificate_file in certificates:
+                certificate = Certificate.objects.create(image=certificate_file)
+                teacher_verification.certificates.add(certificate)
+            
+            teacher_verification.save()
+            messages.success(request, "Your verification has been submitted successfully!")
+            return redirect('some_success_url')  # Redirect after successful form submission    
+        else:
+            messages.error(request, "There was an error in your form submission. Please check the form and try again.")
     else:
-        form = TeacherVerificationForm(instance=verification_request)
+        form = TeacherVerificationForm()
 
-    return render(request, "teacher_verification.html", {"form": form})
-
+    return render(request, 'teacher_verification.html', {'form': form})
 
 
 @login_required
