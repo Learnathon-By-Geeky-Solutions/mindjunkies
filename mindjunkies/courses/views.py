@@ -53,7 +53,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
         form.instance.teacher = self.request.user
         form.save()
         messages.success(self.request, "Course saved successfully!")
-        return redirect(reverse("create_course_token"))
+        return redirect(reverse("create_course_token", kwargs={"slug": form.instance.slug}))
 
     def form_invalid(self, form):
         messages.error(
@@ -130,6 +130,11 @@ def category_courses(request, slug):
 class CreateCourseTokenView(LoginRequiredMixin, FormView):
     template_name = "course_token_form.html"
     form_class = CourseTokenForm
+
+    def get_object(self, queryset=None):
+        slug = self.request.GET.get("slug")
+        print("slug", slug)
+        return get_object_or_404(Course, slug=slug) if slug else None
 
     def form_valid(self, form):
         token = form.save(commit=False)

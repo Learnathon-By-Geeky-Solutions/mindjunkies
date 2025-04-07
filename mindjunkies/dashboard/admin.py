@@ -1,6 +1,6 @@
 # Register your models here.
 from django.contrib import admin
-from .models import TeacherVerification
+from .models import TeacherVerification, Certificate
 
 @admin.register(TeacherVerification)
 class TeacherVerificationAdmin(admin.ModelAdmin):
@@ -24,3 +24,12 @@ class TeacherVerificationAdmin(admin.ModelAdmin):
             obj.user.save()
         self.message_user(request, "Selected users have been disapproved as teachers.")
     disapprove_teacher.short_description = "Disapprove selected teachers"
+
+
+
+# Register your models here.
+@admin.register(Certificate)
+class CertificateAdmin(admin.ModelAdmin):
+    list_display = ("id", "image", "description")
+    search_fields = ("description",)
+    list_filter = ("created_at", "updated_at")

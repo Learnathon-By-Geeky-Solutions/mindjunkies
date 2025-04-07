@@ -7,12 +7,12 @@ from .models import Profile, User
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     model = User
-    list_display = ("username", "email", "is_staff")
+    list_display = ("username", "email", "is_staff", "is_teacher")
     fieldsets = UserAdmin.fieldsets + (
         (
             "Additional Details",
             {
-                "fields": ["uuid"],
+                "fields": ["uuid", "is_teacher"],
             },
         ),
     )
