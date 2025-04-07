@@ -9,24 +9,82 @@
     <form method="POST" enctype="multipart/form-data" class="space-y-4">
         {% csrf_token %}
         
-        <div>
-            <label class="block text-sm font-medium">What do you want to teach?</label>
-            {{ form.subject }}
-        </div>
+       <div class="min-h-screen flex items-center justify-center bg-gray-100">
+        <div class="w-full max-w-3xl bg-white p-8 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-semibold text-center text-gray-800 mb-8">Teacher Verification Form</h2>
+            
+            <!-- Form -->
+            <form action="#" method="POST">
+                <!-- Personal Information -->
+                <div class="space-y-6 space-x-3 pl-10">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label for="full_name" class="block text-gray-600">Full Name</label>
+                            <input type="text" id="full_name" name="full_name" class="w-full mt-2 p-3 border border-gray-300 rounded-lg" required>
+                        </div>
+                        <div>
+                            <label for="email" class="block text-gray-600">Email</label>
+                            <input type="email" id="email" name="email" class="w-full mt-2 p-3 border border-gray-300 rounded-lg" required>
+                        </div>
+                    </div>
 
-        <div>
-            <label class="block text-sm font-medium">Portfolio Link</label>
-            {{ form.portfolio_link }}
-        </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label for="phone" class="block text-gray-600">Phone Number</label>
+                            <input type="text" id="phone" name="phone" class="w-full mt-2 p-3 border border-gray-300 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="address" class="block text-gray-600">Address</label>
+                            <input type="text" id="address" name="address" class="w-full mt-2 p-3 border border-gray-300 rounded-lg">
+                        </div>
+                    </div>
+                </div>
 
-        <div>
-            <label class="block text-sm font-medium">Upload Certificates</label>
-            {{ form.certificates }}
-        </div>
+                <!-- Certificates -->
+                <div class="mt-8">
+                    <label for="certificates" class="block text-gray-600">Upload Your Certificates</label>
+                    <input type="file" id="certificates" name="certificates" class="w-full mt-2 p-3 border border-gray-300 rounded-lg" multiple required>
+                </div>
 
-        <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
-            Submit for Verification
-        </button>
+                <!-- Portfolio Links -->
+                <div class="mt-8">
+                    <label for="portfolio_links" class="block text-gray-600">Portfolio Links (optional)</label>
+                    <input type="text" id="portfolio_links" name="portfolio_links" class="w-full mt-2 p-3 border border-gray-300 rounded-lg" placeholder="e.g., LinkedIn, GitHub">
+                </div>
+
+                <!-- Important Links -->
+                <div class="mt-8">
+                    <label for="important_links" class="block text-gray-600">Important Links (optional)</label>
+                    <input type="text" id="important_links" name="important_links" class="w-full mt-2 p-3 border border-gray-300 rounded-lg" placeholder="e.g., Personal Blog, Research Articles">
+                </div>
+
+                <!-- Teaching Experience -->
+                <div class="mt-8">
+                    <label for="experience" class="block text-gray-600">Teaching Experience (optional)</label>
+                    <textarea id="experience" name="experience" class="w-full mt-2 p-3 border border-gray-300 rounded-lg" rows="4" placeholder="Provide a brief summary of your teaching experience"></textarea>
+                </div>
+
+                <!-- Social Media Links -->
+                <div class="mt-8">
+                    <label for="social_media" class="block text-gray-600">Social Media Links (optional)</label>
+                    <textarea type="text" id="social_media" name="social_media" class="w-full mt-2 p-3 border border-gray-300 rounded-lg" placeholder="e.g., Twitter, Instagram - use enter to seperate links"></textarea>
+                </div>
+
+                <!-- Verification Statement -->
+                <div class="mt-8 flex items-center space-x-4">
+                    <input type="checkbox" id="verify_statement" name="verify_statement" required>
+                    <label for="verify_statement" class="text-gray-600">I hereby declare that the above information is accurate and I am applying for verification as a teacher.</label>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="mt-8 flex justify-center">
+                    <button type="submit" class="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        Submit Verification
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
     </form>
 </div>
 

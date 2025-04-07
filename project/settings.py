@@ -85,7 +85,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
     # custom middleware here
-    "mindjunkies.dashboard.middleware.TeacherVerificationMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
 ]
 

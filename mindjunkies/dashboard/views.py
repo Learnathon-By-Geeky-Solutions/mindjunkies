@@ -15,8 +15,8 @@ from .forms import TeacherVerificationForm
 @login_required
 @require_http_methods(["GET"])
 def content_list(request: HttpRequest) -> HttpResponse:
-    if not request.user.teacher:
-        return redirect("home")
+    if not request.user.is_teacher:
+        return redirect("teacher_verification_form")
     teaching = Course.objects.filter(teacher=request.user)
     courses = [ec.course for ec in teaching]
     context = {
