@@ -39,7 +39,7 @@ class CourseCategoryAdmin(CategoryBaseAdmin):
 @admin.register(CourseToken)
 class CourseTokeneAdmin(admin.ModelAdmin):
     model = CourseToken
-    list_display = ("user", "course", "status")
+    list_display = ("teacher", "course", "status")
     list_filter = ("course",)
 
 
