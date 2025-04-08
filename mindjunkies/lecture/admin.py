@@ -1,10 +1,10 @@
 from django.contrib import admin
-
+from unfold.admin import ModelAdmin
 from .models import Lecture, LecturePDF, LectureVideo
 
 
 @admin.register(Lecture)
-class LectureAdmin(admin.ModelAdmin):
+class LectureAdmin(ModelAdmin):
     list_display = ("title", "course", "order", "deleted_at")
     list_filter = ("course", "deleted_at")
     search_fields = ("title", "course__title")
@@ -13,12 +13,12 @@ class LectureAdmin(admin.ModelAdmin):
 
 
 @admin.register(LecturePDF)
-class LecturePDFAdmin(admin.ModelAdmin):
+class LecturePDFAdmin(ModelAdmin):
     list_display = ("lecture", "pdf_file")
     search_fields = ("lecture__title",)
 
 
 @admin.register(LectureVideo)
-class LectureVideoAdmin(admin.ModelAdmin):
+class LectureVideoAdmin(ModelAdmin):
     list_display = ("video_title", "lecture", "video_file", "status", "is_running")
     search_fields = ("lecture__title",)

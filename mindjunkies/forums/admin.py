@@ -1,10 +1,11 @@
 from django.contrib import admin
 
+from unfold.admin import ModelAdmin
 from .models import ForumComment, ForumTopic, LikedPost, Reply
 
 
 @admin.register(ForumTopic)
-class ForumTopicAdmin(admin.ModelAdmin):
+class ForumTopicAdmin(ModelAdmin):
     list_display = ("title", "author", "course", "module", "created_at")
     search_fields = ("title", "content", "author__username", "course__title")
     list_filter = ("created_at", "course")
@@ -13,7 +14,7 @@ class ForumTopicAdmin(admin.ModelAdmin):
 
 
 @admin.register(ForumComment)
-class ForumCommentAdmin(admin.ModelAdmin):
+class ForumCommentAdmin(ModelAdmin):
     list_display = ("topic", "author", "created_at")
     search_fields = ("content", "author__username", "topic__title")
     list_filter = ("created_at",)
@@ -21,7 +22,7 @@ class ForumCommentAdmin(admin.ModelAdmin):
 
 
 @admin.register(Reply)
-class ReplyAdmin(admin.ModelAdmin):
+class ReplyAdmin(ModelAdmin):
     list_display = ("parent_comment", "body", "author", "created")
     search_fields = ("body", "author__username", "parent_comment__id")
     list_filter = ("created", "parent_comment")
@@ -29,7 +30,7 @@ class ReplyAdmin(admin.ModelAdmin):
 
 
 @admin.register(LikedPost)
-class LikedPostAdmin(admin.ModelAdmin):
+class LikedPostAdmin(ModelAdmin):
     list_display = ("topic", "user", "created")
     list_filter = ("created", "user")
     search_fields = ("topic__title", "user__username")

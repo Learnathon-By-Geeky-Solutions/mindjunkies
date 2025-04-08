@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from unfold.admin import ModelAdmin
 
 from .models import Profile, User
 
@@ -20,7 +21,7 @@ class CustomUserAdmin(UserAdmin):
 
 
 @admin.register(Profile)
-class CustomProfileAdmin(admin.ModelAdmin):
+class CustomProfileAdmin(ModelAdmin):
     model = Profile
     list_display = ("user", "birthday", "phone_number")
     search_fields = ("user__username", "user__email")
