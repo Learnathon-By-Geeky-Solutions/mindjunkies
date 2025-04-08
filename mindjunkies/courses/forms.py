@@ -33,22 +33,23 @@ CourseInfoFormSet = inlineformset_factory(
 )
 
 
+
 class CourseTokenForm(forms.ModelForm):
     class Meta:
         model = CourseToken
-        fields = [
-            "course"
-        ]  # Only allow selecting a course; status & user are handled automatically.
+        fields = ['motivation', 'intro_video']
+        widgets = {
+            'motivation': forms.Textarea(attrs={'class': 'form-input mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500'}),
+            'intro_video': forms.ClearableFileInput(attrs={'class': 'form-input mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500'}),
+        }
+    
+    def clean_intro_video(self):
+        intro_video = self.cleaned_data.get('intro_video')
+        if intro_video:
+            if not intro_video.name.endswith(('mp4', 'mov', 'avi', 'mkv')):
+                raise forms.ValidationError("Only video files (mp4, mov, avi, mkv) are allowed.")
+        return intro_video
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["course"].empty_label = "Select a course"
-        self.fields["course"].widget.attrs.update(
-            {
-                "class": "block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring "
-                "focus:ring-blue-500 focus:border-blue-500",
-            }
-        )
 
 
 class RatingForm(forms.ModelForm):

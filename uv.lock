@@ -406,6 +406,18 @@ wheels = [
 ]
 
 [[package]]
+name = "django-unfold"
+version = "0.54.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/23/de/9411f21c16d40e73b2f6928a1ce1457541ef8546498d8334a713a8c4553b/django_unfold-0.54.0.tar.gz", hash = "sha256:7388535302f91f841c6c0a7c595a8d6f34da0639051af5525ca3403a7a2a02ac", size = 1023410 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/da/e3/5301bcab21fcf858b03d9e39c6d86d82efb2ba10ed4d9d12a4add3616aee/django_unfold-0.54.0-py3-none-any.whl", hash = "sha256:552df0ec2e826bc24f4134f0c54403b225191df13278a863118cb53d64109eb7", size = 1113039 },
+]
+
+[[package]]
 name = "execnet"
 version = "2.1.1"
 source = { registry = "https://pypi.org/simple" }
@@ -540,6 +552,7 @@ dependencies = [
     { name = "django-crispy-forms" },
     { name = "django-htmx" },
     { name = "django-template-partials" },
+    { name = "django-unfold" },
     { name = "factory-boy" },
     { name = "markdown" },
     { name = "pillow" },
@@ -583,6 +596,7 @@ requires-dist = [
     { name = "django-crispy-forms", specifier = ">=2.3" },
     { name = "django-htmx", specifier = ">=1.23.0" },
     { name = "django-template-partials", specifier = ">=24.4" },
+    { name = "django-unfold", specifier = ">=0.54.0" },
     { name = "factory-boy", specifier = ">=3.3.3" },
     { name = "markdown", specifier = ">=3.7" },
     { name = "pillow", specifier = ">=11.1.0" },

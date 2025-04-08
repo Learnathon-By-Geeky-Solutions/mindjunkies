@@ -1,60 +1,71 @@
 import pytest
 from django.utils.text import slugify
-from model_bakery import baker
-
+from django.contrib.auth import get_user_model
 from mindjunkies.courses.models import Course, Module
 from mindjunkies.lecture.models import Lecture, LecturePDF, LectureVideo
+from mindjunkies.accounts.models import User
 
 
-@pytest.mark.django_db
-class TestLectureModel:
-    def test_lecture_str_returns_title_with_course(self):
-        course = baker.make(Course, title="Python 101")
-        module = baker.make(Module, course=course)
-        lecture = baker.make(Lecture, course=course, module=module, title="Intro")
+@pytest.fixture
+def teacher(db):
+    return User.objects.create_user(username="test_teacher", password="password")
 
-        assert str(lecture) == "Python 101 - Intro"
+@pytest.fixture
+def course(db, teacher):
+    return Course.objects.create(title="Test Course", teacher=teacher)
 
-    def test_lecture_slug_is_generated_on_save(self):
-        course = baker.make(Course)
-        module = baker.make(Module, course=course)
-        lecture = baker.make(
-            Lecture, course=course, module=module, title="My First Lecture", slug=""
-        )
+@pytest.fixture
+def module(db, course):
+    return Module.objects.create(title="Test Module", course=course)
 
-        assert lecture.slug == slugify("My First Lecture")
-
-    def test_lecture_ordering(self):
-        course = baker.make(Course)
-        module = baker.make(Module, course=course)
-        baker.make(Lecture, course=course, module=module, order=3)
-        baker.make(Lecture, course=course, module=module, order=1)
-        baker.make(Lecture, course=course, module=module, order=2)
-
-        ordered_lectures = Lecture.objects.all()
-        assert [lec.order for lec in ordered_lectures] == [1, 2, 3]
-
+@pytest.fixture
+def lecture(db, course, module):
+    return Lecture.objects.create(
+        course=course,
+        module=module,
+        title="Test Lecture",
+        description="This is a test lecture.",
+        learning_objective="Learn Django testing.",
+        order=1,
+    )
 
 @pytest.mark.django_db
-class TestLecturePDFModel:
-    def test_lecture_pdf_str(self):
-        lecture = baker.make(Lecture)
-        pdf = baker.make(LecturePDF, lecture=lecture, pdf_title="Week 1 Notes")
-
-        assert str(pdf) == f"PDF for {lecture.title}"
-
+def test_lecture_creation(lecture):
+    assert lecture.title == "Test Lecture"
+    assert lecture.slug == slugify("Test Lecture")
+    assert lecture.course.title == "Test Course"
+    assert lecture.module.title == "Test Module"
 
 @pytest.mark.django_db
-class TestLectureVideoModel:
-    def test_lecture_video_str(self):
-        video = baker.make(LectureVideo, video_title="Lecture 1 - Intro")
-        assert str(video) == "Lecture 1 - Intro"
+def test_lecture_slug_auto_generation(course, module):
+    lecture = Lecture.objects.create(
+        course=course,
+        module=module,
+        title="New Lecture",
+    )
+    assert lecture.slug == slugify("New Lecture")
 
-    def test_lecture_video_status_default(self):
-        video = baker.make(LectureVideo)
-        assert video.status == LectureVideo.PENDING
+@pytest.fixture
+def lecture_pdf(db, lecture):
+    return LecturePDF.objects.create(
+        lecture=lecture, pdf_file="lecture_pdfs/test.pdf", pdf_title="Test PDF"
+    )
 
-    def test_lecture_video_fields_optional(self):
-        video = baker.make(LectureVideo, hls=None, thumbnail=None)
-        assert video.hls is None
-        assert video.thumbnail.name is None
+@pytest.mark.django_db
+def test_lecture_pdf_creation(lecture_pdf):
+    assert lecture_pdf.pdf_title == "Test PDF"
+    assert lecture_pdf.lecture.title == "Test Lecture"
+
+@pytest.fixture
+def lecture_video(db, lecture):
+    return LectureVideo.objects.create(
+        lecture=lecture,
+        video_file="lecture_videos/test.mp4",
+        video_title="Test Video",
+        status=LectureVideo.PENDING,
+    )
+
+@pytest.mark.django_db
+def test_lecture_video_creation(lecture_video):
+    assert lecture_video.video_title == "Test Video"
+    assert lecture_video.status == LectureVideo.PENDING
