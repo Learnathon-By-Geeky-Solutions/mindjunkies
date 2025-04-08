@@ -26,10 +26,10 @@ def auth_client(client, create_user):
 
 def test_home_view_unauthenticated(client):
     """Test home view for an unauthenticated user (should see all courses)."""
-    new_courses = [
+    [
         baker.make(Course, created_at=now() - timedelta(days=i)) for i in range(3)
     ]
-    other_courses = baker.make(Course, _quantity=5)
+    baker.make(Course, _quantity=5)
 
     response = client.get(reverse("home"))
 
@@ -41,7 +41,7 @@ def test_home_view_unauthenticated(client):
 def test_home_view_authenticated(auth_client, create_user):
     """Test home view for an authenticated user with enrolled courses."""
     enrolled_course = baker.make(Course)
-    new_courses = baker.make(Course, _quantity=3)
+    baker.make(Course, _quantity=3)
 
     # Create an active enrollment
     baker.make(Enrollment, student=create_user, course=enrolled_course, status="active")
@@ -61,8 +61,8 @@ def test_home_view_authenticated(auth_client, create_user):
 # ✅ Test `search_view` with a matching query
 def test_search_view_with_results(client):
     """Test search with a query that matches course titles."""
-    course1 = baker.make(Course, title="Python Programming")
-    course2 = baker.make(Course, title="Advanced Python")
+    baker.make(Course, title="Python Programming")
+    baker.make(Course, title="Advanced Python")
 
     response = client.get(reverse("search_view") + "?search=Python")
 

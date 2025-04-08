@@ -65,9 +65,6 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
         current_live_class = self.get_current_live_class(course)
         current_module = self.get_current_module(course)
         
-        # if not current_module:
-        #     messages.warning(self.request, "No lectures available for this course.")
-
         context.update({
             "course": course,
             "modules": course.modules.all(),
@@ -200,10 +197,6 @@ class CourseObjectMixin:
     def get_course(self):
         return get_object_or_404(Course, slug=self.kwargs["course_slug"])
     
-    def check_course_permission(self, request, course):
-        """Override in subclasses to implement permission checks."""
-        return True
-
 
 @method_decorator(csrf_protect, name="dispatch")
 class CreateLectureView(LoginRequiredMixin, CourseObjectMixin, CreateView):

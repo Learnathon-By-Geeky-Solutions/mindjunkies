@@ -4,7 +4,7 @@ from django.utils.text import slugify
 
 from mindjunkies.courses.models import Course, Module
 
-    
+
 class ForumTopic(models.Model):
     """Model for forum topics/threads"""
     title = models.CharField(max_length=255)
@@ -23,7 +23,7 @@ class ForumTopic(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     likes = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name="likedTopics",through="LikedPost"
+        settings.AUTH_USER_MODEL, related_name="likedTopics", through="LikedPost"
     )  # Changed related_name to be unique
 
     class Meta:
@@ -72,8 +72,7 @@ class ForumComment(models.Model):
         related_name="forum_comments",
     )
 
-    likes=models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="likedComments",through="LikedComment")
-  
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="likedComments", through="LikedComment")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -92,7 +91,6 @@ class LikedComment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-
         return f"{self.user.username} : {self.comment.body[:30]}"
 
 
@@ -120,10 +118,7 @@ class Reply(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        try:
-            return f"{self.author.username} : {self.body[:30]}"
-        except:
-            return f"no author : {self.body[:30]}"
+        return f"{self.author.username} : {self.body[:30]}"
 
     class Meta:
         ordering = ["created"]

@@ -1,6 +1,5 @@
 import pytest
-
-from mindjunkies.accounts.tests.fixtures import *  # noqa: F401, F403
+from mindjunkies.accounts.tests.fixtures import accounts
 
 
 @pytest.fixture(autouse=True)
