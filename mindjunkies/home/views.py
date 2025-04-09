@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
 from django.views.decorators.http import require_http_methods
+from django.db import models
 
+from mindjunkies.courses.models import LastVisitedCourse
 from mindjunkies.courses.models import Course, CourseCategory, Enrollment
 
 @require_http_methods(["GET"])
@@ -55,7 +57,20 @@ def home(request):
     
     # Get featured courses (you might want to define criteria for this)
     featured_courses = Course.objects.filter(published=True)
-    
+
+    continue_courses = (
+        Course.objects.filter(enrollments__student=request.user)
+        .annotate(
+            last_visited_at=models.Subquery(
+                LastVisitedCourse.objects.filter(
+                    user=request.user, course=models.OuterRef("pk")
+                ).values("last_visited")[:1]
+            )
+        )
+        .order_by("-last_visited_at", "title")
+    )  # Order by last visited time, then alphabetically
+    print(continue_courses[0])
+
     # Build the context
     context = {
         "new_courses": new_courses,
@@ -65,7 +80,8 @@ def home(request):
         "enrolled_classes": enrolled_courses,  # For compatibility with second version
         "teacher_courses": teacher_courses,
         "course_list": featured_courses,  # For compatibility with second version
-        "active_category": active_category
+        "active_category": active_category,
+        "continue_courses": continue_courses[0],
     }
     
     # Check if this is an HTMX request
