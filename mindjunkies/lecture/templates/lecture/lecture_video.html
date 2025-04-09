@@ -46,9 +46,13 @@
                     <div class="rounded-xl bg-base-200">
                         <div class="">
                             <div class="video-container">
-                               <video controls width="640">
+                               {% comment %} <video controls width="640">
                                     <source src="{{ hls_url }}" type="video/mp4">
                                      Your browser does not support the video tag.
+                                </video> {% endcomment %}
+                                <video id="video" class="video-js vjs-default-skin" controls width="640" height="360"
+                                       preload="auto">
+                                    <source src="{{ hls_url }}" type="video/mp4">
                                 </video>
                          </div>
                         </div>
@@ -147,6 +151,10 @@
             preload: 'auto',
             playbackRates: [0.5, 1, 1.5, 2, 2.5] // Playback speed options
         });
+
+        forward = () => {
+            skip(15);
+        };
 
         player.ready(function () {
             console.log("Video.js Player is Ready!");
