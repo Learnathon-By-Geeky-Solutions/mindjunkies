@@ -58,18 +58,21 @@ def home(request):
     # Get featured courses (you might want to define criteria for this)
     featured_courses = Course.objects.filter(published=True)
 
-    continue_courses = (
-        Course.objects.filter(enrollments__student=request.user)
-        .annotate(
-            last_visited_at=models.Subquery(
-                LastVisitedCourse.objects.filter(
-                    user=request.user, course=models.OuterRef("pk")
-                ).values("last_visited")[:1]
+    continue_courses = []
+
+    if request.user.is_authenticated:
+        continue_courses = (
+            Course.objects.filter(enrollments__student=request.user)
+            .annotate(
+                last_visited_at=models.Subquery(
+                    LastVisitedCourse.objects.filter(
+                        user=request.user, course=models.OuterRef("pk")
+                    ).values("last_visited")[:1]
+                )
             )
-        )
-        .order_by("-last_visited_at", "title")
-    )  # Order by last visited time, then alphabetically
-    print(continue_courses[0])
+            .order_by("-last_visited_at", "title")
+        ) 
+        
 
     # Build the context
     context = {
@@ -81,7 +84,7 @@ def home(request):
         "teacher_courses": teacher_courses,
         "course_list": featured_courses,  # For compatibility with second version
         "active_category": active_category,
-        "continue_courses": continue_courses[0],
+        "continue_courses": continue_courses[0] if continue_courses else None,
     }
     
     # Check if this is an HTMX request
