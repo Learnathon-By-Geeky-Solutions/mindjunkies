@@ -67,6 +67,7 @@ env/
 venv
 venv.bak/
 venv/
+.lenv
 
 # Misc
 .mypy_cache
