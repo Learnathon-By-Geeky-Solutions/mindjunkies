@@ -113,9 +113,7 @@ class CourseInfo(BaseModel):
 class Rating(BaseModel):
     """Stores ratings and reviews for courses."""
 
-    student = models.ForeignKey(
-        user, on_delete=models.CASCADE, related_name="ratings"
-    )
+    student = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name="ratings")
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="ratings")
     rating = models.PositiveSmallIntegerField(
         choices=[(i, str(i)) for i in range(1, 6)], default=5  # 1 to 5 stars
