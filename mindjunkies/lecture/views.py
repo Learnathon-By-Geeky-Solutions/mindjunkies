@@ -174,7 +174,7 @@ def lecture_video(request: HttpRequest, course_slug: str, module_id: str, video_
         "course": video.lecture.course,
         "video": video,
         "module": module,
-        "hls_url": hls_playlist_url,
+        "hls_url": video.video_file.url,
     }
 
     return render(request, "lecture/lecture_video.html", context)
