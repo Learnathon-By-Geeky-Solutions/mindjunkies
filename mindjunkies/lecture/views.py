@@ -29,7 +29,7 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
         return get_object_or_404(Course, slug=self.kwargs["course_slug"])
 
     def get_is_teacher(self, course):
-        return self.request.user.is_staff or course.teachers.filter(teacher=self.request.user).exists()
+        return self.request.user.is_staff or course.teacher == self.request.user
 
     def get_today_range(self) -> Tuple[timezone.datetime, timezone.datetime]:
         today = localtime(now())
