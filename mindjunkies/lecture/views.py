@@ -1,8 +1,6 @@
 import mimetypes
 import os
-from datetime import timedelta
-from typing import Any
-
+from typing import Any, Dict, Tuple, Optional
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -10,19 +8,18 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import FileResponse, HttpRequest, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.encoding import smart_str
-from django.utils.timezone import localtime, now
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
-from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, FormView, UpdateView
-
-from mindjunkies.courses.models import Course, LastVisitedCourse, Module
-
+from django.utils import timezone
+from mindjunkies.courses.models import Course, Module
+from datetime import timedelta
 from .forms import LectureForm, LecturePDFForm, LectureVideoForm, ModuleForm
 from .models import Lecture, LecturePDF, LectureVideo
+from django.utils.timezone import localtime, now
+from django.views.generic import TemplateView
 
 
 class LectureHomeView(LoginRequiredMixin, TemplateView):
@@ -34,7 +31,7 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
     def get_is_teacher(self, course):
         return self.request.user.is_staff or course.teacher == self.request.user
 
-    def get_today_range(self):
+    def get_today_range(self) -> Tuple[timezone.datetime, timezone.datetime]:
         today = localtime(now())
         start = today.replace(hour=0, minute=0, second=0, microsecond=0)
         end = today.replace(hour=23, minute=59, second=59, microsecond=999999)
@@ -45,6 +42,14 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
         if module_id:
             return get_object_or_404(Module, id=module_id)
         return course.modules.first()
+    
+    def get_current_live_class(self, course):
+        now_time = timezone.now()
+        for live_class in course.live_classes.all():
+            end_time = live_class.scheduled_at + timedelta(minutes=live_class.duration)
+            if live_class.scheduled_at <= now_time <= end_time:
+                return live_class
+        return None
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -52,44 +57,31 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
         is_teacher = self.get_is_teacher(course)
         today_start, today_end = self.get_today_range()
 
-        # Update or create last visited record
-        if not is_teacher:
-            LastVisitedCourse.objects.update_or_create(
-                user=self.request.user,
-                course=course,
-                defaults={"last_visited": timezone.now()},
-            )
-
         # Use cached queryset to avoid repeating filters
-        live_classes_today = list(
-            course.live_classes.filter(
-                scheduled_at__range=(today_start, today_end)
-            ).order_by("scheduled_at")
-        )
-
-        now = timezone.now()
-        current_live_class = None
-        for live_class in course.live_classes.all():
-            end_time = live_class.scheduled_at + timedelta(minutes=live_class.duration)
-            if live_class.scheduled_at <= now <= end_time:
-                current_live_class = live_class
-                break
-
+        live_classes_today = list(course.live_classes.filter(
+            scheduled_at__range=(today_start, today_end)
+        ).order_by('scheduled_at'))
+        
+        current_live_class = self.get_current_live_class(course)
         current_module = self.get_current_module(course)
-        if not current_module:
-            messages.warning(self.request, "No lectures available for this course.")
-
-        context.update(
-            {
-                "course": course,
-                "modules": course.modules.all(),
-                "current_module": current_module,
-                "isTeacher": is_teacher,
-                "current_live_class": current_live_class,
-                "todays_live_classes": live_classes_today,  # consistent naming
-            }
-        )
+        
+        context.update({
+            "course": course,
+            "modules": course.modules.all(),
+            "current_module": current_module,
+            "isTeacher": is_teacher,
+            "current_live_class": current_live_class,
+            "todays_live_classes": live_classes_today,
+        })
         return context
+
+
+def validate_segment_name(segment_name: str) -> bool:
+    """Validate that a segment name is safe to use in file paths."""
+    return (segment_name and 
+            ".." not in segment_name and 
+            "/" not in segment_name and 
+            "\\" not in segment_name)
 
 
 @require_http_methods(["GET"])
@@ -128,18 +120,13 @@ def serve_hls_segment(request, course_slug, video_id, segment_name):
         hls_directory = os.path.join(
             os.path.dirname(video.video_file.path), "hls_output"
         )
+        
         # Validate and sanitize segment name
         safe_segment_name = os.path.basename(segment_name)
-        if (
-            not safe_segment_name
-            or ".." in safe_segment_name
-            or "/" in safe_segment_name
-            or "\\" in safe_segment_name
-        ):
+        if not validate_segment_name(safe_segment_name):
             return HttpResponseForbidden("Invalid segment name")
+            
         segment_path = os.path.join(hls_directory, safe_segment_name)
-
-        # print("Segment path:", segment_path)
 
         if not segment_path.startswith(hls_directory):
             return HttpResponseForbidden("Access denied")
@@ -161,25 +148,24 @@ def serve_hls_segment(request, course_slug, video_id, segment_name):
         return HttpResponse(f"Video not found, {course_slug}", status=404)
     except FileNotFoundError:
         return HttpResponse("Segment file not found", status=404)
-    except ValueError:
+    except Exception:
         return HttpResponse("Something went wrong", status=500)
+
+
+def check_course_enrollment(user, course):
+    """Check if a user is enrolled in a course or is staff."""
+    return user.is_staff or course.enrollments.filter(student=user).exists()
 
 
 @login_required
 @require_http_methods(["GET"])
-def lecture_video(
-    request: HttpRequest, course_slug: str, module_id: str, video_id
-) -> HttpResponse:
+def lecture_video(request: HttpRequest, course_slug: str, module_id: str, video_id) -> HttpResponse:
     """View to display a lecture video."""
-
-    # Get the video or return 404 if not found
     video = get_object_or_404(LectureVideo, id=video_id)
-    module = Module.objects.get(id=module_id)
+    module = get_object_or_404(Module, id=module_id)
+    
     # Ensure the user is enrolled in the related course
-    if (
-        not request.user.is_staff
-        and not video.lecture.course.enrollments.filter(student=request.user).exists()
-    ):
+    if not check_course_enrollment(request.user, video.lecture.course):
         return HttpResponseForbidden("You are not enrolled in this course.")
 
     hls_playlist_url = reverse("serve_hls_playlist", args=[course_slug, video_id])
@@ -188,7 +174,7 @@ def lecture_video(
         "course": video.lecture.course,
         "video": video,
         "module": module,
-        "hls_url": hls_playlist_url,
+        "hls_url": video.video_file.url,
     }
 
     return render(request, "lecture/lecture_video.html", context)
@@ -197,40 +183,38 @@ def lecture_video(
 @login_required
 @require_http_methods(["GET"])
 def lecture_pdf(request: HttpRequest, slug: str, pdf_id: int) -> HttpResponse:
-    """View to display a lecture video."""
-
-    # Get the pdf or return 404 if not found
+    """View to display a lecture PDF."""
     pdf = get_object_or_404(LecturePDF, id=pdf_id)
-    lecture = Lecture.objects.get(slug=slug)
-
-    # Ensure the user is enrolled in the related course
+    lecture = get_object_or_404(Lecture, slug=slug)
 
     context = {"pdf": pdf, "lecture": lecture}
-
     return render(request, "lecture/lecture_pdf.html", context)
 
 
-@method_decorator(csrf_protect, name="dispatch")  # Protects against CSRF attacks
-class CreateLectureView(LoginRequiredMixin, CreateView):
+class CourseObjectMixin:
+    """Mixin to get course and check permissions."""
+    
+    def get_course(self):
+        return get_object_or_404(Course, slug=self.kwargs["course_slug"])
+    
+
+@method_decorator(csrf_protect, name="dispatch")
+class CreateLectureView(LoginRequiredMixin, CourseObjectMixin, CreateView):
     model = Lecture
     form_class = LectureForm
     template_name = "lecture/create_lecture.html"
 
-    def __init__(self, **kwargs: Any):
-        super().__init__(kwargs)
-        self.module = get_object_or_404(Module, id=self.kwargs["module_id"])
-        self.course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
-
     def dispatch(self, request, *args, **kwargs):
         """Ensure the course exists before proceeding"""
-
+        self.module = get_object_or_404(Module, id=self.kwargs["module_id"])
+        self.course = self.get_course()
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         """Assign the lecture to the appropriate course"""
         saved_lecture = form.save(commit=False)
-        saved_lecture.course = self.course  # Associate lecture with the course
-        saved_lecture.module = self.module  # Associate lecture with the module
+        saved_lecture.course = self.course
+        saved_lecture.module = self.module
         saved_lecture.save()
         messages.success(self.request, "Lecture created successfully!")
         return redirect(
@@ -251,7 +235,7 @@ class CreateLectureView(LoginRequiredMixin, CreateView):
         return context
 
 
-class CreateContentView(LoginRequiredMixin, FormView):
+class CreateContentView(LoginRequiredMixin, CourseObjectMixin, FormView):
     template_name = "lecture/create_content.html"
 
     def dispatch(self, request, *args, **kwargs):
@@ -291,7 +275,7 @@ class CreateContentView(LoginRequiredMixin, FormView):
         return context
 
 
-class EditLectureView(LoginRequiredMixin, UpdateView):
+class EditLectureView(LoginRequiredMixin, CourseObjectMixin, UpdateView):
     model = Lecture
     form_class = LectureForm
     template_name = "lecture/create_lecture.html"
@@ -305,7 +289,7 @@ class EditLectureView(LoginRequiredMixin, UpdateView):
         """If the form is valid, save the lecture and redirect"""
         form.save()
         messages.success(self.request, "Lecture saved successfully!")
-        return redirect("lecture_home", slug=self.kwargs["course_slug"])
+        return redirect("lecture_home", course_slug=self.kwargs["course_slug"])
 
     def form_invalid(self, form):
         """If the form is invalid, display errors and stay on the form page"""
@@ -317,20 +301,18 @@ class EditLectureView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         """Add extra context, such as the lecture object"""
         context = super().get_context_data(**kwargs)
-        lecture_slug = self.kwargs.get("lecture_slug")
-        lecture = get_object_or_404(Lecture, slug=lecture_slug)
-        context["lecture"] = lecture
+        context["lecture"] = self.get_object()
         return context
 
 
-class CreateModuleView(LoginRequiredMixin, CreateView):
+class CreateModuleView(LoginRequiredMixin, CourseObjectMixin, CreateView):
     model = Module
     form_class = ModuleForm
     template_name = "lecture/create_module.html"
 
     def dispatch(self, request, *args, **kwargs):
         """Ensure the course exists before proceeding"""
-        self.course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        self.course = self.get_course()
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):

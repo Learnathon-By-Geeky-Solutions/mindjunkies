@@ -129,9 +129,6 @@ DATABASES = {
     }
 }
 
-# db_url = config("DATABASE_URL", default=None)
-# if db_url:
-#     DATABASES["default"] = dj_database_url.parse(db_url)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -181,7 +178,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_REDIRECT_URL = "/"
 
-AUTH_USER_MODEL = "accounts.User"
+AUTH_USER_MODEL = 'accounts.User'
 
 # allauth settings
 SITE_ID = 1
