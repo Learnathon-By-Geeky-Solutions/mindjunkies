@@ -6,6 +6,7 @@ from django.db import models
 from django.utils.text import slugify
 
 from config.models import BaseModel
+from taggit.managers import TaggableManager
 
 user = "accounts.User"
 
@@ -62,6 +63,9 @@ class Course(BaseModel):
 
     total_rating = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     number_of_ratings = models.PositiveIntegerField(default=0)
+
+    # Tags for the course
+    tags = TaggableManager(blank=True)    
 
     def __str__(self):
         return self.title
