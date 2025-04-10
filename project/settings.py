@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "django_htmx",
     "template_partials",
     "django_extensions",
+    "taggit", 
     # allauth
     "allauth",
     "allauth.account",
@@ -311,6 +312,9 @@ DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 
 JITSI_APP_ID = config("JITSI_APP_ID")
 JITSI_SECRET = config("JITSI_SECRET")
+
+
+TAGGIT_CASE_INSENSITIVE = True
 
 
 
