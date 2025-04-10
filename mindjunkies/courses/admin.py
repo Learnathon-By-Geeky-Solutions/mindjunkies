@@ -1,7 +1,7 @@
 from categories.admin import CategoryBaseAdmin
 from django.contrib import admin
 from unfold.admin import ModelAdmin
-from taggit.models import TaggedItem
+from taggit.admin import TaggedItemInline
 
 
 from mindjunkies.courses.models import Course, CourseCategory, Enrollment
@@ -19,7 +19,13 @@ class CourseAdmin(ModelAdmin):
         "published_on",
         "paid_course",
         "course_price",
+        "get_tags",
     )
+
+    def get_tags(self, obj):
+        return ", ".join(o.name for o in obj.tags.all())
+
+
 
 
 @admin.register(Enrollment)
@@ -67,19 +73,7 @@ class RatingAdmin(ModelAdmin):
 
 
 
-class CustomTaggedItemInline(admin.TabularInline):
-    model = TaggedItem
-    extra = 1
-    verbose_name = "Tag"
-    verbose_name_plural = "Tags"
-
-    template = 'admin/edit_inline/tabular.html'
 
 
 
-
-class TagAdmin(admin.ModelAdmin):
-    inlines = [CustomTaggedItemInline]
-
-admin.site.register(TaggedItem, TagAdmin)
 
