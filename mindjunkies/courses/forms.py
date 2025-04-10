@@ -19,7 +19,14 @@ class CourseForm(forms.ModelForm):
             "course_price",
             "upcoming",
             "preview_video",
+            "tags",
         ]
+        widgets = {
+            'tags': forms.Textarea(attrs={
+                'class': 'form-input mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500',
+                'placeholder': 'Enter tags separated by commas (e.g., Python, Django, Web Development)',
+                }),
+        }
 
 
 class CourseInfoForm(forms.ModelForm):
