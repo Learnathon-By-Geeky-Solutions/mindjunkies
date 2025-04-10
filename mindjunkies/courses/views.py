@@ -91,7 +91,9 @@ class CourseUpdateView(LoginRequiredMixin, UpdateView):
 def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     """View to show course details."""
     course = get_object_or_404(Course, slug=slug)
-    enrolled = course.enrollments.filter(student=request.user, status="active").exists()
+    enrolled = False
+    if request.user.is_authenticated:
+        enrolled = course.enrollments.filter(student=request.user, status="active").exists()
     context = {
         "course_detail": course,
         "accessed": enrolled,
