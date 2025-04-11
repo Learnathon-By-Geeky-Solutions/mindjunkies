@@ -26,9 +26,7 @@ def auth_client(client, create_user):
 
 def test_home_view_unauthenticated(client):
     """Test home view for an unauthenticated user (should see all courses)."""
-    [
-        baker.make(Course, created_at=now() - timedelta(days=i)) for i in range(3)
-    ]
+    [baker.make(Course, created_at=now() - timedelta(days=i)) for i in range(3)]
     baker.make(Course, _quantity=5)
 
     response = client.get(reverse("home"))

@@ -3,7 +3,7 @@
 {% block head_title %}Home{% endblock head_title %}
 
 {% block main_content %}
-{% load static %}   
+{% load static %}
 
 {% if not user.is_authenticated %}
 <section class="relative bg-slate-50 py-24 px-4 sm:px-6 overflow-hidden">
@@ -11,14 +11,14 @@
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
       <!-- Left side geometric shape -->
       <div class="absolute -left-20 top-0 w-1/3 h-full bg-gradient-to-br from-blue-50 to-indigo-100 rounded-r-[100px]"></div>
-      
+
       <!-- Right side accent circle -->
       <div class="absolute -right-40 -top-40 w-96 h-96 bg-gradient-to-bl from-blue-500/10 to-indigo-500/10 rounded-full"></div>
-      
+
       <!-- Bottom accent line -->
       <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500/0 via-blue-500/30 to-blue-500/0"></div>
     </div>
-  
+
     <div class="container mx-auto max-w-6xl relative z-10">
       <div class="flex flex-col lg:flex-row items-center gap-16 px-4">
         <!-- Text content with creative typography -->
@@ -27,19 +27,19 @@
           <div class="inline-block p-2 rounded-full bg-blue-100 text-blue-700 text-sm font-medium mb-2">
             Transform Your Future
           </div>
-          
+
           <h1 class="text-4xl md:text-5xl font-bold text-slate-800 leading-tight">
             Welcome to <span class="relative inline-block pb-2">
              <img src="{% static 'images/logo.png' %}" alt="Logo" class="h-25">
               <span class="absolute -bottom-1 left-0 w-full h-1 bg-blue-500"></span>
             </span>
           </h1>
-          
+
           <p class="text-lg text-slate-600 leading-relaxed max-w-xl">
-            Expand your knowledge with our cutting-edge Learning Management System. 
+            Expand your knowledge with our cutting-edge Learning Management System.
             Dive into a world of courses designed to elevate your skills and advance your career.
           </p>
-          
+
           <!-- Elegant buttons with proper spacing -->
           <div class="flex flex-wrap gap-6 pt-4">
             <button class="bg-blue-600 p-3 text-white font-medium rounded-md">Get Started</button>
@@ -48,13 +48,13 @@
             </button>
           </div>
         </div>
-        
+
         <!-- Creative visual element with improved spacing -->
         <div class="lg:w-2/5 mt-5 mb-3 lg:mt-0">
           <div class="relative mx-auto max-w-md">
             <!-- Decorative frame with proper padding -->
             <div class="absolute -inset-6 border-2 border-dashed border-blue-200 rounded-xl"></div>
-            
+
             <!-- Main visual element -->
             <div class="relative bg-white p-10 rounded-lg shadow-lg border border-slate-100 m-4">
               <!-- Stats with elegant styling and improved spacing -->
@@ -76,7 +76,7 @@
                   <div class="text-sm text-slate-500">Satisfaction</div>
                 </div>
               </div>
-              
+
               <!-- Elegant quote with improved spacing -->
               <div class="mt-8 pt-6 border-t border-slate-100">
                 <p class="text-slate-600 italic text-sm leading-relaxed px-2">
@@ -95,7 +95,7 @@
     <h2 class="text-4xl text-gray-800 font-bold pb-2">All the skills you need in one place</h2>
     <p class="text-lg text-gray-500 font-semibold ">From critical skills to technical topics, Udemy supports your professional development.</p>
   </div>
- 
+
 {% else %}
 {% include 'home/continue_learning.html' %}
 
@@ -107,14 +107,14 @@
             <ul class="flex items-center overflow-x-auto" id="categoryBar">
                 {% for category in categories %}
                     <li class="relative">
-                        <a href="{% url 'home' %}?category={{ category.slug }}" 
+                        <a href="{% url 'home' %}?category={{ category.slug }}"
                         class="block px-6 py-4 text-sm font-medium hover:text-primary transition-colors
                                {% if category.slug == active_category.slug %}text-primary border-b-2 border-primary{% else %}text-base-content/80{% endif %}"
                         hx-get="{% url 'home' %}?category={{ category.slug }}"
                         hx-target="#subcategories-container"
                         hx-trigger="click"
                         hx-swap="innerHTML"
-                        hx-push-url="true" 
+                        hx-push-url="true"
                         onclick="setActiveCategory(this)"
                        >
                             {{ category.name }}
@@ -124,7 +124,7 @@
             </ul>
         </div>
     </div>
-    
+
     <!-- Subcategories Bar -->
     <div id="subcategories-container">
       {% include "home/subcategory.html" %}
@@ -174,13 +174,13 @@
                 link.classList.remove('text-primary', 'border-b-2', 'border-primary');
                 link.classList.add('text-base-content/80');
             });
-            
+
             // Add active class to clicked element
             element.classList.remove('text-base-content/80');
             element.classList.add('text-primary', 'border-b-2', 'border-primary');
         }
     </script>
-      
+
       <style>
           /* Hide scrollbar but keep functionality */
           .no-scrollbar::-webkit-scrollbar {
@@ -191,13 +191,13 @@
               scrollbar-width: none;
           }
       </style>
-      
+
       <script>
           // Optional: Add horizontal scrolling functionality for the subcategories
           document.addEventListener('DOMContentLoaded', function() {
               const scrollContainer = document.querySelector('.overflow-x-auto');
               const scrollButton = document.querySelector('.right-2');
-              
+
               if (scrollButton && scrollContainer) {
                   scrollButton.addEventListener('click', function() {
                       scrollContainer.scrollBy({
@@ -208,7 +208,7 @@
               }
           });
       </script>
-      
+
       <style>
           /* Hide scrollbar but keep functionality */
           .no-scrollbar::-webkit-scrollbar {
@@ -219,13 +219,13 @@
               scrollbar-width: none;
           }
       </style>
-      
+
       <script>
           // Optional: Add horizontal scrolling functionality for the subcategories
           document.addEventListener('DOMContentLoaded', function() {
               const scrollContainer = document.querySelector('.overflow-x-auto');
               const scrollButton = document.querySelector('.right-2');
-              
+
               if (scrollButton && scrollContainer) {
                   scrollButton.addEventListener('click', function() {
                       scrollContainer.scrollBy({
@@ -236,7 +236,7 @@
               }
           });
       </script>
-      
+
       <script>
         // Optional: Add horizontal scrolling functionality for the subcategories
         document.addEventListener('DOMContentLoaded', function() {

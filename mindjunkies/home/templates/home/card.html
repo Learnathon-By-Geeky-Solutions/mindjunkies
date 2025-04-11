@@ -17,9 +17,9 @@
         </div>
         {% endif %}
       </figure>
-      
-      
-        
+
+
+
         <div class="card-body p-4 flex flex-col flex-grow">
           <!-- Institution Logo and Name - FIXED SIZE -->
           <div class="flex items-center gap-2 mb-3">
@@ -37,15 +37,15 @@
             {% endif %}
             <span class="text-sm text-base-content/70">{{ course.institution.name }}</span>
           </div>
-          
+
           <!-- Course Title (if not displayed on image) -->
           {% if not course.display_title_on_image %}
             <h3 class="font-bold text-lg mb-2 line-clamp-2">{{ course.title }}</h3>
           {% endif %}
-          
+
           <!-- Course Description -->
           <p class="text-sm text-base-content/70 mb-4 line-clamp-3">{{ course.short_introduction }}</p>
-          
+
           <!-- Course Type Badge -->
           <div class="mt-auto pt-2 flex justify-between items-center">
             <span class="text-xs px-3 py-1 rounded-full bg-base-200 text-base-content/70">
@@ -55,10 +55,9 @@
                 Course
               {% endif %}
             </span>
-            
-          
+
+
           </div>
         </div>
-      </div>     
+      </div>
 </a>
-
