@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import content_list, enrollment_list, remove_enrollment, TeacherVerificationView, verification_wait
+from .views import TeacherVerificationView, content_list, enrollment_list, remove_enrollment, verification_wait
 
 urlpatterns = [
     path("content/", content_list, name="dashboard"),
@@ -12,7 +12,10 @@ urlpatterns = [
         remove_enrollment,
         name="dashboard_enrollments_remove",
     ),
-    path('teacher_verification/', TeacherVerificationView.as_view(), name='teacher_verification_form'),
-    path('verification_wait/', verification_wait, name='verification_wait'),
-
+    path(
+        "teacher_verification/",
+        TeacherVerificationView.as_view(),
+        name="teacher_verification_form",
+    ),
+    path("verification_wait/", verification_wait, name="verification_wait"),
 ]

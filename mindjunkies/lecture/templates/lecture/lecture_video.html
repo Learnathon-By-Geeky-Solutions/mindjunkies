@@ -45,14 +45,12 @@
                 <div class="p-4">
                     <div class="rounded-xl bg-base-200">
                         <div class="">
-                            <div class="video-container">
-                                <video id="video" class="video-js vjs-default-skin w-[800px] h-[450px]" controls
-                                       preload="auto">
-                                    <source src="{{ hls_url }}" type="application/x-mpegURL">
-                                    <track src="https://example.com/subtitles-en.vtt" kind="subtitles" srclang="en"
-                                           label="English" default>
+                            <div class="video-container mx-auto">
+                               <video controls>
+                                    <source src="{{ video.video_file.url }}" type="video/mp4">
+                                     Your browser does not support the video tag.
                                 </video>
-                            </div>
+                         </div>
                         </div>
                         <div class="p-4">
                             <button class="btn btn-ghost btn-sm text-primary">

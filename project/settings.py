@@ -3,6 +3,7 @@ from pathlib import Path
 import cloudinary
 import cloudinary.uploader
 from decouple import config
+from django.utils.translation import gettext_lazy as _
 
 # Configuration
 cloudinary.config(
@@ -72,6 +73,7 @@ INSTALLED_APPS = [
     "django_htmx",
     "template_partials",
     "django_extensions",
+    "taggit",
     # allauth
     "allauth",
     "allauth.account",
@@ -129,10 +131,6 @@ DATABASES = {
     }
 }
 
-# db_url = config("DATABASE_URL", default=None)
-# if db_url:
-#     DATABASES["default"] = dj_database_url.parse(db_url)
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -172,7 +170,6 @@ STATICFILES_DIRS = [
     BASE_DIR / "mindjunkies/static",
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -221,12 +218,7 @@ SOCIALACCOUNT_PROVIDERS = {
     },
 }
 
-
 # django unfold setting
-
-
-from django.urls import reverse_lazy
-from django.utils.translation import gettext_lazy as _
 
 
 UNFOLD = {
@@ -235,22 +227,17 @@ UNFOLD = {
     "SITE_SUBHEADER": "Edtech to help you learn better",
     "SITE_URL": "/",
     "SITE_SYMBOL": "speed",
-    
-
     "SITE_DROPDOWN": [
         {
             "icon": "diamond",
             "title": _("My site"),
             "link": "http://127.0.0.1:8000/",
         },
-        
     ],
-
-    "SHOW_HISTORY": True, # show/hide "History" button, default: True
-    "SHOW_VIEW_ON_SITE": True, # show/hide "View on site" button, default: True
-    "SHOW_BACK_BUTTON": True, # show/hide "Back" button on changeform in header, default: False
+    "SHOW_HISTORY": True,  # show/hide "History" button, default: True
+    "SHOW_VIEW_ON_SITE": True,  # show/hide "View on site" button, default: True
+    "SHOW_BACK_BUTTON": True,  # show/hide "Back" button on changeform in header, default: False
     "THEME": "dark",
-
     "BORDER_RADIUS": "6px",
     "COLORS": {
         "base": {
@@ -288,18 +275,11 @@ UNFOLD = {
             "important-dark": "var(--color-base-100)",  # text-base-100
         },
     },
-
-     "SIDEBAR": {
-         "show_search": True,  # Search in applications and models names
+    "SIDEBAR": {
+        "show_search": True,  # Search in applications and models names
         "show_all_applications": False,  # Dropdown with all applications and models
-     },
-
-    
+    },
 }
-
-
-
-
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
@@ -315,7 +295,4 @@ DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 JITSI_APP_ID = config("JITSI_APP_ID")
 JITSI_SECRET = config("JITSI_SECRET")
 
-
-
-
-
+TAGGIT_CASE_INSENSITIVE = True

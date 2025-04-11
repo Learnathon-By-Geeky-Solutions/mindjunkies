@@ -7,28 +7,39 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('courses', '0002_lastvisitedcourse'),
+        ("courses", "0002_lastvisitedcourse"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='coursetoken',
-            old_name='user',
-            new_name='teacher',
+            model_name="coursetoken",
+            old_name="user",
+            new_name="teacher",
         ),
         migrations.AddField(
-            model_name='coursetoken',
-            name='motivation',
-            field=models.TextField(default='', help_text='Write your motivation or plan for the course, including how you plan to organize it.'),
+            model_name="coursetoken",
+            name="motivation",
+            field=models.TextField(
+                default="",
+                help_text="Write your motivation or plan for the course, including how you plan to organize it.",
+            ),
         ),
         migrations.AlterField(
-            model_name='coursetoken',
-            name='course',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tokens', to='courses.course'),
+            model_name="coursetoken",
+            name="course",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="tokens",
+                to="courses.course",
+            ),
         ),
         migrations.AlterField(
-            model_name='coursetoken',
-            name='status',
-            field=models.CharField(choices=[('pending', 'Pending'), ('approved', 'Approved')], default='pending', max_length=10),
+            model_name="coursetoken",
+            name="status",
+            field=models.CharField(
+                choices=[("pending", "Pending"), ("approved", "Approved")],
+                default="pending",
+                max_length=10,
+            ),
         ),
     ]

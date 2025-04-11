@@ -1,3 +1,4 @@
+import cloudinary
 from django.db import models
 from django.utils.text import slugify
 
@@ -58,7 +59,7 @@ class LectureVideo(BaseModel):
     lecture = models.ForeignKey(
         "Lecture", on_delete=models.CASCADE, related_name="videos"
     )
-    video_file = models.FileField(upload_to="lecture_videos/")
+    video_file = cloudinary.models.CloudinaryField(resource_type="video")
     video_title = models.CharField(max_length=255)
     thumbnail = models.ImageField(upload_to="thumbnails", null=True, blank=True)
     hls = models.CharField(max_length=500, blank=True, null=True)

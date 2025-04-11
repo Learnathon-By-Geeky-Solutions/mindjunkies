@@ -1,10 +1,13 @@
 from django.db import models
-from mindjunkies.accounts.models import User
+
 from config.models import BaseModel
+from mindjunkies.accounts.models import User
 
 
 class TeacherVerification(BaseModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Link to the user (teacher)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE
+    )  # Link to the user (teacher)
     full_name = models.CharField(max_length=255)
     email = models.EmailField()
     phone = models.CharField(max_length=20, null=True, blank=True)
@@ -13,7 +16,9 @@ class TeacherVerification(BaseModel):
     important_links = models.TextField(null=True, blank=True)
     experience = models.TextField(null=True, blank=True)
     social_media = models.TextField(null=True, blank=True)
-    certificates = models.ManyToManyField('Certificate', related_name='teacher_verifications')
+    certificates = models.ManyToManyField(
+        "Certificate", related_name="teacher_verifications"
+    )
     verified = models.BooleanField(default=False)
     verification_date = models.DateTimeField(null=True, blank=True)
 
@@ -22,7 +27,7 @@ class TeacherVerification(BaseModel):
 
 
 class Certificate(BaseModel):
-    image = models.ImageField(upload_to='certificates/')
+    image = models.ImageField(upload_to="certificates/")
     description = models.CharField(max_length=255, blank=True)
 
     def __str__(self):

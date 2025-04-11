@@ -1,16 +1,8 @@
 import pytest
 from model_bakery import baker
 
-from mindjunkies.courses.models import (
-    CourseCategory,
-    Course,
-    CourseInfo,
-    Rating,
-    Enrollment,
-    Module,
-    CourseToken,
-    LastVisitedCourse,
-)
+from mindjunkies.courses.models import (Course, CourseCategory, CourseInfo, CourseToken, Enrollment, LastVisitedCourse,
+                                        Module, Rating)
 
 
 @pytest.mark.django_db
@@ -82,8 +74,8 @@ def test_module_str():
 def test_course_token_str():
     user = baker.make("accounts.User")
     course = baker.make(Course)
-    token = baker.make(CourseToken, user=user, course=course, status="accepted")
-    assert str(token) == f"{user.username} - Accepted"
+    token = baker.make(CourseToken, teacher=user, course=course, status="accepted")
+    assert str(token) == f"Token for {course.title} by {user.username}"
 
 
 @pytest.mark.django_db

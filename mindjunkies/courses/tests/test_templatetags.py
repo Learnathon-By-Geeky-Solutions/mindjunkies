@@ -1,5 +1,6 @@
 import pytest
 from django.template import Context, Template
+
 from mindjunkies.courses.templatetags import courses_tags
 
 

@@ -1,7 +1,7 @@
 {% comment %} This is a recursive template for rendering comments at any nesting level Usage: {% include
   "components/comment.html" with reply=reply depth=0 %} {% endcomment %}
   <style></style>
-  
+
   <div class="comment-container {% if depth > 0 %}ml-12{% endif %} mb-4">
       <div class="flex">
           <!-- Avatar with initials -->
@@ -14,24 +14,24 @@
                   />
               </div>
           </div>
-  
+
           <div class="flex-grow">
               <!-- Comment Header -->
               <div class="flex items-center mb-1">
                   <span class="font-medium mr-2">{{ reply.author }}</span>
                   <span class="badge badge-primary badge-sm text-xs">Learner</span>
-                 
+
               </div>
               <div class="{% if depth > 0 %}text-xs{% else %}text-xs{% endif %} text-gray-500">{{reply.created}}</div>
               <!-- Comment Content -->
               <div class="text-gray-800 mb-2">
                   <p>{{ reply.body }}</p>
               </div>
-  
+
               <!-- Comment Actions -->
               <div class="flex items-center space-x-4 mb-3">
                  {% include 'forums/partials/like_reply.html'%}
-  
+
                   <a
                       class="btn btn-ghost btn-xs flex cursor-pointer items-center text-blue-600 hover:text-blue-800"
                       hx-get="{% url 'reply_form'  reply.id %}"
@@ -56,7 +56,7 @@
                       </svg>
                       Reply{% if depth > 0 %} {{ depth }}{% endif %}
                   </a>
-  
+
                   <div class="dropdown dropdown-end">
                       <label
                           tabindex="0"
@@ -87,13 +87,13 @@
                       </ul>
                   </div>
               </div>
-  
+
               <!-- Reply Form Container -->
               <div id="reply-form-container-{{reply.id}}" class="mb-4"></div>
-  
+
               <!-- Child Replies Container -->
               <div class="mb-2">
-                  {% for child_reply in reply.replies.all %} {% include "forums/reply.html" with reply=child_reply depth=depth|add:1 %} 
+                  {% for child_reply in reply.replies.all %} {% include "forums/reply.html" with reply=child_reply depth=depth|add:1 %}
                   {% endfor %}
               </div>
           </div>
@@ -103,14 +103,14 @@
       // Function to toggle reply form visibility
       function toggleReplyForm(event, replyId) {
           const container = document.getElementById('reply-form-container-' + replyId);
-          
+
           // If the container already has content, clear it (close the form)
           if (container.innerHTML.trim() !== '') {
               event.preventDefault(); // Prevent HTMX request
               container.innerHTML = '';
               return;
           }
-          
+
           // Otherwise, let HTMX load the form (open the form)
       }
       </script>

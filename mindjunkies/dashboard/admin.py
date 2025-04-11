@@ -1,7 +1,9 @@
 # Register your models here.
 from django.contrib import admin
-from .models import TeacherVerification, Certificate
 from unfold.admin import ModelAdmin
+
+from .models import Certificate, TeacherVerification
+
 
 @admin.register(TeacherVerification)
 class TeacherVerificationAdmin(ModelAdmin):
@@ -15,6 +17,7 @@ class TeacherVerificationAdmin(ModelAdmin):
             obj.user.is_teacher = True  # Grant teacher permission
             obj.user.save()
         self.message_user(request, "Selected users have been approved as teachers.")
+
     approve_teacher.short_description = "Approve selected teachers"
 
     def disapprove_teacher(self, request, queryset):
@@ -24,8 +27,8 @@ class TeacherVerificationAdmin(ModelAdmin):
             obj.user.is_teacher = False  # Revoke teacher permission
             obj.user.save()
         self.message_user(request, "Selected users have been disapproved as teachers.")
-    disapprove_teacher.short_description = "Disapprove selected teachers"
 
+    disapprove_teacher.short_description = "Disapprove selected teachers"
 
 
 # Register your models here.
