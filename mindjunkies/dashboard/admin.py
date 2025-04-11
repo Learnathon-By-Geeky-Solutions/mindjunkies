@@ -1,9 +1,10 @@
 # Register your models here.
 from django.contrib import admin
 from .models import TeacherVerification, Certificate
+from unfold.admin import ModelAdmin
 
 @admin.register(TeacherVerification)
-class TeacherVerificationAdmin(admin.ModelAdmin):
+class TeacherVerificationAdmin(ModelAdmin):
     list_display = ("user", "full_name", "email", "phone", "address", "verified")
     actions = ["approve_teacher", "disapprove_teacher"]
 
@@ -29,7 +30,7 @@ class TeacherVerificationAdmin(admin.ModelAdmin):
 
 # Register your models here.
 @admin.register(Certificate)
-class CertificateAdmin(admin.ModelAdmin):
+class CertificateAdmin(ModelAdmin):
     list_display = ("id", "image", "description")
     search_fields = ("description",)
     list_filter = ("created_at", "updated_at")

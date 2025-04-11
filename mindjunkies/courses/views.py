@@ -91,7 +91,9 @@ class CourseUpdateView(LoginRequiredMixin, UpdateView):
 def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     """View to show course details."""
     course = get_object_or_404(Course, slug=slug)
-    enrolled = course.enrollments.filter(student=request.user, status="active").exists()
+    enrolled = False
+    if request.user.is_authenticated:
+        enrolled = course.enrollments.filter(student=request.user, status="active").exists()
     context = {
         "course_detail": course,
         "accessed": enrolled,
@@ -154,3 +156,44 @@ class CreateCourseTokenView(CreateView):
         messages.error(self.request, "There was an error in your form submission.")
         return super().form_invalid(form)
 
+
+
+class RatingCreateView(CreateView):
+    model = Rating
+    form_class = RatingForm
+    template_name = "courses/rate_course.html"
+
+    def get_initial(self):
+        initial = super().get_initial()
+        course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        try:
+            rating = Rating.objects.get(student=self.request.user, course=course)
+            initial.update({
+                "rating": rating.rating,
+                "review": rating.review,
+            })
+        except Rating.DoesNotExist:
+            pass
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["course"] = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        return context
+
+    def form_valid(self, form):
+        course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        student = self.request.user
+
+        rating, created = Rating.objects.update_or_create(
+            student=student,
+            course=course,
+            defaults={
+                "rating": form.cleaned_data["rating"],
+                "review": form.cleaned_data["review"],
+            },
+        )
+
+        course.update_rating()
+
+        return redirect(reverse("course_details", kwargs={"slug": course.slug}))

@@ -29,7 +29,7 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
         return get_object_or_404(Course, slug=self.kwargs["course_slug"])
 
     def get_is_teacher(self, course):
-        return self.request.user.is_staff or course.teachers.filter(teacher=self.request.user).exists()
+        return self.request.user.is_staff or course.teacher == self.request.user
 
     def get_today_range(self) -> Tuple[timezone.datetime, timezone.datetime]:
         today = localtime(now())
@@ -65,9 +65,6 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
         current_live_class = self.get_current_live_class(course)
         current_module = self.get_current_module(course)
         
-        # if not current_module:
-        #     messages.warning(self.request, "No lectures available for this course.")
-
         context.update({
             "course": course,
             "modules": course.modules.all(),
@@ -177,7 +174,7 @@ def lecture_video(request: HttpRequest, course_slug: str, module_id: str, video_
         "course": video.lecture.course,
         "video": video,
         "module": module,
-        "hls_url": hls_playlist_url,
+        "hls_url": video.video_file.url,
     }
 
     return render(request, "lecture/lecture_video.html", context)
@@ -200,10 +197,6 @@ class CourseObjectMixin:
     def get_course(self):
         return get_object_or_404(Course, slug=self.kwargs["course_slug"])
     
-    def check_course_permission(self, request, course):
-        """Override in subclasses to implement permission checks."""
-        return True
-
 
 @method_decorator(csrf_protect, name="dispatch")
 class CreateLectureView(LoginRequiredMixin, CourseObjectMixin, CreateView):

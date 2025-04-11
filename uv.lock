@@ -364,6 +364,18 @@ wheels = [
 ]
 
 [[package]]
+name = "django-taggit"
+version = "6.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/34/a6/f1beaf8f552fe90c153cc039316ebab942c23dfbc88588dde081fefca816/django_taggit-6.1.0.tar.gz", hash = "sha256:c4d1199e6df34125dd36db5eb0efe545b254dec3980ce5dd80e6bab3e78757c3", size = 38151 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6b/34/4185c345530b91d05cb82e05d07148f481a5eb5dc2ac44e092b3daa6f206/django_taggit-6.1.0-py3-none-any.whl", hash = "sha256:ab776264bbc76cb3d7e49e1bf9054962457831bd21c3a42db9138b41956e4cf0", size = 75749 },
+]
+
+[[package]]
 name = "django-tailwind-cli"
 version = "4.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -403,6 +415,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/c4/6e/75a3d464ceb87121fda707746191bf27d0c442f7e88e7d80b9d01844cfdd/django_typer-3.0.0.tar.gz", hash = "sha256:38b9f8e2c2de9593511a0f969034bf64b6bd387549eecdf252832b3e606d5df7", size = 149897 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9e/62/258a4f716611523aac059d2f40130eb906bdacf563f6e12ad4e6f65e6aa3/django_typer-3.0.0-py3-none-any.whl", hash = "sha256:b03b9cda603ece6555cf621e889669848074728963a2c894da7db3ce3e7f4e6e", size = 292824 },
+]
+
+[[package]]
+name = "django-unfold"
+version = "0.54.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/23/de/9411f21c16d40e73b2f6928a1ce1457541ef8546498d8334a713a8c4553b/django_unfold-0.54.0.tar.gz", hash = "sha256:7388535302f91f841c6c0a7c595a8d6f34da0639051af5525ca3403a7a2a02ac", size = 1023410 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/da/e3/5301bcab21fcf858b03d9e39c6d86d82efb2ba10ed4d9d12a4add3616aee/django_unfold-0.54.0-py3-none-any.whl", hash = "sha256:552df0ec2e826bc24f4134f0c54403b225191df13278a863118cb53d64109eb7", size = 1113039 },
 ]
 
 [[package]]
@@ -539,7 +563,9 @@ dependencies = [
     { name = "django-categories" },
     { name = "django-crispy-forms" },
     { name = "django-htmx" },
+    { name = "django-taggit" },
     { name = "django-template-partials" },
+    { name = "django-unfold" },
     { name = "factory-boy" },
     { name = "markdown" },
     { name = "pillow" },
@@ -582,7 +608,9 @@ requires-dist = [
     { name = "django-categories", specifier = ">=2.0.0" },
     { name = "django-crispy-forms", specifier = ">=2.3" },
     { name = "django-htmx", specifier = ">=1.23.0" },
+    { name = "django-taggit", specifier = ">=6.1.0" },
     { name = "django-template-partials", specifier = ">=24.4" },
+    { name = "django-unfold", specifier = ">=0.54.0" },
     { name = "factory-boy", specifier = ">=3.3.3" },
     { name = "markdown", specifier = ">=3.7" },
     { name = "pillow", specifier = ">=11.1.0" },

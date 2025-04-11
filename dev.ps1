@@ -39,6 +39,7 @@ function Test {
     uv run pytest -v -rs -n auto
 }
 
+
 function Update {
     Sync
     Migrate
