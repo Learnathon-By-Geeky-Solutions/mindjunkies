@@ -130,30 +130,45 @@
       {% include "home/subcategory.html" %}
   </div>
 </div>
-
-    <section id="enrolled-courses" class="bg-base-200">
+    {% if enrolled_courses%}
+    <section id="enrolled-courses" class="p-10 bg-base-200">
         <div class="container mx-auto px-4">
-            <h2 class="text-xl font-bold text-center mb-8">Continue Learning</h2>
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 m-4">My Courses</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {% for course in enrolled_courses %}
                     {% include 'home/card.html' %}
                 {% endfor %}
             </div>
         </div>
+        <button class="px-6 py-2 m-4 cursor-pointer font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 transition-colors duration-200">
+            Show all my courses
+          </button>
     </section>
-    <section id="new-courses" class="bg-base-200">
-        <div class="container mx-auto px-4">
-            <h2 class="text-xl font-bold text-center mb-8">New Courses</h2>
+    {% endif %}
+    {% if new_courses%}
+    <section id="new-courses" class="p-10 bg-base-200">
+        <div class="consultant mx-auto my-2 px-4">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 m-4">New Courses</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {% for course in new_courses %}
                     {% include 'home/card.html' %}
                 {% endfor %}
             </div>
+            
         </div>
+        <button class="px-6 py-2 m-4 cursor-pointer font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 transition-colors duration-200">
+            Show all new courses
+          </button>
+        
     </section>
+   
+   
+    {% endif %}
+    
+    {% if courses%}
     <section id="courses" class="bg-base-200">
         <div class="container mx-auto px-4">
-            <h2 class="text-xl font-bold text-center mb-8">Popular Courses</h2>
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 m-4">Popular Courses</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {% for course in courses %}
                     {% include 'home/card.html' %}
@@ -161,6 +176,7 @@
             </div>
         </div>
     </section>
+    {% endif %}
     <section class="p-10">
         {% include 'home/goal.html' %}
       </section>
