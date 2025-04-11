@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "django_htmx",
     "template_partials",
     "django_extensions",
+    "taggit",
     # allauth
     "allauth",
     "allauth.account",
