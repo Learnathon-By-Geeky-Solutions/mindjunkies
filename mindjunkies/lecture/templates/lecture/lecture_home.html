@@ -1,4 +1,4 @@
-{% extends 'lecture/base.html' %}
+    {% extends 'lecture/base.html' %}
 {% load static %}
 
 {% block lecture_content %}
@@ -182,7 +182,7 @@
                                         </h4>
                                         <p class="text-xs text-slate-500">Video • 45 min</p>
                                     </div>
-                                    <a href="{% url 'lecture_video_content' course.slug current_module.id video.id %}"
+                                    <a href="{% url 'lecture_video_content' course.slug current_module.id lecture.id video.id %}"
                                        class="btn bg-indigo-600 hover:bg-indigo-700 text-white btn-sm action-link">
                                         Resume
                                     </a>
