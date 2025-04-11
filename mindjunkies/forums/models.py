@@ -7,6 +7,7 @@ from mindjunkies.courses.models import Course, Module
 
 class ForumTopic(models.Model):
     """Model for forum topics/threads"""
+
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
     content = models.CharField(max_length=150)
@@ -56,7 +57,7 @@ class LikedPost(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.user.username} : {self.topic.content[:30]}'
+        return f"{self.user.username} : {self.topic.content[:30]}"
 
 
 class ForumComment(models.Model):
@@ -72,7 +73,9 @@ class ForumComment(models.Model):
         related_name="forum_comments",
     )
 
-    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="likedComments", through="LikedComment")
+    likes = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="likedComments", through="LikedComment"
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

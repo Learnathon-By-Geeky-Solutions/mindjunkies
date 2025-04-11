@@ -21,9 +21,7 @@ class TestTeacherDashboardViews:
         url = reverse("dashboard")
         response = client.get(url)
 
-        assert response.status_code == 200
-        for course in courses:
-            assert course.title in response.content.decode()
+        assert response.status_code == 302  # Redirect to teacher verification
 
     def test_enrollment_list_view_requires_login(self, client):
         course = baker.make(Course)

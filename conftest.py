@@ -1,5 +1,4 @@
 import pytest
-from mindjunkies.accounts.tests.fixtures import accounts
 
 
 @pytest.fixture(autouse=True)
