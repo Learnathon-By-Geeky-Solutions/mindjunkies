@@ -114,7 +114,7 @@ def test_rating_create_view_new(client):
 def test_rating_create_view_existing(client):
     user = baker.make("accounts.User")
     course = baker.make(Course)
-    rating = baker.make(Rating, course=course, student=user, rating=3, review="Okay")
+    baker.make(Rating, course=course, student=user, rating=3, review="Okay")
 
     client.force_login(user)
     url = reverse("rate_course", kwargs={"course_slug": course.slug})

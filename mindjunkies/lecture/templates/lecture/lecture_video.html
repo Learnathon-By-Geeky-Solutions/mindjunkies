@@ -46,11 +46,15 @@
                     <div class="rounded-xl bg-base-200">
                         <div class="">
                             <div class="video-container mx-auto">
-                               <video controls>
+                                <video controls>
                                     <source src="{{ video.video_file.url }}" type="video/mp4">
-                                     Your browser does not support the video tag.
+                                    <track src="#" kind="subtitles" srclang="en"
+                                           label="English">
+                                    <track src="#" kind="descriptions" srclang="en"
+                                           label="English Description">
+                                    Your browser does not support the video tag.
                                 </video>
-                         </div>
+                            </div>
                         </div>
                         <div class="p-4">
                             <button class="btn btn-ghost btn-sm text-primary">
@@ -89,7 +93,8 @@
                                                 <div class="flex-shrink-0 mt-1">
                                                     <svg class="h-5 w-5 text-primary" viewBox="0 0 24 24"
                                                          fill="currentColor">
-                                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+                                                        <path
+                                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
                                                     </svg>
                                                 </div>
                                                 <div class="ml-3 flex-1">
@@ -105,7 +110,8 @@
                                                class="flex items-start p-2 rounded-lg hover:bg-base-300" download="">
                                                 <div class="flex-shrink-0 mt-1">
                                                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                                                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z"/>
+                                                        <path
+                                                            d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z"/>
                                                     </svg>
                                                 </div>
                                                 <div class="ml-3 flex-1">
@@ -119,7 +125,8 @@
                                         <a href="#" class="flex items-start p-2 rounded-lg hover:bg-base-300">
                                             <div class="flex-shrink-0 mt-1">
                                                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                                                    <path
+                                                        d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
                                                 </svg>
                                             </div>
                                             <div class="ml-3 flex-1">

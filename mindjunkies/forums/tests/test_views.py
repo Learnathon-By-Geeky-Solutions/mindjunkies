@@ -175,7 +175,7 @@ class TestTopicSubmissionView(TestCase):
         setattr(request, "_messages", messages)
 
         view = TopicSubmissionView.as_view()
-        response = view(request, course_slug=self.course.slug, module_id=self.module.id)
+        view(request, course_slug=self.course.slug, module_id=self.module.id)
 
         # Check that a new topic was created
         self.assertEqual(ForumTopic.objects.count(), 1)
@@ -222,7 +222,7 @@ class TestCommentSubmissionView(TestCase):
         setattr(request, "_messages", messages)
 
         view = CommentSubmissionView.as_view()
-        response = view(
+        view(
             request, course_slug=self.course.slug, topic_slug=self.topic.slug
         )
 
@@ -273,7 +273,7 @@ class TestReplySubmissionView(TestCase):
         setattr(request, "_messages", messages)
 
         view = ReplySubmissionView.as_view()
-        response = view(
+        view(
             request,
             course_slug=self.course.slug,
             topic_slug=self.topic.slug,

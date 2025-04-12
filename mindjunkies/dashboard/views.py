@@ -13,8 +13,6 @@ from mindjunkies.courses.models import Course, Enrollment
 from .forms import TeacherVerificationForm
 from .models import Certificate, TeacherVerification
 
-# Create your views here.
-
 
 @login_required
 @require_http_methods(["GET"])
@@ -108,5 +106,7 @@ class TeacherVerificationView(FormView):
 
 
 @login_required
+@require_http_methods(["GET"])
 def verification_wait(request):
-    return render(request, "verification_wait.html")
+    return render(request, "verification_wait.html", {"message": "Please wait for your verification."})
+

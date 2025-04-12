@@ -3,6 +3,7 @@ from django.forms import inlineformset_factory
 
 from .models import Course, CourseInfo, CourseToken, Rating
 
+text_area = "form-input mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
 
 class CourseForm(forms.ModelForm):
     class Meta:
@@ -24,8 +25,7 @@ class CourseForm(forms.ModelForm):
         widgets = {
             "tags": forms.Textarea(
                 attrs={
-                    "class": "form-input mt-1 block w-full p-2 border border-gray-300 rounded-md "
-                    "focus:ring-indigo-500 focus:border-indigo-500",
+                    "class": text_area,
                     "placeholder": "Enter tags separated by commas (e.g., Python, Django, Web Development)",
                 }
             ),
@@ -50,8 +50,7 @@ class CourseTokenForm(forms.ModelForm):
         widgets = {
             "motivation": forms.Textarea(
                 attrs={
-                    "class": "form-input mt-1 block w-full p-2 border border-gray-300 rounded-md "
-                    "focus:ring-indigo-500 focus:border-indigo-500"
+                    "class": text_area
                 }
             ),
             "intro_video": forms.ClearableFileInput(

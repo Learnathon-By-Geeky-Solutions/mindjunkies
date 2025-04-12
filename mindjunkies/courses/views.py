@@ -186,7 +186,7 @@ class RatingCreateView(CreateView):
         course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
         student = self.request.user
 
-        rating, created = Rating.objects.update_or_create(
+        _, _ = Rating.objects.update_or_create(
             student=student,
             course=course,
             defaults={
