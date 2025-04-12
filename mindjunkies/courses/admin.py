@@ -1,7 +1,5 @@
-from categories.admin import CategoryBaseAdmin
 from django.contrib import admin
 from unfold.admin import ModelAdmin
-
 
 from mindjunkies.courses.models import Course, CourseCategory, Enrollment
 
@@ -18,7 +16,11 @@ class CourseAdmin(ModelAdmin):
         "published_on",
         "paid_course",
         "course_price",
+        "get_tags",
     )
+
+    def get_tags(self, obj):
+        return ", ".join(o.name for o in obj.tags.all())
 
 
 @admin.register(Enrollment)

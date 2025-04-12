@@ -1,22 +1,26 @@
 import pytest
-from django.utils.text import slugify
 from django.contrib.auth import get_user_model
+from django.utils.text import slugify
+
+from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course, Module
 from mindjunkies.lecture.models import Lecture, LecturePDF, LectureVideo
-from mindjunkies.accounts.models import User
 
 
 @pytest.fixture
 def teacher(db):
     return User.objects.create_user(username="test_teacher", password="password")
 
+
 @pytest.fixture
 def course(db, teacher):
     return Course.objects.create(title="Test Course", teacher=teacher)
 
+
 @pytest.fixture
 def module(db, course):
     return Module.objects.create(title="Test Module", course=course)
+
 
 @pytest.fixture
 def lecture(db, course, module):
@@ -29,12 +33,14 @@ def lecture(db, course, module):
         order=1,
     )
 
+
 @pytest.mark.django_db
 def test_lecture_creation(lecture):
     assert lecture.title == "Test Lecture"
     assert lecture.slug == slugify("Test Lecture")
     assert lecture.course.title == "Test Course"
     assert lecture.module.title == "Test Module"
+
 
 @pytest.mark.django_db
 def test_lecture_slug_auto_generation(course, module):
@@ -45,16 +51,19 @@ def test_lecture_slug_auto_generation(course, module):
     )
     assert lecture.slug == slugify("New Lecture")
 
+
 @pytest.fixture
 def lecture_pdf(db, lecture):
     return LecturePDF.objects.create(
         lecture=lecture, pdf_file="lecture_pdfs/test.pdf", pdf_title="Test PDF"
     )
 
+
 @pytest.mark.django_db
 def test_lecture_pdf_creation(lecture_pdf):
     assert lecture_pdf.pdf_title == "Test PDF"
     assert lecture_pdf.lecture.title == "Test Lecture"
+
 
 @pytest.fixture
 def lecture_video(db, lecture):
@@ -64,6 +73,7 @@ def lecture_video(db, lecture):
         video_title="Test Video",
         status=LectureVideo.PENDING,
     )
+
 
 @pytest.mark.django_db
 def test_lecture_video_creation(lecture_video):

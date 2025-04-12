@@ -1,14 +1,12 @@
-import cloudinary
-import cloudinary.uploader
 from categories.models import CategoryBase
 from cloudinary.models import CloudinaryField
 from django.db import models
-from django.contrib.auth import get_user_model
 from django.utils.text import slugify
+from taggit.managers import TaggableManager
 
 from config.models import BaseModel
 
-
+user = "accounts.User"
 
 
 class CourseCategory(CategoryBase):
@@ -40,7 +38,7 @@ class Course(BaseModel):
     )
 
     teacher = models.ForeignKey(
-        "accounts.User", on_delete=models.CASCADE, related_name="courses_taught"
+        user, on_delete=models.CASCADE, related_name="courses_taught"
     )
 
     course_image = CloudinaryField(
@@ -63,6 +61,9 @@ class Course(BaseModel):
 
     total_rating = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     number_of_ratings = models.PositiveIntegerField(default=0)
+
+    # Tags for the course
+    tags = TaggableManager(blank=True)
 
     def __str__(self):
         return self.title
@@ -146,9 +147,7 @@ class Enrollment(BaseModel):
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name="enrollments"
     )
-    student = models.ForeignKey(
-        "accounts.User", on_delete=models.CASCADE, related_name="enrolled"
-    )
+    student = models.ForeignKey(user, on_delete=models.CASCADE, related_name="enrolled")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
 
     class Meta:
@@ -176,17 +175,23 @@ class Module(BaseModel):
 
 class CourseToken(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="tokens")
-    teacher = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
-    motivation = models.TextField(help_text="Write your motivation or plan for the course, including how you plan to organize it.")
-    intro_video = CloudinaryField(resource_type='video', default="")
-    status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('approved', 'Approved')], default='pending')
+    teacher = models.ForeignKey(user, on_delete=models.CASCADE)
+    motivation = models.TextField(
+        help_text="Write your motivation or plan for the course, including how you plan to organize it."
+    )
+    intro_video = CloudinaryField(resource_type="video", default="")
+    status = models.CharField(
+        max_length=10,
+        choices=[("pending", "Pending"), ("approved", "Approved")],
+        default="pending",
+    )
 
     def __str__(self):
         return f"Token for {self.course.title} by {self.teacher.username}"
 
 
 class LastVisitedCourse(models.Model):
-    user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
+    user = models.ForeignKey(user, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     last_visited = models.DateTimeField(auto_now=True)
 

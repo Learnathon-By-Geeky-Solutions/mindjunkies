@@ -4,10 +4,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.decorators.http import require_http_methods
-from django.views.generic.edit import CreateView, FormView, UpdateView
-from django.urls import reverse_lazy
+from django.views.generic.edit import CreateView, UpdateView
 
 from mindjunkies.courses.models import Course, CourseCategory, Enrollment
 
@@ -56,7 +55,9 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
         form.instance.teacher = self.request.user
         form.save()
         messages.success(self.request, "Course saved successfully!")
-        return redirect(reverse("create_course_token", kwargs={"slug": form.instance.slug}))
+        return redirect(
+            reverse("create_course_token", kwargs={"slug": form.instance.slug})
+        )
 
     def form_invalid(self, form):
         messages.error(
@@ -91,7 +92,11 @@ class CourseUpdateView(LoginRequiredMixin, UpdateView):
 def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     """View to show course details."""
     course = get_object_or_404(Course, slug=slug)
-    enrolled = course.enrollments.filter(student=request.user, status="active").exists()
+    enrolled = False
+    if request.user.is_authenticated:
+        enrolled = course.enrollments.filter(
+            student=request.user, status="active"
+        ).exists()
     context = {
         "course_detail": course,
         "accessed": enrolled,
@@ -129,24 +134,21 @@ def category_courses(request, slug):
     )
 
 
-
-
 class CreateCourseTokenView(CreateView):
     model = CourseToken
     form_class = CourseTokenForm
     template_name = "course_token_form.html"
 
     def get_success_url(self):
-        # Redirect to some confirmation or success page after form submission
-        messages.success(self.request,"Your request was successfull")
-        return reverse_lazy('home')
+        messages.success(self.request, "Your request was successful")
+        return reverse_lazy("home")
 
     def form_valid(self, form):
         # Save the teacher and course info automatically
         form.instance.teacher = self.request.user
-        slug = self.kwargs['slug']
+        slug = self.kwargs["slug"]
         course = Course.objects.get(slug=slug)
-        form.instance.course = course # Assuming 'slug' passed in URL
+        form.instance.course = course  # Assuming 'slug' passed in URL
         messages.success(self.request, "Course token submitted successfully!")
         return super().form_valid(form)
 
@@ -154,3 +156,45 @@ class CreateCourseTokenView(CreateView):
         messages.error(self.request, "There was an error in your form submission.")
         return super().form_invalid(form)
 
+
+class RatingCreateView(CreateView):
+    model = Rating
+    form_class = RatingForm
+    template_name = "courses/rate_course.html"
+
+    def get_initial(self):
+        initial = super().get_initial()
+        course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        try:
+            rating = Rating.objects.get(student=self.request.user, course=course)
+            initial.update(
+                {
+                    "rating": rating.rating,
+                    "review": rating.review,
+                }
+            )
+        except Rating.DoesNotExist:
+            pass
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["course"] = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        return context
+
+    def form_valid(self, form):
+        course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        student = self.request.user
+
+        _, _ = Rating.objects.update_or_create(
+            student=student,
+            course=course,
+            defaults={
+                "rating": form.cleaned_data["rating"],
+                "review": form.cleaned_data["review"],
+            },
+        )
+
+        course.update_rating()
+
+        return redirect(reverse("course_details", kwargs={"slug": course.slug}))
