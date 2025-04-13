@@ -168,7 +168,7 @@ class Module(BaseModel):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="modules")
     order = models.PositiveIntegerField(default=0)
 
-    class Meta:
+    class Meta: 
         ordering = ["order"]
 
     def __str__(self):

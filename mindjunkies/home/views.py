@@ -72,7 +72,11 @@ def home(request):
             )
             .order_by("-last_visited_at", "title")
         ) 
-        
+    
+    # progression track 
+
+
+
 
     # Build the context
     context = {
