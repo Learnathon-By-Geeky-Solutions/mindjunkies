@@ -14,7 +14,7 @@ class Lecture(BaseModel):
         Course, on_delete=models.CASCADE, related_name="lectures"
     )
     module = models.ForeignKey(
-        Module, on_delete=models.CASCADE, related_name="lectures"
+        Module, on_delete=models.CASCADE, related_name="models"
     )
 
     title = models.CharField(max_length=255)
