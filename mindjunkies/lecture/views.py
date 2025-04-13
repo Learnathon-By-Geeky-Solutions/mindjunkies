@@ -18,14 +18,10 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 from mindjunkies.courses.models import Course, Module
 
 from .forms import LectureForm, LecturePDFForm, LectureVideoForm, ModuleForm
-<<<<<<< HEAD
-from .models import Lecture, LecturePDF, LectureVideo
-=======
 from .models import Lecture, LecturePDF, LectureVideo, LectureCompletion
 from django.utils.timezone import localtime, now
 from django.views.generic import TemplateView
 from django.views import View
->>>>>>> feature/progression
 
 
 class LectureHomeView(LoginRequiredMixin, TemplateView):
