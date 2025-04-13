@@ -1,9 +1,10 @@
-{% extends 'lecture/base.html' %} {% load static %} {% load crispy_forms_filters %} {% load crispy_forms_tags %} 
+{% extends 'lecture/base.html' %} 
+{% load static %} {% load crispy_forms_filters %} {% load crispy_forms_tags %} 
 {% block lecture_content %}
 <div class="max-w-5xl px-4 py-8">
     <!-- Breadcrumb Navigation -->
     <div class="flex items-center text-sm mb-8">
-        <a href="" class="text-blue-600 hover:underline flex items-center">
+        <a href="{% url 'forum_thread' course.slug module.id %}" class="text-blue-600 hover:underline flex items-center">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-5 w-5"
@@ -34,7 +35,7 @@
     <!-- Main Post -->
     <div class="mb-8 w-full">
         <h1 class="text-2xl font-bold text-gray-900 mb-6">{{topic.title}}</h1>
-
+    
         <div class="flex items-center mb-4">
             <div class="flex items-center">
                 <div class="avatar placeholder mr-3 w-10 h-10">
@@ -53,14 +54,14 @@
                 </div>
             </div>
         </div>
-
+    
         <div class="text-gray-800 mb-6 md:w-full">
             <p>{{topic.content}}</p>
         </div>
-
+    
         <div class="flex items-center space-x-4 mb-10">
-          {% include 'forums/partials/like_topic.html' %}
-
+            {% include 'forums/partials/like_topic.html' %}
+    
             <button
                 class="flex items-center text-gray-700 hover:text-blue-600"
                 onclick="toggleReplyForm('main-reply-form')"
@@ -81,18 +82,43 @@
                 </svg>
                 Reply
             </button>
-
-
-            
+    
+            <!-- Dropdown Menu -->
+            <div class="dropdown dropdown-end">
+                <label tabindex="0" class="btn btn-ghost btn-sm btn-circle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                    </svg>
+                </label>
+                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a href="#" onclick="document.getElementById('newTopicModal').showModal()" class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        Edit
+                    </a></li>
+                    <li>
+                        <form method="post" action="{% url 'delete_topic' course.slug module.id topic.id %}" class="w-full">
+                            {% csrf_token %}
+                            <button type="submit" class="flex  text-red-600 cursor-pointer w-full text-left  py-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                Delete
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
         </div>
-
+    
         <!-- Main Reply Form (initially hidden) -->
         <div id="main-reply-form" class="mb-8 hidden">
             <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                <form method="post" action="{% url 'forum_thread_comment' course.slug topic.slug %}">
+                <form method="post" action="{% url 'forum_thread_comment' course.slug module.id topic.id %}">
                     {% csrf_token %}
                     <input type="hidden" name="topic_id" value="{{topic.id}}" />
-
+    
                     {{commentForm|crispy}}
                     <div class="flex justify-end mt-3 space-x-2">
                         <button
@@ -140,6 +166,30 @@
             </svg>
         </button>
     </div>
+    <dialog id="newTopicModal" class="modal">
+        <div class="modal-box">
+          <h2 class="text-xl font-bold mb-4">Update Topic</h2>
+          <form method="post" action="{% url 'forum_update' course_slug=course.slug module_id=module.id topic_id=topic.id %}" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+    
+            {{form|crispy}}
+    
+            <div class="form-control mt-4">
+              <button type="submit" class="btn btn-primary w-full">
+                Update
+              </button>
+            </div>
+          </form>
+          <div class="modal-action">
+            <form method="dialog">
+              <button class="btn">Close</button>
+            </form>
+          </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
 </div>
 
 <!-- JavaScript for toggling reply forms -->

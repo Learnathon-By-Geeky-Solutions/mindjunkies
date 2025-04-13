@@ -56,7 +56,7 @@ class ForumViewsTestCase(TestCase):
     def test_forum_thread_details_view(self):
         self.client.login(username="testuser", password=config("TEST_PASS"))
         response = self.client.get(reverse("forum_thread_details", kwargs={"course_slug": self.course.slug,
-                                                                           "topic_slug": self.forum_topic.slug}))
+                                                                           "topic_id": self.forum_topic.id}))
         self.assertEqual(response.status_code, 200)
 
     def test_topic_submission_view(self):
@@ -72,7 +72,7 @@ class ForumViewsTestCase(TestCase):
         self.client.login(username="testuser", password=config("TEST_PASS"))
         response = self.client.post(
             reverse("comment_submission",
-                    kwargs={"course_slug": self.course.slug, "topic_slug": self.forum_topic.slug}),
+                    kwargs={"course_slug": self.course.slug, "topic_id": self.forum_topic.id}),
             {"content": "New Comment"}
         )
         self.assertEqual(response.status_code, 302)  # Redirect on success
@@ -81,7 +81,7 @@ class ForumViewsTestCase(TestCase):
     def test_reply_submission_view(self):
         self.client.login(username="testuser", password=config("TEST_PASS"))
         response = self.client.post(
-            reverse("reply_submission", kwargs={"course_slug": self.course.slug, "topic_slug": self.forum_topic.slug,
+            reverse("reply_submission", kwargs={"course_slug": self.course.slug, "topic_id": self.forum_topic.id,
                                                 "comment_id": self.comment.id}),
             {"body": "New Reply"}
         )

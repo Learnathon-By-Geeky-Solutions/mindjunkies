@@ -1,13 +1,26 @@
 {% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
-<div id="reply-form-{{reply.id}}" >
+<div id="reply-form-{{reply.id}}">
     <form
-    hx-post="{% url 'reply_form'  reply_id=reply.id %}"
-    hx-target="this"
-    hx-swap="outerHTML"
+        hx-post="{% url 'reply_form' reply_id=reply.id %}"
+        hx-target="this"
+        hx-swap="outerHTML"
     >
-      {% csrf_token %}
-      {{ replyForm|crispy }}
-      <button type="submit" class="btn btn-primary">Submit</button>
+        {% csrf_token %}
+        {{ replyForm|crispy }}
+        <div class="flex justify-end space-x-2">
+          <button type="submit" class="btn btn-sm btn-primary">Submit Reply</button>
+          <button type="button" class="btn btn-sm btn-ghost" onclick="closeReplyForm('{{reply.id}}')">Cancel</button>
+        </div>
+       
     </form>
-  </div>
+</div>
+<script>
+  function closeReplyForm(replyId) {
+    const container = document.getElementById('reply-form-container-' + replyId);
+    if (container) {
+        container.innerHTML = '';
+        openReplyForms.delete(replyId);
+    }
+}
+</script>

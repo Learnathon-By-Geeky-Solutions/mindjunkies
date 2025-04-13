@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from django.views.generic import TemplateView
+from django.urls import reverse
 
 from mindjunkies.courses.models import Course, Module
 
@@ -55,41 +56,131 @@ class ForumThreadView(LoginRequiredMixin, CourseContextMixin, TemplateView):
         return context
 
 
-class ForumThreadDetailsView(LoginRequiredMixin, CourseContextMixin, TemplateView):
+class ForumThreadDetailsView(LoginRequiredMixin,CourseContextMixin, TemplateView):
     template_name = "forums/forum_thread_details.html"
 
+    def get_module(self):
+        return get_object_or_404(
+            Module.objects.prefetch_related("forum_posts"),
+            id=self.kwargs.get("module_id"),
+        )
     def get_topic(self):
-        return get_object_or_404(ForumTopic, slug=self.kwargs.get("topic_slug"))
+        return get_object_or_404(ForumTopic, id=self.kwargs.get("topic_id"))
+   
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["topic"] = self.get_topic()
         context["commentForm"] = ForumCommentForm()
         context["replyForm"] = ForumReplyForm()
+        context["module"]= self.get_module()
+        context["form"]=ForumTopicForm(instance=self.get_topic())
 
         return context
-
-
-class TopicSubmissionView(LoginRequiredMixin, View):
+class BaseTopicFormView(LoginRequiredMixin, View):
+    """Base class for topic form handling with common functionality"""
+    form_class = ForumTopicForm
+    success_message = "Operation completed successfully."
+    error_message = "There was an error processing your request."
+    
+    def get_form_kwargs(self):
+        """Get kwargs for form initialization - override in subclasses"""
+        return {}
+    
+    def get_instance(self):
+        """Get the instance for form initialization (None for creation)"""
+        return None
+    
+    def process_form(self, form, request):
+        """Process the form after validation (override in subclasses if needed)"""
+        topic = form.save(commit=False)
+        return topic
+    
+    def get_success_url(self):
+        """Override in subclasses to provide the correct redirect URL"""
+        raise NotImplementedError("Subclasses must implement get_success_url")
+    
     def post(self, request, *args, **kwargs):
+        # Get form instance and kwargs
+        instance = self.get_instance()
+        form_kwargs = self.get_form_kwargs()
+        
+        # Initialize form
+        if instance:
+            form = self.form_class(request.POST, instance=instance, **form_kwargs)
+        else:
+            form = self.form_class(request.POST, **form_kwargs)
+        
+        # Process form
+        if form.is_valid():
+            topic = self.process_form(form, request)
+            topic.save()
+            messages.success(request, self.success_message)
+            return redirect(self.get_success_url())
+        
+        messages.error(request, self.error_message)
+        return redirect(self.get_success_url())
+
+
+class TopicSubmissionView(BaseTopicFormView):
+    """View for creating new topics"""
+    success_message = "Your topic was posted successfully!"
+    error_message = "There was an error posting your topic."
+    
+    def get_form_kwargs(self):
+        # Only pass the course_slug that the form expects
+        return {"course_slug": self.kwargs.get("course_slug", "")}
+    
+    def process_form(self, form, request):
+        topic = super().process_form(form, request)
+        course_slug = self.kwargs.get("course_slug", "")
+        course = get_object_or_404(Course, slug=course_slug)
+        topic.author = request.user
+        topic.course = course
+        return topic
+    
+    def get_success_url(self):
         course_slug = self.kwargs.get("course_slug", "")
         module_id = self.kwargs.get("module_id", "")
-        course = get_object_or_404(Course, slug=course_slug)
+        return reverse("forum_thread", kwargs={
+            "course_slug": course_slug,
+            "module_id": module_id
+        })
 
-        form = ForumTopicForm(request.POST, course_slug=course_slug)
-        if form.is_valid():
-            forum_topic = form.save(commit=False)
-            forum_topic.author = request.user
-            forum_topic.course = course
-            forum_topic.save()
-            messages.success(request, "Your topic was posted successfully!")
-            return redirect(
+
+class TopicUpdateView(BaseTopicFormView):
+    """View for updating existing topics"""
+    success_message = "Topic updated successfully."
+    error_message = "There was an error updating your topic."
+    
+    def get_instance(self):
+        topic_id = self.kwargs.get("topic_id")
+        return get_object_or_404(ForumTopic, id=topic_id)
+    
+    def get_form_kwargs(self):
+        # For update, we don't need to pass course_slug
+        return {}
+    
+    def get_success_url(self):
+        course_slug = self.kwargs.get("course_slug", "")
+        module_id = self.kwargs.get("module_id", "")
+        topic_id = self.kwargs.get("topic_id")
+        return reverse("forum_thread_details", kwargs={
+            "course_slug": course_slug,
+            "module_id": module_id,
+            "topic_id": topic_id
+        })
+class TopicDeletionView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        topic_id = self.kwargs.get("topic_id")
+        course_slug = self.kwargs.get("course_slug")
+        module_id=self.kwargs.get("module_id")
+        topic = get_object_or_404(ForumTopic, id=topic_id)
+        topic.delete()
+        messages.success(request, "Topic deleted successfully.")
+        return redirect(
                 "forum_thread", course_slug=course_slug, module_id=module_id
             )
-
-        messages.error(request, "There was an error posting your topic.")
-        return redirect("forum_thread", course_slug=course_slug, module_id=module_id)
-
 
 # mindjunkies/forums/views.py
 
@@ -97,37 +188,48 @@ class TopicSubmissionView(LoginRequiredMixin, View):
 class CommentSubmissionView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         course_slug = self.kwargs.get("course_slug", "")
-        topic_slug = self.kwargs.get("topic_slug")
+        topic_id = self.kwargs.get("topic_id")
+        module_id=self.kwargs.get("module_id")
 
         content = request.POST.get("content")
 
-        if not topic_slug or not content:
+        if not topic_id or not content:
             messages.error(request, "Missing required fields for reply.")
             return redirect(
-                "forum_thread_details", course_slug=course_slug, topic_slug=topic_slug
+                "forum_thread_details", course_slug=course_slug, topic_id=topic_id, module_id=module_id
             )
 
-        topic = get_object_or_404(ForumTopic, slug=topic_slug)
+        topic = get_object_or_404(ForumTopic, id=topic_id)
         comment = ForumComment(topic=topic, author=request.user, content=content)
 
         comment.save()
         return redirect(
-            "forum_thread_details", course_slug=course_slug, topic_slug=topic_slug
+            "forum_thread_details", course_slug=course_slug, topic_id=topic_id,module_id=module_id
         )
 
-
+class CommentDeletionView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        course_slug = self.kwargs.get("course_slug")
+        topic_id = self.kwargs.get("topic_id")
+        module_id=self.kwargs.get("module_id")
+        comment_id = self.kwargs.get("comment_id")
+        comment = get_object_or_404(ForumComment, id=comment_id)
+        comment.delete()
+        messages.success(request, "Comment deleted successfully.")
+        return redirect("forum_thread_details", topic_id=topic_id, course_slug=course_slug,module_id=module_id)
 class ReplySubmissionView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         course_slug = self.kwargs.get("course_slug", "")
         comment_id = self.kwargs.get("comment_id")
-        topic_slug = self.kwargs.get("topic_slug")
+        topic_id = self.kwargs.get("topic_id")
+        module_id=self.kwargs.get("module_id")
 
         body = request.POST.get("body", "").strip()  # Ensure it's not None or empty
 
         if not body:  # If body is empty, return an error
             messages.error(request, "Reply cannot be empty.")
             return redirect(
-                "forum_thread_details", course_slug=course_slug, topic_slug=topic_slug
+                "forum_thread_details", course_slug=course_slug, topic_id=topic_id,module_id=module_id
             )
 
         comment = get_object_or_404(ForumComment, id=comment_id)
@@ -135,8 +237,22 @@ class ReplySubmissionView(LoginRequiredMixin, View):
 
         comment.save()
         return redirect(
-            "forum_thread_details", course_slug=course_slug, topic_slug=topic_slug
+            "forum_thread_details", course_slug=course_slug, topic_id=topic_id,module_id=module_id
         )
+
+class ReplyDeletionView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        course_slug = self.kwargs.get("course_slug")
+        topic_id = self.kwargs.get("topic_id")
+        module_id=self.kwargs.get("module_id")
+        reply_id = self.kwargs.get("reply_id")
+        comment = get_object_or_404(Reply, id=reply_id)
+        comment.delete()
+        messages.success(request, "Comment deleted successfully.")
+        return redirect("forum_thread_details", topic_id=topic_id, course_slug=course_slug,module_id=module_id)
+
+
+
 
 
 class ReplyFormView(LoginRequiredMixin, CourseContextMixin, View):
