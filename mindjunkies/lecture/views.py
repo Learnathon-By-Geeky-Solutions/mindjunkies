@@ -261,8 +261,6 @@ class CreateModuleView(LoginRequiredMixin, CourseObjectMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context["course"] = self.course
         return context
-<<<<<<< HEAD
-=======
     
 
 
@@ -271,4 +269,3 @@ class MarkLectureCompleteView(LoginRequiredMixin, View):
         lecture = get_object_or_404(Lecture, id=lecture_id)
         LectureCompletion.objects.get_or_create(user=request.user, lecture=lecture)
         return redirect(request.META.get('HTTP_REFERER', '/'))
->>>>>>> feature/progression
