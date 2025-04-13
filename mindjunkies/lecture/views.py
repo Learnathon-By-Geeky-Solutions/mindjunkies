@@ -18,7 +18,14 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 from mindjunkies.courses.models import Course, Module
 
 from .forms import LectureForm, LecturePDFForm, LectureVideoForm, ModuleForm
+<<<<<<< HEAD
 from .models import Lecture, LecturePDF, LectureVideo
+=======
+from .models import Lecture, LecturePDF, LectureVideo, LectureCompletion
+from django.utils.timezone import localtime, now
+from django.views.generic import TemplateView
+from django.views import View
+>>>>>>> feature/progression
 
 
 class LectureHomeView(LoginRequiredMixin, TemplateView):
@@ -86,17 +93,17 @@ def check_course_enrollment(user, course):
 
 @login_required
 @require_http_methods(["GET"])
-def lecture_video(
-    request: HttpRequest, course_slug: str, module_id: str, video_id
-) -> HttpResponse:
+def lecture_video(request: HttpRequest, course_slug: str, module_id: str, lecture_id, video_id) -> HttpResponse:
     """View to display a lecture video."""
     video = get_object_or_404(LectureVideo, id=video_id)
     module = get_object_or_404(Module, id=module_id)
 
+
+    # Ensure the user is enrolled in the related course
     if not check_course_enrollment(request.user, video.lecture.course):
         return HttpResponseForbidden("You are not enrolled in this course.")
 
-    context = {
+    context = { 
         "course": video.lecture.course,
         "video": video,
         "module": module,
@@ -258,3 +265,14 @@ class CreateModuleView(LoginRequiredMixin, CourseObjectMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context["course"] = self.course
         return context
+<<<<<<< HEAD
+=======
+    
+
+
+class MarkLectureCompleteView(LoginRequiredMixin, View):
+    def get(self, request, course_slug, lecture_id):
+        lecture = get_object_or_404(Lecture, id=lecture_id)
+        LectureCompletion.objects.get_or_create(user=request.user, lecture=lecture)
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+>>>>>>> feature/progression

@@ -4,6 +4,7 @@ from django.utils.text import slugify
 
 from config.models import BaseModel
 from mindjunkies.courses.models import Course, Module
+from mindjunkies.accounts.models import User
 
 
 class Lecture(BaseModel):
@@ -11,7 +12,7 @@ class Lecture(BaseModel):
         Course, on_delete=models.CASCADE, related_name="lectures"
     )
     module = models.ForeignKey(
-        Module, on_delete=models.CASCADE, related_name="lectures"
+        Module, on_delete=models.CASCADE, related_name="models"
     )
 
     title = models.CharField(max_length=255)
@@ -68,3 +69,14 @@ class LectureVideo(BaseModel):
 
     def __str__(self):
         return str(self.video_title)
+
+
+
+
+class LectureCompletion(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    lecture = models.ForeignKey(Lecture, on_delete=models.CASCADE)
+    completed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'lecture')

@@ -62,6 +62,8 @@ class Course(BaseModel):
     total_rating = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     number_of_ratings = models.PositiveIntegerField(default=0)
 
+    progression = models.PositiveIntegerField(default=0)
+
     # Tags for the course
     tags = TaggableManager(blank=True)
 
@@ -165,8 +167,9 @@ class Module(BaseModel):
     details = models.TextField()
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="modules")
     order = models.PositiveIntegerField(default=0)
+    progression = models.PositiveIntegerField(default=0)
 
-    class Meta:
+    class Meta: 
         ordering = ["order"]
 
     def __str__(self):

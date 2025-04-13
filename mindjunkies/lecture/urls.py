@@ -19,8 +19,10 @@ urlpatterns = [
         name="create_content",
     ),
     path(
-        "video/<str:module_id>/<str:video_id>",
+        "video/<str:module_id>/<str:lecture_id>/<str:video_id>",
         views.lecture_video,
         name="lecture_video_content",
     ),
+
+    path('lecture/<int:lecture_id>/complete/', views.MarkLectureCompleteView.as_view(), name='mark_lecture_complete'),
 ]

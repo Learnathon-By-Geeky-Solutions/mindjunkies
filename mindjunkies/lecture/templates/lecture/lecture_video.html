@@ -88,7 +88,7 @@
                                     <div class="space-y-2">
                                         <!-- Video Item -->
                                         {% for video in lecture.videos.all %}
-                                            <a href="{% url 'lecture_video_content' course.slug module.id video.id %}"
+                                            <a href="{% url 'lecture_video_content' course.slug module.id lecture.id video.id %}"
                                                class="flex items-start p-2 rounded-lg hover:bg-base-300">
                                                 <div class="flex-shrink-0 mt-1">
                                                     <svg class="h-5 w-5 text-primary" viewBox="0 0 24 24"
