@@ -13,9 +13,9 @@ def update_module_progression(sender, instance, created, **kwargs):
         user = instance.user
 
         module = lecture.module
-        total_lectures = module.lecture_set.count()
+        total_lectures = module.lectures.count()
         print(total_lectures)
-        completed_lectures = module.lecture_set.filter(
+        completed_lectures = module.lectures.filter(
             lecturecompletion__user=user
         ).distinct().count()
 
