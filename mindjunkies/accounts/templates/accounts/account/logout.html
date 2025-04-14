@@ -4,29 +4,43 @@
     {% trans "Sign Out" %}
 {% endblock head_title %}
 {% block content %}
-    <div class="card w-96 bg-base-100 shadow-xl">
-        <div class="card-body items-center text-center">
-            <h2 class="card-title text-2xl mb-4">
-                {% trans "Confirm Sign Out" %}
-            </h2>
-            <p class="mb-6">
-                {% trans 'Are you sure you want to sign out?' %}
-            </p>
-            {% url 'account_logout' as action_url %}
-            <div class="card-actions justify-end">
-                <a href="/mindjunkies/static" class="btn btn-ghost">Cancel</a>
-            {% element form method="post" action=action_url no_visible_fields=True %}
-                {% slot body %}
-                    {% csrf_token %}
-                    {{ redirect_field }}
-                {% endslot %}
-                {% slot actions %}
-                        <button type="submit" class="btn-error">
-                            {% trans 'Yes, Sign Out' %}
-                        </button>
-                {% endslot %}
-            {% endelement %}
-            </div>
+<div class="flex items-center justify-center p-4">
+    <div class="card w-96 bg-base-100 shadow-xl border border-base-200 overflow-hidden">
+      <div class="card-body items-center text-center p-8">
+        <div class="w-16 h-16 bg-error/10 rounded-full flex items-center justify-center mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
         </div>
+        
+        <h2 class="card-title text-2xl font-bold mb-2">
+          {% trans "Confirm Sign Out" %}
+        </h2>
+        
+        <p class="text-base-content/70 mb-8">
+          {% trans 'Are you sure you want to sign out?' %}
+        </p>
+        
+        {% url 'account_logout' as action_url %}
+        <div class="card-actions justify-center w-full gap-4">
+          <a href="/mindjunkies/static" class="btn btn-ghost btn-md flex-1 border border-base-300 hover:bg-base-200">
+            Cancel
+          </a>
+          
+          {% element form method="post" action=action_url no_visible_fields=True class="flex-1" %}
+            {% slot body %}
+              {% csrf_token %}
+              {{ redirect_field }}
+            {% endslot %}
+            
+            {% slot actions %}
+              <button type="submit" class="btn btn-error btn-md w-full hover:bg-error-focus">
+                {% trans 'Yes, Sign Out' %}
+              </button>
+            {% endslot %}
+          {% endelement %}
+        </div>
+      </div>
     </div>
+  </div>
 {% endblock content %}

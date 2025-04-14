@@ -1,32 +1,95 @@
-{% if courses %}
-<div id="search-results" class="p-4 border-2 border-base-content/30">
-    <ul class="mt-2 space-y-2">
-        {% for course in courses %}
-        <li class="p-3 bg-base-100 rounded-md hover:bg-base-300">
-            <a href="{% url 'course_details' course.course.slug %}" class="flex items-start gap-3">
-                <div class="avatar">
-                    <div class="w-12 h-12 rounded">
-                        <img src="" alt="Course thumbnail"/>
-                    </div>
+{% extends 'base.html' %}
+
+{% block head_title %}Search Results{% endblock head_title %}
+
+{% block main_content %}
+{% load static %}
+
+<div class="mb-8 ml-[10%]">
+    <h1 class="text-4xl font-bold text-gray-800">
+        {{ total_results }} result{{ total_results|pluralize }} for "{{ query }}"
+    </h1>
+</div>
+
+<div class="flex flex-col md:flex-row gap-6">
+    <!-- You can add a filter sidebar here in future -->
+
+    <div class="flex-1 ml-[10%]">
+        <div class="flex justify-between items-center mb-4">
+            <p class="text-gray-700 ">{{ total_results }} result{{ total_results|pluralize }}</p>
+            <form method="get">
+                <select name="sort" onchange="this.form.submit()" class="border border-gray-300 rounded px-2 py-1 text-sm">
+                    <option value="">Sort by</option>
+                    <option value="rating" {% if request.GET.sort == 'rating' %}selected{% endif %}>Highest Rated</option>
+                    <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                    <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                </select>
+            </form>
+        </div>
+
+        {% if courses %}
+        <div class="space-y-6 w-[80%] ">
+            {% for course in courses %}
+            <div class="flex flex-col md:flex-row border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-md transition mb-12">
+                <div class="md:w-64 flex-shrink-0">
+                    <img src="{{ course.course.course_image.url }}" alt="{{ course.title }}" class="w-full h-full object-cover">
                 </div>
-                <div>
-                    <h4 class="font-medium">{{ course.highlighted_title }}</h4>
-                    <p class="text-sm text-base-content">{{ course.course.short_introduction }}</p>
-                    <div class="flex items-center gap-1 mt-1">
-                        <span class="text-warning">★★★★★</span>
-                        <span class="text-xs">(4.8)</span>
+                <div class="flex-1 p-4">
+                    <h2 class="text-xl font-bold text-gray-900 mb-2">{{ course.highlighted_title|safe }}</h2>
+                    <p class="text-gray-700 mb-2">{{ course.course.short_introduction|safe }}</p>
+                    <p class="text-sm text-gray-600 mb-1">{{ course.course.teacher }}</p>
+                    <div class="flex items-center mb-2">
+                        <span class="text-yellow-500 font-bold mr-1">{{ course.course.rating }}</span>
+                        <div class="flex">
+                            {% for i in "12345"|make_list %}
+                                {% if forloop.counter <= course.rating|floatformat:"0" %}
+                                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="..."/></svg>
+                                {% elif forloop.counter == course.rating|add:"0.5"|floatformat:"0" and course.rating|floatformat:"-1" != course.rating|floatformat:"0" %}
+                                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="..."/></svg>
+                                {% else %}
+                                    <svg class="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path d="..."/></svg>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <span class="ml-1 text-sm text-gray-600">({{ course.course.reviews }})</span>
                     </div>
+                    <p class="text-sm text-gray-600">{{ course.total_hours }} hours • {{ course.course.lectures }} lectures • {{ course.course.level }}</p>
+                    {% if course.bestseller %}
+                    <span class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded mt-2">Bestseller</span>
+                    {% endif %}
                 </div>
-            </a>
-        </li>
-            <hr/>
-        {% endfor %}
-    </ul>
-    <div class="mt-3 text-right">
-        <a href="/search?q=" class="text-primary text-sm font-medium">See all results</a>
+                <div class="p-4 flex items-start justify-center">
+                    <span class="text-2xl font-bold">${{ course.course.price }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="mt-6 flex justify-center space-x-2">
+            {% if page_obj.has_previous %}
+            <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}" class="px-3 py-1 bg-gray-200 rounded">Previous</a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span class="px-3 py-1 bg-blue-500 text-white rounded">{{ num }}</span>
+                {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                    <a href="?q={{ query }}&page={{ num }}" class="px-3 py-1 bg-gray-100 rounded">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <a href="?q={{ query }}&page={{ page_obj.next_page_number }}" class="px-3 py-1 bg-gray-200 rounded">Next</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% else %}
+        <p class="text-gray-600">No courses found for "{{ query }}". Try adjusting your search.</p>
+        {% endif %}
     </div>
 </div>
-{% else %}
-<div id="search-results">
-</div>
-{% endif %}
+
+{% endblock main_content %}

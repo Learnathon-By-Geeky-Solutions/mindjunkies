@@ -1,13 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.views import View
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_GET
 from django.views.generic import TemplateView, UpdateView
 
-from .forms import ProfileUpdateForm
+from .forms import ProfileUpdateForm, UserForm
 from .models import Profile
 
 
@@ -16,15 +17,31 @@ class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = "accounts/profile.html"
 
 
-class ProfileUpdateView(LoginRequiredMixin, UpdateView):
-    model = Profile
+class ProfileUpdateView(LoginRequiredMixin, View):
     template_name = "accounts/edit_profile.html"
-    form_class = ProfileUpdateForm
     success_url = reverse_lazy("profile")
 
-    def form_valid(self, form: ProfileUpdateForm) -> HttpResponse:
-        messages.success(self.request, "Profile updated successfully!")
-        return super().form_valid(form)
+    def get(self, request, *args, **kwargs):
+        profile = get_object_or_404(Profile, user=request.user)
+        profile_form = ProfileUpdateForm(instance=profile)
+        user_form = UserForm(instance=request.user)
+        return render(request, self.template_name, {
+            "profile_form": profile_form,
+            "user_form": user_form
+        })
 
-    def get_object(self, queryset=None):
-        return get_object_or_404(Profile, user=self.request.user)
+    def post(self, request, *args, **kwargs):
+        profile = get_object_or_404(Profile, user=request.user)
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=profile)
+        user_form = UserForm(request.POST, instance=request.user)
+
+        if profile_form.is_valid() and user_form.is_valid():
+            profile_form.save()
+            user_form.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect(self.success_url)
+
+        return render(request, self.template_name, {
+            "profile_form": profile_form,
+            "user_form": user_form
+        })

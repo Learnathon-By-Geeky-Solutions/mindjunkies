@@ -1,48 +1,35 @@
-
 <style>
     .quote-mark {
         font-size: 2.5rem;
         line-height: 1;
         font-weight: bold;
-        color: #6b7280;
-        margin-bottom: 0.5rem;
-    }
-
-    .card-link {
-        display: inline-flex;
-        align-items: center;
         color: #7c3aed;
-        font-weight: 500;
-        margin-top: auto;
-        padding-top: 1rem;
-    }
-
-    .card-link:hover {
-        text-decoration: underline;
-    }
-
-    .card-link svg {
-        margin-left: 0.25rem;
+        opacity: 0.7;
+        margin-bottom: 0.5rem;
+        font-family: Georgia, serif;
     }
 </style>
-</head>
-<body class="bg-gray-50 p-6">
-<div class="container mx-auto  px-4">
-    <h1 class="text-4xl font-bold text-gray-800 mb-8">See what others are achieving through learning</h1>
+
+<body class="bg-base-200 min-h-screen">
+<div class="container mx-auto px-4 py-12">
+    <h1 class="text-4xl font-bold  md:text-left text-base-content mb-10">
+        See what others are achieving through learning
+    </h1>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Testimonial 1 -->
-        <div class="card bg-white shadow-sm h-full">
+        <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-300">
             <div class="card-body flex flex-col h-full">
                 <div class="quote-mark">"</div>
                 <div class="mb-4">
-                    <p class="text-gray-700">
-                        Udemy was rated the <span class="font-semibold">most popular online course or certification program</span> for learning how to code according to
-                        <a href="#" class="text-purple-600 hover:underline">StackOverflow's 2023 Developer survey</a>.
+                    <p class="text-base-content">
+                        Biddyapith was rated the <span class="font-semibold">most popular online course or certification program</span>
+                        for learning how to code according to
+                        <a href="#" class="link link-primary">StackOverflow's 2023 Developer survey</a>.
                     </p>
                 </div>
 
-                <div class="mt-auto">
+                <div class="mt-auto pt-4 border-t border-base-200">
                     <div class="flex items-center mb-4">
                         <!-- Stack Overflow logo -->
                         <svg class="h-6" viewBox="0 0 120 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -53,109 +40,108 @@
                             <path d="M19.5 5.5L16.5 2.5L14.5 4.5L17.5 7.5L19.5 5.5Z" fill="#F48024"/>
                         </svg>
                     </div>
-                    <p class="text-gray-500 text-sm">37,076 responses collected</p>
+                    <p class="text-base-content/70 text-sm">37,076 responses collected</p>
                 </div>
 
-                <a href="#" class="card-link">
+                <a href="#" class="btn btn-link btn-primary no-underline p-0 mt-4 justify-start">
                     View Web Development courses
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20"
+                         fill="currentColor">
+                        <path fill-rule="evenodd"
+                              d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                              clip-rule="evenodd"/>
                     </svg>
                 </a>
             </div>
         </div>
 
         <!-- Testimonial 2 -->
-        <div class="card bg-white shadow-sm h-full">
+        <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-300">
             <div class="card-body flex flex-col h-full">
                 <div class="quote-mark">"</div>
                 <div class="mb-4">
-                    <p class="text-gray-700">
-                        Udemy was truly <span class="font-semibold">a game-changer and a great guide</span> for me as we brought Dimensional to life.
+                    <p class="text-base-content">
+                        Biddyapith was truly <span class="font-semibold">a game-changer and a great guide</span> for me
+                        as we brought Dimensional to life.
                     </p>
                 </div>
 
-                <div class="mt-auto">
-                    <div class="flex items-center gap-3 mb-2">
-                        <!-- Profile image placeholder -->
-                        <div class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
-                            <img src="https://via.placeholder.com/48" alt="Alvin Lim" class="w-full h-full object-cover">
-                        </div>
-                        <div>
-                            <p class="font-medium text-gray-900">Alvin Lim</p>
-                            <p class="text-gray-500 text-sm">Technical Co-Founder, CTO at Dimensional</p>
-                        </div>
+                <div class="mt-auto pt-4 border-t border-base-200">
+                    <div class="flex flex-col mb-2">
+                        <p class="font-medium text-base-content">Alvin Lim</p>
+                        <p class="text-base-content/70 text-sm">Technical Co-Founder, CTO at Dimensional</p>
                     </div>
                 </div>
 
-                <a href="#" class="card-link">
+                <a href="#" class="btn btn-link btn-primary no-underline p-0 mt-4 justify-start">
                     View this iOS & Swift course
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20"
+                         fill="currentColor">
+                        <path fill-rule="evenodd"
+                              d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                              clip-rule="evenodd"/>
                     </svg>
                 </a>
             </div>
         </div>
 
         <!-- Testimonial 3 -->
-        <div class="card bg-white shadow-sm h-full">
+        <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-300">
             <div class="card-body flex flex-col h-full">
                 <div class="quote-mark">"</div>
                 <div class="mb-4">
-                    <p class="text-gray-700">
-                        Udemy gives you the ability to be persistent. I learned exactly what I needed to know in the real world. It helped me sell myself to <span class="font-semibold">get a new role</span>.
+                    <p class="text-base-content">
+                        Biddyapith gives you the ability to be persistent. I learned exactly what I needed to know in
+                        the real world. It helped me sell myself to <span class="font-semibold">get a new role</span>.
                     </p>
                 </div>
 
-                <div class="mt-auto">
-                    <div class="flex items-center gap-3 mb-2">
-                        <!-- Profile image placeholder -->
-                        <div class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
-                            <img src="https://via.placeholder.com/48" alt="William A. Wachlin" class="w-full h-full object-cover">
-                        </div>
-                        <div>
-                            <p class="font-medium text-gray-900">William A. Wachlin</p>
-                            <p class="text-gray-500 text-sm">Partner Account Manager at Amazon Web Services</p>
-                        </div>
+                <div class="mt-auto pt-4 border-t border-base-200">
+                    <div class="flex flex-col mb-2">
+                        <p class="font-medium text-base-content">William A. Wachlin</p>
+                        <p class="text-base-content/70 text-sm">Partner Account Manager at Amazon Web Services</p>
                     </div>
                 </div>
 
-                <a href="#" class="card-link">
+                <a href="#" class="btn btn-link btn-primary no-underline p-0 mt-4 justify-start">
                     View this AWS course
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20"
+                         fill="currentColor">
+                        <path fill-rule="evenodd"
+                              d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                              clip-rule="evenodd"/>
                     </svg>
                 </a>
             </div>
         </div>
 
         <!-- Testimonial 4 -->
-        <div class="card bg-white shadow-sm h-full">
+        <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-300">
             <div class="card-body flex flex-col h-full">
                 <div class="quote-mark">"</div>
                 <div class="mb-4">
-                    <p class="text-gray-700">
-                        With Udemy Business employees were able to marry the two together, technology and consultant soft skills... to help <span class="font-semibold">drive their careers forward</span>.
+                    <p class="text-base-content">
+                        With Biddyapith Business employees were able to marry the two together, technology and
+                        consultant soft skills... to help <span
+                        class="font-semibold">drive their careers forward</span>.
                     </p>
                 </div>
 
-                <div class="mt-auto">
-                    <div class="flex items-center gap-3 mb-2">
-                        <!-- Profile image placeholder -->
-                        <div class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
-                            <img src="https://via.placeholder.com/48" alt="Ian Stevens" class="w-full h-full object-cover">
-                        </div>
-                        <div>
-                            <p class="font-medium text-gray-900">Ian Stevens</p>
-                            <p class="text-gray-500 text-sm">Head of Capability Development, North America at Publicis Sapient</p>
-                        </div>
+                <div class="mt-auto pt-4 border-t border-base-200">
+                    <div class="flex flex-col mb-2">
+                        <p class="font-medium text-base-content">Ian Stevens</p>
+                        <p class="text-base-content/70 text-sm">Head of Capability Development, North America at
+                            Publicis Sapient</p>
                     </div>
                 </div>
 
-                <a href="#" class="card-link">
+                <a href="#" class="btn btn-link btn-primary no-underline p-0 mt-4 justify-start">
                     Read full story
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20"
+                         fill="currentColor">
+                        <path fill-rule="evenodd"
+                              d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                              clip-rule="evenodd"/>
                     </svg>
                 </a>
             </div>

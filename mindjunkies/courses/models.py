@@ -139,6 +139,7 @@ class Rating(BaseModel):
 
 
 class Enrollment(BaseModel):
+    
     STATUS_CHOICES = [
         ("active", "Active"),
         ("pending", "Pending"),
