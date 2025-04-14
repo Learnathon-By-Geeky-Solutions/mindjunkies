@@ -9,6 +9,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.views.generic import TemplateView
 from django.urls import reverse_lazy
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from mindjunkies.courses.models import Course, CourseCategory, Enrollment
 
@@ -135,13 +136,26 @@ class CourseUpdateView(LoginRequiredMixin, UpdateView):
 def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     """View to show course details."""
     course = get_object_or_404(Course, slug=slug)
+    ratings = course.get_individual_ratings()
     enrolled = False
+
     if request.user.is_authenticated:
         enrolled = course.enrollments.filter(
             student=request.user, status="active"
         ).exists()
+
+    paginator = Paginator(ratings, 5)
+    page = request.GET.get("page", 1)
+    try:
+        paginated_ratings = paginator.page(page)
+    except PageNotAnInteger:
+        paginated_ratings = paginator.page(1)
+    except EmptyPage:
+        paginated_ratings = paginator.page(paginator.num_pages)
+
     context = {
         "course_detail": course,
+        "ratings": paginated_ratings,
         "accessed": enrolled,
     }
     return render(request, "courses/course_details.html", context)
