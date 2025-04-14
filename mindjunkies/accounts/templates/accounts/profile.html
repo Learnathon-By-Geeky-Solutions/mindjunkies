@@ -56,6 +56,9 @@
                 <div>
                     <h2 class="text-xl font-semibold mb-4">{% trans "Bio" %}</h2>
                     <p>{{ user.profile.bio|default:"No bio provided yet." }}</p>
+                    <p>{{ user.profile.phone_number|default:"No bio provided yet." }}</p>
+                    <p>{{ user.profile.address|default:"No bio provided yet." }}</p>
+                    <p>{{ user.profile.birthday|default:"No bio provided yet." }}</p>
                 </div>
 
                 <div class="divider"></div>
