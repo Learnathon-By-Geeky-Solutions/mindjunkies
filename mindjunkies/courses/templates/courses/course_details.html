@@ -27,8 +27,6 @@
 
 
 
-
-
                             {% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}"
                              alt="{{ course_detail.teacher.username }}" class="w-12 h-12 rounded-full mr-4">
                         <div>
@@ -159,6 +157,10 @@
 
 
 
+
+
+
+
                                 {% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}"
                                  alt="{{ instructor.username }}" class="w-24 h-24 rounded-full mr-6">
                             <div>
@@ -249,7 +251,8 @@
                                                         <progress class="progress progress-warning w-full"
                                                                   value="{{ percentage }}" max="100"></progress>
                                                     </div>
-                                                    <div class="w-12 text-sm text-right">{{ percentage|floatformat:0 }}%</div>
+                                                    <div class="w-12 text-sm text-right">{{ percentage|floatformat:0 }}%
+                                                    </div>
                                                 </div>
                                             {% endfor %}
                                         </div>
@@ -260,7 +263,7 @@
 
                         <!-- Individual Reviews -->
                         <div class="space-y-6">
-                            {% for rating in course_detail.get_individual_ratings %}
+                            {% for rating in ratings %}
                                 <div class="border-base-300 pb-6">
                                     <div class="flex items-start gap-4">
                                         <img
@@ -284,69 +287,24 @@
                                     </div>
                                 </div>
                             {% endfor %}
-                            <!-- Review 1 -->
-                            <div class="border-base-300 pb-6">
-                                <div class="flex items-start gap-4">
-                                    <img src="https://ui-avatars.com/api/?name=saima&background=random" alt="Student"
-                                         class="w-12 h-12 rounded-full">
-                                    <div class="flex-1">
-                                        <h4 class="font-semibold">Sarah Johnson</h4>
-                                        <div class="flex text-yellow-400 my-1">
-                                            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-                                        </div>
-                                        <div class="text-sm text-base-content/70 mb-2">2 months ago</div>
-                                        <p>This course exceeded my expectations! The instructor explains complex
-                                            concepts in a way that's easy to understand. I've already applied several
-                                            techniques from this course to my work.</p>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="flex justify-center gap-4">
+                                <div class="btn-group">
+                                    {% if ratings.has_previous %}
+                                        <a href="?page=1" class="btn btn-sm">&laquo; First</a>
+                                        <a href="?page={{ ratings.previous_page_number }}"
+                                           class="btn btn-sm">Previous</a>
+                                    {% endif %}
 
-                            <!-- Review 2 -->
-                            <div class=" border-base-300 ">
-                                <div class="flex items-start gap-4">
-                                    <img src="https://ui-avatars.com/api/?name=michael&background=random" alt="Student"
-                                         class="w-12 h-12 rounded-full">
-                                    <div class="flex-1">
-                                        <h4 class="font-semibold">Michael Chen</h4>
-                                        <div class="flex text-yellow-400 my-1">
-                                            <span>★</span><span>★</span><span>★</span><span>★</span><span>☆</span>
-                                        </div>
-                                        <div class="text-sm text-base-content/70 mb-2">1 month ago</div>
-                                        <p>Great content and well-structured course. I would have liked more practical
-                                            exercises, but overall I learned a lot and would recommend it to others in
-                                            the field.</p>
-                                    </div>
-                                </div>
-                            </div>
+                                    <span class="btn btn-sm btn-disabled">
+            Page {{ ratings.number }} of {{ ratings.paginator.num_pages }}
+        </span>
 
-                            <!-- Review 3 -->
-                            <div class="border-base-300 pb-6">
-                                <div class="flex items-start gap-4">
-                                    <img src="https://ui-avatars.com/api/?name=emily&background=random" alt="Student"
-                                         class="w-12 h-12 rounded-full">
-                                    <div class="flex-1">
-                                        <h4 class="font-semibold text-blue-500">Emily Rodriguez</h4>
-                                        <div class="flex text-yellow-400 my-1">
-                                            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-                                        </div>
-                                        <div class="text-sm text-base-content/70 mb-2">3 weeks ago</div>
-                                        <p>As a beginner, I was worried this might be too advanced, but the instructor
-                                            does an amazing job of breaking down each topic. The downloadable resources
-                                            are incredibly helpful too!</p>
-                                    </div>
+                                    {% if ratings.has_next %}
+                                        <a href="?page={{ ratings.next_page_number }}" class="btn btn-sm">Next</a>
+                                        <a href="?page={{ ratings.paginator.num_pages }}" class="btn btn-sm">Last
+                                            &raquo;</a>
+                                    {% endif %}
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Pagination -->
-                        <div class="flex justify-center mt-8">
-                            <div class="join">
-                                <button class="join-item btn btn-sm">«</button>
-                                <button class="join-item btn btn-sm btn-active">1</button>
-                                <button class="join-item btn btn-sm">2</button>
-                                <button class="join-item btn btn-sm">3</button>
-                                <button class="join-item btn btn-sm">»</button>
                             </div>
                         </div>
                     </div>
