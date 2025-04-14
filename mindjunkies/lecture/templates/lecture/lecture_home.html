@@ -1,573 +1,124 @@
 {% extends 'lecture/base.html' %} {% load static %}
 {% block lecture_content %}
-    <!-- Main Content with Responsive Layout -->
-    {% if current_module %}
-        <main class="flex flex-col lg:flex-row flex-grow overflow-auto bg-slate-50">
-            <!-- Center Content Area -->
-            <div class="flex-grow p-4 lg:p-8 overflow-y-auto">
-                <!-- Module Title at Top Center -->
-                <div
-                    class="text-center mb-6 bg-white p-6 rounded-xl shadow-sm border border-slate-100 transition-all hover:shadow-md"
-                >
-                    <div class="flex items-center justify-center gap-3">
-                        <h1 class="text-2xl font-bold text-slate-800">
-                            Module {{ current_module.order }}: {{ current_module.title }}
-                        </h1>
-                        {% if isTeacher %}
-                            <a
-                                href="{% url 'create_lecture' course.slug current_module.id %}"
-                                class="transition-all hover:scale-110 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-full p-1"
-                            >
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                     xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="12" cy="12" r="10" stroke="#4F46E5" stroke-width="2"/>
-                                    <path
-                                        d="M12 7V17M7 12H17"
-                                        stroke="#4F46E5"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    />
-                                </svg>
-                            </a>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Weeks/Lectures in Module -->
-
-                {% for lecture in current_module.lectures.all %}
-                    <div
-                        class="collapse collapse-arrow bg-white border border-slate-100 rounded-xl mb-5 shadow-sm overflow-hidden transition-all hover:shadow-md"
+<!-- Main Content with Responsive Layout -->
+{% if current_module %}
+<main class="flex flex-col lg:flex-row flex-grow overflow-auto bg-slate-50">
+    <!-- Center Content Area -->
+    <div class="flex-grow p-4 lg:p-8 overflow-y-auto">
+        <!-- Module Title at Top Center -->
+        <div
+            class="text-center mb-6 bg-white p-6 rounded-xl shadow-sm border border-slate-100 transition-all hover:shadow-md"
+        >
+            <div class="flex items-center justify-center gap-3">
+                <h1 class="text-2xl font-bold text-slate-800">
+                    Module {{ current_module.order }}: {{ current_module.title }}
+                </h1>
+                {% if isTeacher %}
+                    <a
+                        href="{% url 'create_lecture' course.slug current_module.id %}"
+                        class="transition-all hover:scale-110 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-full p-1"
                     >
-                        <input
-                            type="checkbox"
-                            id="collapse-{{ lecture.id }}"
-                            class="peer"
-                            {%
-                            if
-                            forloop.first
-                            %}checked{%
-                            endif
-                            %}
-                        />
-                        <div
-                            class="collapse-title text-xl font-medium flex items-center peer-checked:bg-indigo-50/50 transition-colors">
-                            <div class="flex items-center gap-3 w-full">
-                                <span
-                                    class="text-slate-800 flex-grow">Lecture {{ lecture.order }}: {{ lecture.title }}</span>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" stroke="#4F46E5" stroke-width="2"/>
+                            <path
+                                d="M12 7V17M7 12H17"
+                                stroke="#4F46E5"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                        </svg>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
 
-                            </div>
-                        </div>
+        <!-- Weeks/Lectures in Module -->
 
-                        <!-- Week Content -->
-                        <div class="collapse-content bg-white">
-                            <div class="mt-3">
-                                {% if isTeacher %}
-                                    <a href="{% url 'edit_lecture' course.slug lecture.slug %}"
-                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-md transition-all hover:bg-indigo-100 hover:text-indigo-700 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 edit-link">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24"
-                                             fill="none"
-                                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                             stroke-linejoin="round">
-                                            <path
-                                                d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                        </svg>
-                                        Edit
-                                    </a>
-                                {% endif %}
-                            </div>
-                            <!-- Week Stats -->
-                            <div class="flex flex-wrap gap-4 p-5 bg-slate-50 rounded-lg mt-2 border border-slate-100">
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-                                    <div class="flex items-center gap-2 text-sm">
-                                        <div class="bg-indigo-100 p-2 rounded-full">
-                                            <svg class="h-4 w-4 text-indigo-600" viewBox="0 0 24 24"
-                                                 fill="currentColor">
-                                                <path
-                                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"
-                                                />
-                                            </svg>
-                                        </div>
-                                        <span>1h 30m of videos left</span>
-                                    </div>
-                                    <div class="flex items-center gap-2 text-sm">
-                                        <div class="bg-indigo-100 p-2 rounded-full">
-                                            <svg class="h-4 w-4 text-indigo-600" viewBox="0 0 24 24"
-                                                 fill="currentColor">
-                                                <path
-                                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"
-                                                />
-                                            </svg>
-                                        </div>
-                                        <span>45m of readings left</span>
-                                    </div>
-                                    <div class="flex items-center gap-2 text-sm">
-                                        <div class="bg-indigo-100 p-2 rounded-full">
-                                            <svg class="h-4 w-4 text-indigo-600" viewBox="0 0 24 24"
-                                                 fill="currentColor">
-                                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                                            </svg>
-                                        </div>
-                                        <span>2 graded assessments left</span>
-                                    </div>
-                                </div>
-                            </div>
+        {% for lecture in current_module.lectures.all %}
+            <div
+                class="collapse collapse-arrow bg-white border border-slate-100 rounded-xl mb-5 shadow-sm overflow-hidden transition-all hover:shadow-md"
+            >
+            <input
+                type="checkbox"
+                id="collapse-{{ lecture.id }}"
+                class="peer"
+                {%
+                if
+                forloop.first
+                %}checked{%
+                endif
+                %}
+            />
+            <div
+                class="collapse-title text-xl font-medium flex items-center peer-checked:bg-indigo-50/50 transition-colors">
+                <div class="flex items-center gap-3 w-full">
+                    <span class="text-slate-800 flex-grow">Lecture {{ lecture.order }}: {{ lecture.title }}</span>
 
-                            <!-- Week Description -->
-                            <div class="mt-5 bg-white p-5 rounded-lg border border-slate-100">
-                                <h3 class="text-lg font-medium text-slate-800 mb-2">Description</h3>
-                                <p class="text-slate-600">{{ lecture.description }}</p>
-                                <div class="collapse mt-4 border border-slate-100 rounded-lg overflow-hidden">
-                                    <input type="checkbox" class="peer" id="toggle-{{ lecture.id }}"/>
-                                    <div
-                                        class="collapse-title text-md text-indigo-600 font-medium flex items-center space-x-2 bg-slate-50 peer-checked:bg-indigo-50"
-                                    >
-                                        <svg
-                                            class="w-5 h-5 text-indigo-600 peer-checked:rotate-180 transition-transform"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M19 9l-7 7-7-7"
-                                            />
-                                        </svg>
-                                        <span>Show Learning Objectives</span>
-                                    </div>
-                                    <div class="collapse-content bg-white">
-                                        <div class="py-3 px-1">{{ lecture.learning_objective }}</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Lecture Items -->
-                            <div class="card bg-base-100 shadow-lg p-6 mt-5">
-                                <h3 class="text-xl font-serif font-medium text-slate-800 mb-4 px-1">Learning
-                                    Materials</h3>
-
-                                <!-- Attachments Section -->
-                                <div class="w-full mt-3 flex justify-between items-center">
-                                    <h2 class="text-base font-medium">Attachment</h2>
-                                    {% if isTeacher %}
-                                        <div class="relative group">
-                                            <a
-                                                href="{% url 'create_content' course.slug lecture.slug 'attachment' %}"
-                                                class="inline-flex items-center justify-center h-9 px-4 py-1 rounded-md border-2 text-indigo-600 border-indigo-600 font-medium text-sm transition-colors duration-200 shadow-sm"
-                                            >
-                                                <svg
-                                                    class="h-4 w-4 mr-1.5"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="2"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                >
-                                                    <path
-                                                        d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"
-                                                    />
-                                                </svg>
-                                                Attachment
-                                            </a>
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <!-- PDF Files Section -->
-                                <div class="space-y-3 mt-4">
-                                    {% if lecture.pdf_files %}
-                                        {% for pdf in lecture.pdf_files.all %}
-                                            <div
-                                                class="flex items-center p-4 hover:bg-slate-50 rounded-lg transition-all border border-slate-200 hover:shadow-md"
-                                            >
-                                                <div class="mr-4 bg-indigo-100 p-2 rounded-full text-indigo-600">
-                                                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-                                                        <path
-                                                            d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"
-                                                        />
-                                                    </svg>
-                                                </div>
-                                                <div class="flex-1">
-                                                    <h4 class="font-medium text-slate-800">
-                                                        <a href="" class="hover:text-indigo-600 transition-colors">
-                                                            {{ pdf.pdf_title }}
-                                                        </a>
-                                                    </h4>
-                                                    <p class="text-xs text-slate-500">
-                                                        Reading • {% if item_num == "1" %}15{% elif item_num == "2" %}
-                                                        20{% else %}
-                                                        25{% endif %} min
-                                                    </p>
-                                                </div>
-                                                <a
-                                                    href="{{ pdf.pdf_file.url }}"
-                                                    class="inline-flex items-center justify-center h-8 px-4 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors duration-200 shadow-sm"
-                                                    download
-                                                >
-                                                    Download
-                                                </a>
-                                            </div>
-                                        {% endfor %}
-                                    {% endif %} {% if not lecture.pdf_files.all %}
-                                    <p class="text-slate-500 italic">No attachment available</p>
-                                {% endif %}
-                                </div>
-
-                                <!-- Videos Section -->
-                                <div class="mt-6">
-                                    {% if isTeacher %}
-                                        <div class="flex justify-between items-center mb-3">
-                                            <h2 class="text-base font-medium">Videos</h2>
-                                            <div class="relative group">
-                                                <a
-                                                    href="{% url 'create_content' course.slug lecture.slug 'video' %}"
-                                                    class="inline-flex items-center justify-center h-9 px-4 py-1 rounded-md border-2 border-indigo-600 text-indigo-600 font-medium text-sm transition-colors duration-200 shadow-sm"
-                                                >
-                                                    <svg
-                                                        class="h-4 w-4 mr-1.5"
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        stroke-width="2"
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                    >
-                                                        <polygon points="23 7 16 12 23 17 23 7"/>
-                                                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-                                                    </svg>
-                                                    Video
-                                                </a>
-                                            </div>
-                                        </div>
-                                    {% endif %}
-
-                                    <div class="space-y-3">
-                                        {% for video in lecture.videos.all %}
-                                            <div
-                                                class="flex items-center p-4 hover:bg-slate-50 rounded-lg transition-all border border-slate-200 hover:shadow-md"
-                                            >
-                                                <div class="mr-4 bg-indigo-100 p-2 rounded-full text-indigo-600">
-                                                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-                                                        <path
-                                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"
-                                                        />
-                                                    </svg>
-                                                </div>
-                                                <div class="flex-1">
-                                                    <h4 class="font-medium text-slate-800">
-                                                        <a href="#" class="hover:text-indigo-600 transition-colors">
-                                                            {{ video.video_title }}
-                                                        </a>
-                                                    </h4>
-                                                    <p class="text-xs text-slate-500">Video • 45 min</p>
-                                                </div>
-                                                <a
-                                                    href="{% url 'lecture_video_content' course.slug current_module.id video.id %}"
-                                                    class="inline-flex items-center justify-center h-8 px-4 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors duration-200 shadow-sm"
-                                                >
-                                                    Resume
-                                                </a>
-                                            </div>
-                                        {% endfor %} {% if not lecture.videos.all %}
-                                        <p class="text-slate-500 italic">No videos available</p>
-                                    {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
+                </div>
             </div>
 
-            <!-- Right Sidebar - Live Classes Section -->
-            <div class="w-full lg:w-80 p-4 border-t lg:border-t-0 lg:border-l border-slate-200 bg-white">
-                <div class="lg:sticky lg:top-0 pt-2">
-                    <div class="card bg-white shadow-sm rounded-xl border border-slate-100">
-                        <div class="card-body p-5">
-                            <h2 class="card-title text-lg font-bold flex items-center text-slate-800 mb-4">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    class="h-5 w-5 mr-2 text-indigo-600"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                >
-                                    <path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path>
-                                    <path d="M12 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16Z"></path>
-                                    <path d="m16.8 17.7-.7-.7"></path>
-                                    <path d="m7.9 7-.7-.7"></path>
-                                    <path d="M12 18v2"></path>
-                                    <path d="M12 4V2"></path>
-                                    <path d="m17.5 7-1.4 1.4"></path>
-                                    <path d="M4 12H2"></path>
-                                    <path d="M7.9 17 7 17.9"></path>
-                                    <path d="M22 12h-2"></path>
-                                </svg>
-                                Live Classes
-                            </h2>
-                            <div class="mt-4">
-                                <a
-                                    href="{% url 'create_live_class' course.slug %}"
-                                    class="inline-flex items-center justify-center w-full h-10 px-4 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors duration-200 shadow-sm"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        class="h-4 w-4 mr-2"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <path d="M12 5v14M5 12h14"/>
-                                    </svg>
-                                    Schedule a live session
-                                </a>
-                            </div>
-
-                            <!-- Current Live Class (Blinking) -->
-                            {% if current_live_class %}
-                                <div
-                                    class="mt-5 card bg-white shadow-sm relative overflow-hidden border border-slate-100 rounded-xl hover:shadow-md transition-all"
-                                >
-                                    <div
-                                        class="absolute inset-0 bg-gradient-to-r from-indigo-50/50 to-transparent"></div>
-                                    <div class="card-body p-4 relative">
-                                        <h3 class="font-bold text-md text-slate-800">{{ current_live_class.topic }}</h3>
-                                        <p class="text-sm text-slate-600">{{ current_live_class.teacher }}</p>
-                                        <div class="flex items-center text-xs text-slate-500 mt-2">
-                                <span class="flex h-3 w-3 mr-2">
-                                    <span
-                                        class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-red-400 opacity-75"
-                                    ></span>
-                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                                </span>
-                                            Live Now (Started
-                                            {% with current_live_class.scheduled_at|timesince as time_elapsed %}
-                                                {{ time_elapsed }} ago {% endwith %})
-                                        </div>
-                                        <div class="card-actions justify-end mt-3">
-                                            <a
-                                                href="{% url 'join_live_class' current_live_class.meeting_id %}"
-                                                class="inline-flex items-center justify-center h-8 px-4 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors duration-200 shadow-sm"
-                                            >
-                                                Join Now
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endif %}
-
-                            <!-- Upcoming Classes Accordion -->
-                            <div class="mt-5 space-y-3">
-                                <div
-                                    class="collapse collapse-plus bg-white border border-slate-100 rounded-lg overflow-hidden hover:shadow-sm transition-all"
-                                >
-                                    <input type="checkbox" checked/>
-                                    <div class="collapse-title text-sm font-medium text-slate-700 bg-slate-50">
-                                        Today's Classes
-                                    </div>
-                                    <div class="collapse-content">
-                                        {% for classes in todays_live_classes %}
-                                            <div
-                                                class="card bg-white shadow-sm mt-2 border border-slate-100 rounded-lg hover:shadow-md transition-all"
-                                            >
-                                                <div class="card-body p-3">
-                                                    <h3 class="font-bold text-md text-slate-800">{{ classes.topic }}</h3>
-                                                    <p class="text-sm text-slate-600">{{ classes.teacher }}</p>
-                                                    <div class="flex items-center text-xs text-slate-500 mt-2">
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            class="h-4 w-4 mr-1 text-indigo-600"
-                                                            viewBox="0 0 24 24"
-                                                            fill="none"
-                                                            stroke="currentColor"
-                                                            stroke-width="2"
-                                                            stroke-linecap="round"
-                                                            stroke-linejoin="round"
-                                                        >
-                                                            <circle cx="12" cy="12" r="10"></circle>
-                                                            <polyline points="12 6 12 12 16 14"></polyline>
-                                                        </svg>
-                                                        Today, {% with start_time=classes.scheduled_at|date:"g:i A" %}
-                                                        {{ start_time }}{% endwith %}<br/>
-                                                        Duration {{ classes.duration }} min
-                                                    </div>
-                                                    <div class="card-actions justify-end mt-2">
-                                                        <a
-                                                            href="#"
-                                                            class="inline-flex items-center justify-center h-7 px-3 rounded-md border border-indigo-200 hover:bg-indigo-50 text-indigo-600 font-medium text-xs transition-colors"
-                                                        >
-                                                            <svg
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                class="h-3 w-3 mr-1"
-                                                                viewBox="0 0 24 24"
-                                                                fill="none"
-                                                                stroke="currentColor"
-                                                                stroke-width="2"
-                                                                stroke-linecap="round"
-                                                                stroke-linejoin="round"
-                                                            >
-                                                                <path
-                                                                    d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
-                                                                ></path>
-                                                                <path
-                                                                    d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
-                                                                ></path>
-                                                            </svg>
-                                                            Set Reminder
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-
-                                <div
-                                    class="collapse collapse-plus bg-white border border-slate-100 rounded-lg overflow-hidden hover:shadow-sm transition-all"
-                                >
-                                    <input type="checkbox"/>
-                                    <div class="collapse-title text-sm font-medium text-slate-700 bg-slate-50">
-                                        This Week's Classes
-                                    </div>
-                                    <div class="collapse-content">
-                                        <div
-                                            class="card bg-white shadow-sm mt-2 border border-slate-100 rounded-lg hover:shadow-md transition-all"
-                                        >
-                                            <div class="card-body p-3">
-                                                <h3 class="font-bold text-md text-slate-800">Database Systems</h3>
-                                                <p class="text-sm text-slate-600">Prof. Emily Rodriguez</p>
-                                                <div class="flex items-center text-xs text-slate-500 mt-2">
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        class="h-4 w-4 mr-1 text-indigo-600"
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        stroke-width="2"
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                    >
-                                                        <circle cx="12" cy="12" r="10"></circle>
-                                                        <polyline points="12 6 12 12 16 14"></polyline>
-                                                    </svg>
-                                                    Mar 8, 2:00 PM - 3:30 PM
-                                                </div>
-                                                <div class="card-actions justify-end mt-2">
-                                                    <a
-                                                        href="#"
-                                                        class="inline-flex items-center justify-center h-7 px-3 rounded-md border border-indigo-200 hover:bg-indigo-50 text-indigo-600 font-medium text-xs transition-colors"
-                                                    >
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            class="h-3 w-3 mr-1"
-                                                            viewBox="0 0 24 24"
-                                                            fill="none"
-                                                            stroke="currentColor"
-                                                            stroke-width="2"
-                                                            stroke-linecap="round"
-                                                            stroke-linejoin="round"
-                                                        >
-                                                            <path
-                                                                d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
-                                                            ></path>
-                                                            <path
-                                                                d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
-                                                            ></path>
-                                                        </svg>
-                                                        Set Reminder
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div
-                                            class="card bg-white shadow-sm mt-2 border border-slate-100 rounded-lg hover:shadow-md transition-all"
-                                        >
-                                            <div class="card-body p-3">
-                                                <h3 class="font-bold text-md text-slate-800">Machine Learning
-                                                    Fundamentals</h3>
-                                                <p class="text-sm text-slate-600">Prof. David Kim</p>
-                                                <div class="flex items-center text-xs text-slate-500 mt-2">
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        class="h-4 w-4 mr-1 text-indigo-600"
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        stroke-width="2"
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                    >
-                                                        <circle cx="12" cy="12" r="10"></circle>
-                                                        <polyline points="12 6 12 12 16 14"></polyline>
-                                                    </svg>
-                                                    Mar 10, 11:00 AM - 12:30 PM
-                                                </div>
-                                                <div class="card-actions justify-end mt-2">
-                                                    <a
-                                                        href="#"
-                                                        class="inline-flex items-center justify-center h-7 px-3 rounded-md border border-indigo-200 hover:bg-indigo-50 text-indigo-600 font-medium text-xs transition-colors"
-                                                    >
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            class="h-3 w-3 mr-1"
-                                                            viewBox="0 0 24 24"
-                                                            fill="none"
-                                                            stroke="currentColor"
-                                                            stroke-width="2"
-                                                            stroke-linecap="round"
-                                                            stroke-linejoin="round"
-                                                        >
-                                                            <path
-                                                                d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
-                                                            ></path>
-                                                            <path
-                                                                d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
-                                                            ></path>
-                                                        </svg>
-                                                        Set Reminder
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mt-5">
-                                <a
-                                    href="#"
-                                    class="inline-flex items-center justify-center w-full h-9 rounded-md border border-indigo-200 hover:bg-indigo-50 text-indigo-600 font-medium text-sm transition-colors"
-                                >
-                                    View All Classes
-                                </a>
-                            </div>
+            <!-- Week Content -->
+            <div class="collapse-content bg-white">
+            <div class="mt-3">
+                {% if isTeacher %}
+                    <a href="{% url 'edit_lecture' course.slug lecture.slug %}"
+                       class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-md transition-all hover:bg-indigo-100 hover:text-indigo-700 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 edit-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </a>
+                {% endif %}
+            </div>
+            <!-- Week Stats -->
+            <div class="flex flex-wrap gap-4 p-5 bg-slate-50 rounded-lg mt-2 border border-slate-100">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                    <div class="flex items-center gap-2 text-sm">
+                        <div class="bg-indigo-100 p-2 rounded-full">
+                            <svg class="h-4 w-4 text-indigo-600" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"
+                                />
+                            </svg>
                         </div>
+                        <span>1h 30m of videos left</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <div class="bg-indigo-100 p-2 rounded-full">
+                            <svg class="h-4 w-4 text-indigo-600" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"
+                                />
+                            </svg>
+                        </div>
+                        <span>45m of readings left</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <div class="bg-indigo-100 p-2 rounded-full">
+                            <svg class="h-4 w-4 text-indigo-600" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                        </div>
+                        <span>2 graded assessments left</span>
                     </div>
                 </div>
             </div>
-        </main>
-    {% else %}
-        <div class="card w-full bg-base-100 shadow-xl border border-base-300">
-            <div class="card-body items-center text-center">
-                <div class="flex flex-col items-center gap-4 py-6">
-                    <!-- Empty state illustration -->
-                    <div class="w-24 h-24 rounded-full bg-base-200 flex items-center justify-center">
+
+            <!-- Week Description -->
+            <div class="mt-5 bg-white p-5 rounded-lg border border-slate-100">
+                <h3 class="text-lg font-medium text-slate-800 mb-2">Description</h3>
+                <p class="text-slate-600">{{ lecture.description }}</p>
+                <div class="collapse mt-4 border border-slate-100 rounded-lg overflow-hidden">
+                    <input type="checkbox" class="peer" id="toggle-{{ lecture.id }}"/>
+                    <div
+                        class="collapse-title text-md text-indigo-600 font-medium flex items-center space-x-2 bg-slate-50 peer-checked:bg-indigo-50"
+                    >
                         <svg
+                            class="w-5 h-5 text-indigo-600 peer-checked:rotate-180 transition-transform"
                             xmlns="http://www.w3.org/2000/svg"
-                            class="h-12 w-12 text-base-content opacity-50"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -576,28 +127,464 @@
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="2"
-                                d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                d="M19 9l-7 7-7-7"
                             />
                         </svg>
+                        <span>Show Learning Objectives</span>
+                    </div>
+                    <div class="collapse-content bg-white">
+                        <div class="py-3 px-1">{{ lecture.learning_objective }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lecture Items -->
+            <div class="card bg-base-100 shadow-lg p-6 mt-5">
+            <h3 class="text-xl font-serif font-medium text-slate-800 mb-4 px-1">Learning Materials</h3>
+
+            <!-- Attachments Section -->
+            <div class="w-full mt-3 flex justify-between items-center">
+                <h2 class="text-base font-medium">Attachment</h2>
+                {% if isTeacher %}
+                    <div class="relative group">
+                        <a
+                            href="{% url 'create_content' course.slug lecture.slug 'attachment' %}"
+                            class="inline-flex items-center justify-center h-9 px-4 py-1 rounded-md border-2 text-indigo-600 border-indigo-600 font-medium text-sm transition-colors duration-200 shadow-sm"
+                        >
+                            <svg
+                                class="h-4 w-4 mr-1.5"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path
+                                    d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"
+                                />
+                            </svg>
+                            Attachment
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- PDF Files Section -->
+            <div class="space-y-3 mt-4">
+                {% if lecture.pdf_files %}
+                    {% for pdf in lecture.pdf_files.all %}
+                        <div
+                            class="flex items-center p-4 hover:bg-slate-50 rounded-lg transition-all border border-slate-200 hover:shadow-md"
+                        >
+                            <div class="mr-4 bg-indigo-100 p-2 rounded-full text-indigo-600">
+                                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"
+                                    />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-slate-800">
+                                    <a href="" class="hover:text-indigo-600 transition-colors">
+                                        {{ pdf.pdf_title }}
+                                    </a>
+                                </h4>
+                                <p class="text-xs text-slate-500">
+                                    Reading • {% if item_num == "1" %}15{% elif item_num == "2" %}20{% else %}
+                                    25{% endif %} min
+                                </p>
+                            </div>
+                            <a
+                                href="{{ pdf.pdf_file.url }}"
+                                class="inline-flex items-center justify-center h-8 px-4 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors duration-200 shadow-sm"
+                                download
+                            >
+                                Download
+                            </a>
+                        </div>
+                    {% endfor %}
+                {% endif %} {% if not lecture.pdf_files.all %}
+                <p class="text-slate-500 italic">No attachment available</p>
+            {% endif %}
+            </div>
+
+            <!-- Videos Section -->
+            <div class="mt-6">
+            {% if isTeacher %}
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-base font-medium">Videos</h2>
+                    <div class="relative group">
+                        <a
+                            href="{% url 'create_content' course.slug lecture.slug 'video' %}"
+                            class="inline-flex items-center justify-center h-9 px-4 py-1 rounded-md border-2 border-indigo-600 text-indigo-600 font-medium text-sm transition-colors duration-200 shadow-sm"
+                        >
+                            <svg
+                                class="h-4 w-4 mr-1.5"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <polygon points="23 7 16 12 23 17 23 7"/>
+                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                            </svg>
+                            Video
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="space-y-3">
+            {% for video in lecture.videos.all %}
+            <div
+                class="flex items-center p-4 hover:bg-slate-50 rounded-lg transition-all border border-slate-200 hover:shadow-md"
+            >
+                <div class="mr-4 bg-indigo-100 p-2 rounded-full text-indigo-600">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"
+                        />
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h4 class="font-medium text-slate-800">
+                        <a href="#" class="hover:text-indigo-600 transition-colors">
+                            {{ video.video_title }}
+                        </a>
+                    </h4>
+                    <p class="text-xs text-slate-500">Video • 45 min</p>
+                </div>
+                <a
+                    href="{% url 'lecture_video_content' course.slug current_module.id lecture.id video.id %}"
+                    class="inline-flex items-center justify-center h-8 px-4 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors duration-200 shadow-sm"
+                >
+                    Resume
+                </a>
+            </div>
+        {% endfor %} {% if not lecture.videos.all %}
+        <p class="text-slate-500 italic">No videos available</p>
+    {% endif %}
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Right Sidebar - Live Classes Section -->
+    <div class="w-full lg:w-80 p-4 border-t lg:border-t-0 lg:border-l border-slate-200 bg-white">
+        <div class="lg:sticky lg:top-0 pt-2">
+            <div class="card bg-white shadow-sm rounded-xl border border-slate-100">
+                <div class="card-body p-5">
+                    <h2 class="card-title text-lg font-bold flex items-center text-slate-800 mb-4">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5 mr-2 text-indigo-600"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path>
+                            <path d="M12 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16Z"></path>
+                            <path d="m16.8 17.7-.7-.7"></path>
+                            <path d="m7.9 7-.7-.7"></path>
+                            <path d="M12 18v2"></path>
+                            <path d="M12 4V2"></path>
+                            <path d="m17.5 7-1.4 1.4"></path>
+                            <path d="M4 12H2"></path>
+                            <path d="M7.9 17 7 17.9"></path>
+                            <path d="M22 12h-2"></path>
+                        </svg>
+                        Live Classes
+                    </h2>
+                    <div class="mt-4">
+                        <a
+                            href="{% url 'create_live_class' course.slug %}"
+                            class="inline-flex items-center justify-center w-full h-10 px-4 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors duration-200 shadow-sm"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-4 w-4 mr-2"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path d="M12 5v14M5 12h14"/>
+                            </svg>
+                            Schedule a live session
+                        </a>
                     </div>
 
-                    <h2 class="card-title text-xl font-bold">No Modules Available</h2>
-                    <p class="text-base-content/70 mb-4">Get started by creating your first module for this course.</p>
+                    <!-- Current Live Class (Blinking) -->
+                    {% if current_live_class %}
+                        <div
+                            class="mt-5 card bg-white shadow-sm relative overflow-hidden border border-slate-100 rounded-xl hover:shadow-md transition-all"
+                        >
+                            <div class="absolute inset-0 bg-gradient-to-r from-indigo-50/50 to-transparent"></div>
+                            <div class="card-body p-4 relative">
+                                <h3 class="font-bold text-md text-slate-800">{{ current_live_class.topic }}</h3>
+                                <p class="text-sm text-slate-600">{{ current_live_class.teacher }}</p>
+                                <div class="flex items-center text-xs text-slate-500 mt-2">
+                                <span class="flex h-3 w-3 mr-2">
+                                    <span
+                                        class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-red-400 opacity-75"
+                                    ></span>
+                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                                </span>
+                                    Live Now (Started
+                                    {% with current_live_class.scheduled_at|timesince as time_elapsed %}
+                                        {{ time_elapsed }} ago {% endwith %})
+                                </div>
+                                <div class="card-actions justify-end mt-3">
+                                    <a
+                                        href="{% url 'join_live_class' current_live_class.meeting_id %}"
+                                        class="inline-flex items-center justify-center h-8 px-4 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors duration-200 shadow-sm"
+                                    >
+                                        Join Now
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
 
-                    <a href="{% url 'create_module' course.slug %}" class="btn btn-primary gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                             fill="currentColor">
-                            <path
-                                fill-rule="evenodd"
-                                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                                clip-rule="evenodd"
-                            />
-                        </svg>
-                        Create Module
-                    </a>
+                    <!-- Upcoming Classes Accordion -->
+                    <div class="mt-5 space-y-3">
+                        <div
+                            class="collapse collapse-plus bg-white border border-slate-100 rounded-lg overflow-hidden hover:shadow-sm transition-all"
+                        >
+                            <input type="checkbox" checked/>
+                            <div class="collapse-title text-sm font-medium text-slate-700 bg-slate-50">
+                                Today's Classes
+                            </div>
+                            <div class="collapse-content">
+                                {% for classes in todays_live_classes %}
+                                    <div
+                                        class="card bg-white shadow-sm mt-2 border border-slate-100 rounded-lg hover:shadow-md transition-all"
+                                    >
+                                        <div class="card-body p-3">
+                                            <h3 class="font-bold text-md text-slate-800">{{ classes.topic }}</h3>
+                                            <p class="text-sm text-slate-600">{{ classes.teacher }}</p>
+                                            <div class="flex items-center text-xs text-slate-500 mt-2">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    class="h-4 w-4 mr-1 text-indigo-600"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="2"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                >
+                                                    <circle cx="12" cy="12" r="10"></circle>
+                                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                                </svg>
+                                                Today, {% with start_time=classes.scheduled_at|date:"g:i A" %}
+                                                {{ start_time }}{% endwith %}<br/>
+                                                Duration {{ classes.duration }} min
+                                            </div>
+                                            <div class="card-actions justify-end mt-2">
+                                                <a
+                                                    href="#"
+                                                    class="inline-flex items-center justify-center h-7 px-3 rounded-md border border-indigo-200 hover:bg-indigo-50 text-indigo-600 font-medium text-xs transition-colors"
+                                                >
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        class="h-3 w-3 mr-1"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        stroke-width="2"
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                    >
+                                                        <path
+                                                            d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+                                                        ></path>
+                                                        <path
+                                                            d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+                                                        ></path>
+                                                    </svg>
+                                                    Set Reminder
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div
+                            class="collapse collapse-plus bg-white border border-slate-100 rounded-lg overflow-hidden hover:shadow-sm transition-all"
+                        >
+                            <input type="checkbox"/>
+                            <div class="collapse-title text-sm font-medium text-slate-700 bg-slate-50">
+                                This Week's Classes
+                            </div>
+                            <div class="collapse-content">
+                                <div
+                                    class="card bg-white shadow-sm mt-2 border border-slate-100 rounded-lg hover:shadow-md transition-all"
+                                >
+                                    <div class="card-body p-3">
+                                        <h3 class="font-bold text-md text-slate-800">Database Systems</h3>
+                                        <p class="text-sm text-slate-600">Prof. Emily Rodriguez</p>
+                                        <div class="flex items-center text-xs text-slate-500 mt-2">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                class="h-4 w-4 mr-1 text-indigo-600"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            >
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <polyline points="12 6 12 12 16 14"></polyline>
+                                            </svg>
+                                            Mar 8, 2:00 PM - 3:30 PM
+                                        </div>
+                                        <div class="card-actions justify-end mt-2">
+                                            <a
+                                                href="#"
+                                                class="inline-flex items-center justify-center h-7 px-3 rounded-md border border-indigo-200 hover:bg-indigo-50 text-indigo-600 font-medium text-xs transition-colors"
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    class="h-3 w-3 mr-1"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="2"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                >
+                                                    <path
+                                                        d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+                                                    ></path>
+                                                    <path
+                                                        d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+                                                    ></path>
+                                                </svg>
+                                                Set Reminder
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="card bg-white shadow-sm mt-2 border border-slate-100 rounded-lg hover:shadow-md transition-all"
+                                >
+                                    <div class="card-body p-3">
+                                        <h3 class="font-bold text-md text-slate-800">Machine Learning Fundamentals</h3>
+                                        <p class="text-sm text-slate-600">Prof. David Kim</p>
+                                        <div class="flex items-center text-xs text-slate-500 mt-2">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                class="h-4 w-4 mr-1 text-indigo-600"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            >
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <polyline points="12 6 12 12 16 14"></polyline>
+                                            </svg>
+                                            Mar 10, 11:00 AM - 12:30 PM
+                                        </div>
+                                        <div class="card-actions justify-end mt-2">
+                                            <a
+                                                href="#"
+                                                class="inline-flex items-center justify-center h-7 px-3 rounded-md border border-indigo-200 hover:bg-indigo-50 text-indigo-600 font-medium text-xs transition-colors"
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    class="h-3 w-3 mr-1"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="2"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                >
+                                                    <path
+                                                        d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+                                                    ></path>
+                                                    <path
+                                                        d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+                                                    ></path>
+                                                </svg>
+                                                Set Reminder
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5">
+                        <a
+                            href="#"
+                            class="inline-flex items-center justify-center w-full h-9 rounded-md border border-indigo-200 hover:bg-indigo-50 text-indigo-600 font-medium text-sm transition-colors"
+                        >
+                            View All Classes
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+</main>
+{% else %}
+<div class="card w-full bg-base-100 shadow-xl border border-base-300">
+    <div class="card-body items-center text-center">
+        <div class="flex flex-col items-center gap-4 py-6">
+            <!-- Empty state illustration -->
+            <div class="w-24 h-24 rounded-full bg-base-200 flex items-center justify-center">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-12 w-12 text-base-content opacity-50"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                    />
+                </svg>
+            </div>
 
-    {% endif %}
+            <h2 class="card-title text-xl font-bold">No Modules Available</h2>
+            <p class="text-base-content/70 mb-4">Get started by creating your first module for this course.</p>
+
+            <a href="{% url 'create_module' course.slug %}" class="btn btn-primary gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                        fill-rule="evenodd"
+                        d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                        clip-rule="evenodd"
+                    />
+                </svg>
+                Create Module
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endif %}
 {% endblock lecture_content %}
