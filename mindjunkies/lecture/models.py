@@ -80,3 +80,19 @@ class LectureCompletion(BaseModel):
 
     class Meta:
         unique_together = ('user', 'lecture')
+
+
+
+
+class LastVisitedModule(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    module = models.ForeignKey(Module, on_delete=models.CASCADE)
+    lecture = models.ForeignKey(Lecture, on_delete=models.CASCADE)
+    last_visited = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-last_visited"]
+        unique_together = ["module", "user", "lecture"]
+
+    def __str__(self):
+        return f"{self.user.username} - {self.course.title} - {self.last_visited}"
