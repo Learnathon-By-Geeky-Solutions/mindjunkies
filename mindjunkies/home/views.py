@@ -97,6 +97,7 @@ def home(request):
 def search_view(request):
     query = request.GET.get("search", "").strip()
     highlighted_courses = []
+    print(query)
 
     if query:
         courses = Course.objects.filter(title__icontains=query)

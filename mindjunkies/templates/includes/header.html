@@ -20,19 +20,13 @@
       <div class="navbar-center hidden sm:flex">
         <div class="form-control w-[800px] ">
           <div class="input-group">
-            <form method="POST" action="" class="relative w-full">
-              {% csrf_token %}
+            <form method="GET" action="{% url 'search_view' %}" class="relative w-full">
               <input
                 type="search"
                 placeholder="Search for anything"
                 id="search-input"
                 name="search"
                 autocomplete="off"
-                hx-get=""
-                hx-trigger="keyup delay:500ms changed"
-                hx-target="#search-results"
-                hx-swap="outerHTML"
-                hx-indicator=".htmx-indicator"
                 class="input input-bordered w-full pl-10 pr-10 focus:outline-primary focus:ring-2 focus:ring-primary/20"
               />
               <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-base-content/50">
