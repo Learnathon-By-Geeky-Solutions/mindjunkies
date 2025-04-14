@@ -30,6 +30,7 @@ class CreateLiveClassView(LoginRequiredMixin, CreateView):
     model = LiveClass
     template_name = "live_classes/create_live_class.html"
     fields = ["topic", "scheduled_at", "duration"]
+
     def get_context_data(self, **kwargs):
         context=super().get_context_data(**kwargs)
         context["course"] = get_object_or_404(Course, slug=self.kwargs["slug"])

@@ -94,12 +94,11 @@ def lecture_video(request: HttpRequest, course_slug: str, module_id: str, lectur
     video = get_object_or_404(LectureVideo, id=video_id)
     module = get_object_or_404(Module, id=module_id)
 
-
     # Ensure the user is enrolled in the related course
     if not check_course_enrollment(request.user, video.lecture.course):
         return HttpResponseForbidden("You are not enrolled in this course.")
 
-    context = { 
+    context = {
         "course": video.lecture.course,
         "video": video,
         "module": module,
@@ -200,15 +199,8 @@ class CreateContentView(LoginRequiredMixin, CourseObjectMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-<<<<<<< HEAD
         context["content_type"] = self.kwargs["format"]
-        context["course"]=self.get_course()
-=======
-        content_type = self.kwargs["format"]
-        if content_type == "attachment":
-            context["pdf"] = LecturePDF.objects.filter(lecture=self.lecture).first()
-        context["content_type"] = content_type
->>>>>>> develop
+        context["course"] = self.get_course()
         return context
 
 
@@ -268,7 +260,6 @@ class CreateModuleView(LoginRequiredMixin, CourseObjectMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context["course"] = self.course
         return context
-    
 
 
 class MarkLectureCompleteView(LoginRequiredMixin, View):
