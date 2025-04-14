@@ -47,11 +47,23 @@
             <!-- Course Description -->
             <p class="text-sm text-base-content/70 mb-4 line-clamp-3">{{ course.short_introduction }}</p>
 
-            <div class="w-full bg-gray-200 rounded-full ">
+        
+        {% if request.path == "/courses/my_courses/" %}
+            {% load enrollment_tags %}
+            
+          <div class="w-full bg-gray-200 rounded-full ">
+            {% with course|get_enrollment:request.user as enrollment %}
+                {% if enrollment %}
                 <div class="bg-blue-600 text-xs font-medium text-white text-center p-0.5 leading-none rounded-full"
-                     style="width: {{ course.progression }}%"> {{ course.progression }}%
+                     style="width: {{ enrollment.progression }}%"> {{ enrollment.progression }}%
                 </div>
+                {% else %}
+                <p>Not enrolled.</p>
+             {% endif %}
             </div>
+            {% endwith %}
+
+        {% endif %}
 
 
             <!-- Course Type Badge -->
