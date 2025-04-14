@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.decorators.http import require_http_methods
 from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.views.generic import TemplateView
@@ -37,48 +37,48 @@ def course_list(request: HttpRequest) -> HttpResponse:
     }
     return render(request, "courses/course_list.html", context)
 
-class NewCourseView( TemplateView):
+
+class NewCourseView(TemplateView):
     template_name = "courses/new_course.html"
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         enrolled_courses = []
         if self.request.user.is_authenticated:
-        # Get user's enrolled courses
+            # Get user's enrolled courses
             enrollments = Enrollment.objects.filter(
                 student=self.request.user, status="active"
             ).prefetch_related("course")
             enrolled_courses = [enrollment.course for enrollment in enrollments]
-        
+
         # Get courses taught by the user if they're a teacher
-      
-    
-    # Get new courses (excluding enrolled ones)
+
+        # Get new courses (excluding enrolled ones)
         new_courses = Course.objects.exclude(
             id__in=[course.id for course in enrolled_courses]
 
         ).order_by("-created_at")[:3]
         context["new_courses"] = new_courses
         return context
-            
-            # Add data to context
-           
-        
+
+        # Add data to context
+
 
 class MyCoursesView(LoginRequiredMixin, TemplateView):
     template_name = "courses/my_course.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-      
+
         # With prefetch for better performance
         enrolled_courses = Course.objects.filter(
-            enrollments__student=self.request.user, 
+            enrollments__student=self.request.user,
             enrollments__status="active"
         ).prefetch_related('enrollments').distinct()
         context["enrolled_courses"] = enrolled_courses
-        return context        
-    
+        return context
+
+
 class CreateCourseView(LoginRequiredMixin, CreateView):
     model = Course
     form_class = CourseForm
@@ -98,7 +98,9 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
         form.instance.teacher = self.request.user
         form.save()
         messages.success(self.request, "Course saved successfully!")
-        return redirect(reverse("create_course_token", kwargs={"slug": form.instance.slug}))
+        return redirect(
+            reverse("create_course_token", kwargs={"slug": form.instance.slug})
+        )
 
     def form_invalid(self, form):
         messages.error(
@@ -135,7 +137,9 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     course = get_object_or_404(Course, slug=slug)
     enrolled = False
     if request.user.is_authenticated:
-        enrolled = course.enrollments.filter(student=request.user, status="active").exists()
+        enrolled = course.enrollments.filter(
+            student=request.user, status="active"
+        ).exists()
     context = {
         "course_detail": course,
         "accessed": enrolled,
@@ -173,31 +177,27 @@ def category_courses(request, slug):
     )
 
 
-
-
 class CreateCourseTokenView(CreateView):
     model = CourseToken
     form_class = CourseTokenForm
     template_name = "course_token_form.html"
 
     def get_success_url(self):
-        # Redirect to some confirmation or success page after form submission
-        messages.success(self.request,"Your request was successfull")
-        return reverse_lazy('home')
+        messages.success(self.request, "Your request was successful")
+        return reverse_lazy("home")
 
     def form_valid(self, form):
         # Save the teacher and course info automatically
         form.instance.teacher = self.request.user
-        slug = self.kwargs['slug']
+        slug = self.kwargs["slug"]
         course = Course.objects.get(slug=slug)
-        form.instance.course = course # Assuming 'slug' passed in URL
+        form.instance.course = course  # Assuming 'slug' passed in URL
         messages.success(self.request, "Course token submitted successfully!")
         return super().form_valid(form)
 
     def form_invalid(self, form):
         messages.error(self.request, "There was an error in your form submission.")
         return super().form_invalid(form)
-
 
 
 class RatingCreateView(CreateView):
@@ -210,10 +210,12 @@ class RatingCreateView(CreateView):
         course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
         try:
             rating = Rating.objects.get(student=self.request.user, course=course)
-            initial.update({
-                "rating": rating.rating,
-                "review": rating.review,
-            })
+            initial.update(
+                {
+                    "rating": rating.rating,
+                    "review": rating.review,
+                }
+            )
         except Rating.DoesNotExist:
             pass
         return initial
@@ -227,7 +229,7 @@ class RatingCreateView(CreateView):
         course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
         student = self.request.user
 
-        rating, created = Rating.objects.update_or_create(
+        _, _ = Rating.objects.update_or_create(
             student=student,
             course=course,
             defaults={

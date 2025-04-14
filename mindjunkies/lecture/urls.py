@@ -18,20 +18,11 @@ urlpatterns = [
         views.CreateContentView.as_view(),
         name="create_content",
     ),
-    # HLS video streaming
     path(
-        "serve_hls_playlist/<str:video_id>/",
-        views.serve_hls_playlist,
-        name="serve_hls_playlist",
-    ),
-    path(
-        "serve_hls_segment/<str:video_id>/<str:segment_name>",
-        views.serve_hls_segment,
-        name="serve_hls_segment",
-    ),
-    path(
-        "video/<str:module_id>/<str:video_id>",
+        "video/<str:module_id>/<str:lecture_id>/<str:video_id>",
         views.lecture_video,
         name="lecture_video_content",
     ),
+
+    path('lecture/<int:lecture_id>/complete/', views.MarkLectureCompleteView.as_view(), name='mark_lecture_complete'),
 ]

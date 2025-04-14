@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'lecture/base.html' %} {% load static %} {% block lecture_content %}
 <!-- Main Content with Responsive Layout -->
 {% if current_module %}
@@ -31,6 +32,10 @@
                 {% endif %}
             </div>
         </div>
+=======
+    {% extends 'lecture/base.html' %}
+{% load static %}
+>>>>>>> develop
 
         <!-- Weeks/Lectures in Module -->
 
@@ -235,6 +240,32 @@
 
                         <div class="space-y-3">
                             {% for video in lecture.videos.all %}
+<<<<<<< HEAD
+=======
+                                <div
+                                    class="flex items-center p-4 hover:bg-slate-50 rounded-lg transition-colors border border-slate-100">
+                                    <div class="mr-4 text-indigo-600">
+                                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                                            <path
+                                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-medium text-slate-800">
+                                            <a href="#" class="hover:text-indigo-600 transition-colors">
+                                                {{ video.video_title }}
+                                            </a>
+                                        </h4>
+                                        <p class="text-xs text-slate-500">Video • 45 min</p>
+                                    </div>
+                                    <a href="{% url 'lecture_video_content' course.slug current_module.id lecture.id video.id %}"
+                                       class="btn bg-indigo-600 hover:bg-indigo-700 text-white btn-sm action-link">
+                                        Resume
+                                    </a>
+                                </div>
+                            {% endfor %}
+
+>>>>>>> develop
                             <div
                                 class="flex items-center p-4 hover:bg-slate-50 rounded-lg transition-all border border-slate-200 hover:shadow-md"
                             >
