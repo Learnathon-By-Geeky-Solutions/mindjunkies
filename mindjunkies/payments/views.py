@@ -8,6 +8,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 from django.views.generic import View
 from sslcommerz_lib import SSLCOMMERZ
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course, Enrollment
@@ -21,71 +23,73 @@ def unique_transaction_id_generator(
     return "".join(secrets.choice(chars) for _ in range(size))
 
 
-@require_GET
-def checkout(request, course_slug):
-    """Initiate checkout and redirect to SSLCommerz payment gateway."""
-    user = request.user
-    course = get_object_or_404(Course, slug=course_slug)
+@method_decorator(require_GET, name='dispatch')
+class CheckoutView(View, LoginRequiredMixin):
+    def get(self, request, course_slug):
+        if not request.user.is_authenticated:
+            messages.error(request, "You need to be logged in to enroll in a course.")
+            return redirect("account_login")
+        user = request.user
+        course = get_object_or_404(Course, slug=course_slug)
 
-    transaction_id = unique_transaction_id_generator()
-    enrollment, _ = Enrollment.objects.get_or_create(
-        student=user,
-        course=course,
-    )
+        transaction_id = unique_transaction_id_generator()
+        enrollment, _ = Enrollment.objects.get_or_create(
+            student=user,
+            course=course,
+        )
 
-    if enrollment.status == "active":
-        messages.success(request, "You have already enrolled in this course")
+        if enrollment.status == "active":
+            messages.success(request, "You have already enrolled in this course")
+            return redirect("home")
+
+        enrollment.status = "pending"
+        enrollment.save()
+
+        gateway = PaymentGateway.objects.first()
+        if not gateway:
+            messages.error(request, "Payment gateway not configured.")
+            return redirect("home")
+
+        sslcz_settings = {
+            "store_id": gateway.store_id,
+            "store_pass": gateway.store_pass,
+            "issandbox": True,
+        }
+
+        sslcommez = SSLCOMMERZ(sslcz_settings)
+        post_body = {
+            "total_amount": course.course_price,
+            "currency": "BDT",
+            "tran_id": transaction_id,
+            "success_url": f"http://localhost:8000/payment/{course_slug}/success/",
+            "fail_url": f"http://localhost:8000/payment/{course_slug}/failed/",
+            "cancel_url": "http://localhost:8000/",
+            "emi_option": 0,
+            "cus_name": user.username,
+            "cus_email": user.email,
+            "cus_phone": "01700000000",
+            "cus_add1": "Goalpara",
+            "cus_city": "Thakurgaon",
+            "cus_country": "Bangladesh",
+            "shipping_method": "NO",
+            "multi_card_name": "",
+            "num_of_item": 1,
+            "product_name": course.title,
+            "product_category": str(course.category),
+            "product_profile": "general",
+            "value_a": user.username,
+            "value_b": course.slug,
+        }
+
+        try:
+            response = sslcommez.createSession(post_body)
+            if response.get("status") == "SUCCESS":
+                return redirect(response["GatewayPageURL"])
+        except Exception as e:
+            print(f"Error in initiating payment: {e}")
+
+        messages.error(request, "Payment gateway initialization failed")
         return redirect("home")
-
-    enrollment.status = "pending"
-    enrollment.save()
-
-    gateway = PaymentGateway.objects.first()
-    if not gateway:
-        messages.error(request, "Payment gateway not configured.")
-        return redirect("home")
-
-    sslcz_settings = {
-        "store_id": gateway.store_id,
-        "store_pass": gateway.store_pass,
-        "issandbox": True,
-    }
-
-    sslcommez = SSLCOMMERZ(sslcz_settings)
-    post_body = {}
-    post_body["total_amount"] = course.course_price
-    post_body["currency"] = "BDT"
-    post_body["tran_id"] = transaction_id
-    post_body["success_url"] = f"http://localhost:8000/payment/{course_slug}/success/"
-    post_body["fail_url"] = f"http://localhost:8000/payment/{course_slug}/failed/"
-    post_body["cancel_url"] = "http://localhost:8000/"
-    post_body["emi_option"] = 0
-    post_body["cus_name"] = user.username
-    post_body["cus_email"] = user.email
-    post_body["cus_phone"] = "01700000000"
-    post_body["cus_add1"] = "Goalpara"
-    post_body["cus_city"] = "Thakurgaon"
-    post_body["cus_country"] = "Bangladesh"
-    post_body["shipping_method"] = "NO"
-    post_body["multi_card_name"] = ""
-    post_body["num_of_item"] = 1
-    post_body["product_name"] = course.title
-    post_body["product_category"] = str(course.category)
-    post_body["product_profile"] = "general"
-
-    post_body["value_a"] = user.username
-    post_body["value_b"] = course.slug
-
-    try:
-        response = sslcommez.createSession(post_body)
-        if response["status"] == "SUCCESS":
-            return redirect(response["GatewayPageURL"])
-    except Exception as e:
-        print(f"Error in initiating payment: {e}")
-
-    messages.error(request, "Payment gateway initialization failed")
-    return redirect("home")
-
 
 @method_decorator(csrf_exempt, name="dispatch")
 class CheckoutSuccessView(View):
