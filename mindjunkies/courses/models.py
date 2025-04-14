@@ -3,6 +3,7 @@ from cloudinary.models import CloudinaryField
 from django.db import models
 from django.utils.text import slugify
 from taggit.managers import TaggableManager
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 from config.models import BaseModel
 
@@ -61,8 +62,6 @@ class Course(BaseModel):
 
     total_rating = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     number_of_ratings = models.PositiveIntegerField(default=0)
-
-    progression = models.PositiveIntegerField(default=0)
 
     # Tags for the course
     tags = TaggableManager(blank=True)
@@ -152,6 +151,8 @@ class Enrollment(BaseModel):
     student = models.ForeignKey(user, on_delete=models.CASCADE, related_name="enrolled")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
 
+    progression = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+
     class Meta:
         unique_together = ["course", "student"]
 
@@ -167,7 +168,6 @@ class Module(BaseModel):
     details = models.TextField()
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="modules")
     order = models.PositiveIntegerField(default=0)
-    progression = models.PositiveIntegerField(default=0)
 
     class Meta: 
         ordering = ["order"]
