@@ -18,9 +18,7 @@ def update_module_progression(sender, instance, created, **kwargs):
         total_lectures = course.lectures.count()
 
 
-        enrollment = Enrollment.objects.filter(
-            course=course, student=user
-        )
+        enrollment = Enrollment.objects.get(course=course, student=user)
 
         # print(total_lectures)
         # completed_lectures = module.lectures.filter(
@@ -33,9 +31,5 @@ def update_module_progression(sender, instance, created, **kwargs):
 
         if total_lectures > 0:
             percentage = int((completed_lectures / total_lectures) * 100)
-            print("before")
-            print(course.title, percentage, course.progression)
-            course.progression = percentage
-            print("after")
-            print(course.title, percentage, course.progression)
-            course.save()
+            enrollment.progression = percentage
+            enrollment.save()
