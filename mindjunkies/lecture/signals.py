@@ -12,14 +12,26 @@ def update_module_progression(sender, instance, created, **kwargs):
         lecture = instance.lecture
         user = instance.user
 
-        module = lecture.module
-        total_lectures = module.lectures.count()
+        # module = lecture.module
+        # total_lectures = module.lectures.count()
+
+        course = lecture.course
+        total_lectures = course.lectures.count()
+
         print(total_lectures)
-        completed_lectures = module.lectures.filter(
+        # completed_lectures = module.lectures.filter(
+        #     lecturecompletion__user=user
+        # ).distinct().count()
+
+        completed_lectures = course.lectures.filter(
             lecturecompletion__user=user
         ).distinct().count()
 
         if total_lectures > 0:
             percentage = int((completed_lectures / total_lectures) * 100)
-            module.progression = percentage
-            module.save()
+            print("before")
+            print(course.title, percentage, course.progression)
+            course.progression = percentage
+            print("after")
+            print(course.title, percentage, course.progression)
+            course.save()
