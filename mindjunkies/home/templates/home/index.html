@@ -101,6 +101,51 @@
                 your professional development.</p>
         </div>
 
+<<<<<<< HEAD
+  <div class="p-8">
+    <h2 class="text-4xl text-gray-800 font-bold pb-2">Empowering Learning, Anywhere, Anytime</h2>
+    <p class="text-lg text-gray-500 font-semibold">From foundational knowledge to advanced mastery, Biddyapith helps you learn, grow, and succeed at your own pace.</p>
+  </div>
+  
+ 
+{% else %}
+{% include 'home/continue_learning.html' %}
+
+{% endif %}
+<div class="relative z-10 border-t border-base-content/10">
+  <!-- Main Categories Bar -->
+  <div class="bg-base-100 shadow-sm px-5 py-2">
+      <div class="container mx-auto">
+          <ul class="flex items-center overflow-x-auto" id="categoryBar">
+              {% for category in categories %}
+                  <li class="relative">
+                      <a href="{% url 'home' %}?category={{ category.slug }}" 
+                      class="block px-6 py-4 text-sm font-medium hover:text-primary transition-colors
+                             {% if category.slug == active_category.slug %}text-primary border-b-2 border-primary{% else %}text-base-content/80{% endif %}"
+                      hx-get="{% url 'home' %}?category={{ category.slug }}"
+                      hx-target="#subcategories-container"
+                      hx-trigger="mouseenter"
+                      hx-swap="innerHTML"
+                      hx-push-url="true" 
+                      onmouseenter="setActiveCategory(this)"
+                      onclick="setActiveCategory(this)"
+                     >
+                          {{ category.name }}
+                      </a>
+                  </li>
+              {% endfor %}
+          </ul>
+      </div>
+  </div>
+  
+  <!-- Subcategories Bar -->
+  <div id="subcategories-container">
+    {% include "home/subcategory.html" %}
+  </div>
+</div>
+    {% if enrolled_courses%}
+    <section id="enrolled-courses" class="p-10 bg-base-200">
+=======
     {% else %}
         {% include 'home/continue_learning.html' %}
 
@@ -137,28 +182,44 @@
     </div>
 
     <section id="enrolled-courses" class="bg-base-200">
+>>>>>>> develop
         <div class="container mx-auto px-4">
-            <h2 class="text-xl font-bold text-center mb-8">Continue Learning</h2>
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 m-4">My Courses</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {% for course in enrolled_courses %}
                     {% include 'home/card.html' %}
                 {% endfor %}
             </div>
         </div>
+       <a href="{% url 'my_course'%}"> <button class="px-6 py-2 m-4 cursor-pointer font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 transition-colors duration-200">
+            Show all my courses
+          </button></a>
     </section>
-    <section id="new-courses" class="bg-base-200">
-        <div class="container mx-auto px-4">
-            <h2 class="text-xl font-bold text-center mb-8">New Courses</h2>
+    {% endif %}
+    {% if new_courses%}
+    <section id="new-courses" class="p-10 bg-base-200">
+        <div class="consultant mx-auto my-2 px-4">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 m-4">New Courses</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {% for course in new_courses %}
                     {% include 'home/card.html' %}
                 {% endfor %}
             </div>
+            
         </div>
+        <a href="{% url 'new_course' %}"><button class="px-6 py-2 m-4 cursor-pointer font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 transition-colors duration-200">
+            Show all new courses
+          </button></a>
+        
     </section>
+   
+   
+    {% endif %}
+    
+    {% if courses%}
     <section id="courses" class="bg-base-200">
         <div class="container mx-auto px-4">
-            <h2 class="text-xl font-bold text-center mb-8">Popular Courses</h2>
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 m-4">Popular Courses</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {% for course in courses %}
                     {% include 'home/card.html' %}
@@ -166,6 +227,7 @@
             </div>
         </div>
     </section>
+    {% endif %}
     <section class="p-10">
         {% include 'home/goal.html' %}
     </section>
@@ -173,6 +235,19 @@
         {% include 'home/review.html' %}
     </section>
     <script>
+<<<<<<< HEAD
+       function setActiveCategory(element) {
+    // Remove active class from all category links
+    document.querySelectorAll('#categoryBar a').forEach(link => {
+        link.classList.remove('text-primary', 'border-b-2', 'border-primary');
+        link.classList.add('text-base-content/80');
+    });
+    
+    // Add active class to clicked element
+    element.classList.remove('text-base-content/80');
+    element.classList.add('text-primary', 'border-b-2', 'border-primary');
+}
+=======
         function setActiveCategory(element) {
             // Remove active class from all category links
             document.querySelectorAll('#categoryBar a').forEach(link => {
@@ -184,6 +259,7 @@
             element.classList.remove('text-base-content/80');
             element.classList.add('text-primary', 'border-b-2', 'border-primary');
         }
+>>>>>>> develop
     </script>
 
     <style>

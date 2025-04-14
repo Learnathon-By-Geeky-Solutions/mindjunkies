@@ -28,7 +28,7 @@
       <h1 class="text-3xl font-bold">Module {{module.order}}: {{module.title}}</h1>
       <p class="text-gray-600">Discuss this week's modules here.</p>
     </div>
-    <a class="text-blue-600 font-medium hover:underline" href="#">Subscribe</a>
+ 
   </div>
 
   <!-- Search and Post -->
@@ -39,45 +39,14 @@
     <button class="btn btn-outline btn-primary" onclick="document.getElementById('newTopicModal').showModal()">Create post</button>
   </div>
 
-  <!-- Filters -->
-  <div class="mt-6 flex flex-wrap items-center justify-between">
-    <div class="flex items-center space-x-2">
-      <span class="font-semibold">Forum:</span>
-      <div class="dropdown">
-        <label tabindex="0" class="btn btn-sm btn-outline">Module {{module.order}}</label>
-        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-          {% for module in course.modules.all %}
-         <li><a href="{% url 'forum_thread' course.slug module.id %}">Module {{module.order}}</a></li>
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
-
-    <div class="flex items-center space-x-4 mt-4 sm:mt-0">
-      <div class="dropdown dropdown-hover">
-        <label tabindex="0" class="cursor-pointer">Sort: <span class="font-medium">Recent</span></label>
-        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40">
-          <li><a>Recent</a></li>
-          <li><a>Most Liked</a></li>
-        </ul>
-      </div>
-
-      <div class="dropdown dropdown-hover">
-        <label tabindex="0" class="cursor-pointer">Filter: <span class="font-medium">All</span></label>
-        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40">
-          <li><a>All</a></li>
-          <li><a>Unread</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+ 
 
   <!-- Forum Thread Card -->
   <div class=" mt-8 border-t border-gray-200 pt-6 space-y-8">
 
    {% for post in module.forum_posts.all%}
     <div class="w-[1000px] bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
-        <a href="{% url 'forum_thread_details' course.slug post.slug %}" class="text-blue-600 font-bold text-lg hover:underline">{{post.title}}</a>
+        <a href="{% url 'forum_thread_details' course.slug module.id post.slug %}" class="text-blue-600 font-bold text-lg hover:underline">{{post.title}}</a>
         <p class="mt-2 text-gray-700 text-base">
           <p class="mt-2 text-gray-700 text-base">
             {{ post.content|truncatewords:100 }}
@@ -89,20 +58,14 @@
 
         <div class="flex items-center justify-between mt-4 text-sm text-gray-500">
           <div class="flex space-x-4">
-            <button class="flex items-center gap-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded-md transition-all">
-              <i class="fa-regular fa-thumbs-up"></i> Like
-            </button>
-            <a href="{% url 'forum_thread_details' course.slug post.slug %}"><button class="flex cursor-pointer  gap-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded-md transition-all">
-              <i class="fa-regular fa-comment-dots"></i> Reply 3
+           
+            <a href="{% url 'forum_thread_details' course.slug module.id post.id %}"><button class="cursor-pointer justify-center items-center  gap-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded-md transition-all">
+              <i class="fa-regular fa-comment-dots"></i> Details
             </button></a>
           </div>
           <div class="flex items-center space-x-2">
-            <div class="avatar placeholder">
-              <div class="bg-gray-200 text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
-                FS
-              </div>
-            </div>
-            <span class="text-sm text-gray-500">Replied on {{ post.get_last_activity|date:"F j, Y, g:i a" }}</span>
+           
+            <span class="text-sm text-gray-500"> Latest activity on {{ post.get_last_activity|date:"F j, Y, g:i a" }}</span>
           </div>
         </div>
       </div>

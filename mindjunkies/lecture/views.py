@@ -169,6 +169,7 @@ class CreateContentView(LoginRequiredMixin, CourseObjectMixin, FormView):
 
     def dispatch(self, request, *args, **kwargs):
         self.lecture = get_object_or_404(Lecture, slug=kwargs["lecture_slug"])
+        self.course = self.get_course()
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_class(self):
@@ -199,10 +200,15 @@ class CreateContentView(LoginRequiredMixin, CourseObjectMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+<<<<<<< HEAD
+        context["content_type"] = self.kwargs["format"]
+        context["course"]=self.get_course()
+=======
         content_type = self.kwargs["format"]
         if content_type == "attachment":
             context["pdf"] = LecturePDF.objects.filter(lecture=self.lecture).first()
         context["content_type"] = content_type
+>>>>>>> develop
         return context
 
 
@@ -233,6 +239,7 @@ class EditLectureView(LoginRequiredMixin, CourseObjectMixin, UpdateView):
         """Add extra context, such as the lecture object"""
         context = super().get_context_data(**kwargs)
         context["lecture"] = self.get_object()
+        context["course"] = self.get_course()
         return context
 
 
