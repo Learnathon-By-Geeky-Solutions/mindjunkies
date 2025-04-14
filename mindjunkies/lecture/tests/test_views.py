@@ -57,7 +57,7 @@ def test_lecture_home_view(client, user, course, module):
 
 
 @pytest.mark.django_db
-def test_lecture_video_view(client, user, course, module, lecture_video):
+def test_lecture_video_view(client, user, course, module, lecture, lecture_video):
     baker.make("courses.Enrollment", course=course, student=user)
     client.force_login(user)
 
@@ -66,6 +66,7 @@ def test_lecture_video_view(client, user, course, module, lecture_video):
         kwargs={
             "course_slug": course.slug,
             "module_id": module.id,
+            "lecture_id": lecture.id,
             "video_id": lecture_video.id,
         },
     )
@@ -77,7 +78,7 @@ def test_lecture_video_view(client, user, course, module, lecture_video):
 
 @pytest.mark.django_db
 def test_lecture_video_forbidden_for_non_enrolled(
-    client, user, course, module, lecture_video
+    client, user, course, module, lecture, lecture_video
 ):
     client.force_login(user)
 
@@ -86,6 +87,7 @@ def test_lecture_video_forbidden_for_non_enrolled(
         kwargs={
             "course_slug": course.slug,
             "module_id": module.id,
+            "lecture_id": lecture.id,
             "video_id": lecture_video.id,
         },
     )
@@ -105,10 +107,18 @@ def test_lecture_pdf_view(client, user, lecture, lecture_pdf):
             "format": "attachment",
         },
     )
-    response = client.get(url)
 
-    assert response.status_code == 200
-    assert "pdf" in response.context
+    pdf_file = SimpleUploadedFile(
+        "test.pdf", b"PDF content", content_type="application/pdf"
+    )
+    response = client.post(
+        url, {"pdf_file": pdf_file, "pdf_title": "Sample PDF"}
+    )
+
+    assert response.status_code == 302
+    assert "Lecture Attachment uploaded successfully!" in [
+        str(m) for m in response.wsgi_request._messages
+    ]
 
 
 @pytest.mark.django_db
