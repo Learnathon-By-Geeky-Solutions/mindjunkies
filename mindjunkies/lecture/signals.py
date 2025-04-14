@@ -3,7 +3,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import LectureCompletion
-from mindjunkies.courses.models import Module
+from mindjunkies.courses.models import Module, Enrollment
 from mindjunkies.lecture.models import Lecture
 
 @receiver(post_save, sender=LectureCompletion)
@@ -18,7 +18,12 @@ def update_module_progression(sender, instance, created, **kwargs):
         course = lecture.course
         total_lectures = course.lectures.count()
 
-        print(total_lectures)
+
+        enrollment = Enrollment.objects.filter(
+            course=course, student=user
+        )
+
+        # print(total_lectures)
         # completed_lectures = module.lectures.filter(
         #     lecturecompletion__user=user
         # ).distinct().count()
