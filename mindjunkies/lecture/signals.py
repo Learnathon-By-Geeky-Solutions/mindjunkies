@@ -1,10 +1,9 @@
-# mindjunkies/lecture/signals.py
-
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import LectureCompletion
 from mindjunkies.courses.models import Module
 from mindjunkies.lecture.models import Lecture
+
 
 @receiver(post_save, sender=LectureCompletion)
 def update_module_progression(sender, instance, created, **kwargs):

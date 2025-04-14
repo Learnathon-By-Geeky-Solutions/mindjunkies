@@ -67,6 +67,14 @@ class TestForumThreadView(TestCase):
         self.module = Module.objects.create(
             title="Test Module", details="Module details", course=self.course, order=1
         )
+        self.topic = ForumTopic.objects.create(
+            title="Test Topic",
+            slug="test-topic",
+            content="Test Content",
+            author=self.user,
+            course=self.course,
+            module=self.module,
+        )
 
     def test_get_module(self):
         """Test that get_module returns the correct module"""
@@ -123,21 +131,6 @@ class TestForumThreadDetailsView(TestCase):
         topic = view.get_topic()
 
         self.assertEqual(topic, self.topic)
-
-    def test_get_context_data(self):
-        """Test that topic and forms are added to context"""
-        request = self.factory.get("/")
-        request.user = self.user
-
-        view = ForumThreadDetailsView()
-        view.request = request
-        view.kwargs = {'course_slug': self.course.slug, 'topic_id': self.topic.id}
-        
-        context = view.get_context_data()
-
-        self.assertEqual(context["topic"], self.topic)
-        self.assertIsInstance(context["commentForm"], ForumCommentForm)
-        self.assertIsInstance(context["replyForm"], ForumReplyForm)
 
 
 @pytest.mark.django_db

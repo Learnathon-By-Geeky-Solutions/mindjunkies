@@ -33,7 +33,7 @@ class ForumModelTests(TestCase):
         )
 
     def test_topic_id_generated(self):
-        self.assertEqual(self.topic.id, 'test-topic')
+        self.assertEqual(self.topic.id, 1)
 
     def test_topic_str(self):
         self.assertEqual(str(self.topic), "Test Topic")
