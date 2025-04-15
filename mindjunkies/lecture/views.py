@@ -18,7 +18,7 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 from mindjunkies.courses.models import Course, Module
 
 from .forms import LectureForm, LecturePDFForm, LectureVideoForm, ModuleForm
-from .models import Lecture, LecturePDF, LectureVideo, LectureCompletion
+from .models import Lecture, LecturePDF, LectureVideo, LectureCompletion, LastVisitedModule
 from django.utils.timezone import localtime, now
 from django.views.generic import TemplateView
 from django.views import View
@@ -93,6 +93,13 @@ def lecture_video(request: HttpRequest, course_slug: str, module_id: str, lectur
     """View to display a lecture video."""
     video = get_object_or_404(LectureVideo, id=video_id)
     module = get_object_or_404(Module, id=module_id)
+    lecture = get_object_or_404(Lecture, id=lecture_id)
+
+    LastVisitedModule.objects.update_or_create(
+        user=request.user, module=module, lecture=lecture, defaults={"last_visited": timezone.now()}
+    )
+
+
 
     # Ensure the user is enrolled in the related course
     if not check_course_enrollment(request.user, video.lecture.course):

@@ -4,6 +4,7 @@ from django.utils.safestring import mark_safe
 from django.views.decorators.http import require_http_methods
 
 from mindjunkies.courses.models import Course, CourseCategory, Enrollment, LastVisitedCourse
+from mindjunkies.lecture.models import LastVisitedModule, Lecture
 
 
 @require_http_methods(["GET"])
@@ -60,11 +61,12 @@ def home(request):
     continue_courses = []
 
     if request.user.is_authenticated:
-        continue_courses = (
-            Course.objects.filter(enrollments__student=request.user)
+
+        continue_lecture = (
+            Lecture.objects.filter(course__enrollments__student=request.user)
             .annotate(
                 last_visited_at=models.Subquery(
-                    LastVisitedCourse.objects.filter(
+                    LastVisitedModule.objects.filter(
                         user=request.user, course=models.OuterRef("pk")
                     ).values("last_visited")[:1]
                 )
