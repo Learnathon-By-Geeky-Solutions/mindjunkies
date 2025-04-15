@@ -1,12 +1,10 @@
-import cloudinary
-import cloudinary.uploader
 from categories.models import CategoryBase
 from cloudinary.models import CloudinaryField
 from django.db import models
 from django.utils.text import slugify
+from taggit.managers import TaggableManager
 
 from config.models import BaseModel
-from taggit.managers import TaggableManager
 
 user = "accounts.User"
 
@@ -64,8 +62,10 @@ class Course(BaseModel):
     total_rating = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     number_of_ratings = models.PositiveIntegerField(default=0)
 
+    progression = models.PositiveIntegerField(default=0)
+
     # Tags for the course
-    tags = TaggableManager(blank=True)    
+    tags = TaggableManager(blank=True)
 
     def __str__(self):
         return self.title
@@ -117,7 +117,9 @@ class CourseInfo(BaseModel):
 class Rating(BaseModel):
     """Stores ratings and reviews for courses."""
 
-    student = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name="ratings")
+    student = models.ForeignKey(
+        "accounts.User", on_delete=models.CASCADE, related_name="ratings"
+    )
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="ratings")
     rating = models.PositiveSmallIntegerField(
         choices=[(i, str(i)) for i in range(1, 6)], default=5  # 1 to 5 stars
@@ -148,9 +150,7 @@ class Enrollment(BaseModel):
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name="enrollments"
     )
-    student = models.ForeignKey(
-        user, on_delete=models.CASCADE, related_name="enrolled"
-    )
+    student = models.ForeignKey(user, on_delete=models.CASCADE, related_name="enrolled")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
 
     class Meta:
@@ -168,8 +168,9 @@ class Module(BaseModel):
     details = models.TextField()
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="modules")
     order = models.PositiveIntegerField(default=0)
+    progression = models.PositiveIntegerField(default=0)
 
-    class Meta:
+    class Meta: 
         ordering = ["order"]
 
     def __str__(self):
@@ -180,10 +181,14 @@ class CourseToken(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="tokens")
     teacher = models.ForeignKey(user, on_delete=models.CASCADE)
     motivation = models.TextField(
-        help_text="Write your motivation or plan for the course, including how you plan to organize it.")
-    intro_video = CloudinaryField(resource_type='video', default="")
-    status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('approved', 'Approved')],
-                              default='pending')
+        help_text="Write your motivation or plan for the course, including how you plan to organize it."
+    )
+    intro_video = CloudinaryField(resource_type="video", default="")
+    status = models.CharField(
+        max_length=10,
+        choices=[("pending", "Pending"), ("approved", "Approved")],
+        default="pending",
+    )
 
     def __str__(self):
         return f"Token for {self.course.title} by {self.teacher.username}"

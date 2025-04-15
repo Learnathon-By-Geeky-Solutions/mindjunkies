@@ -10,7 +10,7 @@ urlpatterns = [
     path("rate/<slug:course_slug>/", views.RatingCreateView.as_view(), name="rate_course"),
 
     path('create-course-token/<slug:slug>/', views.CreateCourseTokenView.as_view(), name='create_course_token'),
-    path('new_course',views.NewCourseView.as_view(), name='new_course'),
+    path('new_course', views.NewCourseView.as_view(), name='new_course'),
     path('my_courses', views.MyCoursesView.as_view(), name='my_course'),
     path("<str:slug>/", views.course_details, name="course_details"),
     path("<str:course_slug>/", include("mindjunkies.lecture.urls")),

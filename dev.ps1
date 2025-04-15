@@ -39,6 +39,9 @@ function Test {
     uv run pytest -v -rs -n auto
 }
 
+function Run {
+    uv run python manage.py tailwind runserver
+}
 
 function Update {
     Sync
@@ -72,5 +75,6 @@ switch ($Task.ToLower()) {
     "superuser"          { Superuser }
     "test"               { Test }
     "update"             { Update }
+    "run"               { Run }
     default              { Help }
 }

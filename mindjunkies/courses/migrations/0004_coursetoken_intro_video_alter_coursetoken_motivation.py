@@ -7,18 +7,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('courses', '0003_rename_user_coursetoken_teacher_and_more'),
+        ("courses", "0003_rename_user_coursetoken_teacher_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='coursetoken',
-            name='intro_video',
-            field=cloudinary.models.CloudinaryField(default='', max_length=255),
+            model_name="coursetoken",
+            name="intro_video",
+            field=cloudinary.models.CloudinaryField(default="", max_length=255),
         ),
         migrations.AlterField(
-            model_name='coursetoken',
-            name='motivation',
-            field=models.TextField(help_text='Write your motivation or plan for the course, including how you plan to organize it.'),
+            model_name="coursetoken",
+            name="motivation",
+            field=models.TextField(
+                help_text="Write your motivation or plan for the course, including how you plan to organize it."
+            ),
         ),
     ]

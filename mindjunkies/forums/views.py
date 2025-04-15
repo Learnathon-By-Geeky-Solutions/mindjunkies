@@ -8,10 +8,9 @@ from django.urls import reverse
 from mindjunkies.courses.models import Course, Module
 
 from .forms import ForumCommentForm, ForumReplyForm, ForumTopicForm
-from .models import Course, ForumComment, ForumTopic, Reply
+from .models import ForumComment, ForumTopic, Reply
 
-from django.http import HttpResponse
-from django.template.loader import render_to_string
+
 class CourseContextMixin:
     """
     Mixin to add the course object to the context based on `course_slug`.
@@ -288,16 +287,18 @@ class ReplyFormView(LoginRequiredMixin, CourseContextMixin, View):
             "replyForm": reply_form,
         }
         return render(request, "forums/reply_form.html", context)
-    
+
+
 class LikeToggleView(LoginRequiredMixin, View):
     """Base view for toggling likes on objects"""
+
     model = None
     template_name = None
     context_object_name = None
-    
+
     def get_object(self):
-        return get_object_or_404(self.model, id=self.kwargs.get('pk'))
-    
+        return get_object_or_404(self.model, id=self.kwargs.get("pk"))
+
     def post(self, request, *args, **kwargs):
         obj = self.get_object()
         user_exist = obj.likes.filter(username=request.user.username).exists()
@@ -305,13 +306,10 @@ class LikeToggleView(LoginRequiredMixin, View):
             obj.likes.remove(request.user)
         else:
             obj.likes.add(request.user)
-        
-     
-         
-        
+
         context = {self.context_object_name: obj}
         return render(request, self.template_name, context)
-    
+
     # For compatibility with GET requests
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
@@ -319,34 +317,23 @@ class LikeToggleView(LoginRequiredMixin, View):
 
 class LikePostView(LikeToggleView):
     """View for toggling likes on Post objects"""
+
     model = ForumTopic
-    template_name = 'forums/partials/like_topic.html'
-    context_object_name = 'topic'
+    template_name = "forums/partials/like_topic.html"
+    context_object_name = "topic"
 
 
 class LikeCommentView(LikeToggleView):
     """View for toggling likes on Comment objects"""
+
     model = ForumComment
-    template_name = 'forums/partials/like_comment.html'
-    context_object_name = 'comment'
+    template_name = "forums/partials/like_comment.html"
+    context_object_name = "comment"
 
 
 class LikeReplyView(LikeToggleView):
     """View for toggling likes on Reply objects"""
+
     model = Reply
-    template_name = 'forums/partials/like_reply.html'
-    context_object_name = 'reply'
-      
-
-
-
-
-
-
-
-   
-
-            
-            
-        
-        
+    template_name = "forums/partials/like_reply.html"
+    context_object_name = "reply"

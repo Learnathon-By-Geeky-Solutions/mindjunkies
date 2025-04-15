@@ -1,10 +1,10 @@
+from django.db import models
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
 from django.views.decorators.http import require_http_methods
-from django.db import models
 
-from mindjunkies.courses.models import LastVisitedCourse
-from mindjunkies.courses.models import Course, CourseCategory, Enrollment
+from mindjunkies.courses.models import Course, CourseCategory, Enrollment, LastVisitedCourse
+
 
 @require_http_methods(["GET"])
 def home(request):
@@ -12,49 +12,48 @@ def home(request):
     categories = CourseCategory.objects.filter(parent__isnull=True).prefetch_related(
         "children"
     )
-    
+
     # Determine active category
-    active_category_slug = request.GET.get('category')
+    active_category_slug = request.GET.get("category")
     active_category = None
-    
+
     if active_category_slug:
         # Try to get the requested category
         try:
             active_category = CourseCategory.objects.prefetch_related("children").get(
-                slug=active_category_slug,
-                parent__isnull=True
+                slug=active_category_slug, parent__isnull=True
             )
         except CourseCategory.DoesNotExist:
             pass
-    
+
     # If no active category is specified or found, default to the first one
     if not active_category and categories.exists():
         active_category = categories.first()
-    
+
     # Handle enrolled courses for authenticated users
     enrolled_courses = []
     teacher_courses = []
-    
+
     if request.user.is_authenticated:
         # Get user's enrolled courses
         enrollments = Enrollment.objects.filter(
             student=request.user, status="active"
         ).prefetch_related("course")
         enrolled_courses = [enrollment.course for enrollment in enrollments]
-        
+
         # Get courses taught by the user if they're a teacher
         teacher_courses = Course.objects.filter(teacher=request.user)
-    
+
     # Get new courses (excluding enrolled ones)
     new_courses = Course.objects.exclude(
         id__in=[course.id for course in enrolled_courses]
     ).order_by("-created_at")[:3]
-    
+
     # Get other courses (excluding new ones and enrolled ones)
     courses = Course.objects.exclude(
         id__in=new_courses.values_list("id", flat=True)
     ).exclude(id__in=[course.id for course in enrolled_courses])
-    
+
     # Get featured courses (you might want to define criteria for this)
     featured_courses = Course.objects.filter(published=True)
 
@@ -71,8 +70,7 @@ def home(request):
                 )
             )
             .order_by("-last_visited_at", "title")
-        ) 
-        
+        )
 
     # Build the context
     context = {
@@ -86,15 +84,13 @@ def home(request):
         "active_category": active_category,
         "continue_courses": continue_courses[0] if continue_courses else None,
     }
-    
+
     # Check if this is an HTMX request
-    if request.headers.get('HX-Request'):
+    if request.headers.get("HX-Request"):
         # Return only the subcategories fragment
         return render(request, "home/subcategory.html", context)
-    
-    return render(request, "home/index.html", context)
 
-    
+    return render(request, "home/index.html", context)
 
 
 @require_http_methods(["GET"])

@@ -1,8 +1,5 @@
-from categories.admin import CategoryBaseAdmin
 from django.contrib import admin
 from unfold.admin import ModelAdmin
-from taggit.admin import TaggedItemInline
-
 
 from mindjunkies.courses.models import Course, CourseCategory, Enrollment
 
@@ -24,8 +21,6 @@ class CourseAdmin(ModelAdmin):
 
     def get_tags(self, obj):
         return ", ".join(o.name for o in obj.tags.all())
-
-
 
 
 @admin.register(Enrollment)
@@ -70,10 +65,3 @@ class RatingAdmin(ModelAdmin):
     list_filter = ("course", "rating")
     search_fields = ("student__username", "course__title")
     raw_id_fields = ("student", "course")
-
-
-
-
-
-
-

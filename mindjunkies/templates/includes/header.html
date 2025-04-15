@@ -14,19 +14,19 @@
         <a href="{% url 'home' %}" class="btn btn-ghost normal-case text-xl font-bold text-primary">
           <img src="{% static 'images/logo.png' %}" alt="Logo" class="h-10 w-auto" />
         </a>
-         
+
       </div>
-      
+
       <div class="navbar-center hidden sm:flex">
         <div class="form-control w-[800px] ">
           <div class="input-group">
             <form method="POST" action="" class="relative w-full">
               {% csrf_token %}
-              <input 
-                type="search" 
-                placeholder="Search for anything" 
-                id="search-input" 
-                name="search" 
+              <input
+                type="search"
+                placeholder="Search for anything"
+                id="search-input"
+                name="search"
                 autocomplete="off"
                 hx-get=""
                 hx-trigger="keyup delay:500ms changed"
@@ -38,7 +38,7 @@
               <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-base-content/50">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
               </div>
-              <button 
+              <button
                 type="button"
                 id="clear-search"
                 class="absolute inset-y-0 right-0 flex items-center pr-3 text-base-content/50 hover:text-base-content hidden"
@@ -52,13 +52,13 @@
           </div>
         </div>
       </div>
-      
+
       <div class="navbar-end">
         <!-- Mobile search button -->
         <button class="btn btn-ghost btn-circle sm:hidden" id="mobile-search-toggle">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </button>
-        
+
         <!-- Desktop menu -->
         <ul class="menu menu-horizontal px-1 hidden md:flex">
           <li><a href="{% url 'create_course' %}" class="btn btn-ghost btn-sm">Create Course</a></li>
@@ -70,11 +70,11 @@
             <li><a href="{% url 'account_signup' %}" class="btn btn-primary btn-sm">Sign Up</a></li>
           {% endif %}
         </ul>
-        
+
         <!-- User dropdown -->
         {% if user.is_authenticated %}
           <div class="dropdown dropdown-end">
-            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+            <div tabindex="-1" class="btn btn-ghost btn-circle avatar">
               <div class="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                 {% if user.profile.avatar %}
                   {% cloudinary user.profile.avatar quality='auto' crop='pad' width=400 %}
@@ -83,7 +83,7 @@
                 {% endif %}
               </div>
             </div>
-            <ul tabindex="0" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
+            <ul tabindex="-1" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
               <li class="menu-title">
                 <span>{{ user.get_full_name|default:user.username }}</span>
               </li>
@@ -99,18 +99,18 @@
         {% endif %}
       </div>
     </div>
-    
+
     <!-- Mobile Search Bar (Hidden by default) -->
     <div id="mobile-search-bar" class="sm:hidden hidden p-4 border-b border-base-200">
       <div class="form-control">
         <div class="input-group">
           <form method="POST" action="" class="relative w-full">
             {% csrf_token %}
-            <input 
-              type="search" 
-              placeholder="Search for anything" 
-              id="mobile-search-input" 
-              name="search" 
+            <input
+              type="search"
+              placeholder="Search for anything"
+              id="mobile-search-input"
+              name="search"
               autocomplete="off"
               hx-get=""
               hx-trigger="keyup delay:500ms changed"
@@ -122,7 +122,7 @@
             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-base-content/50">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </div>
-            <button 
+            <button
               type="button"
               id="mobile-clear-search"
               class="absolute inset-y-0 right-0 flex items-center pr-3 text-base-content/50 hover:text-base-content hidden"
@@ -151,7 +151,7 @@
       <!-- Your page content will go here -->
     </div>
   </div>
-  
+
   <!-- Drawer Side (Mobile Menu) -->
   <div class="drawer-side z-50">
     <label for="mobile-drawer" class="drawer-overlay"></label>
@@ -161,7 +161,7 @@
         <a href="{% url 'home' %}" class="text-xl font-bold text-primary">  <img src="{% static 'images/logo.png' %}" alt="Logo" class="h-10 w-auto" /></a>
         <label for="mobile-drawer" class="btn btn-sm btn-circle btn-ghost">✕</label>
       </div>
-      
+
       <!-- User info if authenticated -->
       {% if user.is_authenticated %}
         <div class="flex items-center gap-3  p-3 bg-base-200/30 rounded-box">
@@ -180,7 +180,7 @@
           </div>
         </div>
       {% endif %}
-      
+
       <!-- Main menu items -->
       <li class="menu-title">
         <span>Main Menu</span>
@@ -197,7 +197,7 @@
           Courses
         </a>
       </li>
-      
+
       {% if user.is_authenticated %}
         <li>
           <a href="{% url 'my_course_list' %}" class="flex gap-3">
@@ -205,7 +205,7 @@
             My Courses
           </a>
         </li>
-        
+
         <li class="menu-title mt-4">
           <span>Account</span>
         </li>
@@ -239,9 +239,9 @@
             Edit Profile
           </a>
         </li>
-        
+
         <li class="divider"></li>
-        
+
         <li>
           <a href="{% url 'account_logout' %}" class="text-error flex gap-3">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
@@ -276,7 +276,7 @@
     const mobileClearButton = document.getElementById('mobile-clear-search');
     const mobileSearchToggle = document.getElementById('mobile-search-toggle');
     const mobileSearchBar = document.getElementById('mobile-search-bar');
-    
+
     // Desktop search functionality
     if (searchInput && clearButton) {
       // Show/hide clear button based on input content
@@ -287,19 +287,19 @@
           clearButton.classList.add('hidden');
         }
       });
-      
+
       // Clear search functionality
       clearButton.addEventListener('click', function() {
         searchInput.value = '';
         searchInput.focus();
         clearButton.classList.add('hidden');
-        
+
         // Trigger the htmx request to clear results
         const event = new Event('keyup');
         searchInput.dispatchEvent(event);
       });
     }
-    
+
     // Mobile search functionality
     if (mobileSearchToggle && mobileSearchBar) {
       mobileSearchToggle.addEventListener('click', function() {
@@ -309,7 +309,7 @@
         }
       });
     }
-    
+
     if (mobileSearchInput && mobileClearButton) {
       // Show/hide clear button based on input content
       mobileSearchInput.addEventListener('input', function() {
@@ -319,13 +319,13 @@
           mobileClearButton.classList.add('hidden');
         }
       });
-      
+
       // Clear search functionality
       mobileClearButton.addEventListener('click', function() {
         mobileSearchInput.value = '';
         mobileSearchInput.focus();
         mobileClearButton.classList.add('hidden');
-        
+
         // Trigger the htmx request to clear results
         const event = new Event('keyup');
         mobileSearchInput.dispatchEvent(event);
@@ -347,7 +347,7 @@
 
     // Sticky header effect
     const navbar = document.querySelector('.navbar');
-    
+
     window.addEventListener('scroll', function() {
       if (window.scrollY > 10) {
         navbar.classList.add('shadow-md');
