@@ -73,8 +73,11 @@ def home(request):
         )
         if continue_lecture.exists():   
             last_lecture = continue_lecture.first()
+            progression = Enrollment.objects.get(student=request.user, course=last_lecture.course).progression
         else:
             last_lecture = None
+
+        
 
 
     # Build the context
@@ -88,6 +91,7 @@ def home(request):
         "course_list": featured_courses,  # For compatibility with second version
         "active_category": active_category,
         'last_lecture': last_lecture,
+        'progression': progression,
     }
 
     # Check if this is an HTMX request
