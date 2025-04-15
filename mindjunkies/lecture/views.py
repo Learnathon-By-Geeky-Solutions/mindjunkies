@@ -117,12 +117,13 @@ def lecture_video(request: HttpRequest, course_slug: str, module_id: str, lectur
 
 @login_required
 @require_http_methods(["GET"])
-def lecture_pdf(request: HttpRequest, slug: str, pdf_id: int) -> HttpResponse:
+def lecture_pdf(request: HttpRequest, course_slug: str, lecture_id: int, pdf_id: int) -> HttpResponse:
     """View to display a lecture PDF."""
     pdf = get_object_or_404(LecturePDF, id=pdf_id)
-    lecture = get_object_or_404(Lecture, slug=slug)
+    lecture = get_object_or_404(Lecture, id=lecture_id)
+    course = get_object_or_404(Course, slug=course_slug)
 
-    context = {"pdf": pdf, "lecture": lecture}
+    context = {"course": course, "pdf": pdf, "lecture": lecture}
     return render(request, "lecture/lecture_pdf.html", context)
 
 
