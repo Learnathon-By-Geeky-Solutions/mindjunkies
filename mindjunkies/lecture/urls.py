@@ -25,4 +25,5 @@ urlpatterns = [
     ),
 
     path('lecture/<int:lecture_id>/complete/', views.MarkLectureCompleteView.as_view(), name='mark_lecture_complete'),
+    path('lecture/<int:lecture_id>/pdf/<int:pdf_id>/', views.lecture_pdf, name='lecture_pdf'),
 ]
