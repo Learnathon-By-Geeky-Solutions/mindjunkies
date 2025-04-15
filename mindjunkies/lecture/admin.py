@@ -34,6 +34,6 @@ class LectureCompletionAdmin(ModelAdmin):
 
 @admin.register(LastVisitedModule) 
 class LastVisitedModuleAdmin(ModelAdmin):
-    list_display = ("user", "module", "last_visited")
+    list_display = ("user", "module", "last_visited", "lecture__title")
     search_fields = ("user__username", "module__title", "lecture__title")
     list_filter = ("last_visited",)

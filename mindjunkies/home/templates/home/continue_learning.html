@@ -20,11 +20,11 @@
                         <div class="flex items-center gap-2 mb-3">
                             <span
                                 class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">Course</span>
-                            <span class="text-gray-500">{{ continue_courses.title }}</span>
+                            <span class="text-gray-500">{{ last_lecture.course.title }}</span>
                         </div>
 
                         <h2 class="text-2xl font-bold text-gray-800 mb-4 leading-tight hover:text-blue-600 transition-colors">
-                            English for Common Interactions in the Workplace: Basic Level</h2>
+                            {{ last_lecture.title }} </h2>
 
                         <!-- Progress Bar -->
                         <div class="mb-6">
@@ -49,7 +49,6 @@
                                     </svg>
                                     Next Up
                                 </h3>
-                                <span class="text-xs font-medium text-gray-500">3 minutes left</span>
                             </div>
 
                             <div class="flex items-center gap-4 group cursor-pointer">

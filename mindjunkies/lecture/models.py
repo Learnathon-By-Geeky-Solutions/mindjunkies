@@ -95,4 +95,4 @@ class LastVisitedModule(models.Model):
         unique_together = ["module", "user", "lecture"]
 
     def __str__(self):
-        return f"{self.user.username} - {self.course.title} - {self.last_visited}"
+        return f"{self.user.username} - {self.lecture.title} - {self.last_visited}"
