@@ -1,6 +1,8 @@
 import cloudinary
 from django.db import models
 from django.utils.text import slugify
+from django.core.exceptions import ValidationError
+
 
 from config.models import BaseModel
 from mindjunkies.courses.models import Course, Module
@@ -25,6 +27,9 @@ class Lecture(BaseModel):
 
     class Meta:
         ordering = ["order"]
+        constraints = [
+            models.UniqueConstraint(fields=["module", "order"], name="unique_order_per_module")
+        ]
 
     def __str__(self):
         return f"{self.course.title} - {self.title}"
@@ -32,7 +37,14 @@ class Lecture(BaseModel):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
+        self.full_clean()
         super().save(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+        if hasattr(self, 'module') and self.module and self.order is not None:
+            if Lecture.objects.filter(module=self.module, order=self.order).exclude(pk=self.pk).exists():
+                raise ValidationError(f"Order {self.order} already exists in this module.")
 
 
 class LecturePDF(BaseModel):

@@ -1,5 +1,8 @@
 from datetime import timedelta
 from typing import Tuple
+from django.core.exceptions import ValidationError
+
+
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -22,6 +25,7 @@ from .models import Lecture, LecturePDF, LectureVideo, LectureCompletion, LastVi
 from django.utils.timezone import localtime, now
 from django.views.generic import TemplateView
 from django.views import View
+from django.db import IntegrityError
 
 
 class LectureHomeView(LoginRequiredMixin, TemplateView):
@@ -117,12 +121,13 @@ def lecture_video(request: HttpRequest, course_slug: str, module_id: str, lectur
 
 @login_required
 @require_http_methods(["GET"])
-def lecture_pdf(request: HttpRequest, slug: str, pdf_id: int) -> HttpResponse:
+def lecture_pdf(request: HttpRequest, course_slug: str, lecture_id: int, pdf_id: int) -> HttpResponse:
     """View to display a lecture PDF."""
     pdf = get_object_or_404(LecturePDF, id=pdf_id)
-    lecture = get_object_or_404(Lecture, slug=slug)
+    lecture = get_object_or_404(Lecture, id=lecture_id)
+    course = get_object_or_404(Course, slug=course_slug)
 
-    context = {"pdf": pdf, "lecture": lecture}
+    context = {"course": course, "pdf": pdf, "lecture": lecture}
     return render(request, "lecture/lecture_pdf.html", context)
 
 
@@ -150,11 +155,22 @@ class CreateLectureView(LoginRequiredMixin, CourseObjectMixin, CreateView):
         saved_lecture = form.save(commit=False)
         saved_lecture.course = self.course
         saved_lecture.module = self.module
-        saved_lecture.save()
-        messages.success(self.request, "Lecture created successfully!")
-        return redirect(
-            f"{reverse('lecture_home', kwargs={'course_slug': self.course.slug})}?module_id={self.module.id}"
-        )
+        # try to check if the lecture order is valid
+        try:
+            saved_lecture.full_clean()  
+            saved_lecture.save()
+            messages.success(self.request, "Lecture created successfully!")
+            return redirect(
+                f"{reverse('lecture_home', kwargs={'course_slug': self.course.slug})}?module_id={self.module.id}"
+            )
+        except ValidationError as e:
+            messages.error(self.request, "lecture order can't be same")
+
+            return self.form_invalid(form)
+        except IntegrityError:
+            form.add_error("order", "This order number already exists for the selected module.")
+            return self.form_invalid(form)
+
 
     def form_invalid(self, form):
         messages.error(
@@ -256,11 +272,17 @@ class CreateModuleView(LoginRequiredMixin, CourseObjectMixin, CreateView):
         """Assign the module to the correct course before saving"""
         instance = form.save(commit=False)
         instance.course = self.course
-        instance.save()
-        messages.success(self.request, "Module created successfully!")
-        return redirect(
-            reverse("lecture_home", kwargs={"course_slug": self.course.slug})
-        )
+        try:
+            instance.clean()  
+            instance.save()
+            messages.success(self.request, "Module created successfully!")
+            return redirect(
+                reverse("lecture_home", kwargs={"course_slug": self.course.slug})
+            )
+        except ValidationError as e:
+            messages.error(self.request, "module order can't be same")
+            return self.form_invalid(form)
+        
 
     def get_context_data(self, **kwargs):
         """Pass the course to the template for context"""

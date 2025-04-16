@@ -57,6 +57,7 @@ def home(request):
 
     # Get featured courses (you might want to define criteria for this)
     featured_courses = Course.objects.filter(published=True)
+    progression = 0
 
     if request.user.is_authenticated:
 
@@ -80,6 +81,9 @@ def home(request):
     else:
         last_lecture = None
         progression = None
+
+    else:
+        last_lecture = None
 
         
 
