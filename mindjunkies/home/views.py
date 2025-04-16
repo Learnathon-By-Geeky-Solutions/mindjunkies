@@ -78,9 +78,6 @@ def home(request):
         else:
             last_lecture = None
             progression = None
-    else:
-        last_lecture = None
-        progression = None
 
     else:
         last_lecture = None
