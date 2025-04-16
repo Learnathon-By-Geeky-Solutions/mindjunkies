@@ -4,6 +4,8 @@ from django.db import models
 from django.utils.text import slugify
 from taggit.managers import TaggableManager
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.exceptions import ValidationError
+
 
 from config.models import BaseModel
 
@@ -172,9 +174,24 @@ class Module(BaseModel):
 
     class Meta: 
         ordering = ["order"]
+        constraints = [
+            models.UniqueConstraint(fields=["course", "order"], name="unique_order_per_course")
+        ]
 
     def __str__(self):
         return f"{self.title} - {self.course.title}"
+    
+
+    def save(self, *args, **kwargs):
+        self.full_clean()  # call clean() before saving
+        super().save(*args, **kwargs)
+    
+
+    def clean(self):
+        super().clean()
+        if Module.objects.filter(course=self.course, order=self.order).exclude(pk=self.pk).exists():
+            raise ValidationError(f"Order {self.order} already exists in this Course.\nModule cannnot have same order")
+
 
 
 class CourseToken(models.Model):
@@ -192,7 +209,8 @@ class CourseToken(models.Model):
 
     def __str__(self):
         return f"Token for {self.course.title} by {self.teacher.username}"
-
+    
+    
 
 class LastVisitedCourse(models.Model):
     user = models.ForeignKey(user, on_delete=models.CASCADE)
