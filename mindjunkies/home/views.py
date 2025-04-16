@@ -77,6 +77,7 @@ def home(request):
             progression = Enrollment.objects.get(student=request.user, course=last_lecture.course).progression
         else:
             last_lecture = None
+            progression = None
 
     else:
         last_lecture = None
@@ -127,3 +128,4 @@ def search_view(request):
         "home/search_results.html",
         {"courses": highlighted_courses, "query": query},
     )
+
