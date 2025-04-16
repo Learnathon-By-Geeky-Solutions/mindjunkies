@@ -42,8 +42,9 @@ class Lecture(BaseModel):
 
     def clean(self):
         super().clean()
-        if Lecture.objects.filter(module=self.module, order=self.order).exclude(pk=self.pk).exists():
-            raise ValidationError(f"Order {self.order} already exists in this module.\nLecture cannot have same order. ")
+        if hasattr(self, 'module') and self.module and self.order is not None:
+            if Lecture.objects.filter(module=self.module, order=self.order).exclude(pk=self.pk).exists():
+                raise ValidationError(f"Order {self.order} already exists in this module.")
 
 
 class LecturePDF(BaseModel):

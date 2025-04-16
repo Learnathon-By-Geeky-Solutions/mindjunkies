@@ -182,15 +182,13 @@ class Module(BaseModel):
         return f"{self.title} - {self.course.title}"
     
 
-    def save(self, *args, **kwargs):
-        self.full_clean()  # call clean() before saving
-        super().save(*args, **kwargs)
     
 
     def clean(self):
         super().clean()
-        if Module.objects.filter(course=self.course, order=self.order).exclude(pk=self.pk).exists():
-            raise ValidationError(f"Order {self.order} already exists in this Course.\nModule cannnot have same order")
+        if hasattr(self, 'course') and self.course and self.order is not None:
+            if Module.objects.filter(course=self.course, order=self.order).exclude(pk=self.pk).exists():
+                raise ValidationError(f"Order {self.order} already exists in this Course.\nModule cannnot have same order")
 
 
 
