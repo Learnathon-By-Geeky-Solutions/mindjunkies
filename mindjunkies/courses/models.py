@@ -62,7 +62,7 @@ class Course(BaseModel):
 
     upcoming = models.BooleanField(default=False)
 
-    preview_video = models.URLField(max_length=200, blank=True, default="")
+    preview_video = CloudinaryField(resource_type='video', default="")
 
     total_rating = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     number_of_ratings = models.PositiveIntegerField(default=0)
@@ -200,9 +200,6 @@ class Module(BaseModel):
 class CourseToken(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="tokens")
     teacher = models.ForeignKey(user, on_delete=models.CASCADE)
-    motivation = models.TextField(
-        help_text="Write your motivation or plan for the course, including how you plan to organize it.")
-    intro_video = CloudinaryField(resource_type='video', default="")
     status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('approved', 'Approved')],
                               default='pending')
 
