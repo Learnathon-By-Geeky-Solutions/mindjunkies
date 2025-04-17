@@ -13,7 +13,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from mindjunkies.courses.models import Course, CourseCategory, Enrollment
 
-from .forms import CourseForm, CourseTokenForm, RatingForm
+from .forms import CourseForm, RatingForm
 from .models import CourseToken, LastVisitedCourse, Rating
 
 
@@ -84,6 +84,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
     model = Course
     form_class = CourseForm
     template_name = "courses/create_course.html"
+    success_url = reverse_lazy('dashboard')
 
     def get(self, request):
         if CourseToken.objects.filter(teacher=request.user, status="pending").exists():
@@ -96,13 +97,16 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
             return super().get(request)
 
     def form_valid(self, form):
-        form.instance.teacher = self.request.user
-        form.save()
-        messages.success(self.request, "Course saved successfully!")
-        return redirect(
-            reverse("create_course_token", kwargs={"slug": form.instance.slug})
+        course = form.save(commit=False)
+        course.teacher = self.request.user
+        course.save()
+        form.save_m2m()
+        CourseToken.objects.create(
+            course=course, teacher=self.request.user, status="pending"
         )
 
+        messages.success(self.request, "Course saved successfully!")
+        return super().form_valid(form)
     def form_invalid(self, form):
         messages.error(
             self.request, f"There was an error processing the form: {form.errors}"
@@ -191,3 +195,45 @@ def category_courses(request, slug):
     )
 
 
+
+class RatingCreateView(CreateView):
+    model = Rating
+    form_class = RatingForm
+    template_name = "courses/rate_course.html"
+
+    def get_initial(self):
+        initial = super().get_initial()
+        course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        try:
+            rating = Rating.objects.get(student=self.request.user, course=course)
+            initial.update(
+                {
+                    "rating": rating.rating,
+                    "review": rating.review,
+                }
+            )
+        except Rating.DoesNotExist:
+            pass
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["course"] = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        return context
+
+    def form_valid(self, form):
+        course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        student = self.request.user
+
+        _, _ = Rating.objects.update_or_create(
+            student=student,
+            course=course,
+            defaults={
+                "rating": form.cleaned_data["rating"],
+                "review": form.cleaned_data["review"],
+            },
+        )
+
+        course.update_rating()
+
+        return redirect(reverse("course_details", kwargs={"slug": course.slug}))

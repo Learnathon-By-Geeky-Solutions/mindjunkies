@@ -10,34 +10,90 @@
 {% endblock extra_head %}
 
 {% block main_content %}
+<div class="container mx-auto px-4 py-8 max-w-5xl">
+    <h1 class="text-3xl font-bold mb-8 text-gray-800">Create a New Course</h1>
 
-    <div class="flex items-center justify-center  bg-base-200">
-        <div class="card w-full bg-white shadow-xl p-6 mt-2 mx-48">
-            <h3 class="text-2xl font-semibold text-center text-gray-700 mb-4">Create Course</h3>
-            <form method="post" enctype="multipart/form-data" novalidate>
-                {% csrf_token %}
-                {{ form|crispy }}
-                {% comment %} {{ formset.management_form }} {% endcomment %}
-                {% for form in formset %}
-                    {{ form|crispy }}
-                {% endfor %}
-                <div class="form-control mt-4">
-                    <button type="submit" class="btn btn-primary w-full">
-                        {% if course %}
-                            Update Course
-                        {% else %}
-                            Create Course
-                        {% endif %}
-                    </button>
+    <form method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded-lg">
+        {% csrf_token %}
+        
+        <!-- Drawer Structure -->
+        <div class="drawer lg:drawer-open">
+            <input id="course-drawer" type="checkbox" class="drawer-toggle" />
+            
+            <!-- Drawer Content (Main Form Area) -->
+            <div class="drawer-content p-6">
+                <!-- Basic Info Section -->
+                <div id="basic-info" class="section-content border-base-300 bg-base-100 p-10 rounded-lg">
+                    <h2 class="text-2xl font-semibold mb-6 text-gray-700">Basic Info</h2>
+                    <div class="space-y-6">
+                        {{ form.title|as_crispy_field }}
+                        {{ form.short_introduction|as_crispy_field }}
+                        {{ form.category|as_crispy_field }}
+                        {{ form.level|as_crispy_field }}
+                    </div>
                 </div>
-            </form>
+
+                <!-- Content Section -->
+                <div id="content" class="section-content border-base-300 bg-base-100 p-10 rounded-lg hidden">
+                    <h2 class="text-2xl font-semibold mb-6 text-gray-700">Content</h2>
+                    <div class="space-y-6">
+                        {{ form.course_description|as_crispy_field }}
+                        {{ form.course_image|as_crispy_field }}
+                        {{ form.preview_video|as_crispy_field }}
+                        {{ form.course_price|as_crispy_field }}
+                        {{ form.tags|as_crispy_field }}
+                    </div>
+                </div>
+
+                <!-- Settings Section -->
+
+                <!-- Form Actions -->
+                <div class="mt-8 flex justify-end space-x-4">
+                    <button type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700">Save Course</button>
+                </div>
+            </div>
+
+            <!-- Drawer Sidebar -->
+            <div class="drawer-side">
+                <label for="course-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+                <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
+                    <li><a href="#basic-info" class="section-link active text-lg font-medium underline hover:text-indigo-600">Basic Info</a></li>
+                    <li><a href="#content" class="section-link text-lg font-medium hover:text-indigo-600">Content</a></li>
+             </ul>
+            </div>
         </div>
-    </div>
-
-    <script>
-        var simplemde_description = new SimpleMDE({element: document.getElementById("id_course_description")});
-
-    </script>
+    </form>
+</div>
 
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const links = document.querySelectorAll('.section-link');
+    const sections = document.querySelectorAll('.section-content');
+
+    links.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active classes and hide all sections
+            links.forEach(l => {
+                l.classList.remove('active', 'underline');
+            });
+            sections.forEach(s => s.classList.add('hidden'));
+            
+            // Add active class and underline to clicked link and show target section
+            this.classList.add('active', 'underline');
+            const targetSection = document.getElementById(this.getAttribute('href').substring(1));
+            targetSection.classList.remove('hidden');
+
+            // Close drawer on mobile after selection
+            const drawerToggle = document.getElementById('course-drawer');
+            if (drawerToggle.checked) {
+                drawerToggle.checked = false;
+            }
+        });
+    });
+});
+</script>
 {% endblock main_content %}
