@@ -36,7 +36,9 @@
                 </div>
                 <div class="flex-1 p-4">
                     <h2 class="text-xl font-bold text-gray-900 mb-2">{{ course.highlighted_title|safe }}</h2>
+                    {% autoescape off %}
                     <p class="text-gray-700 mb-2">{{ course.course.short_introduction|safe }}</p>
+                    {% autoescape off %}
                     <p class="text-sm text-gray-600 mb-1">{{ course.course.teacher }}</p>
                     <div class="flex items-center mb-2">
                         <span class="text-yellow-500 font-bold mr-1">{{ course.course.rating }}</span>
