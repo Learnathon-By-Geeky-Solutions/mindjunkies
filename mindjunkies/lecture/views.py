@@ -18,7 +18,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
-from mindjunkies.courses.models import Course, Module
+from mindjunkies.courses.models import Course, Module, CourseToken
 
 from .forms import LectureForm, LecturePDFForm, LectureVideoForm, ModuleForm
 from .models import Lecture, LecturePDF, LectureVideo, LectureCompletion, LastVisitedModule
@@ -163,7 +163,7 @@ class CreateLectureView(LoginRequiredMixin, CourseObjectMixin, CreateView):
             return redirect(
                 f"{reverse('lecture_home', kwargs={'course_slug': self.course.slug})}?module_id={self.module.id}"
             )
-        except ValidationError as e:
+        except ValidationError:
             messages.error(self.request, "lecture order can't be same")
 
             return self.form_invalid(form)
@@ -192,6 +192,7 @@ class CreateContentView(LoginRequiredMixin, CourseObjectMixin, FormView):
     def dispatch(self, request, *args, **kwargs):
         self.lecture = get_object_or_404(Lecture, slug=kwargs["lecture_slug"])
         self.course = self.get_course()
+        print(self)
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_class(self):
@@ -279,7 +280,7 @@ class CreateModuleView(LoginRequiredMixin, CourseObjectMixin, CreateView):
             return redirect(
                 reverse("lecture_home", kwargs={"course_slug": self.course.slug})
             )
-        except ValidationError as e:
+        except ValidationError:
             messages.error(self.request, "module order can't be same")
             return self.form_invalid(form)
         

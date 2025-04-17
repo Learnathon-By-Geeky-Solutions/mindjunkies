@@ -1,6 +1,5 @@
 {% comment %} This is a recursive template for rendering comments at any nesting level Usage: {% include
   "components/comment.html" with reply=reply depth=0 %} {% endcomment %}
-<style></style>
 
 <div class="comment-container {% if depth > 0 %}ml-12{% endif %} mb-4">
     <div class="flex">
@@ -32,7 +31,7 @@
             <div class="flex items-center space-x-4 mb-3">
                 {% include 'forums/partials/like_reply.html' %}
 
-                <a
+                <button
                     class="btn btn-ghost btn-xs flex cursor-pointer items-center text-blue-600 hover:text-blue-800"
                     hx-get="{% url 'reply_form' reply.id %}"
                     hx-target="#reply-form-container-{{ reply.id }}"
@@ -56,7 +55,7 @@
                         />
                     </svg>
                     Reply{% if depth > 0 %} {{ depth }}{% endif %}
-                </a>
+                </button>
                 <form method="post" action="{% url 'delete_reply' course.slug module.id topic.id reply.id %}"
                       class="flex items-center text-gray-700 hover:text-red-600 {% if depth > 0 %}text-xs{% endif %}">
                     {% csrf_token %}

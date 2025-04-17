@@ -11,19 +11,10 @@ def update_module_progression(sender, instance, created, **kwargs):
         lecture = instance.lecture
         user = instance.user
 
-        # module = lecture.module
-        # total_lectures = module.lectures.count()
-
         course = lecture.course
         total_lectures = course.lectures.count()
 
-
         enrollment = Enrollment.objects.get(course=course, student=user)
-
-        # print(total_lectures)
-        # completed_lectures = module.lectures.filter(
-        #     lecturecompletion__user=user
-        # ).distinct().count()
 
         completed_lectures = course.lectures.filter(
             lecturecompletion__user=user

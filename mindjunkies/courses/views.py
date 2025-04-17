@@ -13,7 +13,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from mindjunkies.courses.models import Course, CourseCategory, Enrollment
 
-from .forms import CourseForm, CourseTokenForm, RatingForm
+from .forms import CourseForm, RatingForm
 from .models import CourseToken, LastVisitedCourse, Rating
 
 
@@ -84,6 +84,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
     model = Course
     form_class = CourseForm
     template_name = "courses/create_course.html"
+    success_url = reverse_lazy('dashboard')
 
     def get(self, request):
         if CourseToken.objects.filter(teacher=request.user, status="pending").exists():
@@ -96,13 +97,16 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
             return super().get(request)
 
     def form_valid(self, form):
-        form.instance.teacher = self.request.user
-        form.save()
-        messages.success(self.request, "Course saved successfully!")
-        return redirect(
-            reverse("create_course_token", kwargs={"slug": form.instance.slug})
+        course = form.save(commit=False)
+        course.teacher = self.request.user
+        course.save()
+        form.save_m2m()
+        CourseToken.objects.create(
+            course=course, teacher=self.request.user, status="pending"
         )
 
+        messages.success(self.request, "Course saved successfully!")
+        return super().form_valid(form)
     def form_invalid(self, form):
         messages.error(
             self.request, f"There was an error processing the form: {form.errors}"
@@ -190,28 +194,6 @@ def category_courses(request, slug):
         {"category": category, "courses": courses},
     )
 
-
-class CreateCourseTokenView(CreateView):
-    model = CourseToken
-    form_class = CourseTokenForm
-    template_name = "course_token_form.html"
-
-    def get_success_url(self):
-        messages.success(self.request, "Your request was successful")
-        return reverse_lazy("home")
-
-    def form_valid(self, form):
-        # Save the teacher and course info automatically
-        form.instance.teacher = self.request.user
-        slug = self.kwargs["slug"]
-        course = Course.objects.get(slug=slug)
-        form.instance.course = course  # Assuming 'slug' passed in URL
-        messages.success(self.request, "Course token submitted successfully!")
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        messages.error(self.request, "There was an error in your form submission.")
-        return super().form_invalid(form)
 
 
 class RatingCreateView(CreateView):
