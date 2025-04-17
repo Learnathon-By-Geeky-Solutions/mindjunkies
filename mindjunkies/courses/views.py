@@ -6,7 +6,10 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.decorators.http import require_http_methods
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, FormView, UpdateView
+from django.views.generic import TemplateView
+from django.urls import reverse_lazy
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from mindjunkies.courses.models import Course, CourseCategory, Enrollment
 
@@ -34,6 +37,47 @@ def course_list(request: HttpRequest) -> HttpResponse:
         "role": role,
     }
     return render(request, "courses/course_list.html", context)
+
+
+class NewCourseView(TemplateView):
+    template_name = "courses/new_course.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        enrolled_courses = []
+        if self.request.user.is_authenticated:
+            # Get user's enrolled courses
+            enrollments = Enrollment.objects.filter(
+                student=self.request.user, status="active"
+            ).prefetch_related("course")
+            enrolled_courses = [enrollment.course for enrollment in enrollments]
+
+        # Get courses taught by the user if they're a teacher
+
+        # Get new courses (excluding enrolled ones)
+        new_courses = Course.objects.exclude(
+            id__in=[course.id for course in enrolled_courses]
+
+        ).order_by("-created_at")[:3]
+        context["new_courses"] = new_courses
+        return context
+
+        # Add data to context
+
+
+class MyCoursesView(LoginRequiredMixin, TemplateView):
+    template_name = "courses/my_course.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # With prefetch for better performance
+        enrolled_courses = Course.objects.filter(
+            enrollments__student=self.request.user,
+            enrollments__status="active"
+        ).prefetch_related('enrollments').distinct()
+        context["enrolled_courses"] = enrolled_courses
+        return context
 
 
 class CreateCourseView(LoginRequiredMixin, CreateView):
@@ -92,13 +136,26 @@ class CourseUpdateView(LoginRequiredMixin, UpdateView):
 def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     """View to show course details."""
     course = get_object_or_404(Course, slug=slug)
+    ratings = course.get_individual_ratings()
     enrolled = False
+
     if request.user.is_authenticated:
         enrolled = course.enrollments.filter(
             student=request.user, status="active"
         ).exists()
+
+    paginator = Paginator(ratings, 5)
+    page = request.GET.get("page", 1)
+    try:
+        paginated_ratings = paginator.page(page)
+    except PageNotAnInteger:
+        paginated_ratings = paginator.page(1)
+    except EmptyPage:
+        paginated_ratings = paginator.page(paginator.num_pages)
+
     context = {
         "course_detail": course,
+        "ratings": paginated_ratings,
         "accessed": enrolled,
     }
     return render(request, "courses/course_details.html", context)

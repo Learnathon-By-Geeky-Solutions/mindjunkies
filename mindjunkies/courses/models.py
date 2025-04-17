@@ -3,6 +3,9 @@ from cloudinary.models import CloudinaryField
 from django.db import models
 from django.utils.text import slugify
 from taggit.managers import TaggableManager
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.exceptions import ValidationError
+
 
 from config.models import BaseModel
 
@@ -138,6 +141,7 @@ class Rating(BaseModel):
 
 
 class Enrollment(BaseModel):
+    
     STATUS_CHOICES = [
         ("active", "Active"),
         ("pending", "Pending"),
@@ -149,6 +153,8 @@ class Enrollment(BaseModel):
     )
     student = models.ForeignKey(user, on_delete=models.CASCADE, related_name="enrolled")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
+
+    progression = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
 
     class Meta:
         unique_together = ["course", "student"]
@@ -166,11 +172,24 @@ class Module(BaseModel):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="modules")
     order = models.PositiveIntegerField(default=0)
 
-    class Meta:
+    class Meta: 
         ordering = ["order"]
+        constraints = [
+            models.UniqueConstraint(fields=["course", "order"], name="unique_order_per_course")
+        ]
 
     def __str__(self):
         return f"{self.title} - {self.course.title}"
+    
+
+    
+
+    def clean(self):
+        super().clean()
+        if hasattr(self, 'course') and self.course and self.order is not None:
+            if Module.objects.filter(course=self.course, order=self.order).exclude(pk=self.pk).exists():
+                raise ValidationError(f"Order {self.order} already exists in this Course.\nModule cannnot have same order")
+
 
 
 class CourseToken(models.Model):
@@ -188,7 +207,8 @@ class CourseToken(models.Model):
 
     def __str__(self):
         return f"Token for {self.course.title} by {self.teacher.username}"
-
+    
+    
 
 class LastVisitedCourse(models.Model):
     user = models.ForeignKey(user, on_delete=models.CASCADE)

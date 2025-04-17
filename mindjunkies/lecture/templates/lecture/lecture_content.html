@@ -22,7 +22,7 @@
                 <ul class="menu menu-compact">
                   {% for pdf in lecture.pdf_files.all %}
                     <li>
-                      <a href="{% url 'lecture_pdf_content' lecture.slug pdf.id %}"
+                      <a href="{% url 'lecture_pdf' course.slug lecture.id pdf.id %}"
                          class="flex items-center gap-2 hover:bg-base-300 rounded-lg py-2"
                          aria-label="View PDF: {{ pdf.pdf_title }}">
                         <svg class="h-4 w-4 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -53,7 +53,7 @@
                 <ul class="menu menu-compact">
                   {% for video in lecture.videos.all %}
                     <li>
-                      <a href="{% url 'lecture_video_content' lecture.slug video.id %}"
+                      <a href="#"
                          class="flex items-center gap-2 hover:bg-base-300 rounded-lg py-2"
                          aria-label="Watch video: {{ video.video_title }}">
                         <svg class="h-4 w-4 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">

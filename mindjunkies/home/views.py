@@ -4,6 +4,7 @@ from django.utils.safestring import mark_safe
 from django.views.decorators.http import require_http_methods
 
 from mindjunkies.courses.models import Course, CourseCategory, Enrollment, LastVisitedCourse
+from mindjunkies.lecture.models import LastVisitedModule, Lecture
 
 
 @require_http_methods(["GET"])
@@ -56,21 +57,33 @@ def home(request):
 
     # Get featured courses (you might want to define criteria for this)
     featured_courses = Course.objects.filter(published=True)
-
-    continue_courses = []
+    progression = 0
 
     if request.user.is_authenticated:
-        continue_courses = (
-            Course.objects.filter(enrollments__student=request.user)
+
+        continue_lecture = (
+            Lecture.objects.filter(course__enrollments__student=request.user)
             .annotate(
                 last_visited_at=models.Subquery(
-                    LastVisitedCourse.objects.filter(
-                        user=request.user, course=models.OuterRef("pk")
+                    LastVisitedModule.objects.filter(
+                        user=request.user, lecture=models.OuterRef("pk")
                     ).values("last_visited")[:1]
                 )
             )
             .order_by("-last_visited_at", "title")
         )
+        if continue_lecture.exists():   
+            last_lecture = continue_lecture.first()
+            progression = Enrollment.objects.get(student=request.user, course=last_lecture.course).progression
+        else:
+            last_lecture = None
+            progression = None
+
+    else:
+        last_lecture = None
+
+        
+
 
     # Build the context
     context = {
@@ -82,7 +95,8 @@ def home(request):
         "teacher_courses": teacher_courses,
         "course_list": featured_courses,  # For compatibility with second version
         "active_category": active_category,
-        "continue_courses": continue_courses[0] if continue_courses else None,
+        'last_lecture': last_lecture,
+        'progression': progression,
     }
 
     # Check if this is an HTMX request
@@ -97,6 +111,7 @@ def home(request):
 def search_view(request):
     query = request.GET.get("search", "").strip()
     highlighted_courses = []
+    print(query)
 
     if query:
         courses = Course.objects.filter(title__icontains=query)
@@ -113,3 +128,4 @@ def search_view(request):
         "home/search_results.html",
         {"courses": highlighted_courses, "query": query},
     )
+

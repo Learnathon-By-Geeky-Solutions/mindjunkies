@@ -2,66 +2,168 @@
 {% load static %}
 
 {% block main_content %}
-<div class="drawer lg:drawer-open">
-  <input id="my-drawer" type="checkbox" class="drawer-toggle" />
-  <div class="drawer-content flex flex-col">
-    <!-- Page content here -->
-    <div class="navbar bg-base-100 lg:hidden">
-        <div class="flex-none">
-          <div class="btn btn-square btn-ghost drawer-button">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-5 h-5 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-          </div>
-        </div>
-        <div class="flex-1">
-          <a class="btn btn-ghost normal-case text-xl">{{lecture.title}}</a>
-        </div>
-      </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js" integrity="sha384-+X2a+3k5m5X5m5X5m5X5m5X5m5X5m5X5m5X5m5X5m5X5m5X5m5X5m5X5m5X5m5X5m5X5" crossorigin="anonymous"></script>
+    <div class="drawer lg:drawer-open">
+        <input id="my-drawer" type="checkbox" class="drawer-toggle"/>
+        <div class="drawer-content flex flex-col bg-gray-50">
+            <!-- Navbar -->
+            <div class="navbar bg-white shadow-md lg:hidden">
+                <div class="flex-none">
+                    <label for="my-drawer" class="btn btn-square btn-ghost drawer-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                             class="inline-block w-6 h-6 stroke-current">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </label>
+                </div>
+                <div class="flex-1">
+                    <span class="text-xl font-semibold text-gray-800">{{ lecture.title }}</span>
+                </div>
+            </div>
 
+            <!-- Main Content -->
+            <main class="flex-1 overflow-y-auto">
+                <!-- Breadcrumb Navigation -->
+                <div class="flex items-center justify-between p-1 bg-white shadow-sm">
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                        <a href="#" class="text-primary hover:underline">Supervised Machine Learning</a>
+                        <span class="text-gray-400">›</span>
+                        <a href="#" class="text-primary hover:underline">Week 1</a>
+                        <span class="text-gray-400">›</span>
+                        <span>Welcome to machine learning!</span>
+                    </div>
+                    <a href="#" class="btn btn-primary btn-sm">Next</a>
+                </div>
 
-    <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto">
-      <!-- Breadcrumb Navigation -->
-      <div class="flex items-center justify-between p-4 border-b bg-base-100">
-        <div class="flex items-center gap-2 text-sm">
-          <a href="#" class="text-primary hover:underline">Supervised Machine Learning: Regression and Classification</a>
-          <span class="text-base-content/70">›</span>
-          <a href="#" class="text-primary hover:underline">Week 1</a>
-          <span class="text-base-content/70">›</span>
-          <span>Welcome to machine learning!</span>
+                <!-- PDF Viewer -->
+                <div class="container mx-auto p-2">
+                    <div class="border rounded-lg shadow bg-white p-2">
+                        <h2 class="text-lg font-semibold mb-2 text-gray-800 text-center">{{ pdf.pdf_title }}</h2>
+                        <div class="flex items-center justify-between mb-2">
+                            <div>
+                                <button id="prev-page" class="btn btn-sm btn-secondary">Previous</button>
+                                <button id="next-page" class="btn btn-sm btn-secondary">Next</button>
+                            </div>
+                            <div>
+                                <button id="rotate-left" class="btn btn-sm btn-secondary">⟲</button>
+                            </div>
+                            <span id="page-info" class="text-sm text-gray-600">Page <span id="current-page">1</span> of <span
+                                id="total-pages">0</span></span>
+                            <div>
+                                <button id="rotate-right" class="btn btn-sm btn-secondary">⟳</button>
+                            </div>
+                            <div>
+                                <button id="zoom-out" class="btn btn-sm btn-secondary">-</button>
+                                <button id="zoom-in" class="btn btn-sm btn-secondary">+</button>
+                                <button id="download-pdf" class="btn btn-sm btn-primary">Download</button>
+                            </div>
+                        </div>
+                        <div id="pdf-container"
+                             class="flex justify-center items-center bg-gray-100 p-2 rounded-lg">
+                            <!-- Canvases will be added dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
-        <a href="#" class="btn btn-primary btn-sm">Next</a>
-      </div>
 
-      <!-- Video Content -->
-      <div class="p-4">
-        <div class="rounded-xl overflow-hidden bg-base-200">
-          <div class="aspect-w-16 aspect-h-9">
-            {% if video.url %}
-              <video
-                id="videoPlayer"
-                class="w-full h-full"
-                controls
-                poster="{% static 'images/course-thumbnail.jpg' %}"
-              >
-                <source src="{{ video.url }}" type="video/mp4">
-                <track kind="subtitles" src="{% static 'subtitles/video-subtitles.vtt' %}" srclang="en" label="English">
-                Your browser does not support the video tag.
-              </video>
-            {% endif %}
-          </div>
-          <div class="p-4">
-            <button class="btn btn-ghost btn-sm text-primary">
-              <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
-              </svg>
-              Report an issue
-            </button>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
-   <!-- Sidebar Content -->
-  {% include 'lecture/lecture_content.html' %}
-</div>
+        <!-- Sidebar Content -->
+        {% include 'lecture/lecture_content.html' %}
+    </div>
+
+    <script>
+        const url = "{{ pdf.pdf_file.url }}";
+
+        const container = document.getElementById("pdf-container");
+        const currentPageElement = document.getElementById("current-page");
+        const totalPagesElement = document.getElementById("total-pages");
+        const zoomInButton = document.getElementById("zoom-in");
+        const zoomOutButton = document.getElementById("zoom-out");
+        const prevPageButton = document.getElementById("prev-page");
+        const nextPageButton = document.getElementById("next-page");
+        const rotateLeftButton = document.getElementById("rotate-left");
+        const rotateRightButton = document.getElementById("rotate-right");
+        const downloadButton = document.getElementById("download-pdf");
+
+        let rotation = 0;
+        let pdfDoc = null;
+        let currentPage = 1;
+        let scale = 1;
+
+        const renderPage = (pageNumber) => {
+            pdfDoc.getPage(pageNumber).then(function (page) {
+                const viewport = page.getViewport({scale, rotation});
+
+                const canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                container.innerHTML = ""; // Clear previous page
+                container.appendChild(canvas);
+
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport,
+                };
+                page.render(renderContext);
+
+                currentPageElement.textContent = pageNumber;
+            });
+        };
+
+        const loadPDF = () => {
+            pdfjsLib.getDocument(url).promise.then(function (doc) {
+                pdfDoc = doc;
+                totalPagesElement.textContent = pdfDoc.numPages;
+                renderPage(currentPage);
+            });
+        };
+
+        rotateLeftButton.addEventListener("click", () => {
+            rotation -= 90;
+            renderPage(currentPage);
+        });
+
+        rotateRightButton.addEventListener("click", () => {
+            rotation += 90;
+            renderPage(currentPage);
+        });
+
+        downloadButton.addEventListener("click", () => {
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "lecture.pdf";
+            link.click();
+        });
+
+        zoomInButton.addEventListener("click", () => {
+            scale += 0.2;
+            renderPage(currentPage);
+        });
+
+        zoomOutButton.addEventListener("click", () => {
+            if (scale > 0.5) {
+                scale -= 0.2;
+                renderPage(currentPage);
+            }
+        });
+
+        prevPageButton.addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPage(currentPage);
+            }
+        });
+
+        nextPageButton.addEventListener("click", () => {
+            if (currentPage < pdfDoc.numPages) {
+                currentPage++;
+                renderPage(currentPage);
+            }
+        });
+
+        loadPDF();
+    </script>
 {% endblock %}

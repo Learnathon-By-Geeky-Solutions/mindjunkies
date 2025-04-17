@@ -1,0 +1,102 @@
+{% if messages %}
+    <div id="notification-container" class="fixed top-4 z-50 flex flex-col gap-3 max-w-md w-full">
+        {% for message in messages %}
+            <div role="alert" 
+                 class="alert shadow-lg transform transition-all duration-300 ease-in-out opacity-0 translate-x-full bg-black text-white p-4 rounded-lg flex items-center justify-between"
+                 data-message-id="{{ forloop.counter }}"
+                 data-auto-dismiss="true"
+                 data-dismiss-delay="5000">
+                {% if message.tags == 'success' %}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6 text-success" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                {% elif message.tags == 'error' %}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6 text-error" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                {% elif message.tags == 'warning' %}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6 text-warning" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                {% else %}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6 text-info" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                {% endif %}
+                
+                <div class="flex-1">{{ message | safe }}</div>
+                
+                <button class="btn btn-sm btn-ghost dismiss-btn" aria-label="Dismiss">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endif %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+  // Get all alert elements
+  const alerts = document.querySelectorAll('[role="alert"]')
+
+  // Function to show an alert with animation
+  function showAlert(alert) {
+    setTimeout(() => {
+      alert.classList.remove("opacity-0", "translate-x-full")
+      alert.classList.add("opacity-100", "translate-x-0")
+    }, 100 * Number.parseInt(alert.dataset.messageId)) // Stagger the animations
+  }
+
+  // Function to dismiss an alert with animation
+  function dismissAlert(alert) {
+    alert.classList.remove("opacity-100", "translate-x-0")
+    alert.classList.add("opacity-0", "translate-x-full")
+
+    // Remove from DOM after animation completes
+    setTimeout(() => {
+      alert.remove()
+    }, 300)
+  }
+
+  // Show all alerts with staggered timing
+  alerts.forEach((alert) => {
+    showAlert(alert)
+
+    // Set up auto-dismiss if enabled
+    if (alert.dataset.autoDismiss === "true") {
+      const delay = Number.parseInt(alert.dataset.dismissDelay) || 5000
+      alert.dismissTimer = setTimeout(() => {
+        dismissAlert(alert)
+      }, delay)
+    }
+
+    // Set up manual dismiss button
+    const dismissBtn = alert.querySelector(".dismiss-btn")
+    if (dismissBtn) {
+      dismissBtn.addEventListener("click", () => {
+        // Clear any existing timer
+        if (alert.dismissTimer) {
+          clearTimeout(alert.dismissTimer)
+        }
+        dismissAlert(alert)
+      })
+    }
+  })
+
+  // Add hover effect to pause auto-dismiss
+  alerts.forEach((alert) => {
+    alert.addEventListener("mouseenter", function () {
+      // Clear the existing timer when mouse enters
+      if (this.dismissTimer) {
+        clearTimeout(this.dismissTimer)
+        this.dismissTimer = null
+      }
+    })
+
+    alert.addEventListener("mouseleave", function () {
+      // Only restart timer if auto-dismiss was originally enabled
+      if (this.dataset.autoDismiss === "true") {
+        const delay = Number.parseInt(this.dataset.dismissDelay) || 5000
+        this.dismissTimer = setTimeout(() => {
+          dismissAlert(this)
+        }, delay)
+      }
+    })
+  })
+})
+
+</script>

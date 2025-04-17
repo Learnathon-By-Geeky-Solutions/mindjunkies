@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
     <!-- Add these to the head tag of your HTML -->
 
 
@@ -23,15 +24,8 @@
 {% include 'includes/header.html' %}
 
 
-{% if messages %}
-    <div class="fixed top-24 right-12 max-w-xs w-full z-100">
-        {% for message in messages %}
-            <div role="alert" class="alert alert-info">
-                <span>{{ message | safe }}</span>
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
+{% include 'includes/message.html' %}
+               
 
 <main class="">
     {% block main_content %}{% endblock main_content %}
