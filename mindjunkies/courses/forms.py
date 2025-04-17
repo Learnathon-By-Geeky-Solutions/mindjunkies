@@ -31,6 +31,13 @@ class CourseForm(forms.ModelForm):
             ),
         }
 
+    def clean_intro_video(self):
+        intro_video = self.cleaned_data.get('preview_video')
+        if intro_video:
+            if not intro_video.name.endswith(('mp4', 'mov', 'avi', 'mkv')):
+                raise forms.ValidationError("Only video files (mp4, mov, avi, mkv) are allowed.")
+        return intro_video
+
 
 class CourseInfoForm(forms.ModelForm):
     class Meta:
@@ -43,32 +50,6 @@ CourseInfoFormSet = inlineformset_factory(
 )
 
 
-class CourseTokenForm(forms.ModelForm):
-    class Meta:
-        model = CourseToken
-        fields = ["motivation", "intro_video"]
-        widgets = {
-            "motivation": forms.Textarea(
-                attrs={
-                    "class": text_area
-                }
-            ),
-            "intro_video": forms.ClearableFileInput(
-                attrs={
-                    "class": "form-input mt-1 block w-full p-2 border border-gray-300 rounded-md "
-                    "focus:ring-indigo-500 focus:border-indigo-500"
-                }
-            ),
-        }
-
-    def clean_intro_video(self):
-        intro_video = self.cleaned_data.get("intro_video")
-        if intro_video:
-            if not intro_video.name.endswith(("mp4", "mov", "avi", "mkv")):
-                raise forms.ValidationError(
-                    "Only video files (mp4, mov, avi, mkv) are allowed."
-                )
-        return intro_video
 
 
 class RatingForm(forms.ModelForm):
