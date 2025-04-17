@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import CreateView, ListView, View
 
-from mindjunkies.courses.models import Course
+from mindjunkies.courses.models import Course,CourseToken
 
 from .models import LiveClass
 
@@ -36,6 +36,24 @@ class CreateLiveClassView(LoginRequiredMixin, CreateView):
         context["course"] = get_object_or_404(Course, slug=self.kwargs["slug"])
         return context
 
+    
+    def dispatch(self, request, *args, **kwargs):
+        self.course = get_object_or_404(Course, slug=self.kwargs["slug"])
+
+        # Check if a CourseToken exists for the current teacher and if it's pending.
+        try:
+            token = CourseToken.objects.get(course=self.course, teacher=request.user)
+            if token.status == "pending":
+                messages.error(
+                    request,
+                    "Permission for this course is pending. Please wait for it to be approved.",
+                )
+                return redirect(reverse("lecture_home", kwargs={"course_slug": self.course.slug}))
+        except CourseToken.DoesNotExist:
+            messages.error(request, "You do not have permission for this course.")
+            return redirect(reverse("lecture_home", kwargs={"course_slug": self.course.slug}))
+
+        return super().dispatch(request, *args, **kwargs)
     def form_valid(self, form):
         form.instance.teacher = self.request.user
         form.instance.course = self.get_context_data()["course"]

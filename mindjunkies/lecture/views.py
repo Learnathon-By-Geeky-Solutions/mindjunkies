@@ -18,7 +18,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
-from mindjunkies.courses.models import Course, Module
+from mindjunkies.courses.models import Course, Module, CourseToken
 
 from .forms import LectureForm, LecturePDFForm, LectureVideoForm, ModuleForm
 from .models import Lecture, LecturePDF, LectureVideo, LectureCompletion, LastVisitedModule
@@ -192,6 +192,13 @@ class CreateContentView(LoginRequiredMixin, CourseObjectMixin, FormView):
     def dispatch(self, request, *args, **kwargs):
         self.lecture = get_object_or_404(Lecture, slug=kwargs["lecture_slug"])
         self.course = self.get_course()
+        print(self)
+        if CourseToken.objects.get(course=self.course, teacher=request.user).status == "pending":
+            messages.error(
+                request,
+                "Permission for this course is pending. Please wait for it to be approved.",
+            )
+            return redirect(reverse("lecture_home", kwargs={"course_slug": self.course.slug}))
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_class(self):
