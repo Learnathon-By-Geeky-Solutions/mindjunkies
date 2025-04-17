@@ -8,56 +8,29 @@
 {% endblock %}
 
 {% block main_content %}
-<div class="container mx-auto px-4 py-8 max-w-4xl">
-    <h1 class="text-3xl font-bold mb-8 text-gray-800">Create a New Course</h1>
-    
-    <form method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded-lg p-6">
-        {% csrf_token %}
-        
-        <!-- Tabs -->
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <h1 class="text-3xl font-bold mb-8 text-gray-800">{% trans "Edit Profile" %}</h1>
 
-        {{ for}}
-        <div class="tabs tabs-border">
-            <!-- Tab 1: Basic Info -->
-            <input type="radio" name="course_tabs" class="tab" aria-label="Basic Info" checked="checked" />
-            <div class="tab-content border-base-300 bg-base-100 p-10">
-                <div class="space-y-6">
-                    {{ form.title|as_crispy_field }}
-                    {{ form.short_introduction|as_crispy_field }}
-                    {{ form.category|as_crispy_field }}
-                    {{ form.level|as_crispy_field }}
-                </div>
+        <form method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded-lg p-6">
+            {% csrf_token %}
+
+            <!-- Render User Form -->
+            <div class="mb-6">
+                {{ user_form|crispy }}
             </div>
 
-            <!-- Tab 2: Content -->
-            <input type="radio" name="course_tabs" class="tab" aria-label="Content" />
-            <div class="tab-content border-base-300 bg-base-100 p-10">
-                <div class="space-y-6">
-                    {{ form.course_description|as_crispy_field }}
-                    {{ form.course_image|as_crispy_field }}
-                    {{ form.preview_video|as_crispy_field }}
-                    {{ form.tags|as_crispy_field }}
-                </div>
+            <!-- Render Profile Form -->
+            <div class="mb-6">
+                {{ profile_form|crispy }}
             </div>
 
-            <!-- Tab 3: Settings -->
-            <input type="radio" name="course_tabs" class="tab" aria-label="Settings" />
-            <div class="tab-content border-base-300 bg-base-100 p-10">
-                <div class="space-y-6">
-                    {{ form.published|as_crispy_field }}
-                    {{ form.paid_course|as_crispy_field }}
-                    {{ form.course_price|as_crispy_field }}
-                    {{ form.upcoming|as_crispy_field }}
-                </div>
+            <!-- Form Actions -->
+            <div class="mt-8 flex justify-end space-x-4">
+                <button type="button"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">{% trans "Cancel" %}</button>
+                <button type="submit"
+                        class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700">{% trans "Save Changes" %}</button>
             </div>
-        </div>
-
-        <!-- Form Actions -->
-        <div class="mt-8 flex justify-end space-x-4">
-            <button type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">Cancel</button>
-            <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700">Save Course</button>
-        </div>
-    </form>
-</div>
-   
+        </form>
+    </div>
 {% endblock %}

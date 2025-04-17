@@ -193,12 +193,6 @@ class CreateContentView(LoginRequiredMixin, CourseObjectMixin, FormView):
         self.lecture = get_object_or_404(Lecture, slug=kwargs["lecture_slug"])
         self.course = self.get_course()
         print(self)
-        if CourseToken.objects.get(course=self.course, teacher=request.user).status == "pending":
-            messages.error(
-                request,
-                "Permission for this course is pending. Please wait for it to be approved.",
-            )
-            return redirect(reverse("lecture_home", kwargs={"course_slug": self.course.slug}))
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_class(self):
