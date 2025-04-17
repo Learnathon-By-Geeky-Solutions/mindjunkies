@@ -130,27 +130,3 @@ def category_courses(request, slug):
 
 
 
-
-class CreateCourseTokenView(CreateView):
-    model = CourseToken
-    form_class = CourseTokenForm
-    template_name = "course_token_form.html"
-
-    def get_success_url(self):
-        # Redirect to some confirmation or success page after form submission
-        messages.success(self.request,"Your request was successfull")
-        return reverse_lazy('home')
-
-    def form_valid(self, form):
-        # Save the teacher and course info automatically
-        form.instance.teacher = self.request.user
-        slug = self.kwargs['slug']
-        course = Course.objects.get(slug=slug)
-        form.instance.course = course # Assuming 'slug' passed in URL
-        messages.success(self.request, "Course token submitted successfully!")
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        messages.error(self.request, "There was an error in your form submission.")
-        return super().form_invalid(form)
-
