@@ -1,24 +1,24 @@
 {% load static %}
-{% load cloudinary %}
 
+{% load cloudinary %}
 <!-- DaisyUI Drawer Implementation -->
+
 <div class="drawer">
   <input id="mobile-drawer" type="checkbox" class="drawer-toggle" />
   <div class="drawer-content flex flex-col">
     <!-- Navbar using DaisyUI -->
-    <div class="navbar bg-base-100 shadow-sm  sticky top-0 z-50">
-      <div class="navbar-start">
-        <label for="mobile-drawer" aria-label="Close menu" class="btn btn-ghost drawer-button lg:hidden">
+    <div class="navbar bg-base-100 shadow-sm sticky top-0 z-50 px-2 sm:px-4">
+      <div class="navbar-start lg:w-auto">
+        <label for="mobile-drawer" aria-label="Open menu" class="btn btn-ghost drawer-button lg:hidden">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-5 h-5 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
         </label>
         <a href="{% url 'home' %}" class="btn btn-ghost normal-case text-xl font-bold text-primary">
-          <img src="{% static 'images/logo.png' %}" alt="Logo" class="h-10 w-auto" />
+          <img src="{% static 'images/logo.png' %}" alt="Logo" class="h-8 sm:h-10 w-auto" />
         </a>
-
       </div>
 
-      <div class="navbar-center hidden sm:flex">
-        <div class="form-control w-[800px] ">
+      <div class="navbar-center hidden sm:flex flex-1 px-2 lg:px-4">
+        <div class="form-control w-full max-w-5xl mx-auto">
           <div class="input-group">
             <form method="GET" action="{% url 'search_view' %}" class="relative w-full">
               <input
@@ -47,7 +47,7 @@
         </div>
       </div>
 
-      <div class="navbar-end">
+      <div class="navbar-end lg:w-auto gap-1">
         <!-- Mobile search button -->
         <button class="btn btn-ghost btn-circle sm:hidden" id="mobile-search-toggle">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -68,7 +68,7 @@
         <!-- User dropdown -->
         {% if user.is_authenticated %}
           <div class="dropdown dropdown-end">
-            <div tabindex="-1" class="btn btn-ghost btn-circle avatar">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
               <div class="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                 {% if user.profile.avatar %}
                   {% cloudinary user.profile.avatar quality='auto' crop='pad' width=400 %}
@@ -77,7 +77,7 @@
                 {% endif %}
               </div>
             </div>
-            <ul tabindex="-1" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
+            <ul tabindex="0" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
               <li class="menu-title">
                 <span>{{ user.get_full_name|default:user.username }}</span>
               </li>
@@ -95,10 +95,10 @@
     </div>
 
     <!-- Mobile Search Bar (Hidden by default) -->
-    <div id="mobile-search-bar" class="sm:hidden hidden p-4 border-b border-base-200">
+    <div id="mobile-search-bar" class="sm:hidden hidden p-2 border-b border-base-200">
       <div class="form-control">
         <div class="input-group">
-          <form method="POST" action="" class="relative w-full">
+          <form method="GET" action="{% url 'search_view' %}" class="relative w-full">
             {% csrf_token %}
             <input
               type="search"
@@ -106,11 +106,6 @@
               id="mobile-search-input"
               name="search"
               autocomplete="off"
-              hx-get=""
-              hx-trigger="keyup delay:500ms changed"
-              hx-target="#search-results"
-              hx-swap="outerHTML"
-              hx-indicator=".htmx-indicator-mobile"
               class="input input-bordered w-full pl-10 pr-10 focus:outline-primary"
             />
             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-base-content/50">
@@ -141,24 +136,26 @@
     </div>
 
     <!-- Page Content Goes Here -->
-    <div class="container mx-auto">
+    <div class="container mx-auto px-4">
       <!-- Your page content will go here -->
     </div>
   </div>
 
   <!-- Drawer Side (Mobile Menu) -->
   <div class="drawer-side z-50">
-    <label for="mobile-drawer" class="drawer-overlay"></label>
-    <ul class="menu p-4 w-80 h-full bg-base-100 text-base-content">
+    <label for="mobile-drawer" aria-label="Close menu" class="drawer-overlay"></label>
+    <ul class="menu p-4 w-80 min-h-full bg-base-100 text-base-content">
       <!-- Drawer header with logo and close button -->
       <div class="flex items-center justify-between mb-4">
-        <a href="{% url 'home' %}" class="text-xl font-bold text-primary">  <img src="{% static 'images/logo.png' %}" alt="Logo" class="h-10 w-auto" /></a>
-        <label for="mobile-drawer" class="btn btn-sm btn-circle btn-ghost">✕</label>
+        <a href="{% url 'home' %}" class="text-xl font-bold text-primary">
+          <img src="{% static 'images/logo.png' %}" alt="Logo" class="h-10 w-auto" />
+        </a>
+        <label for="mobile-drawer" aria-label="Close menu" class="btn btn-sm btn-circle btn-ghost">✕</label>
       </div>
 
       <!-- User info if authenticated -->
       {% if user.is_authenticated %}
-        <div class="flex items-center gap-3  p-3 bg-base-200/30 rounded-box">
+        <div class="flex items-center gap-3 p-3 mb-4 bg-base-200/30 rounded-box">
           <div class="avatar">
             <div class="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
               {% if user.profile.avatar %}
@@ -261,6 +258,63 @@
   </div>
 </div>
 
+<style>
+  /* Additional responsive styles */
+  @media (max-width: 640px) {
+    .navbar-center {
+      display: none;
+    }
+    
+    #mobile-search-bar .input-bordered {
+      font-size: 16px; /* Prevent zoom on iOS */
+    }
+  }
+  
+  /* Improved search bar responsiveness */
+  @media (min-width: 641px) and (max-width: 1023px) {
+    .navbar-center {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+    
+    .navbar-center .form-control {
+      max-width: 100%;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .navbar-center {
+      flex: 1 1 auto;
+      justify-content: center;
+    }
+    
+    .navbar-start, 
+    .navbar-end {
+      flex: 0 0 auto;
+      width: auto;
+    }
+  }
+  
+  /* Fix dropdown positioning on small screens */
+  @media (max-width: 480px) {
+    .dropdown-content {
+      right: 0;
+      left: auto;
+    }
+  }
+  
+  /* Improve touch targets on mobile */
+  @media (max-width: 767px) {
+    .btn {
+      min-height: 2.5rem;
+    }
+    
+    .menu li a {
+      padding: 0.75rem 1rem;
+    }
+  }
+</style>
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     // Search functionality
@@ -270,6 +324,7 @@
     const mobileClearButton = document.getElementById('mobile-clear-search');
     const mobileSearchToggle = document.getElementById('mobile-search-toggle');
     const mobileSearchBar = document.getElementById('mobile-search-bar');
+    const searchResults = document.getElementById('search-results');
 
     // Desktop search functionality
     if (searchInput && clearButton) {
@@ -279,6 +334,10 @@
           clearButton.classList.remove('hidden');
         } else {
           clearButton.classList.add('hidden');
+          // Hide search results when input is cleared
+          if (searchResults) {
+            searchResults.innerHTML = '';
+          }
         }
       });
 
@@ -311,6 +370,10 @@
           mobileClearButton.classList.remove('hidden');
         } else {
           mobileClearButton.classList.add('hidden');
+          // Hide search results when input is cleared
+          if (searchResults) {
+            searchResults.innerHTML = '';
+          }
         }
       });
 
@@ -339,14 +402,32 @@
       }
     });
 
+    // Close mobile search when clicking outside
+    document.addEventListener('click', function(e) {
+      if (mobileSearchBar && !mobileSearchBar.classList.contains('hidden')) {
+        if (!mobileSearchBar.contains(e.target) && e.target !== mobileSearchToggle) {
+          mobileSearchBar.classList.add('hidden');
+        }
+      }
+    });
+
     // Sticky header effect
     const navbar = document.querySelector('.navbar');
 
     window.addEventListener('scroll', function() {
       if (window.scrollY > 10) {
         navbar.classList.add('shadow-md');
+        navbar.classList.remove('shadow-sm');
       } else {
+        navbar.classList.add('shadow-sm');
         navbar.classList.remove('shadow-md');
+      }
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+      if (window.innerWidth >= 640 && mobileSearchBar) {
+        mobileSearchBar.classList.add('hidden');
       }
     });
   });
