@@ -163,7 +163,7 @@ class CreateLectureView(LoginRequiredMixin, CourseObjectMixin, CreateView):
             return redirect(
                 f"{reverse('lecture_home', kwargs={'course_slug': self.course.slug})}?module_id={self.module.id}"
             )
-        except ValidationError as e:
+        except ValidationError:
             messages.error(self.request, "lecture order can't be same")
 
             return self.form_invalid(form)
@@ -286,7 +286,7 @@ class CreateModuleView(LoginRequiredMixin, CourseObjectMixin, CreateView):
             return redirect(
                 reverse("lecture_home", kwargs={"course_slug": self.course.slug})
             )
-        except ValidationError as e:
+        except ValidationError:
             messages.error(self.request, "module order can't be same")
             return self.form_invalid(form)
         
