@@ -11,7 +11,7 @@ from django.urls import reverse_lazy
 
 from mindjunkies.courses.models import Course, CourseCategory, Enrollment
 
-from .forms import CourseForm, CourseTokenForm, RatingForm
+from .forms import CourseForm, RatingForm
 from .models import CourseToken, LastVisitedCourse, Rating
 
 
