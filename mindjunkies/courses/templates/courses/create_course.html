@@ -46,11 +46,22 @@
                 </div>
 
                 <!-- Settings Section -->
+                {% if request.GET.slug %}
+                <div id="settings" class="section-content border-base-300 bg-base-100 p-10 rounded-lg hidden">
+                    <h2 class="text-2xl font-semibold mb-6 text-gray-700">Settings</h2>
+                    <div class="space-y-6 space-x-0">
+                        {{ form.published|as_crispy_field }}
+                        {{ form.paid_course|as_crispy_field }}
+                        {{ form.upcoming|as_crispy_field }}
+                    </div>
+                </div>
+                {% endif %}
 
                 <!-- Form Actions -->
                 <div class="mt-8 flex justify-end space-x-4">
                     <button type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">Cancel</button>
                     <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700">Save Course</button>
+                    
                 </div>
             </div>
 
@@ -60,6 +71,9 @@
                 <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
                     <li><a href="#basic-info" class="section-link active text-lg font-medium underline hover:text-indigo-600">Basic Info</a></li>
                     <li><a href="#content" class="section-link text-lg font-medium hover:text-indigo-600">Content</a></li>
+                    {% if request.GET.slug %}
+                    <li><a href="#settings" class="section-link text-lg font-medium hover:text-indigo-600">Settings</a></li>
+                    {% endif %}
              </ul>
             </div>
         </div>
