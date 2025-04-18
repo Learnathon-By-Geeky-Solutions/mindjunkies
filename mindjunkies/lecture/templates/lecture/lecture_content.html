@@ -1,91 +1,154 @@
 <div class="drawer-side h-screen">
-      <label for="my-drawer" class="drawer-overlay" aria-label="Close sidebar"></label>
-      <aside class="w-80 bg-base-100 border-r flex-shrink-0 h-screen overflow-y-auto">
-        <!-- Sidebar header -->
-        <div class="sticky top-0 bg-base-100 p-4 border-b z-10">
-          <h2 class="font-bold text-lg">{{lecture.title}}</h2>
-        </div>
+  <label for="my-drawer" class="drawer-overlay" aria-label="Close sidebar"></label>
+  <aside class="w-80 bg-white border-r border-gray-200 flex-shrink-0 h-screen overflow-y-auto">
+    <!-- Elegant sidebar header with gradient accent -->
+    <div class="sticky top-0 bg-white z-10">
+      <div class="h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
+      <div class="p-5 border-b border-gray-200">
+        <h2 class="font-serif text-xl text-gray-800 leading-tight">{{lecture.title}}</h2>
+      </div>
+    </div>
 
-        <!-- Sidebar content -->
-        <div class="p-4 space-y-6">
-          <!-- Reading Materials Section -->
-          <div class="collapse collapse-arrow bg-base-200">
-            <input type="checkbox" id="reading-section" class="peer" aria-label="Toggle reading materials">
-            <div class="collapse-title font-medium flex items-center gap-2">
-              <svg class="h-5 w-5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z" />
-              </svg>
-              <span>Reading Materials</span>
-            </div>
-            <div class="collapse-content">
-              <nav aria-label="Breadcrumb">
-                <ul class="menu menu-compact">
-                  {% for pdf in lecture.pdf_files.all %}
-                    <li>
-                      <a href="{% url 'lecture_pdf' course.slug lecture.id pdf.id %}"
-                         class="flex items-center gap-2 hover:bg-base-300 rounded-lg py-2"
-                         aria-label="View PDF: {{ pdf.pdf_title }}">
-                        <svg class="h-4 w-4 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                          <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
-                        </svg>
-                        <span class="text-sm truncate">{{ pdf.pdf_title }}</span>
-                      </a>
-                    </li>
-                  {% empty %}
-                    <li class="text-sm text-base-content/70 px-4 py-2">No reading materials available</li>
-                  {% endfor %}
-                </ul>
-              </nav>
-            </div>
+    <!-- Course progress indicator -->
+    <div class="px-5 py-4 border-b border-gray-100 bg-gray-50">
+      <div class="flex justify-between items-center mb-2">
+        <span class="text-xs font-medium text-gray-500">Course Progress</span>
+        <span class="text-xs font-semibold text-blue-600">65%</span>
+      </div>
+      <div class="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+        <div class="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-600" style="width: 65%"></div>
+      </div>
+    </div>
+
+    <!-- Sidebar content with refined styling -->
+    <div class="p-5 space-y-6">
+      <!-- Reading Materials Section -->
+      <div class="rounded-xl overflow-hidden shadow-sm border border-gray-100">
+        <div class="collapse collapse-arrow bg-white">
+          <input type="checkbox" id="reading-section" class="peer" checked aria-label="Toggle reading materials">
+          <div class="collapse-title font-medium flex items-center gap-3 py-4 px-5 bg-gray-50 text-gray-700 hover:text-blue-600 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 flex-shrink-0 text-blue-600">
+              <path d="M11.25 4.533A9.707 9.707 0 006 3a9.735 9.735 0 00-3.25.555.75.75 0 00-.5.707v14.25a.75.75 0 001 .707A8.237 8.237 0 016 18.75c1.995 0 3.823.707 5.25 1.886V4.533zM12.75 20.636A8.214 8.214 0 0118 18.75c.966 0 1.89.166 2.75.47a.75.75 0 001-.708V4.262a.75.75 0 00-.5-.707A9.735 9.735 0 0018 3a9.707 9.707 0 00-5.25 1.533v16.103z" />
+            </svg>
+            <span>Reading Materials</span>
           </div>
-
-          <!-- Video Content Section -->
-          <div class="collapse collapse-arrow bg-base-200">
-            <input type="checkbox" id="video-section" class="peer" aria-label="Toggle video content">
-            <div class="collapse-title font-medium flex items-center gap-2">
-              <svg class="h-5 w-5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
-              </svg>
-              <span>Video Content</span>
-            </div>
-            <div class="collapse-content">
-              <nav aria-label="Breadcrumb">
-                <ul class="menu menu-compact">
-                  {% for video in lecture.videos.all %}
-                    <li>
-                      <a href="#"
-                         class="flex items-center gap-2 hover:bg-base-300 rounded-lg py-2"
-                         aria-label="Watch video: {{ video.video_title }}">
-                        <svg class="h-4 w-4 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+          <div class="collapse-content bg-white px-3 pt-1 pb-3">
+            <nav aria-label="Reading Materials">
+              <ul class="space-y-1">
+                {% for pdf in lecture.pdf_files.all %}
+                  <li>
+                    <a href="{% url 'lecture_pdf' course.slug module.id lecture.id pdf.id %}"
+                       class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors group"
+                       aria-label="View PDF: {{ pdf.pdf_title }}">
+                      <div class="w-8 h-8 flex-shrink-0 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600 group-hover:bg-blue-200 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">
+                          <path fill-rule="evenodd" d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0016.5 9h-1.875a1.875 1.875 0 01-1.875-1.875V5.25A3.75 3.75 0 009 1.5H5.625zM7.5 15a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5A.75.75 0 017.5 15zm.75 2.25a.75.75 0 000 1.5H12a.75.75 0 000-1.5H8.25z" clip-rule="evenodd" />
+                          <path d="M12.971 1.816A5.23 5.23 0 0114.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 013.434 1.279 9.768 9.768 0 00-6.963-6.963z" />
                         </svg>
-                        <span class="text-sm truncate">{{ video.video_title }}</span>
-                      </a>
-                    </li>
-                  {% empty %}
-                    <li class="text-sm text-base-content/70 px-4 py-2">No video content available</li>
-                  {% endfor %}
-                </ul>
-              </nav>
-            </div>
-          </div>
-
-          <!-- Quiz Section -->
-          <section class="bg-base-200 p-4 rounded-lg">
-            <h3 class="font-bold mb-3">Practice Quiz</h3>
-            <nav aria-label="Practice Quiz">
-              <ul class="space-y-2">
-                <li>
-                  <a href="#" class="flex items-center gap-2 p-2 rounded-lg hover:bg-base-300 transition-colors">
-                    <svg class="h-4 w-4 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <span class="text-sm font-medium block truncate">{{ pdf.pdf_title }}</span>
+                        <span class="text-xs text-gray-500">PDF Document</span>
+                      </div>
+                    </a>
+                  </li>
+                {% empty %}
+                  <li class="flex items-center gap-3 px-4 py-3 text-gray-500 italic text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4 text-gray-400">
+                      <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
                     </svg>
-                    <span class="text-sm">Supervised vs unsupervised learning</span>
-                  </a>
-                </li>
+                    No reading materials available
+                  </li>
+                {% endfor %}
               </ul>
             </nav>
-          </section>
+          </div>
         </div>
-      </aside>
-  </div>
+      </div>
+
+      <!-- Video Content Section -->
+      <div class="rounded-xl overflow-hidden shadow-sm border border-gray-100">
+        <div class="collapse collapse-arrow bg-white">
+          <input type="checkbox" id="video-section" class="peer" checked aria-label="Toggle video content">
+          <div class="collapse-title font-medium flex items-center gap-3 py-4 px-5 bg-gray-50 text-gray-700 hover:text-indigo-600 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 flex-shrink-0 text-indigo-600">
+              <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm14.024-.983a1.125 1.125 0 010 1.966l-5.603 3.113A1.125 1.125 0 019 15.113V8.887c0-.857.921-1.4 1.671-.983l5.603 3.113z" clip-rule="evenodd" />
+            </svg>
+            <span>Video Content</span>
+          </div>
+          <div class="collapse-content bg-white px-3 pt-1 pb-3">
+            <nav aria-label="Video Content">
+              <ul class="space-y-1">
+                {% for video in lecture.videos.all %}
+                  <li>
+                    <a href="#"
+                       class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors group"
+                       aria-label="Watch video: {{ video.video_title }}">
+                      <div class="w-8 h-8 flex-shrink-0 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 group-hover:bg-indigo-200 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">
+                          <path fill-rule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clip-rule="evenodd" />
+                        </svg>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <span class="text-sm font-medium block truncate">{{ video.video_title }}</span>
+                        <span class="text-xs text-gray-500">Video Lecture</span>
+                      </div>
+                      <span class="text-xs text-gray-500">12:45</span>
+                    </a>
+                  </li>
+                {% empty %}
+                  <li class="flex items-center gap-3 px-4 py-3 text-gray-500 italic text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4 text-gray-400">
+                      <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
+                    </svg>
+                    No video content available
+                  </li>
+                {% endfor %}
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+    
+      
+      <!-- Additional Resources Section -->
+      <div class="rounded-xl overflow-hidden bg-white border border-gray-100 shadow-sm">
+        <div class="p-5">
+          <h3 class="font-serif text-lg font-medium text-gray-800 mb-4">Additional Resources</h3>
+          <ul class="space-y-2">
+            <li>
+              <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                <div class="w-8 h-8 flex-shrink-0 rounded-lg bg-green-100 flex items-center justify-center text-green-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">
+                    <path d="M11.644 1.59a.75.75 0 01.712 0l9.75 5.25a.75.75 0 010 1.32l-9.75 5.25a.75.75 0 01-.712 0l-9.75-5.25a.75.75 0 010-1.32l9.75-5.25z" />
+                    <path d="M3.265 10.602l7.668 4.129a2.25 2.25 0 002.134 0l7.668-4.13 1.37.739a.75.75 0 010 1.32l-9.75 5.25a.75.75 0 01-.71 0l-9.75-5.25a.75.75 0 010-1.32l1.37-.738z" />
+                    <path d="M10.933 19.231l-7.668-4.13-1.37.739a.75.75 0 000 1.32l9.75 5.25c.221.12.489.12.71 0l9.75-5.25a.75.75 0 000-1.32l-1.37-.738-7.668 4.13a2.25 2.25 0 01-2.134-.001z" />
+                  </svg>
+                </div>
+                <div class="flex-1">
+                  <span class="text-sm font-medium text-gray-800 block">Course Materials</span>
+                  <span class="text-xs text-gray-500">Download all course resources</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                <div class="w-8 h-8 flex-shrink-0 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">
+                    <path fill-rule="evenodd" d="M9.315 7.584C12.195 3.883 16.695 1.5 21.75 1.5a.75.75 0 01.75.75c0 5.056-2.383 9.555-6.084 12.436A6.75 6.75 0 019.75 22.5a.75.75 0 01-.75-.75v-4.131A15.838 15.838 0 016.382 15H2.25a.75.75 0 01-.75-.75 6.75 6.75 0 017.815-6.666zM15 6.75a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z" clip-rule="evenodd" />
+                    <path d="M5.26 17.242a.75.75 0 10-.897-1.203 5.243 5.243 0 00-2.05 5.022.75.75 0 00.625.627 5.243 5.243 0 005.022-2.051.75.75 0 10-1.202-.897 3.744 3.744 0 01-3.008 1.51c0-1.23.592-2.323 1.51-3.008z" />
+                  </svg>
+                </div>
+                <div class="flex-1">
+                  <span class="text-sm font-medium text-gray-800 block">Discussion Forum</span>
+                  <span class="text-xs text-gray-500">Join the conversation</span>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>

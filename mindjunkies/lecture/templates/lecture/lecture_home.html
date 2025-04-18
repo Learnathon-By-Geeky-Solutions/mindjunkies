@@ -192,7 +192,7 @@
                                                         </svg>
                                                     </div>
                                                     <div class="flex-1">
-                                                        <a href="{% url 'lecture_pdf' course.slug lecture.id pdf.id %}">
+                                                        <a href="{% url 'lecture_pdf' course.slug current_module.id lecture.id pdf.id %}">
                                                         <h4 class="font-medium text-slate-800">
                                                             {{ pdf.pdf_title }}
                                                         </h4>
