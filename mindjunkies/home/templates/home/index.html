@@ -6,7 +6,7 @@
     {% load static %}
 
     {% if not user.is_authenticated %}
-        <section class="relative bg-slate-50 py-24 px-4 sm:px-6 overflow-hidden">
+        <section class="relative bg-slate-50 py-24 px-4 sm:px-6 overflow-hidden font-serif">
             <!-- Elegant geometric accent -->
             <div class="absolute inset-0 overflow-hidden pointer-events-none">
                 <!-- Left side geometric shape -->
@@ -45,11 +45,8 @@
 
                         <!-- Elegant buttons with proper spacing -->
                         <div class="flex flex-wrap gap-6 pt-4">
-                            <button class="bg-blue-600 p-3 text-white font-medium rounded-md">Get Started</button>
-                            <button
-                                class="p-3 bg-white hover:bg-slate-50 text-blue-600 font-medium rounded-lg border border-blue-200 hover:border-blue-300 shadow-sm hover:shadow transition-all">
-                                Explore Courses
-                            </button>
+                           <a href="{% url 'account_login' %}"><button class=" cursor-pointer bg-blue-600 p-3 text-white font-medium rounded-md">Get Started</button></a> 
+                           <a href="#courses "><button class="font-serif cursor-pointer bg-white p-3 text-blue-600 border border-blue-600 font-medium rounded-md">Explore Courses</button></a>
                         </div>
                     </div>
 
@@ -95,15 +92,11 @@
             </div>
         </section>
 
-        <div class="p-8 ">
-            <h2 class="text-4xl text-gray-800 font-bold pb-2">All the skills you need in one place</h2>
-            <p class="text-lg text-gray-500 font-semibold ">From critical skills to technical topics, Udemy supports
-                your professional development.</p>
-        </div>
+     
 
   <div class="p-8">
-    <h2 class="text-4xl text-gray-800 font-bold pb-2">Empowering Learning, Anywhere, Anytime</h2>
-    <p class="text-lg text-gray-500 font-semibold">From foundational knowledge to advanced mastery, Biddyapith helps you learn, grow, and succeed at your own pace.</p>
+    <h2 class="text-4xl text-gray-800 font-bold pb-2 font-serif">Empowering Learning, Anywhere, Anytime</h2>
+    <p class="text-lg text-gray-500 font-serif">From foundational knowledge to advanced mastery, Biddyapith helps you learn, grow, and succeed at your own pace.</p>
   </div>
   
  
@@ -142,8 +135,14 @@
     {% include "home/subcategory.html" %}
   </div>
 </div>
+  <div id="courses" class="">
+    <h1 class="font-serif text-4xl md:text-5xl font-medium  text-center my-8 py-2">
+      
+          Explore Our Courses
+          
+      </h1>
     {% if enrolled_courses%}
-    <section id="enrolled-courses" class="p-10 bg-base-200">
+    <section id="enrolled-courses" class="p-10">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-gray-900 mb-6 m-4">My Courses</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
@@ -158,9 +157,9 @@
     </section>
     {% endif %}
     {% if new_courses%}
-    <section id="new-courses" class="p-10 bg-base-200">
+    <section id="new-courses" class="p-10 ">
         <div class="consultant mx-auto my-2 px-4">
-            <h2 class="text-3xl font-bold text-gray-900 mb-6 m-4">New Courses</h2>
+            <h2 class="font-serif text-3xl font-bold text-gray-900 mb-6 m-4">Recently Introduced</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {% for course in new_courses %}
                     {% include 'home/card.html' %}
@@ -189,6 +188,8 @@
         </div>
     </section>
     {% endif %}
+  </div>
+ 
     <section class="p-10">
         {% include 'home/goal.html' %}
     </section>
