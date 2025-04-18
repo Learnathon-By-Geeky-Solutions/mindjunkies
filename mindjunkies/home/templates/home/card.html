@@ -1,83 +1,64 @@
-{% load static %}
-{% load cloudinary %}
-<a href="{% url 'course_details' course.slug %}">
-    <div
-        class="card bg-base-100 hover:shadow-xl transition-shadow duration-300  h-[400px] flex flex-col overflow-hidden rounded-xl border border-base-200">
-        <!-- Card Image with explicit object-fit styling -->
-        <!-- Card Image with fixed dimensions and no cropping -->
-        <figure class="relative w-full overflow-hidden flex justify-center">
-            {% if course.course_image %}
-                <div class="w-[300px] h-[200px] mx-auto">
-                    {% cloudinary course.course_image fetch_format="auto" quality="auto" width=300 height=200 crop="pad" background="auto" class=" mt-3" %}
-                </div>
-            {% else %}
-                <div class="w-[300px] h-[200px] mx-auto bg-primary/10 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-primary/40" fill="none"
-                         viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
-                </div>
-            {% endif %}
-        </figure>
+{% load static %} 
+{% load cloudinary %}  
 
-
-        <div class="card-body p-4 flex flex-col flex-grow">
-            <!-- Institution Logo and Name - FIXED SIZE -->
-            <div class="flex items-center gap-2 mb-3">
-                {% if course.institution.logo %}
-                    <div class="flex-shrink-0">
-                        <!-- Smaller logo - both container and image size reduced -->
-                        <div class="w-5 h-5 rounded-full overflow-hidden">
-                            {% cloudinary course.institution.logo transformation="c_fill,g_auto,w_20,h_20,q_auto,f_auto" style="width: 100%; height: 100%; object-fit: cover;" %}
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                        <span class="text-xs text-primary font-bold">{{ course.institution.name|slice:":1" }}</span>
-                    </div>
-                {% endif %}
-                <span class="text-sm text-base-content/70">{{ course.institution.name }}</span>
-            </div>
-            <!-- Course Title (if not displayed on image) -->
-            {% if not course.display_title_on_image %}
-                <h3 class="font-bold text-lg mb-2 line-clamp-2">{{ course.title }}</h3>
-            {% endif %}
-
-            <!-- Course Description -->
-            <p class="text-sm text-base-content/70 mb-4 line-clamp-3">{{ course.short_introduction }}</p>
-
-        
-        {% if request.path == "/courses/my_courses/" %}
-            {% load enrollment_tags %}
-            
-          <div class="w-full bg-gray-200 rounded-full ">
-            {% with course|get_enrollment:request.user as enrollment %}
-                {% if enrollment %}
-                <div class="bg-blue-600 text-xs font-medium text-white text-center p-0.5 leading-none rounded-full"
-                     style="width: {{ enrollment.progression }}%"> {{ enrollment.progression }}%
-                </div>
-                {% else %}
-                <p>Not enrolled.</p>
-             {% endif %}
-            </div>
-            {% endwith %}
-
-        {% endif %}
-
-
-            <!-- Course Type Badge -->
-            <div class="mt-auto pt-2 flex justify-between items-center">
-            <span class="text-xs px-3 py-1 rounded-full bg-base-200 text-base-content/70">
-              {% if course.course_type == 'specialization' %}
-                  Specialization
-              {% else %}
-                  Course
-              {% endif %}
-            </span>
-
-
-            </div>
+<a href="{% url 'course_details' course.slug %}" class="block group">
+  <div class="card h-[400px] flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-xl transition-all duration-500 ease-out transform hover:-translate-y-1 group-hover:border-blue-100">
+    
+    <!-- Image Section with Animation -->
+    <figure class="relative w-full overflow-hidden">
+      {% if course.course_image %}
+        <div class="w-full h-[200px] flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
+          {% cloudinary course.course_image fetch_format="auto" quality="auto" width=300 height=200 crop="pad" background="auto" class="rounded-t-2xl object-contain transition-all duration-700 ease-in-out transform group-hover:scale-110" %}
         </div>
+      {% else %}
+        <div class="w-full h-[200px] bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center overflow-hidden">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-primary/40 transition-all duration-500 ease-in-out transform group-hover:scale-110 group-hover:text-primary/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+      {% endif %}
+      
+      <!-- Animated Gradient Overlay -->
+      <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+    </figure>
+    
+    <!-- Content Section -->
+    <div class="card-body p-6 flex flex-col flex-grow space-y-3 relative">
+      <!-- Title with Animation -->
+      {% if not course.display_title_on_image %}
+        <h3 class="text-xl font-bold text-gray-800 line-clamp-2 tracking-tight transition-colors duration-300 group-hover:text-blue-700">{{ course.title }}</h3>
+      {% endif %}
+      
+      <!-- Enrollment Count with Animation -->
+     
+      
+      <!-- Course Description -->
+      <p class="text-sm text-gray-600 line-clamp-3 leading-relaxed transition-opacity duration-500 group-hover:text-gray-700">{{ course.short_introduction }}</p>
+      <div class="flex items-center gap-1 text-sm text-gray-600 transition-transform duration-500 ease-out transform group-hover:translate-x-1">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-colors duration-300 group-hover:text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        <span class="font-medium">{{ course.enrolled_students|default:"0" }} students enrolled</span>
+      </div>
+      <!-- Footer Info with Animated Badges -->
+      <div class="mt-auto pt-4 flex justify-between items-center text-sm">
+        <span class="px-4 py-1.5 rounded-full bg-blue-50 text-blue-700 font-medium border border-blue-100 shadow-sm transition-all duration-300 ease-out group-hover:bg-blue-100 group-hover:shadow">
+          {% if course.course_type == 'specialization' %}
+            Specialization
+          {% else %}
+            Course
+          {% endif %}
+        </span>
+        
+        <!-- Course Duration Badge with Animation -->
+        <span class="text-gray-500 font-medium flex items-center gap-1 px-3 py-1.5 rounded-full bg-gray-50 border border-gray-100 transition-all duration-300 ease-out group-hover:bg-gray-100 group-hover:shadow">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-500 ease-in-out group-hover:rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {{ course.duration|default:"Self-paced" }}
+        </span>
+      </div>
     </div>
+  </div>
 </a>
