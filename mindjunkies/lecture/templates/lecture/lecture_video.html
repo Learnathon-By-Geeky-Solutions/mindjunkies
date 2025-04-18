@@ -1,17 +1,28 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
 {% block extra_head %}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.7.0/video-js.min.css" rel="stylesheet"/>
+    <style>
+        .video-js {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16/9;
+        }
+        .video-container {
+            max-width: 1024px;
+            width: 100%;
+            margin: 0 auto;
+        }
+    </style>
 {% endblock extra_head %}
 
 {% block main_content %}
     <div class="drawer lg:drawer-open">
         <input id="my-drawer" type="checkbox" class="drawer-toggle"/>
-        <div class="drawer-content flex flex-col">
+        <div class="drawer-content flex flex-col bg-base-100">
             <!-- Page content here -->
-            <div class="navbar bg-base-100 lg:hidden">
+            <div class="navbar bg-base-100 shadow-sm lg:hidden">
                 <div class="flex-none">
                     <label for="my-drawer" class="btn btn-square btn-ghost drawer-button" aria-label="Toggle-Drawer">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -22,149 +33,93 @@
                     </label>
                 </div>
                 <div class="flex-1">
-                    <a class="btn btn-ghost normal-case text-xl">{{ module.title }}</a>
+                    <a class="font-semibold text-lg">{{ module.title }}</a>
                 </div>
             </div>
 
             <!-- Main Content -->
             <main class="flex-1 overflow-y-auto">
                 <!-- Breadcrumb Navigation -->
-                <div class="flex items-center justify-between p-4 border-b bg-base-100">
-                    <div class="flex items-center gap-2 text-sm">
-                        <a href="#" class="text-primary hover:underline">Supervised Machine Learning: Regression and
-                            Classification</a>
-                        <span class="text-base-content/70">›</span>
-                        <a href="#" class="text-primary hover:underline">Week 1</a>
-                        <span class="text-base-content/70">›</span>
-                        <span>Welcome to machine learning!</span>
+                <div class="flex items-center justify-between p-4 border-b bg-base-100 shadow-sm">
+                    <div class="flex items-center gap-2 text-sm breadcrumbs">
+                        <ul>
+                            <li><a href="#" class="text-primary hover:underline">{{module.title}}</a></li>
+                            <li><a href="#" class="text-primary hover:underline">Lecture {{lecture.order}}</a></li>
+                            <li class="text-base-content/70">{{lecture.title}}</li>
+                        </ul>
                     </div>
                     <a href="#" class="btn btn-primary btn-sm">Next</a>
                 </div>
 
                 <!-- Video Content -->
-                <div class="p-4">
-                    <div class="rounded-xl bg-base-200">
-                        <div class="">
-                            <div class="video-container mx-auto">
-                                <video controls>
-                                    <source src="{{ video.video_file.url }}" type="video/mp4">
-                                    <track src="#" kind="subtitles" srclang="en"
-                                           label="English">
-                                    <track src="#" kind="descriptions" srclang="en"
-                                           label="English Description">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
+                <div class="p-6 max-w-6xl mx-auto">
+                    <div class="rounded-xl bg-base-200 shadow-md overflow-hidden">
+                        <div class="video-container w-full">
+                            <video 
+                                id="course-video" 
+                                class="video-js vjs-big-play-centered vjs-theme-city" 
+                                controls 
+                                preload="auto"
+                                data-setup='{"playbackRates": [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]}'>
+                                <source src="{{ video.video_file.url }}" type="video/mp4">
+                                <track src="#" kind="subtitles" srclang="en" label="English">
+                                <track src="#" kind="descriptions" srclang="en" label="English Description">
+                                Your browser does not support the video tag.
+                            </video>
                         </div>
-                        <div class="p-4">
-                            <button class="btn btn-ghost btn-sm text-primary">
-                                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="p-5 flex justify-between items-center border-t border-base-300">
+                            <button class="btn btn-ghost btn-sm text-primary flex items-center gap-2">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/>
                                 </svg>
                                 Report an issue
                             </button>
+                            <div class="flex gap-2">
+                                <button class="btn btn-ghost btn-sm" title="Download materials">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                </button>
+                                <button class="btn btn-ghost btn-sm" title="Share">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
+                    </div>
+                    
+                    <!-- Video Title and Description -->
+                    <div class="mt-6 bg-base-100 rounded-xl p-5 shadow-md">
+                        <h2 class="text-xl font-bold mb-2">Welcome to machine learning!</h2>
+                        <p class="text-base-content/80">
+                            In this lecture, you'll learn the fundamentals of machine learning and get an overview of the course content.
+                        </p>
                     </div>
                 </div>
             </main>
         </div>
-        <div class="drawer-side">
-            <label for="my-drawer" class="drawer-overlay" aria-label="Closed-Drawer"></label>
-            <aside class="w-80 bg-base-100 border-r flex-shrink-0 h-screen">
-                <!-- Sidebar content here -->
-                <div class="p-4">
-                    <h2 class="font-bold text-lg mb-4">Course Content</h2>
-
-                    <div class="space-y-2">
-                        <!-- Week 1 Dropdown -->
-                        {% for lecture in module.lectures.all %}
-                            <div class="collapse collapse-arrow bg-base-200">
-                                <input type="checkbox" checked/>
-                                <div class="collapse-title font-medium">
-                                    Week {{ lecture.order }}: {{ lecture.title }}
-                                </div>
-                                <div class="collapse-content">
-                                    <div class="space-y-2">
-                                        <!-- Video Item -->
-                                        {% for video in lecture.videos.all %}
-                                            <a href="{% url 'lecture_video_content' course.slug module.id lecture.id video.id %}"
-                                               class="flex items-start p-2 rounded-lg hover:bg-base-300">
-                                                <div class="flex-shrink-0 mt-1">
-                                                    <svg class="h-5 w-5 text-primary" viewBox="0 0 24 24"
-                                                         fill="currentColor">
-                                                        <path
-                                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
-                                                    </svg>
-                                                </div>
-                                                <div class="ml-3 flex-1">
-                                                    <p class="text-sm font-medium">{{ video.video_title }}</p>
-                                                    <span class="text-xs text-base-content/70">2 min</span>
-                                                </div>
-                                            </a>
-                                        {% endfor %}
-
-                                        <!-- Reading Item -->
-                                        {% for pdf in lecture.pdf_files.all %}
-                                            <a href="{{ pdf.pdf_file.url }}"
-                                               class="flex items-start p-2 rounded-lg hover:bg-base-300" download="">
-                                                <div class="flex-shrink-0 mt-1">
-                                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                                                        <path
-                                                            d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z"/>
-                                                    </svg>
-                                                </div>
-                                                <div class="ml-3 flex-1">
-                                                    <p class="text-sm font-medium">{{ pdf.pdf_title }}</p>
-                                                    <span class="text-xs text-base-content/70">5 min read</span>
-                                                </div>
-                                            </a>
-                                        {% endfor %}
-
-                                        <!-- Quiz Item -->
-                                        <a href="#" class="flex items-start p-2 rounded-lg hover:bg-base-300">
-                                            <div class="flex-shrink-0 mt-1">
-                                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path
-                                                        d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                                                </svg>
-                                            </div>
-                                            <div class="ml-3 flex-1">
-                                                <p class="text-sm font-medium">Practice Quiz: ML Basics</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-
-
-                    </div>
-                </div>
-            </aside>
-        </div>
+        {% include 'lecture/lecture_content.html'%}
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.7.0/video.min.js"
             integrity="sha256-uNxDfF9Tdb1GQ9Gb7DRVcWD6uDY/vNyhvuspnJP567I=" crossorigin="anonymous"></script>
     <script>
-        const player = videojs('video', {
-            controls: true,
-            autoplay: false,
-            preload: 'auto',
-            playbackRates: [0.5, 1, 1.5, 2, 2.5] // Playback speed options
-        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const player = videojs('course-video', {
+                controls: true,
+                autoplay: false,
+                preload: 'auto',
+                fluid: true,
+                playbackRates: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]
+            });
 
-        player.ready(function () {
-            console.log("Video.js Player is Ready!");
-        });
-    </script>
-{% endblock %}
-
-{% block extra_js %}
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
+            player.ready(function() {
+                console.log("Video.js Player is Ready!");
+            });
+            
+            // Handle drawer state based on screen size
             const drawer = document.getElementById('my-drawer');
             const mediaQuery = window.matchMedia('(min-width: 1024px)');
 

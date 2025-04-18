@@ -110,6 +110,7 @@ def lecture_video(request: HttpRequest, course_slug: str, module_id: str, lectur
         "course": video.lecture.course,
         "video": video,
         "module": module,
+        "lecture": lecture,
         "hls_url": video.video_file.url,
     }
 
