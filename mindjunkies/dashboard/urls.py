@@ -1,15 +1,15 @@
 from django.urls import path
 
-from .views import TeacherVerificationView, content_list, enrollment_list, remove_enrollment, verification_wait
+from .views import TeacherVerificationView, ContentListView, EnrollmentListView, RemoveEnrollmentView, VerificationWaitView
 
 urlpatterns = [
-    path("content/", content_list, name="dashboard"),
+    path("content/", ContentListView.as_view(), name="dashboard"),
     path(
-        "enrollments/<str:slug>/", enrollment_list, name="teacher_dashboard_enrollments"
+        "enrollments/<str:slug>/", EnrollmentListView.as_view(), name="teacher_dashboard_enrollments"
     ),
     path(
         "remove/enrollment/<slug:course_slug>/<str:student_id>/",
-        remove_enrollment,
+        RemoveEnrollmentView.as_view(),
         name="dashboard_enrollments_remove",
     ),
     path(
@@ -17,5 +17,5 @@ urlpatterns = [
         TeacherVerificationView.as_view(),
         name="teacher_verification_form",
     ),
-    path("verification_wait/", verification_wait, name="verification_wait"),
+    path("verification_wait/", VerificationWaitView.as_view(), name="verification_wait"),
 ]
