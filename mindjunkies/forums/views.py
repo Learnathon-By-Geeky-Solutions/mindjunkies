@@ -10,7 +10,8 @@ from mindjunkies.courses.models import Course, Module
 from .forms import ForumCommentForm, ForumReplyForm, ForumTopicForm
 from .models import ForumComment, ForumTopic, Reply
 
-
+from elasticsearch_dsl.query import MultiMatch
+from .documents import ForumTopicDocument
 class CourseContextMixin:
     """
     Mixin to add the course object to the context based on `course_slug`.
@@ -47,10 +48,19 @@ class ForumThreadView(LoginRequiredMixin, CourseContextMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(self.get_module().forum_posts.all())
-        context["module"] = self.get_module()
+
+        module = self.get_module()
+        context["module"] = module
+        context["posts"] = module.forum_posts.all()
         course_slug = self.kwargs.get("course_slug")
         context["form"] = ForumTopicForm(course_slug=course_slug)
+        
+        search_query = self.request.GET.get("search")
+        print(f"Search query: {search_query}")
+        if search_query:
+            forumlist = ForumTopicDocument.search().query("match", title=search_query)
+            context["posts"] = forumlist.to_queryset()
+            print(forumlist.to_queryset())
 
         return context
 
