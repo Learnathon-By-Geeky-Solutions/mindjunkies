@@ -37,6 +37,7 @@ INTERNAL_IPS = [
 ]
 
 INSTALLED_APPS = [
+    "django_elasticsearch_dsl",
     "unfold",  # before django.contrib.admin
     "unfold.contrib.filters",  # optional, if special filters are needed
     "unfold.contrib.forms",  # optional, if special form elements are needed
@@ -130,6 +131,13 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'http://localhost:9200'
+    }
+}
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
