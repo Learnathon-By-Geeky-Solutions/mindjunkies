@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
 
 {% block head_title %}Home{% endblock head_title %}
+{% load static %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+   {% endblock extra_head %}
+{% block extra_js %}
+    <script src="{% static 'js/index.js' %}"></script>
+{% endblock extra_js %}
+
 
 {% block main_content %}
-    {% load static %}
+  
 
     {% if not user.is_authenticated %}
     <section class="relative bg-slate-50 py-24 px-4 sm:px-6 overflow-hidden font-serif">
@@ -108,83 +116,9 @@
         </div>
     
         <!-- Add the required CSS animations and JavaScript for counters -->
-        <style>
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(20px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-            
-            @keyframes slideInRight {
-                from { opacity: 0; transform: translateX(30px); }
-                to { opacity: 1; transform: translateX(0); }
-            }
-            
-            @keyframes expandWidth {
-                from { width: 0; }
-                to { width: 100%; }
-            }
-            
-            @keyframes shimmer {
-                0% { background-position: -200% 0; }
-                100% { background-position: 200% 0; }
-            }
-            
-            .animate-fadeIn {
-                animation-name: fadeIn;
-            }
-            
-            .animate-slideInRight {
-                animation-name: slideInRight;
-            }
-            
-            .animate-expandWidth {
-                animation-name: expandWidth;
-            }
-            
-            .animate-shimmer {
-                animation: shimmer 3s infinite linear;
-            }
-        </style>
+
     
-        <script>
-            // Counter animation
-            document.addEventListener("DOMContentLoaded", function() {
-                const counters = document.querySelectorAll('.counter');
-                
-                const options = {
-                    root: null,
-                    rootMargin: '0px',
-                    threshold: 0.1
-                };
-                
-                const observer = new IntersectionObserver(function(entries, observer) {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            const counter = entry.target;
-                            const target = parseInt(counter.getAttribute('data-target'));
-                            const duration = 2000; // 2 seconds
-                            const step = target / (duration / 30);
-                            let current = 0;
-                            
-                            const updateCounter = setInterval(function() {
-                                current += step;
-                                if (current >= target) {
-                                    current = target;
-                                    clearInterval(updateCounter);
-                                }
-                                counter.textContent = Math.floor(current) + (counter.getAttribute('data-target') === '100' ? '%' : '+');
-                            }, 30);
-                            
-                            observer.unobserve(counter);
-                        }
-                    });
-                }, options);
-                
-                counters.forEach(counter => {
-                    observer.observe(counter);
-                });
-            });
-        </script>
+       
     </section>
 
      
