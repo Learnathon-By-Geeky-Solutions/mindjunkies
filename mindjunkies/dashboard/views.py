@@ -53,7 +53,7 @@ class EnrollmentListView(LoginRequiredMixin, CustomPermissionRequiredMixin, View
 
 
 class RemoveEnrollmentView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
-    permission_required = "enrollment.delete_enrollment"
+    permission_required = "courses.view_course"
 
     def get(self, request: HttpRequest, course_slug: str, student_id: str) -> HttpResponse:
         print("watch me", course_slug, student_id)
