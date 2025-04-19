@@ -1,0 +1,36 @@
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes expandWidth {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.animate-fadeIn {
+    animation-name: fadeIn;
+}
+
+.animate-slideInRight {
+    animation-name: slideInRight;
+}
+
+.animate-expandWidth {
+    animation-name: expandWidth;
+}
+
+.animate-shimmer {
+    animation: shimmer 3s infinite linear;
+}
