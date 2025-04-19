@@ -289,6 +289,19 @@ class CreateModuleView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, 
         return context
 
 
+class DeleteLectureView(LoginRequiredMixin, CourseObjectMixin, View):
+    """View to delete a lecture."""
+
+    def get(self, request, course_slug, lecture_id):
+        """Handle GET request to delete a lecture."""
+        lecture = get_object_or_404(Lecture, id=lecture_id)
+        if not is_teacher_for_course(request.user, lecture.course):
+            return HttpResponseForbidden("You are not allowed to delete this lecture.")
+
+        # Delete the lecture and redirect
+        lecture.delete()
+        messages.success(request, "Lecture deleted successfully.")
+        return redirect(reverse("lecture_home", kwargs={"course_slug": course_slug}))
 class MarkLectureCompleteView(LoginRequiredMixin, View):
     def get(self, request, course_slug, lecture_id):
         lecture = get_object_or_404(Lecture, id=lecture_id)
