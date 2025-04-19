@@ -6,30 +6,54 @@
     <div class="flex-grow p-4 lg:p-8 overflow-y-auto">
         <!-- Module Title at Top Center -->
         <div
-            class="text-center mb-6 bg-white p-6 rounded-xl shadow-sm border border-slate-100 transition-all hover:shadow-md"
+            class="text-center    rounded-xl  transition-all hover:shadow-md"
         >
-            <div class="flex items-center justify-center gap-3">
-                <h1 class="text-2xl font-bold text-slate-800">
-                    Module {{ current_module.order }}: {{ current_module.title }}
+        <div class=" bg-base-100 shadow-sm rounded-md p-6 hover:shadow-md transition-all duration-200 p-4 mb-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <h1 class="text-2xl font-semibold text-slate-800">
+                  Module {{ current_module.order }}: {{ current_module.title }}
                 </h1>
-                {% if isTeacher %}
-                <a
-                    href="{% url 'create_lecture' course.slug current_module.id %}"
-                    class="transition-all hover:scale-110 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-full p-1"
-                >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="10" stroke="#4F46E5" stroke-width="2" />
-                        <path
-                            d="M12 7V17M7 12H17"
-                            stroke="#4F46E5"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        />
-                    </svg>
+              </div>
+              
+              {% if isTeacher %}
+              <div class="flex items-center gap-2">
+                <!-- Edit button -->
+                <a href="{% url 'edit_module' course.slug current_module.id %}">
+                    <button class="btn btn-circle btn-ghost btn-sm tooltip tooltip-left" data-tip="Edit module">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-600 hover:text-primary">
+                          <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+                          <path d="m15 5 4 4"></path>
+                        </svg>
+                      </button>
+                </a> 
+                
+                <!-- Delete button -->
+                <a href="{% url 'delete_module' course.slug current_module.id %}">
+                    <button class="btn btn-circle btn-ghost btn-sm tooltip tooltip-left" data-tip="Delete module">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-600 hover:text-error">
+                          <path d="M3 6h18"></path>
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                        </svg>
+                      </button>
+                </a> 
+                
+                <!-- Add lecture button -->
+                <a href="{% url 'create_lecture' course.slug current_module.id %}" 
+                   class="btn btn-sm btn-primary gap-1 rounded-full transition-all hover:scale-105">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 8v8"></path>
+                    <path d="M8 12h8"></path>
+                  </svg>
+                  Add Lecture
                 </a>
-                {% endif %}
+              </div>
+              {% endif %}
             </div>
+          </div>
+          
         </div>
 
         <!-- Weeks/Lectures in Module -->
@@ -65,6 +89,7 @@
                     {% if isTeacher %}
                     <a
                         href="{% url 'edit_lecture' course.slug lecture.slug %}"
+                        onclick="return confirm('Are you sure you want to delete this lecture?');"
                         class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-md transition-all hover:bg-indigo-100 hover:text-indigo-700 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 edit-link"
                     >
                         <svg
