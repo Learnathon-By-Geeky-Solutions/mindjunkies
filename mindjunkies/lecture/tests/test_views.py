@@ -103,7 +103,7 @@ def test_lecture_pdf_view(client, user, lecture, lecture_pdf):
         "create_content",
         kwargs={
             "course_slug": lecture.course.slug,
-            "lecture_slug": lecture.slug,
+            "lecture_id": lecture.id,
             "format": "attachment",
         },
     )
@@ -144,7 +144,7 @@ def test_create_content_view_video(client, staff_user, lecture):
         "create_content",
         kwargs={
             "course_slug": lecture.course.slug,
-            "lecture_slug": lecture.slug,
+            "lecture_id": lecture.id,
             "format": "video",
         },
     )
@@ -174,7 +174,7 @@ def test_edit_lecture_view(client, staff_user, lecture):
     client.force_login(staff_user)
     url = reverse(
         "edit_lecture",
-        kwargs={"course_slug": lecture.course.slug, "lecture_slug": lecture.slug},
+        kwargs={"course_slug": lecture.course.slug, "lecture_id": lecture.id},
     )
 
     response = client.post(
