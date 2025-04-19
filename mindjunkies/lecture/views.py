@@ -110,6 +110,7 @@ def lecture_video(request: HttpRequest, course_slug: str, module_id: str, lectur
         "course": video.lecture.course,
         "video": video,
         "module": module,
+        "lecture": lecture,
         "hls_url": video.video_file.url,
     }
 
@@ -118,13 +119,14 @@ def lecture_video(request: HttpRequest, course_slug: str, module_id: str, lectur
 
 @login_required
 @require_http_methods(["GET"])
-def lecture_pdf(request: HttpRequest, course_slug: str, lecture_id: int, pdf_id: int) -> HttpResponse:
+def lecture_pdf(request: HttpRequest, course_slug: str, module_id:int, lecture_id: int, pdf_id: int) -> HttpResponse:
     """View to display a lecture PDF."""
     pdf = get_object_or_404(LecturePDF, id=pdf_id)
     lecture = get_object_or_404(Lecture, id=lecture_id)
     course = get_object_or_404(Course, slug=course_slug)
+    module = get_object_or_404(Module, id=module_id)
 
-    context = {"course": course, "pdf": pdf, "lecture": lecture}
+    context = {"course": course, "pdf": pdf, "module":module, "lecture": lecture,}
     return render(request, "lecture/lecture_pdf.html", context)
 
 
@@ -288,6 +290,19 @@ class CreateModuleView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, 
         return context
 
 
+class DeleteLectureView(LoginRequiredMixin, CourseObjectMixin, View):
+    """View to delete a lecture."""
+
+    def get(self, request, course_slug, lecture_id):
+        """Handle GET request to delete a lecture."""
+        lecture = get_object_or_404(Lecture, id=lecture_id)
+        if not is_teacher_for_course(request.user, lecture.course):
+            return HttpResponseForbidden("You are not allowed to delete this lecture.")
+
+        # Delete the lecture and redirect
+        lecture.delete()
+        messages.success(request, "Lecture deleted successfully.")
+        return redirect(reverse("lecture_home", kwargs={"course_slug": course_slug}))
 class MarkLectureCompleteView(LoginRequiredMixin, View):
     def get(self, request, course_slug, lecture_id):
         lecture = get_object_or_404(Lecture, id=lecture_id)
