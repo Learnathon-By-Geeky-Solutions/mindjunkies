@@ -75,6 +75,16 @@ def home(request):
         if continue_lecture.exists():   
             last_lecture = continue_lecture.first()
             progression = Enrollment.objects.get(student=request.user, course=last_lecture.course).progression
+
+            continue_course = last_lecture.course
+            recommended_tags = continue_course.tags.all()
+
+            print(recommended_tags)
+            recommended_courses = Course.objects.filter(
+                tags__in=recommended_tags
+            ).exclude(id=continue_course.id).distinct()[:4]
+            print(recommended_courses)
+
         else:
             last_lecture = None
             progression = None
@@ -82,10 +92,10 @@ def home(request):
     else:
         last_lecture = None
 
-        
 
 
     # Build the context
+    print(last_lecture)
     context = {
         "new_courses": new_courses,
         "courses": courses,
@@ -97,6 +107,7 @@ def home(request):
         "active_category": active_category,
         'last_lecture': last_lecture,
         'progression': progression,
+        'recommended_courses': recommended_courses if request.user.is_authenticated else None,
     }
 
     # Check if this is an HTMX request

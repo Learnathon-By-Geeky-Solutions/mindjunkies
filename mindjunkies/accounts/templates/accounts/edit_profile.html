@@ -8,68 +8,29 @@
 {% endblock %}
 
 {% block main_content %}
-    <!-- Main container for the page -->
-    <div class="min-h-screen bg-base-200 py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-3xl mx-auto">
-            <div class="card bg-base-100 shadow-xl">
-                <div class="card-body">
-                    <!-- Page title -->
-                    <h1 class="card-title text-2xl font-bold text-center mb-6">
-                        {% trans "Edit Profile" %}
-                    </h1>
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <h1 class="text-3xl font-bold mb-8 text-gray-800">{% trans "Edit Profile" %}</h1>
 
-                    <!-- Form for editing profile -->
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        
-                        <!-- Tabs for different sections of the form -->
-                        <div class="tabs tabs-border">
-                            <!-- Tab 1 -->
-                            <input type="radio" name="my_tabs_2" class="tab" aria-label="User Information" />
-                            <div class="tab-content border-base-300 bg-base-100 p-10">
-                                {{ user_form |crispy }}
-                            </div>
+        <form method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded-lg p-6">
+            {% csrf_token %}
 
-                            <!-- Tab 2 (default active) -->
-                            <input type="radio" name="my_tabs_2" class="tab" aria-label="Profile Information" checked="checked" />
-                            <div class="tab-content border-base-300 bg-base-100 p-10">
-                                {{ profile_form |crispy }}
-                            </div>
-                        </div>
-
-                        <!-- Submit button -->
-                        <button type="submit" class="btn btn-primary mt-6">
-                            Save Changes
-                        </button>
-                    </form>
-
-                    <!-- Divider and cancel button -->
-                    <div class="divider">
-                        {% trans "or" %}
-                    </div>
-                    <div class="text-center">
-                        <a href="{% url 'profile' %}" class="btn btn-outline">
-                            {% trans "Cancel" %}
-                        </a>
-                    </div>
-                </div>
+            <!-- Render User Form -->
+            <div class="mb-6">
+                {{ user_form|crispy }}
             </div>
-        </div>
+
+            <!-- Render Profile Form -->
+            <div class="mb-6">
+                {{ profile_form|crispy }}
+            </div>
+
+            <!-- Form Actions -->
+            <div class="mt-8 flex justify-end space-x-4">
+                <button type="button"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">{% trans "Cancel" %}</button>
+                <button type="submit"
+                        class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700">{% trans "Save Changes" %}</button>
+            </div>
+        </form>
     </div>
-
-    <!-- JavaScript for switching tabs -->
-    <script>
-        function switchTab(e, targetId) {
-            e.preventDefault();
-            // Hide all tab contents
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            // Show the selected tab content
-            document.getElementById(targetId).classList.remove('hidden');
-
-            // Remove active class from all tabs
-            document.querySelectorAll('[role="tab"]').forEach(tab => tab.classList.remove('tab-active'));
-            // Add active class to the clicked tab
-            e.target.classList.add('tab-active');
-        }
-    </script>
 {% endblock %}

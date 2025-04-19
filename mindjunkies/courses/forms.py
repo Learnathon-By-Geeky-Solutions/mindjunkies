@@ -1,7 +1,9 @@
 from django import forms
 from django.forms import inlineformset_factory
+from taggit.forms import TagWidget
 
 from .models import Course, CourseInfo, CourseToken, Rating
+
 
 text_area = "form-input mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
 
@@ -9,27 +11,39 @@ class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
         fields = [
-            "title",
-            "short_introduction",
-            "course_description",
-            "level",
-            "category",
-            "course_image",
-            "published",
-            "paid_course",
-            "course_price",
-            "upcoming",
-            "preview_video",
-            "tags",
+            'title',
+            'short_introduction',
+            'course_description',
+            'level',
+            'category',
+            'course_image',
+            'published',
+            'paid_course',
+            'course_price',
+            'upcoming',
+            'preview_video',
+            'tags',
         ]
         widgets = {
-            "tags": forms.Textarea(
-                attrs={
-                    "class": text_area,
-                    "placeholder": "Enter tags separated by commas (e.g., Python, Django, Web Development)",
-                }
-            ),
+            'course_description': forms.Textarea(attrs={'rows': 6}),
+            'tags': TagWidget(),
+            'course_image': forms.FileInput(),
+            'preview_video': forms.FileInput(),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({
+                'class': 'w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+            })
+
+    def clean_intro_video(self):
+        intro_video = self.cleaned_data.get('preview_video')
+        if intro_video:
+            if not intro_video.name.endswith(('mp4', 'mov', 'avi', 'mkv')):
+                raise forms.ValidationError("Only video files (mp4, mov, avi, mkv) are allowed.")
+        return intro_video
 
 
 class CourseInfoForm(forms.ModelForm):
@@ -43,32 +57,6 @@ CourseInfoFormSet = inlineformset_factory(
 )
 
 
-class CourseTokenForm(forms.ModelForm):
-    class Meta:
-        model = CourseToken
-        fields = ["motivation", "intro_video"]
-        widgets = {
-            "motivation": forms.Textarea(
-                attrs={
-                    "class": text_area
-                }
-            ),
-            "intro_video": forms.ClearableFileInput(
-                attrs={
-                    "class": "form-input mt-1 block w-full p-2 border border-gray-300 rounded-md "
-                    "focus:ring-indigo-500 focus:border-indigo-500"
-                }
-            ),
-        }
-
-    def clean_intro_video(self):
-        intro_video = self.cleaned_data.get("intro_video")
-        if intro_video:
-            if not intro_video.name.endswith(("mp4", "mov", "avi", "mkv")):
-                raise forms.ValidationError(
-                    "Only video files (mp4, mov, avi, mkv) are allowed."
-                )
-        return intro_video
 
 
 class RatingForm(forms.ModelForm):

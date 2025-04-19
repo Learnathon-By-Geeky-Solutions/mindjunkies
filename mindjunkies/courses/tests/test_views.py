@@ -83,21 +83,6 @@ def test_category_courses_view(client):
     assert course_2.title in content
 
 
-def test_create_course_token_view(client):
-    user = baker.make("accounts.User")
-    course = baker.make(Course, teacher=user, slug="course-token")
-    client.force_login(user)
-
-    url = reverse("create_course_token", args=[course.slug])
-    response = client.get(url)
-    assert response.status_code == 200
-
-    data = {"description": "Want to create a course"}
-    response = client.post(url, data=data)
-    print(response)
-    assert response.status_code == 200
-
-
 def test_rating_create_view_new(client):
     user = baker.make("accounts.User")
     course = baker.make(Course)

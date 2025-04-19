@@ -97,37 +97,14 @@
 
                 <div class="space-y-4">
                     <div class="flex items-start gap-3 group cursor-pointer">
-                        <div class="w-12 h-12 bg-gray-200 rounded flex-shrink-0"></div>
+                        
+                        {% for course in recommended_courses  %}
+                        <div class="w-12 h-12 bg-gray-200 rounded flex-shrink-0"><img src="{{ course.course_image.url }}"/> </div>
                         <div>
-                            <h4 class="font-medium text-gray-800 group-hover:text-blue-600 transition-colors">Advanced
-                                Business English</h4>
-                            <div class="text-xs text-gray-600 mt-1">Intermediate • 12 modules</div>
+                            <h4 class="font-medium text-gray-800 group-hover:text-blue-600 transition-colors">{{ course.title }}</h4>
+                            <div class="text-xs text-gray-600 mt-1">{{ course.short_introduction}} </div>
                         </div>
-                    </div>
-                    <div class="flex items-start gap-3 group cursor-pointer">
-                        <div class="w-12 h-12 bg-gray-200 rounded flex-shrink-0"></div>
-                        <div>
-                            <h4 class="font-medium text-gray-800 group-hover:text-blue-600 transition-colors">Advanced
-                                Business English</h4>
-                            <div class="text-xs text-gray-600 mt-1">Intermediate • 12 modules</div>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-3 group cursor-pointer">
-                        <div class="w-12 h-12 bg-gray-200 rounded flex-shrink-0"></div>
-                        <div>
-                            <h4 class="font-medium text-gray-800 group-hover:text-blue-600 transition-colors">Advanced
-                                Business English</h4>
-                            <div class="text-xs text-gray-600 mt-1">Intermediate • 12 modules</div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start gap-3 group cursor-pointer">
-                        <div class="w-12 h-12 bg-gray-200 rounded flex-shrink-0"></div>
-                        <div>
-                            <h4 class="font-medium text-gray-800 group-hover:text-blue-600 transition-colors">Email
-                                Writing for Professionals</h4>
-                            <div class="text-xs text-gray-600 mt-1">Beginner • 8 modules</div>
-                        </div>
+                        {% endfor %}
                     </div>
                 </div>
 

@@ -215,7 +215,7 @@ class TestCommentSubmissionView(TestCase):
         setattr(request, "_messages", messages)
 
         view = CommentSubmissionView.as_view()
-        response = view(
+        view(
             request,
             course_slug=self.course.slug,
             topic_id=self.topic.id

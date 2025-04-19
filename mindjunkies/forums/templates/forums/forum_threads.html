@@ -32,19 +32,22 @@
   </div>
 
   <!-- Search and Post -->
-  <div class="mt-6 flex items-center gap-2">
-    <input type="text" placeholder="Search" class="input input-bordered w-full sm:max-w-xs" />
+  <form class="mt-6 flex items-center gap-2">
+    
+    <input type="text" placeholder="Search" name="search" class="input input-bordered w-full sm:max-w-xs" />
     <button class="btn btn-primary">Search</button>
     <!-- Button to trigger the dialog for creating a new post -->
     <button class="btn btn-outline btn-primary" onclick="document.getElementById('newTopicModal').showModal()">Create post</button>
-  </div>
+
+
+  </form>
 
  
 
   <!-- Forum Thread Card -->
   <div class=" mt-8 border-t border-gray-200 pt-6 space-y-8">
 
-   {% for post in module.forum_posts.all%}
+   {% for post in posts%}
     <div class="w-[1000px] bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
         <a href="{% url 'forum_thread_details' course.slug module.id post.slug %}" class="text-blue-600 font-bold text-lg hover:underline">{{post.title}}</a>
         <p class="mt-2 text-gray-700 text-base">
@@ -70,6 +73,7 @@
         </div>
       </div>
       {% endfor %}
+
   </div>
 
   <!-- Dialog for New Topic Form - Fixed for DaisyUI -->
