@@ -26,4 +26,6 @@ urlpatterns = [
     path('/lecture/delete/<int:lecture_id>/', views.DeleteLectureView.as_view(), name='delete_lecture'),
     path('lecture/<int:lecture_id>/complete/', views.MarkLectureCompleteView.as_view(), name='mark_lecture_complete'),
     path('lecture/<int:module_id>/<int:lecture_id>/pdf/<int:pdf_id>/', views.lecture_pdf, name='lecture_pdf'),
+    path("/module/<int:module_id>", views.ModuleEditView.as_view(), name="edit_module"),
+    path("/module/<int:module_id>/delete", views.DeleteModuleView.as_view(), name="delete_module"),
 ]

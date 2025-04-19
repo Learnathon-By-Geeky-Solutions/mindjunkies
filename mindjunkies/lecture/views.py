@@ -307,3 +307,47 @@ class MarkLectureCompleteView(LoginRequiredMixin, View):
         lecture = get_object_or_404(Lecture, id=lecture_id)
         LectureCompletion.objects.get_or_create(user=request.user, lecture=lecture)
         return redirect(request.META.get('HTTP_REFERER', '/'))
+    
+class ModuleEditView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, UpdateView):
+    model = Module
+    form_class = ModuleForm
+    template_name = "lecture/create_module.html"
+
+    def get_object(self, queryset=None):
+        """Get the module object based on the slug from the URL"""
+        module_id = self.kwargs.get("module_id")
+        return get_object_or_404(Module, id=module_id)
+
+    def form_valid(self, form):
+        """If the form is valid, save the module and redirect"""
+        return self.handle_form_validation(
+            form,
+            "Module saved successfully!"
+        )
+    
+    def get_success_url(self, instance):
+        return redirect("lecture_home", course_slug=self.kwargs["course_slug"])
+
+    def get_context_data(self, **kwargs):
+        """Add extra context, such as the module object"""
+        context = super().get_context_data(**kwargs)
+        context["module"] = self.get_object()
+        context["course"] = self.get_course()
+        return context    
+    
+class DeleteModuleView(LoginRequiredMixin, CourseObjectMixin, View):
+    def get(self, request, course_slug, module_id):
+        module = get_object_or_404(Module, id=module_id)
+        if not is_teacher_for_course(request.user, module.course):
+            return HttpResponseForbidden("You are not allowed to delete this module.")
+
+        # Delete the module and redirect
+        module.delete()
+        messages.success(request, "Module deleted successfully.")
+        return redirect(reverse("lecture_home", kwargs={"course_slug": course_slug}))
+              
+                      
+                      
+    
+    
+                    
