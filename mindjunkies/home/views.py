@@ -75,6 +75,14 @@ def home(request):
         if continue_lecture.exists():   
             last_lecture = continue_lecture.first()
             progression = Enrollment.objects.get(student=request.user, course=last_lecture.course).progression
+
+            continue_course = last_lecture.course
+            recommended_tags = continue_course.tags.all()
+            recommended_courses = Course.objects.filter(
+                tags__in=recommended_tags
+            ).exclude(id=continue_course.id).distinct()[:3]
+            print(recommended_courses)
+
         else:
             last_lecture = None
             progression = None
