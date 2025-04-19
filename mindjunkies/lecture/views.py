@@ -216,7 +216,7 @@ class CreateContentView(
     template_name = "lecture/create_content.html"
 
     def dispatch(self, request, *args, **kwargs):
-        self.lecture = get_object_or_404(Lecture, slug=kwargs["lecture_slug"])
+        self.lecture = get_object_or_404(Lecture, id=kwargs["lecture_id"])
         self.course = self.get_course()
         print(self)
         return super().dispatch(request, *args, **kwargs)
@@ -257,8 +257,8 @@ class EditLectureView(
 
     def get_object(self, queryset=None):
         """Get the lecture object based on the slug from the URL"""
-        lecture_slug = self.kwargs.get("lecture_slug")
-        return get_object_or_404(Lecture, slug=lecture_slug)
+        lecture_id = self.kwargs.get("lecture_id")
+        return get_object_or_404(Lecture, id=lecture_id)
 
     def form_valid(self, form):
         """If the form is valid, save the lecture and redirect"""
