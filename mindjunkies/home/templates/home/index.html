@@ -13,7 +13,7 @@
 {% block main_content %}
   
 
-    {% if not user.is_authenticated %}
+    {% if not user.is_authenticated or not last_lecture  %}
     <section class="relative bg-slate-50 py-24 px-4 sm:px-6 overflow-hidden font-serif">
         <!-- Animated geometric accents -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
