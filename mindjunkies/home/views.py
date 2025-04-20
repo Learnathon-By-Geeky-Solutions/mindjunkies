@@ -56,8 +56,9 @@ def home(request):
     ).exclude(id__in=[course.id for course in enrolled_courses])
 
     # Get featured courses (you might want to define criteria for this)
-    featured_courses = Course.objects.filter(published=True)
+    featured_courses = Course.objects.filter(status="published")
     progression = 0
+    recommended_courses = None
 
     if request.user.is_authenticated:
 
@@ -107,7 +108,7 @@ def home(request):
         "active_category": active_category,
         'last_lecture': last_lecture,
         'progression': progression,
-        'recommended_courses': recommended_courses if request.user.is_authenticated else None,
+        'recommended_courses': recommended_courses,
     }
 
     # Check if this is an HTMX request

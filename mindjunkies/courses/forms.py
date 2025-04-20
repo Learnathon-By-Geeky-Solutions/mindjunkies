@@ -17,11 +17,12 @@ class CourseForm(forms.ModelForm):
             "level",
             "category",
             "course_image",
-            "status"
+            "status",
             "paid_course",
             "course_price",
             "upcoming",
             "preview_video",
+            "tags",
         ]
         widgets = {
             'course_description': forms.Textarea(attrs={'rows': 6}),

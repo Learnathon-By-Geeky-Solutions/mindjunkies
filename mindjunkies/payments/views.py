@@ -20,7 +20,10 @@ from .models import PaymentGateway, Transaction, Balance, BalanceHistory
 def unique_transaction_id_generator(
     size=10, chars=string.ascii_uppercase + string.digits
 ):
-    return "".join(secrets.choice(chars) for _ in range(size))
+    trans_id = "".join(secrets.choice(chars) for _ in range(size))
+    if Transaction.objects.filter(trans_id=trans_id).exists():
+        return unique_transaction_id_generator(size, chars)
+    return trans_id
 
 
 @method_decorator(require_GET, name='dispatch')
@@ -134,7 +137,8 @@ class CheckoutSuccessView(View):
             )
 
             # BalanceHistory.objects.create(user=user, transaction)
-
+            transaction = Transaction.objects.get(trans_id=data["tran_id"])
+            BalanceHistory.objects.create(user=user, transaction=transaction, amount=course.course_price)
             user.balance.amount += course.course_price
             user.balance.save()
 

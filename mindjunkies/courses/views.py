@@ -99,6 +99,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         course = form.save(commit=False)
         course.teacher = self.request.user
+        course.status = "draft"
         course.save()
         form.save_m2m()
         CourseToken.objects.create(
