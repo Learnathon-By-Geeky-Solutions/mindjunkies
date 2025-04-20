@@ -12,7 +12,7 @@ class CourseAdmin(admin.ModelAdmin):
     list_display = (
         "title",
         "teacher",
-        "published",
+        "status",
         "published_on",
         "paid_course",
         "course_price",
