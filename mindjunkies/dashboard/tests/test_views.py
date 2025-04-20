@@ -1,11 +1,12 @@
 import pytest
-from django.urls import reverse
-from model_bakery import baker
 from django.contrib.messages import get_messages
 from django.http import HttpResponseRedirect
+from django.urls import reverse
+from model_bakery import baker
+
 from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course, Enrollment
-from mindjunkies.dashboard.models import TeacherVerification, Certificate
+from mindjunkies.dashboard.models import Certificate, TeacherVerification
 
 
 @pytest.fixture
@@ -74,11 +75,16 @@ def test_enrollment_list(client, teacher_user, course, enrollment):
 def test_remove_enrollment(client, teacher_user, course, enrollment):
     client.force_login(teacher_user)
 
-    url = reverse("dashboard_enrollments_remove", kwargs={"course_slug": course.slug, "student_id": enrollment.student.uuid})
+    url = reverse(
+        "dashboard_enrollments_remove",
+        kwargs={"course_slug": course.slug, "student_id": enrollment.student.uuid},
+    )
     response = client.get(url)
 
     assert response.status_code == 302
-    assert not Enrollment.objects.filter(course=course, student=enrollment.student).exists()
+    assert not Enrollment.objects.filter(
+        course=course, student=enrollment.student
+    ).exists()
 
 
 @pytest.mark.django_db
@@ -110,14 +116,19 @@ def test_teacher_verification_form_submission(client, user, teacher_verification
     form_data = {
         "form_field_1": "data",  # Fill this with actual form field names and data
         "form_field_2": "data",
-        "certificates": ["path/to/certificate1.pdf", "path/to/certificate2.pdf"]  # adjust as per form
+        "certificates": [
+            "path/to/certificate1.pdf",
+            "path/to/certificate2.pdf",
+        ],  # adjust as per form
     }
 
     response = client.post(url, form_data)
 
     assert response.status_code == 200
-    assert "There was an error in your form submission. Please check the form and try again." in [str(m) for m in
-                                                                    get_messages(response.wsgi_request)]
+    assert (
+        "There was an error in your form submission. Please check the form and try again."
+        in [str(m) for m in get_messages(response.wsgi_request)]
+    )
 
 
 @pytest.mark.django_db
@@ -132,7 +143,10 @@ def test_teacher_verification_form_invalid(client, user):
     response = client.post(url, form_data)
 
     assert response.status_code == 200
-    assert "There was an error in your form submission. Please check the form and try again." in [str(m) for m in get_messages(response.wsgi_request)]
+    assert (
+        "There was an error in your form submission. Please check the form and try again."
+        in [str(m) for m in get_messages(response.wsgi_request)]
+    )
 
 
 @pytest.mark.django_db

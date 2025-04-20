@@ -1,12 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
-from django.views import View
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.decorators.http import require_GET
-from django.views.generic import TemplateView, UpdateView
+from django.views.generic import TemplateView
 
 from .forms import ProfileUpdateForm, UserForm
 from .models import Profile
@@ -25,10 +24,11 @@ class ProfileUpdateView(LoginRequiredMixin, View):
         profile = get_object_or_404(Profile, user=request.user)
         profile_form = ProfileUpdateForm(instance=profile)
         user_form = UserForm(instance=request.user)
-        return render(request, self.template_name, {
-            "profile_form": profile_form,
-            "user_form": user_form
-        })
+        return render(
+            request,
+            self.template_name,
+            {"profile_form": profile_form, "user_form": user_form},
+        )
 
     def post(self, request, *args, **kwargs):
         profile = get_object_or_404(Profile, user=request.user)
@@ -41,7 +41,8 @@ class ProfileUpdateView(LoginRequiredMixin, View):
             messages.success(request, "Profile updated successfully!")
             return redirect(self.success_url)
 
-        return render(request, self.template_name, {
-            "profile_form": profile_form,
-            "user_form": user_form
-        })
+        return render(
+            request,
+            self.template_name,
+            {"profile_form": profile_form, "user_form": user_form},
+        )

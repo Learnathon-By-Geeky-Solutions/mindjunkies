@@ -1,17 +1,17 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView
-from django.urls import reverse
 
 from mindjunkies.courses.models import Course, Module
 
+from .documents import ForumTopicDocument
 from .forms import ForumCommentForm, ForumReplyForm, ForumTopicForm
 from .models import ForumComment, ForumTopic, Reply
 
-from elasticsearch_dsl.query import MultiMatch
-from .documents import ForumTopicDocument
+
 class CourseContextMixin:
     """
     Mixin to add the course object to the context based on `course_slug`.
@@ -54,7 +54,7 @@ class ForumThreadView(LoginRequiredMixin, CourseContextMixin, TemplateView):
         context["posts"] = module.forum_posts.all()
         course_slug = self.kwargs.get("course_slug")
         context["form"] = ForumTopicForm(course_slug=course_slug)
-        
+
         search_query = self.request.GET.get("search")
         print(f"Search query: {search_query}")
         if search_query:
@@ -90,6 +90,7 @@ class ForumThreadDetailsView(LoginRequiredMixin, CourseContextMixin, TemplateVie
 
 class BaseTopicFormView(LoginRequiredMixin, View):
     """Base class for topic form handling with common functionality"""
+
     form_class = ForumTopicForm
     success_message = "Operation completed successfully."
     error_message = "There was an error processing your request."
@@ -135,6 +136,7 @@ class BaseTopicFormView(LoginRequiredMixin, View):
 
 class TopicSubmissionView(BaseTopicFormView):
     """View for creating new topics"""
+
     success_message = "Your topic was posted successfully!"
     error_message = "There was an error posting your topic."
 
@@ -153,14 +155,14 @@ class TopicSubmissionView(BaseTopicFormView):
     def get_success_url(self):
         course_slug = self.kwargs.get("course_slug", "")
         module_id = self.kwargs.get("module_id", "")
-        return reverse("forum_thread", kwargs={
-            "course_slug": course_slug,
-            "module_id": module_id
-        })
+        return reverse(
+            "forum_thread", kwargs={"course_slug": course_slug, "module_id": module_id}
+        )
 
 
 class TopicUpdateView(BaseTopicFormView):
     """View for updating existing topics"""
+
     success_message = "Topic updated successfully."
     error_message = "There was an error updating your topic."
 
@@ -176,11 +178,14 @@ class TopicUpdateView(BaseTopicFormView):
         course_slug = self.kwargs.get("course_slug", "")
         module_id = self.kwargs.get("module_id", "")
         topic_id = self.kwargs.get("topic_id")
-        return reverse("forum_thread_details", kwargs={
-            "course_slug": course_slug,
-            "module_id": module_id,
-            "topic_id": topic_id
-        })
+        return reverse(
+            "forum_thread_details",
+            kwargs={
+                "course_slug": course_slug,
+                "module_id": module_id,
+                "topic_id": topic_id,
+            },
+        )
 
 
 class TopicDeletionView(LoginRequiredMixin, View):
@@ -191,9 +196,7 @@ class TopicDeletionView(LoginRequiredMixin, View):
         topic = get_object_or_404(ForumTopic, id=topic_id)
         topic.delete()
         messages.success(request, "Topic deleted successfully.")
-        return redirect(
-            "forum_thread", course_slug=course_slug, module_id=module_id
-        )
+        return redirect("forum_thread", course_slug=course_slug, module_id=module_id)
 
 
 # mindjunkies/forums/views.py
@@ -210,7 +213,10 @@ class CommentSubmissionView(LoginRequiredMixin, View):
         if not topic_id or not content:
             messages.error(request, "Missing required fields for reply.")
             return redirect(
-                "forum_thread_details", course_slug=course_slug, topic_id=topic_id, module_id=module_id
+                "forum_thread_details",
+                course_slug=course_slug,
+                topic_id=topic_id,
+                module_id=module_id,
             )
 
         topic = get_object_or_404(ForumTopic, id=topic_id)
@@ -218,7 +224,10 @@ class CommentSubmissionView(LoginRequiredMixin, View):
 
         comment.save()
         return redirect(
-            "forum_thread_details", course_slug=course_slug, topic_id=topic_id, module_id=module_id
+            "forum_thread_details",
+            course_slug=course_slug,
+            topic_id=topic_id,
+            module_id=module_id,
         )
 
 
@@ -231,7 +240,12 @@ class CommentDeletionView(LoginRequiredMixin, View):
         comment = get_object_or_404(ForumComment, id=comment_id)
         comment.delete()
         messages.success(request, "Comment deleted successfully.")
-        return redirect("forum_thread_details", topic_id=topic_id, course_slug=course_slug, module_id=module_id)
+        return redirect(
+            "forum_thread_details",
+            topic_id=topic_id,
+            course_slug=course_slug,
+            module_id=module_id,
+        )
 
 
 class ReplySubmissionView(LoginRequiredMixin, View):
@@ -246,7 +260,10 @@ class ReplySubmissionView(LoginRequiredMixin, View):
         if not body:  # If body is empty, return an error
             messages.error(request, "Reply cannot be empty.")
             return redirect(
-                "forum_thread_details", course_slug=course_slug, topic_id=topic_id, module_id=module_id
+                "forum_thread_details",
+                course_slug=course_slug,
+                topic_id=topic_id,
+                module_id=module_id,
             )
 
         comment = get_object_or_404(ForumComment, id=comment_id)
@@ -254,7 +271,10 @@ class ReplySubmissionView(LoginRequiredMixin, View):
 
         comment.save()
         return redirect(
-            "forum_thread_details", course_slug=course_slug, topic_id=topic_id, module_id=module_id
+            "forum_thread_details",
+            course_slug=course_slug,
+            topic_id=topic_id,
+            module_id=module_id,
         )
 
 
@@ -267,7 +287,12 @@ class ReplyDeletionView(LoginRequiredMixin, View):
         comment = get_object_or_404(Reply, id=reply_id)
         comment.delete()
         messages.success(request, "Comment deleted successfully.")
-        return redirect("forum_thread_details", topic_id=topic_id, course_slug=course_slug, module_id=module_id)
+        return redirect(
+            "forum_thread_details",
+            topic_id=topic_id,
+            course_slug=course_slug,
+            module_id=module_id,
+        )
 
 
 class ReplyFormView(LoginRequiredMixin, CourseContextMixin, View):

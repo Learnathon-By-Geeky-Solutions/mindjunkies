@@ -1,11 +1,8 @@
-from django import forms
 from cloudinary.forms import CloudinaryFileField
+from django import forms
 from django.forms import ModelForm
-from django.contrib.auth.forms import UserCreationForm
 
-from .models import Profile
-from .models import User
-
+from .models import Profile, User
 
 
 class UserForm(ModelForm):
@@ -14,7 +11,6 @@ class UserForm(ModelForm):
     class Meta:
         model = User
         fields = ("username", "email", "first_name", "last_name")
-
 
 
 class ProfileUpdateForm(ModelForm):

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin
-from .models import Lecture, LecturePDF, LectureVideo, LectureCompletion, LastVisitedModule
+
+from .models import LastVisitedModule, Lecture, LectureCompletion, LecturePDF, LectureVideo
 
 
 @admin.register(Lecture)
@@ -24,7 +25,6 @@ class LectureVideoAdmin(ModelAdmin):
     search_fields = ("lecture__title",)
 
 
-
 @admin.register(LectureCompletion)
 class LectureCompletionAdmin(ModelAdmin):
     list_display = ("user", "lecture", "completed_at")
@@ -32,7 +32,7 @@ class LectureCompletionAdmin(ModelAdmin):
     list_filter = ("completed_at",)
 
 
-@admin.register(LastVisitedModule) 
+@admin.register(LastVisitedModule)
 class LastVisitedModuleAdmin(ModelAdmin):
     list_display = ("user", "module", "last_visited", "lecture__title")
     search_fields = ("user__username", "module__title", "lecture__title")

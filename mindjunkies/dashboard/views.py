@@ -1,32 +1,29 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.timezone import now
-from django.views.generic.edit import FormView
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
-
-from django.contrib.auth.mixins import LoginRequiredMixin
-
-
+from django.views.generic.edit import FormView
 
 from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course, Enrollment
 
 from .forms import TeacherVerificationForm
-from .models import Certificate, TeacherVerification
 from .mixins import CustomPermissionRequiredMixin
+from .models import Certificate, TeacherVerification
+
+VIEW_COURSE_PERMISSION = "courses.view_course"
 
 
 class ContentListView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
+    permission_required = VIEW_COURSE_PERMISSION
 
-    permission_required = "courses.view_course"
-    
     def get(self, request: HttpRequest) -> HttpResponse:
         if not request.user.is_teacher:
             return redirect("teacher_verification_form")
-        
+
         courses = Course.objects.filter(teacher=request.user)
         context = {
             "courses": courses,
@@ -34,10 +31,8 @@ class ContentListView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
         return render(request, "dashboard.html", context)
 
 
-
 class EnrollmentListView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
-
-    permission_required = "courses.view_course"
+    permission_required = VIEW_COURSE_PERMISSION
 
     def get(self, request: HttpRequest, slug: str) -> HttpResponse:
         course = get_object_or_404(Course, slug=slug)
@@ -51,17 +46,18 @@ class EnrollmentListView(LoginRequiredMixin, CustomPermissionRequiredMixin, View
         return render(request, "enrollmentList.html", context)
 
 
-
 class RemoveEnrollmentView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
-    permission_required = "courses.view_course"
+    permission_required = VIEW_COURSE_PERMISSION
 
-    def get(self, request: HttpRequest, course_slug: str, student_id: str) -> HttpResponse:
+    def get(
+        self, request: HttpRequest, course_slug: str, student_id: str
+    ) -> HttpResponse:
         print("watch me", course_slug, student_id)
-        
+
         course = get_object_or_404(Course, slug=course_slug)
         student = get_object_or_404(User, uuid=student_id)
         t_enrollment = get_object_or_404(Enrollment, student=student, course=course)
-        
+
         print(t_enrollment)
 
         course.save()  # Unclear why saving is necessary here — can possibly be removed
@@ -119,8 +115,8 @@ class TeacherVerificationView(FormView):
 
 class VerificationWaitView(LoginRequiredMixin, View):
     def get(self, request: HttpRequest) -> HttpResponse:
-
-
-        return render(request, "verification_wait.html", {
-            "message": "Please wait for your verification."
-        })
+        return render(
+            request,
+            "verification_wait.html",
+            {"message": "Please wait for your verification."},
+        )
