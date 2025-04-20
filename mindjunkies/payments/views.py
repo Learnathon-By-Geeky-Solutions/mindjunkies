@@ -14,7 +14,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course, Enrollment
 
-from .models import PaymentGateway, Transaction
+from .models import PaymentGateway, Transaction, Balance, BalanceHistory
 
 
 def unique_transaction_id_generator(
@@ -31,6 +31,8 @@ class CheckoutView(View, LoginRequiredMixin):
             return redirect("account_login")
         user = request.user
         course = get_object_or_404(Course, slug=course_slug)
+
+        Balance.objects.create(user=user, amount=0)
 
         transaction_id = unique_transaction_id_generator()
         enrollment, _ = Enrollment.objects.get_or_create(
@@ -130,6 +132,11 @@ class CheckoutSuccessView(View):
                 risk_title=data["risk_title"],
                 risk_level=data["risk_level"],
             )
+
+            # BalanceHistory.objects.create(user=user, transaction)
+
+            user.balance.amount += course.course_price
+            user.balance.save()
 
             # Update enrollment status
             enrollment.status = "active"
