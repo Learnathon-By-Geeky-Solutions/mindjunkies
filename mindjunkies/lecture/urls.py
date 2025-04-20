@@ -24,7 +24,7 @@ urlpatterns = [
         name="lecture_video_content",
     ),
     path(
-        "/lecture/delete/<int:lecture_id>/",
+        "lecture/delete/<int:lecture_id>/",
         views.DeleteLectureView.as_view(),
         name="delete_lecture",
     ),
