@@ -11,18 +11,17 @@ class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
         fields = [
-            'title',
-            'short_introduction',
-            'course_description',
-            'level',
-            'category',
-            'course_image',
-            'published',
-            'paid_course',
-            'course_price',
-            'upcoming',
-            'preview_video',
-            'tags',
+            "title",
+            "short_introduction",
+            "course_description",
+            "level",
+            "category",
+            "course_image",
+            "status"
+            "paid_course",
+            "course_price",
+            "upcoming",
+            "preview_video",
         ]
         widgets = {
             'course_description': forms.Textarea(attrs={'rows': 6}),
