@@ -1,15 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import models
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.decorators.http import require_http_methods
-from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.views.generic import TemplateView
-from django.urls import reverse_lazy
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.generic.edit import CreateView, UpdateView
 
 from mindjunkies.courses.models import Course, CourseCategory, Enrollment
 
@@ -57,7 +56,6 @@ class NewCourseView(TemplateView):
         # Get new courses (excluding enrolled ones)
         new_courses = Course.objects.exclude(
             id__in=[course.id for course in enrolled_courses]
-
         ).order_by("-created_at")[:3]
         context["new_courses"] = new_courses
         return context
@@ -72,10 +70,13 @@ class MyCoursesView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
 
         # With prefetch for better performance
-        enrolled_courses = Course.objects.filter(
-            enrollments__student=self.request.user,
-            enrollments__status="active"
-        ).prefetch_related('enrollments').distinct()
+        enrolled_courses = (
+            Course.objects.filter(
+                enrollments__student=self.request.user, enrollments__status="active"
+            )
+            .prefetch_related("enrollments")
+            .distinct()
+        )
         context["enrolled_courses"] = enrolled_courses
         return context
 
@@ -84,7 +85,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
     model = Course
     form_class = CourseForm
     template_name = "courses/create_course.html"
-    success_url = reverse_lazy('dashboard')
+    success_url = reverse_lazy("dashboard")
 
     def get(self, request):
         if CourseToken.objects.filter(teacher=request.user, status="pending").exists():
@@ -108,6 +109,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
 
         messages.success(self.request, "Course saved successfully!")
         return super().form_valid(form)
+
     def form_invalid(self, form):
         messages.error(
             self.request, f"There was an error processing the form: {form.errors}"
@@ -194,7 +196,6 @@ def category_courses(request, slug):
         "courses/category_courses.html",
         {"category": category, "courses": courses},
     )
-
 
 
 class RatingCreateView(CreateView):

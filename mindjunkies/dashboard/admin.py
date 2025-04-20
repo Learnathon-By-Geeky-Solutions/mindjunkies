@@ -1,10 +1,9 @@
 # Register your models here.
 from django.contrib import admin
-
+from django.contrib.auth.models import Group
 from unfold.admin import ModelAdmin
 
 from .models import Certificate, TeacherVerification
-from django.contrib.auth.models import Group
 
 
 @admin.register(TeacherVerification)
@@ -17,7 +16,9 @@ class TeacherVerificationAdmin(ModelAdmin):
             obj.is_verified = True
             obj.save()
             obj.user.is_teacher = True  # Grant teacher permission
-            obj.user.groups.add(Group.objects.get(name="Teacher"))  # Add to Teachers group
+            obj.user.groups.add(
+                Group.objects.get(name="Teacher")
+            )  # Add to Teachers group
             obj.user.save()
         self.message_user(request, "Selected users have been approved as teachers.")
 
@@ -28,7 +29,9 @@ class TeacherVerificationAdmin(ModelAdmin):
             obj.is_verified = False
             obj.save()
             obj.user.is_teacher = False  # Revoke teacher permission
-            obj.user.groups.remove(Group.objects.get(name="Teacher"))  # Remove from Teachers group
+            obj.user.groups.remove(
+                Group.objects.get(name="Teacher")
+            )  # Remove from Teachers group
             obj.user.save()
         self.message_user(request, "Selected users have been disapproved as teachers.")
 

@@ -1,7 +1,9 @@
 from django import template
+
 from mindjunkies.courses.models import Enrollment
 
 register = template.Library()
+
 
 @register.filter
 def get_enrollment(course, user):

@@ -6,22 +6,40 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('courses', '0009_remove_coursetoken_intro_video_and_more'),
+        ("courses", "0009_remove_coursetoken_intro_video_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='course',
-            name='published',
+            model_name="course",
+            name="published",
         ),
         migrations.AddField(
-            model_name='course',
-            name='status',
-            field=models.CharField(choices=[('draft', 'Draft'), ('published', 'Published'), ('archived', 'Archived')], default='draft', max_length=10),
+            model_name="course",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("draft", "Draft"),
+                    ("published", "Published"),
+                    ("archived", "Archived"),
+                ],
+                default="draft",
+                max_length=10,
+            ),
         ),
         migrations.AlterField(
-            model_name='enrollment',
-            name='status',
-            field=models.CharField(choices=[('active', 'Active'), ('pending', 'Pending'), ('withdrawn', 'Withdrawn'), ('archived', 'Archived'), ('completed', 'Completed')], default='pending', max_length=10),
+            model_name="enrollment",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("active", "Active"),
+                    ("pending", "Pending"),
+                    ("withdrawn", "Withdrawn"),
+                    ("archived", "Archived"),
+                    ("completed", "Completed"),
+                ],
+                default="pending",
+                max_length=10,
+            ),
         ),
     ]
