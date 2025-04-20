@@ -28,12 +28,12 @@
       <h1 class="text-3xl font-bold">Module {{module.order}}: {{module.title}}</h1>
       <p class="text-gray-600">Discuss this week's modules here.</p>
     </div>
- 
+
   </div>
 
   <!-- Search and Post -->
   <form class="mt-6 flex items-center gap-2">
-    
+
     <input type="text" placeholder="Search" name="search" class="input input-bordered w-full sm:max-w-xs" />
     <button class="btn btn-primary">Search</button>
     <!-- Button to trigger the dialog for creating a new post -->
@@ -42,7 +42,7 @@
 
   </form>
 
- 
+
 
   <!-- Forum Thread Card -->
   <div class=" mt-8 border-t border-gray-200 pt-6 space-y-8">
@@ -61,13 +61,13 @@
 
         <div class="flex items-center justify-between mt-4 text-sm text-gray-500">
           <div class="flex space-x-4">
-           
+
             <a href="{% url 'forum_thread_details' course.slug module.id post.id %}"><button class="cursor-pointer justify-center items-center  gap-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded-md transition-all">
               <i class="fa-regular fa-comment-dots"></i> Details
             </button></a>
           </div>
           <div class="flex items-center space-x-2">
-           
+
             <span class="text-sm text-gray-500"> Latest activity on {{ post.get_last_activity|date:"F j, Y, g:i a" }}</span>
           </div>
         </div>

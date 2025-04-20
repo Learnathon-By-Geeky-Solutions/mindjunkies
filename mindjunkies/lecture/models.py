@@ -1,12 +1,11 @@
 import cloudinary
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.text import slugify
-from django.core.exceptions import ValidationError
-
 
 from config.models import BaseModel
-from mindjunkies.courses.models import Course, Module
 from mindjunkies.accounts.models import User
+from mindjunkies.courses.models import Course, Module
 
 
 class Lecture(BaseModel):
@@ -28,7 +27,9 @@ class Lecture(BaseModel):
     class Meta:
         ordering = ["order"]
         constraints = [
-            models.UniqueConstraint(fields=["module", "order"], name="unique_order_per_module")
+            models.UniqueConstraint(
+                fields=["module", "order"], name="unique_order_per_module"
+            )
         ]
 
     def __str__(self):
@@ -42,9 +43,15 @@ class Lecture(BaseModel):
 
     def clean(self):
         super().clean()
-        if hasattr(self, 'module') and self.module and self.order is not None:
-            if Lecture.objects.filter(module=self.module, order=self.order).exclude(pk=self.pk).exists():
-                raise ValidationError(f"Order {self.order} already exists in this module.")
+        if hasattr(self, "module") and self.module and self.order is not None:
+            if (
+                Lecture.objects.filter(module=self.module, order=self.order)
+                .exclude(pk=self.pk)
+                .exists()
+            ):
+                raise ValidationError(
+                    f"Order {self.order} already exists in this module."
+                )
 
 
 class LecturePDF(BaseModel):
@@ -83,17 +90,13 @@ class LectureVideo(BaseModel):
         return str(self.video_title)
 
 
-
-
 class LectureCompletion(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     lecture = models.ForeignKey(Lecture, on_delete=models.CASCADE)
     completed_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('user', 'lecture')
-
-
+        unique_together = ("user", "lecture")
 
 
 class LastVisitedModule(models.Model):
