@@ -20,7 +20,7 @@ class Transaction(BaseModel):
 
     name = models.CharField(max_length=150)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    tran_id = models.CharField(max_length=15)
+    tran_id = models.CharField(max_length=15, unique=True)
     val_id = models.CharField(max_length=75)
     card_type = models.CharField(max_length=150)
     store_amount = models.DecimalField(max_digits=10, decimal_places=2)
