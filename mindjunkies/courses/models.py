@@ -34,6 +34,13 @@ class Course(BaseModel):
         ("intermediate", "Intermediate"),
         ("advanced", "Advanced"),
     ]
+
+    STATUS_CHOICES = [
+        ("draft", "Draft"),
+        ("published", "Published"),
+        ("archived", "Archived"),
+    ]
+
     title = models.CharField(max_length=255)
     short_introduction = models.CharField(max_length=500)
     course_description = models.TextField()
@@ -54,7 +61,8 @@ class Course(BaseModel):
         blank=True,
     )
 
-    published = models.BooleanField(default=False)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="draft")
+        
     published_on = models.DateTimeField(null=True, blank=True)
 
     paid_course = models.BooleanField(default=False)
@@ -147,6 +155,8 @@ class Enrollment(BaseModel):
         ("active", "Active"),
         ("pending", "Pending"),
         ("withdrawn", "Withdrawn"),
+        ("archived", "Archived"),
+        ("completed", "Completed"),
     ]
 
     course = models.ForeignKey(
