@@ -21,7 +21,7 @@ def unique_transaction_id_generator(
     size=10, chars=string.ascii_uppercase + string.digits
 ):
     trans_id = "".join(secrets.choice(chars) for _ in range(size))
-    if Transaction.objects.filter(trans_id=trans_id).exists():
+    if Transaction.objects.filter(tran_id=trans_id).exists():
         return unique_transaction_id_generator(size, chars)
     return trans_id
 
@@ -35,7 +35,7 @@ class CheckoutView(View, LoginRequiredMixin):
         user = request.user
         course = get_object_or_404(Course, slug=course_slug)
 
-        Balance.objects.create(user=user, amount=0)
+        Balance.objects.get_or_create(user=course.teacher, defaults={"amount": 0})
 
         transaction_id = unique_transaction_id_generator()
         enrollment, _ = Enrollment.objects.get_or_create(
@@ -137,10 +137,25 @@ class CheckoutSuccessView(View):
             )
 
             # BalanceHistory.objects.create(user=user, transaction)
-            transaction = Transaction.objects.get(trans_id=data["tran_id"])
-            BalanceHistory.objects.create(user=user, transaction=transaction, amount=course.course_price)
-            user.balance.amount += course.course_price
-            user.balance.save()
+            teacher = course.teacher
+            transaction = Transaction.objects.get(tran_id=data["tran_id"])
+            prev_balance = teacher.balance.amount
+            teacher.balance.amount += course.course_price
+            teacher.balance.save()
+
+            new_balance = teacher.balance.amount
+
+            
+
+
+            BalanceHistory.objects.create(
+                user=teacher, 
+                transaction=transaction, 
+                amount=course.course_price,
+                new_balance = new_balance,
+                previous_balance = prev_balance,
+                description = "Enrollment successfull"
+                )
 
             # Update enrollment status
             enrollment.status = "active"

@@ -17,7 +17,6 @@ class CourseForm(forms.ModelForm):
             "level",
             "category",
             "course_image",
-            "status",
             "paid_course",
             "course_price",
             "upcoming",
