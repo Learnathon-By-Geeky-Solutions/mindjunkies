@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import CreateView, ListView, View
 
-from mindjunkies.courses.models import Course,CourseToken
+from mindjunkies.courses.models import Course, CourseToken
 
 from .models import LiveClass
 
@@ -32,11 +32,10 @@ class CreateLiveClassView(LoginRequiredMixin, CreateView):
     fields = ["topic", "scheduled_at", "duration"]
 
     def get_context_data(self, **kwargs):
-        context=super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["course"] = get_object_or_404(Course, slug=self.kwargs["slug"])
         return context
 
-    
     def dispatch(self, request, *args, **kwargs):
         self.course = get_object_or_404(Course, slug=self.kwargs["slug"])
 
@@ -48,12 +47,17 @@ class CreateLiveClassView(LoginRequiredMixin, CreateView):
                     request,
                     "Permission for this course is pending. Please wait for it to be approved.",
                 )
-                return redirect(reverse("lecture_home", kwargs={"course_slug": self.course.slug}))
+                return redirect(
+                    reverse("lecture_home", kwargs={"course_slug": self.course.slug})
+                )
         except CourseToken.DoesNotExist:
             messages.error(request, "You do not have permission for this course.")
-            return redirect(reverse("lecture_home", kwargs={"course_slug": self.course.slug}))
+            return redirect(
+                reverse("lecture_home", kwargs={"course_slug": self.course.slug})
+            )
 
         return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
         form.instance.teacher = self.request.user
         form.instance.course = self.get_context_data()["course"]

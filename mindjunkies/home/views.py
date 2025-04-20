@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.utils.safestring import mark_safe
 from django.views.decorators.http import require_http_methods
 
-from mindjunkies.courses.models import Course, CourseCategory, Enrollment, LastVisitedCourse
+from mindjunkies.courses.models import Course, CourseCategory, Enrollment
 from mindjunkies.lecture.models import LastVisitedModule, Lecture
 
 
@@ -72,17 +72,21 @@ def home(request):
             )
             .order_by("-last_visited_at", "title")
         )
-        if continue_lecture.exists():   
+        if continue_lecture.exists():
             last_lecture = continue_lecture.first()
-            progression = Enrollment.objects.get(student=request.user, course=last_lecture.course).progression
+            progression = Enrollment.objects.get(
+                student=request.user, course=last_lecture.course
+            ).progression
 
             continue_course = last_lecture.course
             recommended_tags = continue_course.tags.all()
 
             print(recommended_tags)
-            recommended_courses = Course.objects.filter(
-                tags__in=recommended_tags
-            ).exclude(id=continue_course.id).distinct()[:4]
+            recommended_courses = (
+                Course.objects.filter(tags__in=recommended_tags)
+                .exclude(id=continue_course.id)
+                .distinct()[:4]
+            )
             print(recommended_courses)
 
         else:
@@ -91,8 +95,6 @@ def home(request):
 
     else:
         last_lecture = None
-
-
 
     # Build the context
     print(last_lecture)
@@ -105,9 +107,11 @@ def home(request):
         "teacher_courses": teacher_courses,
         "course_list": featured_courses,  # For compatibility with second version
         "active_category": active_category,
-        'last_lecture': last_lecture,
-        'progression': progression,
-        'recommended_courses': recommended_courses if request.user.is_authenticated else None,
+        "last_lecture": last_lecture,
+        "progression": progression,
+        "recommended_courses": recommended_courses
+        if request.user.is_authenticated
+        else None,
     }
 
     # Check if this is an HTMX request
@@ -139,4 +143,3 @@ def search_view(request):
         "home/search_results.html",
         {"courses": highlighted_courses, "query": query},
     )
-

@@ -132,11 +132,7 @@ DATABASES = {
     }
 }
 
-ELASTICSEARCH_DSL = {
-    'default': {
-        'hosts': 'http://localhost:9200'
-    }
-}
+ELASTICSEARCH_DSL = {"default": {"hosts": "http://localhost:9200"}}
 
 
 AUTH_PASSWORD_VALIDATORS = [

@@ -69,7 +69,7 @@
         {% if user.is_authenticated %}
         <div class="dropdown dropdown-end">
           <!-- Avatar Button -->
-          <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar border-2 border-transparent hover:border-primary transition-all duration-300">
+          <div tabindex="-1" class="btn btn-ghost btn-circle avatar border-2 border-transparent hover:border-primary transition-all duration-300">
             <div class="w-10 rounded-full ring-2 ring-primary ring-offset-base-100 ring-offset-2 shadow-md">
               {% if user.profile.avatar %}
                 {% cloudinary user.profile.avatar quality='auto' crop='pad' width=400 %}
@@ -78,9 +78,9 @@
               {% endif %}
             </div>
           </div>
-          
+
           <!-- Dropdown Menu -->
-          <ul tabindex="0" class="dropdown-content mt-3 z-[1] p-0 shadow-lg menu menu-sm bg-base-100 rounded-xl w-64 overflow-hidden border border-base-200">
+          <ul tabindex="-1" class="dropdown-content mt-3 z-[1] p-0 shadow-lg menu menu-sm bg-base-100 rounded-xl w-64 overflow-hidden border border-base-200">
             <!-- User Header -->
             <div class="px-4 py-3 bg-base-200/50 border-b border-base-200">
               <div class="flex items-center gap-3">
@@ -99,7 +99,7 @@
                 </div>
               </div>
             </div>
-            
+
             <!-- Menu Items -->
             <div class="p-2">
               <li>
@@ -127,10 +127,10 @@
                 </a>
               </li>
             </div>
-            
+
             <!-- Divider -->
             <div class="divider my-0 h-px bg-base-200"></div>
-            
+
             <!-- Logout Section -->
             <div class="p-1">
               <li>
@@ -142,7 +142,7 @@
                 </a>
               </li>
             </div>
-            
+
             <!-- Footer -->
             <div class="px-2 py-1 bg-base-200/30 border-t border-base-200 text-center">
               <span class="text-xs text-base-content/70">Logged in as <span class="font-medium">{{ user.username }}</span></span>
@@ -323,37 +323,37 @@
     .navbar-center {
       display: none;
     }
-    
+
     #mobile-search-bar .input-bordered {
       font-size: 16px; /* Prevent zoom on iOS */
     }
   }
-  
+
   /* Improved search bar responsiveness */
   @media (min-width: 641px) and (max-width: 1023px) {
     .navbar-center {
       padding-left: 0.5rem;
       padding-right: 0.5rem;
     }
-    
+
     .navbar-center .form-control {
       max-width: 100%;
     }
   }
-  
+
   @media (min-width: 1024px) {
     .navbar-center {
       flex: 1 1 auto;
       justify-content: center;
     }
-    
-    .navbar-start, 
+
+    .navbar-start,
     .navbar-end {
       flex: 0 0 auto;
       width: auto;
     }
   }
-  
+
   /* Fix dropdown positioning on small screens */
   @media (max-width: 480px) {
     .dropdown-content {
@@ -361,13 +361,13 @@
       left: auto;
     }
   }
-  
+
   /* Improve touch targets on mobile */
   @media (max-width: 767px) {
     .btn {
       min-height: 2.5rem;
     }
-    
+
     .menu li a {
       padding: 0.75rem 1rem;
     }

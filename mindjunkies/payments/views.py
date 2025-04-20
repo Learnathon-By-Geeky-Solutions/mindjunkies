@@ -2,14 +2,13 @@ import secrets
 import string
 
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 from django.views.generic import View
 from sslcommerz_lib import SSLCOMMERZ
-from django.contrib.auth.mixins import LoginRequiredMixin
-
 
 from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course, Enrollment
@@ -23,7 +22,7 @@ def unique_transaction_id_generator(
     return "".join(secrets.choice(chars) for _ in range(size))
 
 
-@method_decorator(require_GET, name='dispatch')
+@method_decorator(require_GET, name="dispatch")
 class CheckoutView(View, LoginRequiredMixin):
     def get(self, request, course_slug):
         if not request.user.is_authenticated:
@@ -90,6 +89,7 @@ class CheckoutView(View, LoginRequiredMixin):
 
         messages.error(request, "Payment gateway initialization failed")
         return redirect("home")
+
 
 @method_decorator(csrf_exempt, name="dispatch")
 class CheckoutSuccessView(View):
