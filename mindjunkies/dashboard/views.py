@@ -27,7 +27,7 @@ class TeacherPermissionView(LoginRequiredMixin, View):
         return render(request, "apply_teacher.html")
 
 
-class ContentListView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
+class ContentListView(LoginRequiredMixin, View):
     permission_required = VIEW_COURSE_PERMISSION
 
     def get(self, request: HttpRequest) -> HttpResponse:
