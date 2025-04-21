@@ -4,7 +4,7 @@ from .views import ContentListView, EnrollmentListView, RemoveEnrollmentView, Te
 
 urlpatterns = [
     path("teacher/", TeacherPermissionView.as_view(), name="teacher_permission"),
-    path("content/", ContentListView.as_view(), name="dashboard"),
+    path("content/<str:status>/", ContentListView.as_view(), name="dashboard"),
     path(
         "enrollments/<str:slug>/",
         EnrollmentListView.as_view(),

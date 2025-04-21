@@ -1,11 +1,11 @@
 {% extends 'dashboard.html'%}
 {% load static %}
-{% load courses_tags %}
+
 
 {% block dashboard_content %}
 <body class="bg-white text-black">
     <div class="max-w-6xl mx-auto p-6">
-        <h1 class="text-3xl font-semibold mb-4">Published Course</h1>
+        <h1 class="text-3xl font-semibold mb-4">{{ status }} Course</h1>
         
 
         <div class="bg-gray-100 p-4 rounded-lg">
