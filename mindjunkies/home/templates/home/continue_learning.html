@@ -96,9 +96,10 @@
                 <h3 class="font-bold text-gray-800 mb-4">Recommended Next</h3>
 
                 <div class="space-y-4">
+                {% for course in recommended_courses %}
                     <div class="flex items-start gap-3 group cursor-pointer">
 
-                        {% for course in recommended_courses %}
+                        
                             <div class="w-12 h-12 bg-gray-200 rounded flex-shrink-0">
                                 <img src="{{ course.course_image.url }}" alt="Course"/>
                             </div>
@@ -106,8 +107,9 @@
                                 <h4 class="font-medium text-gray-800 group-hover:text-blue-600 transition-colors">{{ course.title }}</h4>
                                 <div class="text-xs text-gray-600 mt-1">{{ course.short_introduction }} </div>
                             </div>
-                        {% endfor %}
+                       
                     </div>
+                     {% endfor %}
                 </div>
 
                 <button
