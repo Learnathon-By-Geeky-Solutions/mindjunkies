@@ -16,11 +16,11 @@
                         <div class="flex items-center gap-2 mb-3">
                             <span
                                 class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">Course</span>
-                            <span class="text-gray-500">{{ last_lecture.course.title }}</span>
+                            <span class="text-gray-500"><a href="{% url 'course_details' last_lecture.course.slug %}">{{ last_lecture.course.title }}</a></span>
                         </div>
 
                         <h2 class="text-2xl font-bold text-gray-800 mb-4 leading-tight hover:text-blue-600 transition-colors">
-                            {{ last_lecture.title }} </h2>
+                            {% comment %} <a href="{% url 'lecture_video_content' last_lecture.module.id last_lecture.lecture.id %}">{{ last_lecture.title }} </a></h2> {% endcomment %}
 
                         <!-- Progress Bar -->
                         <div class="mb-6">
