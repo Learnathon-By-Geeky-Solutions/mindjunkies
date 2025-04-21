@@ -349,12 +349,15 @@
                             {% endif %}
                             <div class="text-3xl font-bold mb-4">${{ course_detail.course_price }}</div>
 
-                            {% if not accessed %}
-                                <a href="{% url 'checkout' course_detail.slug %}
-                             " class="btn btn-primary btn-block mb-4">Enroll</a>
-                            {% else %}
+                            {% if course_detail.enrollments.student == request.user %}
+                                <a href="{% url 'lecture_home' course_detail.slug %}
+                             " class="btn btn-primary btn-block mb-4">View</a>
+                             {% elif course_detail.teacher == request.user %}
                                 <a href="{% url 'lecture_home' course_detail.slug %}"
-                                   class="btn btn-primary btn-block mb-4">View</a>
+                                   class="btn btn-primary btn-block mb-4">Manage Course</a>
+                            {% else %}
+                                <a href="{% url 'checkout' course_detail.slug %}"
+                                   class="btn btn-primary btn-block mb-4">Enroll</a>
                             {% endif %}
                             {% comment %} <a href="{{ course_detail.preview_video_link }}" class="btn btn-outline btn-block mb-4"
                                target="_blank">Watch Preview</a> {% endcomment %}
