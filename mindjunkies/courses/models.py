@@ -61,7 +61,7 @@ class Course(BaseModel):
         blank=True,
     )
 
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="draft")
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="draft", blank=True)
         
     published_on = models.DateTimeField(null=True, blank=True)
 
