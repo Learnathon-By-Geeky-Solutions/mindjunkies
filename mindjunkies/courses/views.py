@@ -100,7 +100,6 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         course = form.save(commit=False)
         course.teacher = self.request.user
-        course.status = "draft"
         course.save()
         form.save_m2m()
         CourseToken.objects.create(
@@ -129,6 +128,8 @@ class CourseUpdateView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         messages.success(self.request, "Course saved successfully!")
+        form.save()
+        print(form)
         return redirect(reverse("course_details", kwargs={"slug": form.instance.slug}))
 
     def form_invalid(self, form):
