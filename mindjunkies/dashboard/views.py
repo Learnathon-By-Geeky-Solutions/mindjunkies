@@ -30,15 +30,32 @@ class TeacherPermissionView(LoginRequiredMixin, View):
 class ContentListView(LoginRequiredMixin, View):
     permission_required = VIEW_COURSE_PERMISSION
 
-    def get(self, request: HttpRequest) -> HttpResponse:
+    def get(self, request: HttpRequest, status:str) -> HttpResponse:
         if not request.user.is_teacher:
             return redirect("teacher_permission")
 
-        courses = Course.objects.filter(teacher=request.user)
+        
+        courses = Course.objects.filter(teacher=request.user, status="published")
         context = {
             "courses": courses,
+            "status": "Published",
         }
-        return render(request, "components/contents.html", context)
+        print(status)
+
+        if status == "draft":
+            courses = Course.objects.filter(teacher=request.user, status="draft")
+            context["courses"] = courses
+            context["status"] = "Draft"
+            return render(request, "components/contents.html", context)
+        elif status == "archived":
+            courses = Course.objects.filter(teacher=request.user, status="archived")
+            context["courses"] = courses
+            context["status"] = "Archived"
+            return render(request, "components/contents.html", context)
+        else:
+            return render(request, "components/contents.html", context)
+    
+
 
 
 class EnrollmentListView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
