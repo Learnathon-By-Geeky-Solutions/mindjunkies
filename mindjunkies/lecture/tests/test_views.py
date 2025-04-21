@@ -111,9 +111,7 @@ def test_lecture_pdf_view(client, user, lecture, lecture_pdf):
     pdf_file = SimpleUploadedFile(
         "test.pdf", b"PDF content", content_type="application/pdf"
     )
-    response = client.post(
-        url, {"pdf_file": pdf_file, "pdf_title": "Sample PDF"}
-    )
+    response = client.post(url, {"pdf_file": pdf_file, "pdf_title": "Sample PDF"})
 
     assert response.status_code == 302
     assert "Lecture Attachment uploaded successfully!" in [

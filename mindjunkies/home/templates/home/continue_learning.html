@@ -10,7 +10,7 @@
             <div class="bg-blue-600 h-2"></div>
             <div class="p-8">
                 <div class="flex flex-col md:flex-row gap-8">
-                    
+
                     <!-- Course Info -->
                     <div class="flex-grow">
                         <div class="flex items-center gap-2 mb-3">
@@ -26,11 +26,11 @@
                         <div class="mb-6">
                             <div class="flex justify-between items-center mb-2">
                                 <span class="text-sm font-medium text-gray-700">Overall Progress</span>
-                                <span class="text-sm font-bold text-blue-600">{{progression}}%</span>
+                                <span class="text-sm font-bold text-blue-600">{{ progression }}%</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-3">
                                 <div class="bg-blue-600 h-3 rounded-full transition-all duration-500"
-                                     style="width: {{progression}}%"></div>
+                                     style="width: {{ progression }}%"></div>
                             </div>
                         </div>
 
@@ -89,7 +89,7 @@
 
         <!-- Right Column - You can add your Weekly Goal Card here -->
         <div class=" space-y-6">
-            
+
 
             <!-- Recommended Courses -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden  p-6">
@@ -97,13 +97,15 @@
 
                 <div class="space-y-4">
                     <div class="flex items-start gap-3 group cursor-pointer">
-                        
-                        {% for course in recommended_courses  %}
-                        <div class="w-12 h-12 bg-gray-200 rounded flex-shrink-0"><img src="{{ course.course_image.url }}"/> </div>
-                        <div>
-                            <h4 class="font-medium text-gray-800 group-hover:text-blue-600 transition-colors">{{ course.title }}</h4>
-                            <div class="text-xs text-gray-600 mt-1">{{ course.short_introduction}} </div>
-                        </div>
+
+                        {% for course in recommended_courses %}
+                            <div class="w-12 h-12 bg-gray-200 rounded flex-shrink-0">
+                                <img src="{{ course.course_image.url }}" alt="Course"/>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800 group-hover:text-blue-600 transition-colors">{{ course.title }}</h4>
+                                <div class="text-xs text-gray-600 mt-1">{{ course.short_introduction }} </div>
+                            </div>
                         {% endfor %}
                     </div>
                 </div>

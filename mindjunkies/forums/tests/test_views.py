@@ -127,7 +127,7 @@ class TestForumThreadDetailsView(TestCase):
     def test_get_topic(self):
         """Test that get_topic returns the correct topic"""
         view = ForumThreadDetailsView()
-        view.kwargs = {'topic_id': self.topic.id}
+        view.kwargs = {"topic_id": self.topic.id}
         topic = view.get_topic()
 
         self.assertEqual(topic, self.topic)
@@ -215,11 +215,7 @@ class TestCommentSubmissionView(TestCase):
         setattr(request, "_messages", messages)
 
         view = CommentSubmissionView.as_view()
-        view(
-            request,
-            course_slug=self.course.slug,
-            topic_id=self.topic.id
-        )
+        view(request, course_slug=self.course.slug, topic_id=self.topic.id)
 
         # Check that a new comment was created
         self.assertEqual(ForumComment.objects.count(), 1)
@@ -272,7 +268,7 @@ class TestReplySubmissionView(TestCase):
             request,
             course_slug=self.course.slug,
             topic_id=self.topic.id,
-            comment_id=self.comment.id
+            comment_id=self.comment.id,
         )
 
         # Check that a new reply was created

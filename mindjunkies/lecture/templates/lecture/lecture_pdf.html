@@ -60,7 +60,7 @@
                             <h2 class="text-xl font-semibold text-gray-800">{{ pdf.pdf_title }}</h2>
                             <p class="text-sm text-gray-500 mt-1">PDF Document • {{ lecture.title }}</p>
                         </div>
-                        
+
                         <!-- PDF Controls -->
                         <div class="bg-gray-50 border-b border-gray-200 px-4 py-3 flex flex-wrap items-center justify-between gap-3">
                             <!-- Navigation Controls -->
@@ -78,12 +78,12 @@
                                     </svg>
                                 </button>
                             </div>
-                            
+
                             <!-- Page Info -->
                             <div class="flex items-center bg-white px-3 py-1 rounded-md border border-gray-200 shadow-sm">
                                 <span id="page-info" class="text-sm font-medium">Page <span id="current-page" class="text-primary">1</span> of <span id="total-pages" class="text-gray-700">0</span></span>
                             </div>
-                            
+
                             <!-- Zoom and Rotation Controls -->
                             <div class="flex items-center gap-2">
                                 <div class="join">
@@ -98,7 +98,7 @@
                                         </svg>
                                     </button>
                                 </div>
-                                
+
                                 <div class="join">
                                     <button id="rotate-left" class="btn btn-sm btn-outline join-item" title="Rotate Left">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
@@ -111,7 +111,7 @@
                                         </svg>
                                     </button>
                                 </div>
-                                
+
                                 <button id="download-pdf" class="btn btn-sm btn-primary gap-1" title="Download PDF">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
                                         <path d="M10.75 2.75a.75.75 0 00-1.5 0v8.614L6.295 8.235a.75.75 0 10-1.09 1.03l4.25 4.5a.75.75 0 001.09 0l4.25-4.5a.75.75 0 00-1.09-1.03l-2.955 3.129V2.75z" />
@@ -121,7 +121,7 @@
                                 </button>
                             </div>
                         </div>
-                        
+
                         <!-- PDF Viewer Container -->
                         <div id="pdf-container" class="flex justify-center items-center bg-gray-100 p-4 min-h-[600px] overflow-auto">
                             <!-- Loading indicator -->
@@ -132,7 +132,7 @@
                             <!-- Canvases will be added dynamically -->
                         </div>
                     </div>
-                    
+
                     <!-- Additional Resources Section -->
                     <div class="mt-6 bg-white rounded-xl shadow-md border border-gray-200 p-6">
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">Additional Resources</h3>
@@ -195,7 +195,7 @@
             if (loadingElement) {
                 loadingElement.style.display = "flex";
             }
-            
+
             pdfDoc.getPage(pageNumber).then(function (page) {
                 const viewport = page.getViewport({scale, rotation});
 
@@ -212,27 +212,27 @@
                     canvasContext: context,
                     viewport: viewport,
                 };
-                
+
                 const renderTask = page.render(renderContext);
-                
+
                 renderTask.promise.then(() => {
                     // Hide loading indicator when rendering is complete
                     if (loadingElement) {
                         loadingElement.style.display = "none";
                     }
-                    
+
                     // Update UI state
                     currentPageElement.textContent = pageNumber;
                     prevPageButton.disabled = pageNumber <= 1;
                     nextPageButton.disabled = pageNumber >= pdfDoc.numPages;
-                    
+
                     // Add classes to show disabled state visually
                     if (pageNumber <= 1) {
                         prevPageButton.classList.add("btn-disabled");
                     } else {
                         prevPageButton.classList.remove("btn-disabled");
                     }
-                    
+
                     if (pageNumber >= pdfDoc.numPages) {
                         nextPageButton.classList.add("btn-disabled");
                     } else {

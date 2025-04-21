@@ -18,7 +18,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
-from mindjunkies.courses.models import Course, Module, CourseToken
+from mindjunkies.courses.models import Course, Module
 
 from .forms import LectureForm, LecturePDFForm, LectureVideoForm, ModuleForm
 from .models import Lecture, LectureCompletion, LecturePDF, LectureVideo, LastVisitedModule
@@ -200,7 +200,6 @@ class CreateContentView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin,
     def dispatch(self, request, *args, **kwargs):
         self.lecture = get_object_or_404(Lecture, id=kwargs["lecture_id"])
         self.course = self.get_course()
-        print(self)
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_class(self):

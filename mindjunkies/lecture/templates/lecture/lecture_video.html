@@ -55,10 +55,10 @@
                 <div class="p-6 max-w-6xl mx-auto">
                     <div class="rounded-xl bg-base-200 shadow-md overflow-hidden">
                         <div class="video-container w-full">
-                            <video 
-                                id="course-video" 
-                                class="video-js vjs-big-play-centered vjs-theme-city" 
-                                controls 
+                            <video
+                                id="course-video"
+                                class="video-js vjs-big-play-centered vjs-theme-city"
+                                controls
                                 preload="auto"
                                 data-setup='{"playbackRates": [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]}'>
                                 <source src="{{ video.video_file.url }}" type="video/mp4">
@@ -89,7 +89,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Video Title and Description -->
                     <div class="mt-6 bg-base-100 rounded-xl p-5 shadow-md">
                         <h2 class="text-xl font-bold mb-2">Welcome to machine learning!</h2>
@@ -118,7 +118,7 @@
             player.ready(function() {
                 console.log("Video.js Player is Ready!");
             });
-            
+
             // Handle drawer state based on screen size
             const drawer = document.getElementById('my-drawer');
             const mediaQuery = window.matchMedia('(min-width: 1024px)');

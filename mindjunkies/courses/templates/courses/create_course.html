@@ -15,11 +15,11 @@
 
     <form method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded-lg">
         {% csrf_token %}
-        
+
         <!-- Drawer Structure -->
         <div class="drawer lg:drawer-open">
             <input id="course-drawer" type="checkbox" class="drawer-toggle" />
-            
+
             <!-- Drawer Content (Main Form Area) -->
             <div class="drawer-content p-6">
                 <!-- Basic Info Section -->
@@ -50,7 +50,7 @@
                 <div id="settings" class="section-content border-base-300 bg-base-100 p-10 rounded-lg hidden">
                     <h2 class="text-2xl font-semibold mb-6 text-gray-700">Settings</h2>
                     <div class="space-y-6 space-x-0">
-                        {{ form.published|as_crispy_field }}
+                        {% comment %} {{ form.status|as_crispy_field }} {% endcomment %}
                         {{ form.paid_course|as_crispy_field }}
                         {{ form.upcoming|as_crispy_field }}
                     </div>
@@ -61,7 +61,7 @@
                 <div class="mt-8 flex justify-end space-x-4">
                     <button type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">Cancel</button>
                     <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700">Save Course</button>
-                    
+
                 </div>
             </div>
 
@@ -89,13 +89,13 @@ document.addEventListener('DOMContentLoaded', function() {
     links.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            
+
             // Remove active classes and hide all sections
             links.forEach(l => {
                 l.classList.remove('active', 'underline');
             });
             sections.forEach(s => s.classList.add('hidden'));
-            
+
             // Add active class and underline to clicked link and show target section
             this.classList.add('active', 'underline');
             const targetSection = document.getElementById(this.getAttribute('href').substring(1));

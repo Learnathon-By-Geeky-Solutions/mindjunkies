@@ -21,20 +21,26 @@ class User(AbstractUser):
 
     @property
     def name(self):
-        return (
-            f"{self.first_name} {self.last_name}"
-            if self.first_name and self.last_name
-            else self.username
-        )
+        return f"{self.first_name} {self.last_name}"
 
     def get_number_of_reviews(self):
-        return Rating.objects.filter(course__teacher=self).count()
+        return self._get_reviews_queryset().count()
+
+    def _get_reviews_queryset(self):
+        return Rating.objects.filter(course__teacher=self)
 
     def get_instructor_rating(self):
-        courses = self.courses_taught.all()
-        total_rating = sum(course.total_rating for course in courses)
+        courses = self._get_courses_taught()
         number_of_ratings = self.get_number_of_reviews()
-        return total_rating / number_of_ratings if number_of_ratings > 0 else 0
+
+        if number_of_ratings == 0:
+            return 0
+
+        total_rating = sum(course.total_rating for course in courses)
+        return total_rating / number_of_ratings
+
+    def _get_courses_taught(self):
+        return self.courses_taught.all()
 
     def get_number_of_students(self):
         return (

@@ -16,10 +16,6 @@ class TestUserModel:
         user = baker.make(User, first_name="John", last_name="Doe")
         assert user.name == "John Doe"
 
-    def test_user_name_property_fallback_to_username(self):
-        user = baker.make(User, username="johndoe", first_name="", last_name="")
-        assert user.name == "johndoe"
-
     def test_user_get_number_of_reviews(self):
         user = baker.make(User)
         # simulate the user as a teacher with 2 course ratings

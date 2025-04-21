@@ -1,11 +1,10 @@
 from categories.models import CategoryBase
 from cloudinary.models import CloudinaryField
+from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.text import slugify
 from taggit.managers import TaggableManager
-from django.core.validators import MaxValueValidator, MinValueValidator
-from django.core.exceptions import ValidationError
-
 
 from config.models import BaseModel
 
@@ -32,6 +31,13 @@ class Course(BaseModel):
         ("intermediate", "Intermediate"),
         ("advanced", "Advanced"),
     ]
+
+    STATUS_CHOICES = [
+        ("draft", "Draft"),
+        ("published", "Published"),
+        ("archived", "Archived"),
+    ]
+
     title = models.CharField(max_length=255)
     short_introduction = models.CharField(max_length=500)
     course_description = models.TextField()
@@ -52,7 +58,8 @@ class Course(BaseModel):
         blank=True,
     )
 
-    published = models.BooleanField(default=False)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="draft")
+
     published_on = models.DateTimeField(null=True, blank=True)
 
     paid_course = models.BooleanField(default=False)
@@ -60,7 +67,7 @@ class Course(BaseModel):
 
     upcoming = models.BooleanField(default=False)
 
-    preview_video = CloudinaryField(resource_type='video', default="")
+    preview_video = CloudinaryField(resource_type="video", default="")
 
     total_rating = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     number_of_ratings = models.PositiveIntegerField(default=0)
@@ -141,11 +148,13 @@ class Rating(BaseModel):
 
 
 class Enrollment(BaseModel):
-    
+
     STATUS_CHOICES = [
         ("active", "Active"),
         ("pending", "Pending"),
         ("withdrawn", "Withdrawn"),
+        ("archived", "Archived"),
+        ("completed", "Completed"),
     ]
 
     course = models.ForeignKey(
@@ -154,7 +163,9 @@ class Enrollment(BaseModel):
     student = models.ForeignKey(user, on_delete=models.CASCADE, related_name="enrolled")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
 
-    progression = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    progression = models.PositiveIntegerField(
+        default=0, validators=[MinValueValidator(0), MaxValueValidator(100)]
+    )
 
     class Meta:
         unique_together = ["course", "student"]
@@ -172,36 +183,42 @@ class Module(BaseModel):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="modules")
     order = models.PositiveIntegerField(default=0)
 
-    class Meta: 
+    class Meta:
         ordering = ["order"]
         constraints = [
-            models.UniqueConstraint(fields=["course", "order"], name="unique_order_per_course")
+            models.UniqueConstraint(
+                fields=["course", "order"], name="unique_order_per_course"
+            )
         ]
 
     def __str__(self):
         return f"{self.title} - {self.course.title}"
-    
-
-    
 
     def clean(self):
         super().clean()
-        if hasattr(self, 'course') and self.course and self.order is not None:
-            if Module.objects.filter(course=self.course, order=self.order).exclude(pk=self.pk).exists():
-                raise ValidationError(f"Order {self.order} already exists in this Course.\nModule cannnot have same order")
-
+        if hasattr(self, "course") and self.course and self.order is not None:
+            if (
+                Module.objects.filter(course=self.course, order=self.order)
+                .exclude(pk=self.pk)
+                .exists()
+            ):
+                raise ValidationError(
+                    f"Order {self.order} already exists in this Course.\nModule cannnot have same order"
+                )
 
 
 class CourseToken(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="tokens")
     teacher = models.ForeignKey(user, on_delete=models.CASCADE)
-    status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('approved', 'Approved')],
-                              default='pending')
+    status = models.CharField(
+        max_length=10,
+        choices=[("pending", "Pending"), ("approved", "Approved")],
+        default="pending",
+    )
 
     def __str__(self):
         return f"Token for {self.course.title} by {self.teacher.username}"
-    
-    
+
 
 class LastVisitedCourse(models.Model):
     user = models.ForeignKey(user, on_delete=models.CASCADE)
