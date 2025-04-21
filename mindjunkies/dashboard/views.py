@@ -130,3 +130,15 @@ class VerificationWaitView(LoginRequiredMixin, View):
             "verification_wait.html",
             {"message": "Please wait for your verification."},
         )
+class DrafView(LoginRequiredMixin, View):
+    permission_required = VIEW_COURSE_PERMISSION
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        if not request.user.is_teacher:
+            return redirect("teacher_verification_form")
+
+        courses = Course.objects.filter(teacher=request.user, status="draft")
+        context = {
+            "courses": courses,
+        }
+        return render(request, "components/draft.html", context)
