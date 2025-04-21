@@ -21,7 +21,7 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 from mindjunkies.courses.models import Course, Module
 
 from .forms import LectureForm, LecturePDFForm, LectureVideoForm, ModuleForm
-from .models import LastVisitedModule, Lecture, LectureCompletion, LecturePDF, LectureVideo
+from .models import Lecture, LectureCompletion, LecturePDF, LectureVideo, LastVisitedModule
 
 
 # Utility functions to reduce complexity
@@ -77,24 +77,20 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
             ).order_by("scheduled_at")
         )
 
-        context.update(
-            {
-                "course": course,
-                "modules": course.modules.all(),
-                "current_module": self.get_current_module(course),
-                "isTeacher": is_teacher_for_course(self.request.user, course),
-                "current_live_class": get_current_live_class(course),
-                "todays_live_classes": live_classes_today,
-            }
-        )
+        context.update({
+            "course": course,
+            "modules": course.modules.all(),
+            "current_module": self.get_current_module(course),
+            "isTeacher": is_teacher_for_course(self.request.user, course),
+            "current_live_class": get_current_live_class(course),
+            "todays_live_classes": live_classes_today,
+        })
         return context
 
 
 @login_required
 @require_http_methods(["GET"])
-def lecture_video(
-    request: HttpRequest, course_slug: str, module_id: str, lecture_id, video_id
-) -> HttpResponse:
+def lecture_video(request: HttpRequest, course_slug: str, module_id: str, lecture_id, video_id) -> HttpResponse:
     """View to display a lecture video."""
     video = get_object_or_404(LectureVideo, id=video_id)
     module = get_object_or_404(Module, id=module_id)
@@ -102,10 +98,8 @@ def lecture_video(
 
     # Update last visited module
     LastVisitedModule.objects.update_or_create(
-        user=request.user,
-        module=module,
-        lecture=lecture,
-        defaults={"last_visited": timezone.now()},
+        user=request.user, module=module, lecture=lecture, 
+        defaults={"last_visited": timezone.now()}
     )
 
     # Ensure the user is enrolled in the related course
@@ -125,21 +119,14 @@ def lecture_video(
 
 @login_required
 @require_http_methods(["GET"])
-def lecture_pdf(
-    request: HttpRequest, course_slug: str, module_id: int, lecture_id: int, pdf_id: int
-) -> HttpResponse:
+def lecture_pdf(request: HttpRequest, course_slug: str, module_id:int, lecture_id: int, pdf_id: int) -> HttpResponse:
     """View to display a lecture PDF."""
     pdf = get_object_or_404(LecturePDF, id=pdf_id)
     lecture = get_object_or_404(Lecture, id=lecture_id)
     course = get_object_or_404(Course, slug=course_slug)
     module = get_object_or_404(Module, id=module_id)
 
-    context = {
-        "course": course,
-        "pdf": pdf,
-        "module": module,
-        "lecture": lecture,
-    }
+    context = {"course": course, "pdf": pdf, "module":module, "lecture": lecture,}
     return render(request, "lecture/lecture_pdf.html", context)
 
 
@@ -152,7 +139,7 @@ class CourseObjectMixin:
 
 class LectureFormMixin:
     """Mixin for common lecture form handling."""
-
+    
     def handle_form_validation(self, form, success_message):
         """Common form validation handling."""
         try:
@@ -160,14 +147,10 @@ class LectureFormMixin:
             messages.success(self.request, success_message)
             return self.get_success_url(saved_instance)
         except (ValidationError, IntegrityError) as e:
-            error_message = (
-                "Order number already exists"
-                if isinstance(e, IntegrityError)
-                else str(e)
-            )
+            error_message = "Order number already exists" if isinstance(e, IntegrityError) else str(e)
             messages.error(self.request, error_message)
             return self.form_invalid(form)
-
+    
     def form_invalid(self, form):
         messages.error(
             self.request,
@@ -177,9 +160,7 @@ class LectureFormMixin:
 
 
 @method_decorator(csrf_protect, name="dispatch")
-class CreateLectureView(
-    LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, CreateView
-):
+class CreateLectureView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, CreateView):
     model = Lecture
     form_class = LectureForm
     template_name = "lecture/create_lecture.html"
@@ -195,9 +176,12 @@ class CreateLectureView(
         saved_lecture = form.save(commit=False)
         saved_lecture.course = self.course
         saved_lecture.module = self.module
-
-        return self.handle_form_validation(form, "Lecture created successfully!")
-
+        
+        return self.handle_form_validation(
+            form, 
+            "Lecture created successfully!"
+        )
+    
     def get_success_url(self, instance):
         return redirect(
             f"{reverse('lecture_home', kwargs={'course_slug': self.course.slug})}?module_id={self.module.id}"
@@ -210,15 +194,12 @@ class CreateLectureView(
         return context
 
 
-class CreateContentView(
-    LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, FormView
-):
+class CreateContentView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, FormView):
     template_name = "lecture/create_content.html"
 
     def dispatch(self, request, *args, **kwargs):
-        self.lecture = get_object_or_404(Lecture, slug=kwargs["lecture_slug"])
+        self.lecture = get_object_or_404(Lecture, id=kwargs["lecture_id"])
         self.course = self.get_course()
-        print(self)
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_class(self):
@@ -234,7 +215,7 @@ class CreateContentView(
         saved_content = form.save(commit=False)
         saved_content.lecture = self.lecture
         saved_content.save()
-
+        
         messages.success(
             self.request,
             f"Lecture {self.kwargs['format'].capitalize()} uploaded successfully!",
@@ -248,22 +229,23 @@ class CreateContentView(
         return context
 
 
-class EditLectureView(
-    LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, UpdateView
-):
+class EditLectureView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, UpdateView):
     model = Lecture
     form_class = LectureForm
     template_name = "lecture/create_lecture.html"
 
     def get_object(self, queryset=None):
         """Get the lecture object based on the slug from the URL"""
-        lecture_slug = self.kwargs.get("lecture_slug")
-        return get_object_or_404(Lecture, slug=lecture_slug)
+        lecture_id = self.kwargs.get("lecture_id")
+        return get_object_or_404(Lecture, id=lecture_id)
 
     def form_valid(self, form):
         """If the form is valid, save the lecture and redirect"""
-        return self.handle_form_validation(form, "Lecture saved successfully!")
-
+        return self.handle_form_validation(
+            form,
+            "Lecture saved successfully!"
+        )
+    
     def get_success_url(self, instance):
         return redirect("lecture_home", course_slug=self.kwargs["course_slug"])
 
@@ -275,9 +257,7 @@ class EditLectureView(
         return context
 
 
-class CreateModuleView(
-    LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, CreateView
-):
+class CreateModuleView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, CreateView):
     model = Module
     form_class = ModuleForm
     template_name = "lecture/create_module.html"
@@ -291,9 +271,12 @@ class CreateModuleView(
         """Assign the module to the correct course before saving"""
         instance = form.save(commit=False)
         instance.course = self.course
-
-        return self.handle_form_validation(form, "Module created successfully!")
-
+        
+        return self.handle_form_validation(
+            form,
+            "Module created successfully!"
+        )
+    
     def get_success_url(self, instance):
         return redirect(
             reverse("lecture_home", kwargs={"course_slug": self.course.slug})
@@ -319,10 +302,52 @@ class DeleteLectureView(LoginRequiredMixin, CourseObjectMixin, View):
         lecture.delete()
         messages.success(request, "Lecture deleted successfully.")
         return redirect(reverse("lecture_home", kwargs={"course_slug": course_slug}))
-
-
 class MarkLectureCompleteView(LoginRequiredMixin, View):
     def get(self, request, course_slug, lecture_id):
         lecture = get_object_or_404(Lecture, id=lecture_id)
         LectureCompletion.objects.get_or_create(user=request.user, lecture=lecture)
-        return redirect(request.META.get("HTTP_REFERER", "/"))
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+    
+class ModuleEditView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, UpdateView):
+    model = Module
+    form_class = ModuleForm
+    template_name = "lecture/create_module.html"
+
+    def get_object(self, queryset=None):
+        """Get the module object based on the slug from the URL"""
+        module_id = self.kwargs.get("module_id")
+        return get_object_or_404(Module, id=module_id)
+
+    def form_valid(self, form):
+        """If the form is valid, save the module and redirect"""
+        return self.handle_form_validation(
+            form,
+            "Module saved successfully!"
+        )
+    
+    def get_success_url(self, instance):
+        return redirect("lecture_home", course_slug=self.kwargs["course_slug"])
+
+    def get_context_data(self, **kwargs):
+        """Add extra context, such as the module object"""
+        context = super().get_context_data(**kwargs)
+        context["module"] = self.get_object()
+        context["course"] = self.get_course()
+        return context    
+    
+class DeleteModuleView(LoginRequiredMixin, CourseObjectMixin, View):
+    def get(self, request, course_slug, module_id):
+        module = get_object_or_404(Module, id=module_id)
+        if not is_teacher_for_course(request.user, module.course):
+            return HttpResponseForbidden("You are not allowed to delete this module.")
+
+        # Delete the module and redirect
+        module.delete()
+        messages.success(request, "Module deleted successfully.")
+        return redirect(reverse("lecture_home", kwargs={"course_slug": course_slug}))
+              
+                      
+                      
+    
+    
+                    
