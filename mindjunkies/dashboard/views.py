@@ -17,12 +17,23 @@ from .models import Certificate, TeacherVerification
 VIEW_COURSE_PERMISSION = "courses.view_course"
 
 
+
+class TeacherPermissionView(LoginRequiredMixin, View):
+    def get(self, request: HttpRequest) -> HttpResponse:
+        if request.user.is_teacher:
+            return redirect("dashboard")  # Redirect if already a teacher
+
+        elif TeacherVerification.objects.filter(user=request.user).exists():
+            return redirect("verification_wait")
+        return render(request, "apply_teacher.html")
+
+
 class ContentListView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
     permission_required = VIEW_COURSE_PERMISSION
 
     def get(self, request: HttpRequest) -> HttpResponse:
         if not request.user.is_teacher:
-            return redirect("teacher_verification_form")
+            return redirect("teacher_permission")
 
         courses = Course.objects.filter(teacher=request.user)
         context = {
