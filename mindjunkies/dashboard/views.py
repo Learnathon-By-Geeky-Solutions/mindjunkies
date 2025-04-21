@@ -28,7 +28,7 @@ class ContentListView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
         context = {
             "courses": courses,
         }
-        return render(request, "dashboard.html", context)
+        return render(request, "components/contents.html", context)
 
 
 class EnrollmentListView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
