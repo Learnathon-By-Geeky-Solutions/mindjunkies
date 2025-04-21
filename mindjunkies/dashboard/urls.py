@@ -23,4 +23,5 @@ urlpatterns = [
     path(
         "verification_wait/", VerificationWaitView.as_view(), name="verification_wait"
     ),
+    
 ]
