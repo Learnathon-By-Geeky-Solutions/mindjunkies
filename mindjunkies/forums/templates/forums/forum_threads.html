@@ -32,15 +32,18 @@
   </div>
 
   <!-- Search and Post -->
-  <form class="mt-6 flex items-center gap-2">
-
-    <input type="text" placeholder="Search" name="search" class="input input-bordered w-full sm:max-w-xs" />
-    <button class="btn btn-primary">Search</button>
-    <!-- Button to trigger the dialog for creating a new post -->
-    <button class="btn btn-outline btn-primary" onclick="document.getElementById('newTopicModal').showModal()">Create post</button>
-
-
+  
+<div class="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+  <form class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+    <input type="text" placeholder="Search" name="search" class="input input-bordered w-full sm:w-64" />
+    <button class="btn btn-primary w-full sm:w-auto">Search</button>
   </form>
+  
+  <button class="btn btn-outline btn-primary w-full sm:w-auto" onclick="document.getElementById('newTopicModal').showModal()">
+    Create post
+  </button>
+</div>
+
 
 
 
