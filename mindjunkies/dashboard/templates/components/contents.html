@@ -1,15 +1,17 @@
+{% extends 'dashboard.html'%}
+{% load static %}
+{% load courses_tags %}
+
+{% block dashboard_content %}
 <body class="bg-white text-black">
     <div class="max-w-6xl mx-auto p-6">
-        <h1 class="text-2xl font-bold mb-4">DASHBOARD</h1>
-        <div class="flex space-x-6 border-b border-gray-300 pb-2 mb-4">
-            <span class="text-black font-semibold border-b-2 border-red-600">📕Courses</span>
-            <span class="text-gray-600 cursor-pointer">💲Earning</span>
-        </div>
+        <h1 class="text-3xl font-semibold mb-4">Published Course</h1>
+        
 
         <div class="bg-gray-100 p-4 rounded-lg">
             <div class="grid grid-cols-6 text-gray-600 text-sm border-b border-gray-300 pb-2 mb-2">
                 <span class="col-span-2">Course</span>
-                <span>Published</span>
+                
                 <span>Price</span>
                 <span class="text-right">Enrollments</span>
             </div>
@@ -27,7 +29,7 @@
                         </div>
                     </a>
                 </div>
-                <span class="text-gray-600">{{ course.published }}</span>
+                
                 <span class="text-gray-600">{{ course.course_price }}</span>
                 <span class="text-gray-600 text-right">
                     <a href="{% url 'teacher_dashboard_enrollments' course.slug %}"
@@ -45,3 +47,4 @@
         </div>
     </div>
 </body>
+{% endblock dashboard_content %}
