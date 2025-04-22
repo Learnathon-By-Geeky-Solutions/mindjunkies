@@ -6,9 +6,12 @@ from django.urls import reverse_lazy
 from django.utils.timezone import now
 from django.views import View
 from django.views.generic.edit import FormView
+from django.core.paginator import Paginator
+
 
 from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course, Enrollment
+from mindjunkies.payments.models import Transaction, Balance, BalanceHistory
 
 from .forms import TeacherVerificationForm
 from .mixins import CustomPermissionRequiredMixin
@@ -42,6 +45,7 @@ class ContentListView(LoginRequiredMixin, View):
             "status": "Published",
         }
         print(status)
+        print(request.user)
 
         if status == "draft":
             courses = Course.objects.filter(teacher=request.user, status="draft")
@@ -53,6 +57,24 @@ class ContentListView(LoginRequiredMixin, View):
             context["courses"] = courses
             context["status"] = "Archived"
             return render(request, "components/contents.html", context)
+        
+        elif status == "balance":
+            balance = Balance.objects.filter(user=request.user).first()
+            print(balance)
+            if not balance:
+                balance = Balance.objects.create(user=request.user, amount=0)
+            transactions = Transaction.objects.filter(user=request.user).order_by('-tran_date')  
+
+            page_number = request.GET.get("page", 1)
+            paginator = Paginator(transactions, 10)  # Show 10 transactions per page
+            page_obj = paginator.get_page(page_number)
+
+            context["balance"] = balance
+            context["transactions"] = page_obj
+            context["status"] = "Balance"
+            return render(request, "components/balance.html", context)
+
+                
         else:
             return render(request, "components/contents.html", context)
     
