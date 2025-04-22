@@ -30,7 +30,7 @@
                             {% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}"
                              alt="{{ course_detail.teacher.username }}" class="w-12 h-12 rounded-full mr-4">
                         <div>
-                            <p>Created by </p>
+                            <p>Created by  </p>
                             <p class="font-semibold">{{ course_detail.teacher.name }}</p>
                         </div>
                     </div>
@@ -349,7 +349,7 @@
                             {% endif %}
                             <div class="text-3xl font-bold mb-4">${{ course_detail.course_price }}</div>
 
-                            {% if course_detail.enrollments.student == request.user %}
+                            {% if student %}
                                 <a href="{% url 'lecture_home' course_detail.slug %}
                              " class="btn btn-primary btn-block mb-4">View</a>
                              {% elif course_detail.teacher == request.user %}
