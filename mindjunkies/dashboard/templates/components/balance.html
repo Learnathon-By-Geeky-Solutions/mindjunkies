@@ -18,20 +18,14 @@
 
             <!-- Balance Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <!-- Current Balance Card -->
-                <div class="card bg-white shadow-md hover:shadow-lg transition-shadow">
-                    <div class="card-body">
-                        <h2 class="card-title text-gray-700">Current Balance</h2>
-                        <p class="text-3xl font-bold text-primary">bdt-{{ balance.amount }}</p>
-                        <p class="text-gray-500 text-sm">Last updated: {{ balance.last_updated}} </p>
-                    </div>
-                </div>
+
+                
 
                 <!-- Checkout Card -->
                 <div class="card bg-white shadow-md hover:shadow-lg transition-shadow">
                     <div class="card-body">
-                        <h2 class="card-title text-gray-700">Available Credits</h2>
-                        <p class="text-3xl font-bold text-secondary">bdt-{{ balance.amount }}</p>
+                        <h2 class="card-title text-gray-700"> Credits</h2>
+                        <p class="text-3xl font-bold text-secondary">৳{{ balance.amount }}</p>
                         <div class="card-actions justify-end mt-2">
                             <button class="btn btn-primary">Checkout Credits</button>
                         </div>
