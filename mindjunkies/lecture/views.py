@@ -89,7 +89,7 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
         live_classes_today = list(
             course.live_classes.filter(
                 scheduled_at__range=(today_start, today_end)
-            ).exclude(scheduled_at__date=current_live_class.scheduled_at.date()).
+            ).
             order_by("scheduled_at")
         )
         live_classes_this_week = list(
