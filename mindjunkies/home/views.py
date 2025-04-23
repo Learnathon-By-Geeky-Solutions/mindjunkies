@@ -40,7 +40,7 @@ def home(request):
         enrollments = Enrollment.objects.filter(
             student=request.user, status="active"
         ).prefetch_related("course")
-        enrolled_courses = [enrollment.course for enrollment in enrollments]
+        enrolled_courses = [enrollment.course for enrollment in enrollments][:3]
 
         # Get courses taught by the user if they're a teacher
         teacher_courses = Course.objects.filter(teacher=request.user)
@@ -53,7 +53,7 @@ def home(request):
     # Get other courses (excluding new ones and enrolled ones)
     courses = Course.objects.exclude(
         id__in=new_courses.values_list("id", flat=True)
-    ).exclude(id__in=[course.id for course in enrolled_courses])
+    ).exclude(id__in=[course.id for course in enrolled_courses])[:3]
 
     # Get featured courses (you might want to define criteria for this)
     featured_courses = Course.objects.filter(status="published")
