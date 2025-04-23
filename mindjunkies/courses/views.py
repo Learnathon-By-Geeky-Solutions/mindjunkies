@@ -38,29 +38,53 @@ def course_list(request: HttpRequest) -> HttpResponse:
     return render(request, "courses/course_list.html", context)
 
 
-class NewCourseView(TemplateView):
+from django.views.generic import TemplateView
+from .models import Course, Enrollment
+
+
+class BaseCourseView(TemplateView):
+    def get_enrolled_courses(self):
+        if self.request.user.is_authenticated:
+            enrollments = Enrollment.objects.filter(
+                student=self.request.user, status="active"
+            ).prefetch_related("course")
+            return [enrollment.course for enrollment in enrollments]
+        return []
+
+
+class NewCourseView(BaseCourseView):
     template_name = "courses/new_course.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        enrolled_courses = []
-        if self.request.user.is_authenticated:
-            # Get user's enrolled courses
-            enrollments = Enrollment.objects.filter(
-                student=self.request.user, status="active"
-            ).prefetch_related("course")
-            enrolled_courses = [enrollment.course for enrollment in enrollments]
+        enrolled_courses = self.get_enrolled_courses()
 
-        # Get courses taught by the user if they're a teacher
-
-        # Get new courses (excluding enrolled ones)
         new_courses = Course.objects.exclude(
             id__in=[course.id for course in enrolled_courses]
         ).order_by("-created_at")[:3]
+
         context["new_courses"] = new_courses
         return context
 
-        # Add data to context
+
+class PopularCoursesView(BaseCourseView):
+    template_name = "courses/popular_courses.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        enrolled_courses = self.get_enrolled_courses()
+
+        new_courses = Course.objects.exclude(
+            id__in=[course.id for course in enrolled_courses]
+        ).order_by("-created_at")[:3]
+
+        courses = Course.objects.exclude(
+            id__in=new_courses.values_list("id", flat=True)
+        ).exclude(id__in=[course.id for course in enrolled_courses])
+
+        popular_courses = courses.order_by("-enrollments")[:3]
+        context["popular_courses"] = popular_courses
+        return context
 
 
 class MyCoursesView(LoginRequiredMixin, TemplateView):
