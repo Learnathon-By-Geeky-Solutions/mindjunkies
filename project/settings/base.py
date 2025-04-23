@@ -1,11 +1,12 @@
 from pathlib import Path
 
 import cloudinary
-import cloudinary.uploader
-from decouple import config
+from decouple import config, Csv
 from django.utils.translation import gettext_lazy as _
 
-# Configuration
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+# Cloudinary setup
 cloudinary.config(
     cloud_name=config("CLOUDINARY_NAME"),
     api_key=config("CLOUDINARY_API_KEY"),
@@ -15,22 +16,9 @@ cloudinary.config(
 
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 SECRET_KEY = config("SECRET_KEY")
 
-DEBUG = config("DEBUG", default=False, cast=bool)
-
-ALLOWED_HOSTS = [
-    config("ALLOWED_HOSTS"),
-    "localhost",
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://mindjunkies.up.railway.app",
-]
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost", cast=Csv())
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -38,13 +26,13 @@ INTERNAL_IPS = [
 
 INSTALLED_APPS = [
     "django_elasticsearch_dsl",
-    "unfold",  # before django.contrib.admin
-    "unfold.contrib.filters",  # optional, if special filters are needed
-    "unfold.contrib.forms",  # optional, if special form elements are needed
-    "unfold.contrib.inlines",  # optional, if special inlines are needed
-    "unfold.contrib.import_export",  # optional, if django-import-export package is used
-    "unfold.contrib.guardian",  # optional, if django-guardian package is used
-    "unfold.contrib.simple_history",  # optional, if django-simple-history package is used
+    "unfold",
+    "unfold.contrib.filters",
+    "unfold.contrib.forms",
+    "unfold.contrib.inlines",
+    "unfold.contrib.import_export",
+    "unfold.contrib.guardian",
+    "unfold.contrib.simple_history",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -53,7 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "django.contrib.postgres",
-    # custom mindjunkies
+    # custom apps
     "mindjunkies.home",
     "mindjunkies.accounts",
     "mindjunkies.courses",
@@ -62,7 +50,7 @@ INSTALLED_APPS = [
     "mindjunkies.live_classes",
     "mindjunkies.forums",
     "mindjunkies.payments",
-    # third party mindjunkies
+    # third party apps
     "crispy_forms",
     "crispy_tailwind",
     "cloudinary",
@@ -77,16 +65,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",
 ]
 
-if DEBUG:
-    INSTALLED_APPS += [
-        "django_tailwind_cli",
-        "django_browser_reload",
-        "django_extensions",
-        "silk",
-    ]
-
 MIDDLEWARE = [
-    "silk.middleware.SilkyMiddleware",
     "allauth.account.middleware.AccountMiddleware",  # allauth
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -108,7 +87,7 @@ TEMPLATES = [
         "DIRS": [
             BASE_DIR / "mindjunkies/templates",
             BASE_DIR / "mindjunkies/accounts/templates/accounts/",
-        ],
+            ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -124,24 +103,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "project.wsgi.application"
 
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("POSTGRES_DB"),
-        "USER": config("POSTGRES_USER"),
-        "PASSWORD": config("POSTGRES_PASSWORD"),
-        "HOST": config("POSTGRES_HOST"),
-        "PORT": config("POSTGRES_PORT"),
-    }
-}
-
-
 ELASTICSEARCH_DSL = {"default": {"hosts": "http://localhost:9200"}}
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -163,33 +125,20 @@ AUTHENTICATION_BACKENDS = [
     "allauth.account.auth_backends.AuthenticationBackend",  # allauth
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "Asia/Dhaka"
-
 USE_I18N = True
-
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
 STATIC_URL = "/static/"
-
 STATICFILES_DIRS = [
     BASE_DIR / "mindjunkies/static",
-]
+    ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
 LOGIN_REDIRECT_URL = "/"
-
 AUTH_USER_MODEL = "accounts.User"
 
 # allauth settings
@@ -231,8 +180,6 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 # django unfold setting
-
-
 UNFOLD = {
     "SITE_TITLE": "Mind Junkies",
     "SITE_HEADER": "Mind Junkies",
