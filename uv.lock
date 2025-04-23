@@ -219,19 +219,6 @@ wheels = [
 ]
 
 [[package]]
-name = "dj-database-url"
-version = "2.3.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "django" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/98/9f/fc9905758256af4f68a55da94ab78a13e7775074edfdcaddd757d4921686/dj_database_url-2.3.0.tar.gz", hash = "sha256:ae52e8e634186b57e5a45e445da5dc407a819c2ceed8a53d1fac004cc5288787", size = 10980 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e5/91/641a4e5c8903ed59f6cbcce571003bba9c5d2f731759c31db0ba83bb0bdb/dj_database_url-2.3.0-py3-none-any.whl", hash = "sha256:bb0d414ba0ac5cd62773ec7f86f8cc378a9dbb00a80884c2fc08cc570452521e", size = 7793 },
-]
-
-[[package]]
 name = "django"
 version = "5.1.7"
 source = { registry = "https://pypi.org/simple" }
@@ -404,18 +391,6 @@ wheels = [
 ]
 
 [[package]]
-name = "django-template-partials"
-version = "24.4"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "django" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/1c/ff/2a7ddae12ca8e5fea1a41af05924c04f1bb4aec7157b04a88b829dd93d4a/django_template_partials-24.4.tar.gz", hash = "sha256:25b67301470fc274ecc419e5e5fd4686a5020b1c038fd241a70eb087809034b6", size = 14538 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/31/72/d8eea70683b25230e0d2647b5cf6f2db4a7e7d35cb6170506d9618196374/django_template_partials-24.4-py2.py3-none-any.whl", hash = "sha256:ee59d3839385d7f648907c3fa8d5923fcd66cd8090f141fe2a1c338b917984e2", size = 8439 },
-]
-
-[[package]]
 name = "django-typer"
 version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -494,30 +469,6 @@ wheels = [
 ]
 
 [[package]]
-name = "factory-boy"
-version = "3.3.3"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "faker" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ba/98/75cacae9945f67cfe323829fc2ac451f64517a8a330b572a06a323997065/factory_boy-3.3.3.tar.gz", hash = "sha256:866862d226128dfac7f2b4160287e899daf54f2612778327dd03d0e2cb1e3d03", size = 164146 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/27/8d/2bc5f5546ff2ccb3f7de06742853483ab75bf74f36a92254702f8baecc79/factory_boy-3.3.3-py2.py3-none-any.whl", hash = "sha256:1c39e3289f7e667c4285433f305f8d506efc2fe9c73aaea4151ebd5cdea394fc", size = 37036 },
-]
-
-[[package]]
-name = "faker"
-version = "37.1.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "tzdata" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ba/a6/b77f42021308ec8b134502343da882c0905d725a4d661c7adeaf7acaf515/faker-37.1.0.tar.gz", hash = "sha256:ad9dc66a3b84888b837ca729e85299a96b58fdaef0323ed0baace93c9614af06", size = 1875707 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/d7/a1/8936bc8e79af80ca38288dd93ed44ed1f9d63beb25447a4c59e746e01f8d/faker-37.1.0-py3-none-any.whl", hash = "sha256:dc2f730be71cb770e9c715b13374d80dbcee879675121ab51f9683d262ae9a1c", size = 1918783 },
-]
-
-[[package]]
 name = "filelock"
 version = "3.18.0"
 source = { registry = "https://pypi.org/simple" }
@@ -578,15 +529,6 @@ wheels = [
 ]
 
 [[package]]
-name = "inflection"
-version = "0.5.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e1/7e/691d061b7329bc8d54edbf0ec22fbfb2afe61facb681f9aaa9bff7a27d04/inflection-0.5.1.tar.gz", hash = "sha256:1a29730d366e996aaacffb2f1f1cb9593dc38e2ddd30c91250c6dde09ea9b417", size = 15091 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/59/91/aa6bde563e0085a02a435aa99b49ef75b0a4b062635e606dab23ce18d720/inflection-0.5.1-py2.py3-none-any.whl", hash = "sha256:f38b2b640938a4f35ade69ac3d053042959b62a0f1076a5bbaa1b9526605a8a2", size = 9454 },
-]
-
-[[package]]
 name = "iniconfig"
 version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -612,7 +554,6 @@ dependencies = [
     { name = "authlib" },
     { name = "cloudinary" },
     { name = "crispy-tailwind" },
-    { name = "dj-database-url" },
     { name = "django" },
     { name = "django-allauth", extra = ["socialaccount"] },
     { name = "django-categories" },
@@ -620,13 +561,10 @@ dependencies = [
     { name = "django-elasticsearch-dsl" },
     { name = "django-htmx" },
     { name = "django-taggit" },
-    { name = "django-template-partials" },
     { name = "django-unfold" },
-    { name = "factory-boy" },
     { name = "markdown" },
     { name = "pillow" },
     { name = "psycopg2-binary" },
-    { name = "pytest-factoryboy" },
     { name = "python-decouple" },
     { name = "sslcommerz-lib" },
 ]
@@ -658,7 +596,6 @@ requires-dist = [
     { name = "authlib", specifier = ">=1.5.1" },
     { name = "cloudinary", specifier = ">=1.42.2" },
     { name = "crispy-tailwind", specifier = ">=1.0.3" },
-    { name = "dj-database-url", specifier = ">=2.3.0" },
     { name = "django", specifier = ">=5.1.7" },
     { name = "django-allauth", extras = ["socialaccount"], specifier = ">=65.4.1" },
     { name = "django-categories", specifier = ">=2.0.0" },
@@ -666,13 +603,10 @@ requires-dist = [
     { name = "django-elasticsearch-dsl", specifier = ">=8.0" },
     { name = "django-htmx", specifier = ">=1.23.0" },
     { name = "django-taggit", specifier = ">=6.1.0" },
-    { name = "django-template-partials", specifier = ">=24.4" },
     { name = "django-unfold", specifier = ">=0.54.0" },
-    { name = "factory-boy", specifier = ">=3.3.3" },
     { name = "markdown", specifier = ">=3.7" },
     { name = "pillow", specifier = ">=11.1.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
-    { name = "pytest-factoryboy", specifier = ">=2.7.0" },
     { name = "python-decouple", specifier = ">=3.8" },
     { name = "sslcommerz-lib", specifier = ">=1.0" },
 ]
@@ -888,22 +822,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/a5/10/a096573b4b896f18a8390d9dafaffc054c1f613c60bf838300732e538890/pytest_django-4.10.0.tar.gz", hash = "sha256:1091b20ea1491fd04a310fc9aaff4c01b4e8450e3b157687625e16a6b5f3a366", size = 84710 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/58/4c/a4fe18205926216e1aebe1f125cba5bce444f91b6e4de4f49fa87e322775/pytest_django-4.10.0-py3-none-any.whl", hash = "sha256:57c74ef3aa9d89cae5a5d73fbb69a720a62673ade7ff13b9491872409a3f5918", size = 23975 },
-]
-
-[[package]]
-name = "pytest-factoryboy"
-version = "2.7.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "factory-boy" },
-    { name = "inflection" },
-    { name = "packaging" },
-    { name = "pytest" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/a6/bc/179653e8cce651575ac95377e4fdf9afd3c4821ab4bba101aae913ebcc27/pytest_factoryboy-2.7.0.tar.gz", hash = "sha256:67fc54ec8669a3feb8ac60094dd57cd71eb0b20b2c319d2957873674c776a77b", size = 17398 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c7/56/d3ef25286dc8df9d1da0b325ee4b1b1ffd9736e44f9b30cfbe464e9f4f14/pytest_factoryboy-2.7.0-py3-none-any.whl", hash = "sha256:bf3222db22d954fbf46f4bff902a0a8d82f3fc3594a47c04bbdc0546ff4c59a6", size = 16268 },
 ]
 
 [[package]]

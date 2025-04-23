@@ -63,17 +63,12 @@ INSTALLED_APPS = [
     "mindjunkies.forums",
     "mindjunkies.payments",
     # third party mindjunkies
-    "django_tailwind_cli",
-    "django_browser_reload",
     "crispy_forms",
     "crispy_tailwind",
     "cloudinary",
     "categories",
     "categories.editor",
-    "silk",
     "django_htmx",
-    "template_partials",
-    "django_extensions",
     "taggit",
     # allauth
     "allauth",
@@ -81,6 +76,14 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
 ]
+
+if DEBUG:
+    INSTALLED_APPS += [
+        "django_tailwind_cli",
+        "django_browser_reload",
+        "django_extensions",
+        "silk",
+    ]
 
 MIDDLEWARE = [
     "silk.middleware.SilkyMiddleware",
@@ -135,8 +138,6 @@ DATABASES = {
         "PORT": config("POSTGRES_PORT"),
     }
 }
-
-print(DATABASES['default'])
 
 
 ELASTICSEARCH_DSL = {"default": {"hosts": "http://localhost:9200"}}
