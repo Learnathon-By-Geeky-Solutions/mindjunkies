@@ -1,17 +1,19 @@
 {% extends 'dashboard.html'%}
 {% load static %}
-{% load courses_tags %}
+
 
 {% block dashboard_content %}
-<div class="bg-gray-50 min-h-screen">
-    <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <!-- Published Courses Section -->
-        <div class="mb-10">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-semibold text-gray-900">Published Courses</h1>
-               <a href="{% url 'create_course'%}"> <button class=" cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-                    + New Course
-                </button></a>
+<body class="bg-white text-black">
+    <div class="max-w-6xl mx-auto p-6">
+        <h1 class="text-3xl font-semibold mb-4">{{ status }} Course</h1>
+        
+
+        <div class="bg-gray-100 p-4 rounded-lg">
+            <div class="grid grid-cols-6 text-gray-600 text-sm border-b border-gray-300 pb-2 mb-2">
+                <span class="col-span-2">Course</span>
+                
+                <span>Price</span>
+                <span class="text-right">Enrollments</span>
             </div>
             
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">

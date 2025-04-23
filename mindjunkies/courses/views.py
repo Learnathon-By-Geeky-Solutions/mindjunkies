@@ -188,7 +188,7 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     context = {
         "course_detail": course,
         "ratings": paginated_ratings,
-        "accessed": enrolled,
+        "student": enrolled,
     }
     return render(request, "courses/course_details.html", context)
 
