@@ -12,7 +12,7 @@ ENV PATH="/root/.local/bin/:$PATH"
 ADD . /app
 WORKDIR /app
 
-RUN uv sync --frozen
-RUN uv sync --group prod --frozen
 
-RUN chmod +x ./entrypoint.sh
+RUN uv sync --no-group dev --group prod --frozen
+
+RUN chmod +x /app/entrypoint.sh

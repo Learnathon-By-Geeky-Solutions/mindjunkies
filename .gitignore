@@ -95,3 +95,6 @@ scripts
 certificates
 git.sh
 dev.ps1
+
+
+.kube
