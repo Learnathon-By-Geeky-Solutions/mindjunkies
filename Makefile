@@ -43,7 +43,6 @@ update: sync migrate install-pre-commit;
 
 
 .PHONY: commit
-
 commit:
 	git status
 	@read -p "Enter commit message: " msg; \

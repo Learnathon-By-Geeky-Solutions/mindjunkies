@@ -43,7 +43,7 @@ class Transaction(BaseModel):
         unique_together = ("user", "course")
 
     def __str__(self):
-        return self.user.username + " - " + self.course.title
+        return self.user.username + " bought - " + self.course.title 
 
 
 class Balance(BaseModel):

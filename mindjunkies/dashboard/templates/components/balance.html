@@ -1,0 +1,89 @@
+{% extends 'dashboard.html'%}
+{% load static %}
+
+
+{% block dashboard_content %}
+
+<div class="bg-gray-50">
+    <div class="min-h-screen flex flex-col">
+ 
+
+        <!-- Main Content -->
+        <main class="flex-grow container mx-auto px-4 py-6">
+            <!-- Page Header -->
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-800">Balance Dashboard</h1>
+                <p class="text-gray-600">Manage your earnings and transactions</p>
+            </div>
+
+            <!-- Balance Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+                
+
+                <!-- Checkout Card -->
+                <div class="card bg-white shadow-md hover:shadow-lg transition-shadow">
+                    <div class="card-body">
+                        <h2 class="card-title text-gray-700"> Credits</h2>
+                        <p class="text-3xl font-bold text-secondary">৳{{ balance.amount }}</p>
+                        <div class="card-actions justify-end mt-2">
+                            <button class="btn btn-primary">Checkout Credits</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transaction History -->
+            <div class="card bg-white shadow-md">
+                <div class="card-body">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                        <h2 class="card-title text-gray-800">Balance History</h2>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="table table-zebra w-full">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Course</th>
+                                    <th>Student</th>
+                                    <th class="text-right">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for transaction in transactions %}
+                                <tr>
+                                    <td>{{ transaction.tran_date }}</td>
+                                    <td>{{ transaction.tran.course.title }}</td>
+                                    <td> {{ transaction.tran.user.username}} </td>
+                                    <td class="text-right text-success font-medium">+৳{{ transaction.amount}}</td>
+                                </tr>
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination flex flex-col sm:flex-row justify-between items-center mt-4 gap-4">
+                        {% if transactions.has_previous %}
+                            <a href="?page={{ transactions.previous_page_number }}" class="btn btn-sm btn-outline">Previous</a>
+                        {% endif %}
+
+                        <span class="text-gray-600">
+                            Page {{ transactions.number }} of {{ transactions.paginator.num_pages }}
+                        </span>
+
+                        {% if transactions.has_next %}
+                            <a href="?page={{ transactions.next_page_number }}" class="btn btn-sm btn-outline">Next</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </main>
+
+      
+    </div>
+</div>
+
+
+{% endblock dashboard_content %}
