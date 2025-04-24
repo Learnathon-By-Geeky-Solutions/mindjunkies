@@ -17,6 +17,7 @@ spec:
       containers:
       - name: django-mindjunkies-web
         image: registry.digitalocean.com/mindjunkies/django-mindjunkies-web:latest
+        imagePullPolicy: Always
         envFrom:
           - secretRef:
               name: django-mindjunkies-prod-env

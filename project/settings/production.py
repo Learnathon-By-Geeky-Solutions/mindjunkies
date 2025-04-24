@@ -1,13 +1,12 @@
 from project.settings.base import *
+from decouple import config, Csv
 
 DEBUG = False
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
 
-CSRF_TRUSTED_ORIGINS = [
-    f"http://{config('DOMAIN_NAME')}",
-]
+# CSRF_TRUSTED_ORIGINS = config("TRUSTED_DOMAINS", cast=Csv())
 
 DATABASES = {
     "default": {
