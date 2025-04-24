@@ -9,11 +9,11 @@ on:
     branches: [test-deployment-do, deployment-digitalocean]
 
 jobs:
-  sonarqube:
-    uses: Learnathon-By-Geeky-Solutions/mindjunkies/.github/workflows/sonarqube.yml@deployment-digitalocean
+  test_django_job:
+    uses: Learnathon-By-Geeky-Solutions/mindjunkies/.github/workflows/test-django.yml@deployment-digitalocean
   build:
     runs-on: ubuntu-latest
-    needs: [sonarqube]
+    needs: [test_django_job]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
