@@ -9,5 +9,17 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=false
 
+  
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    # environment:
+    #   - REDIS_PASSWORD=cdhhwfjw8jdjs  # Add this line for Redis password
+    # command: ["redis-server", "--requirepass", "cdhhwfjw8jdjs"]  # Require Redis password
+    restart: always  
+
 volumes:
   esdata01:

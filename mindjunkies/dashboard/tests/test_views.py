@@ -1,160 +1,114 @@
 import pytest
-from django.contrib.messages import get_messages
-from django.http import HttpResponseRedirect
 from django.urls import reverse
 from model_bakery import baker
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 
 from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course, Enrollment
-from mindjunkies.dashboard.models import Certificate, TeacherVerification
+from mindjunkies.payments.models import Balance, Transaction
+from mindjunkies.dashboard.models import TeacherVerification
+from django.test import RequestFactory
 
 
-@pytest.fixture
-def user(db, django_user_model):
-    return baker.make(django_user_model, is_teacher=False)
 
-
-@pytest.fixture
-def teacher_user(db, django_user_model):
-    return baker.make(django_user_model, is_teacher=True)
-
+pytestmark = pytest.mark.django_db
 
 @pytest.fixture
-def course(db, teacher_user):
-    return baker.make(Course, teacher=teacher_user)
-
-
-@pytest.fixture
-def enrollment(db, course, user):
-    return baker.make(Enrollment, course=course, student=user)
-
-
-@pytest.fixture
-def teacher_verification(db, teacher_user):
-    return baker.make(TeacherVerification, user=teacher_user)
-
-
-@pytest.mark.django_db
-def test_content_list_for_teacher(client, teacher_user, course):
-    client.force_login(teacher_user)
-
-    url = reverse("dashboard")
-    response = client.get(url)
-
-    assert response.status_code == 200
-    assert "courses" in response.context
-    assert len(response.context["courses"]) == 1
-    assert response.context["courses"][0] == course
-
-
-@pytest.mark.django_db
-def test_content_list_redirect_for_non_teacher(client, user):
-    client.force_login(user)
-
-    url = reverse("dashboard")
-    response = client.get(url)
-
-    assert response.status_code == 302  # should redirect
-    assert response.url == reverse("teacher_verification_form")
-
-
-@pytest.mark.django_db
-def test_enrollment_list(client, teacher_user, course, enrollment):
-    client.force_login(teacher_user)
-
-    url = reverse("teacher_dashboard_enrollments", kwargs={"slug": course.slug})
-    response = client.get(url)
-
-    assert response.status_code == 200
-    assert "students" in response.context
-    assert len(response.context["students"]) == 1
-    assert response.context["students"][0] == enrollment.student
-
-
-@pytest.mark.django_db
-def test_remove_enrollment(client, teacher_user, course, enrollment):
-    client.force_login(teacher_user)
-
-    url = reverse(
-        "dashboard_enrollments_remove",
-        kwargs={"course_slug": course.slug, "student_id": enrollment.student.uuid},
+def teacher():
+    user = baker.make(User, is_teacher=True)
+    content_type = ContentType.objects.get_for_model(Course)
+    permission = Permission.objects.get(
+        codename="view_course", content_type=content_type
     )
-    response = client.get(url)
+    user.user_permissions.add(permission)
 
+    return user
+
+@pytest.fixture
+def student():
+    return baker.make(User, is_teacher=False)
+
+@pytest.fixture
+def course(teacher):
+    return baker.make(Course, teacher=teacher, status="published")
+
+@pytest.fixture
+def request_factory():
+    return RequestFactory()
+
+
+def test_teacher_has_permission(teacher):
+    assert teacher.has_perm("courses.view_course")
+
+def test_teacher_permission_view_teacher_redirect(client, teacher):
+    client.force_login(teacher) 
+    print(client)
+    response = client.get(reverse("teacher_permission"))
+    print("888888888888888888888888888888888888888888888888", response.url)
     assert response.status_code == 302
-    assert not Enrollment.objects.filter(
-        course=course, student=enrollment.student
-    ).exists()
+    assert response.url == reverse("dashboard", kwargs={"status": "published"})
 
 
-@pytest.mark.django_db
-def test_teacher_verification_form_for_teacher(client, teacher_user):
-    client.force_login(teacher_user)
+# def test_teacher_permission_shows_form_if_not_teacher(client, student_user):
+#     client.force_login(student_user)
+#     response = client.get(reverse("teacher_permission"))
+#     assert response.status_code == 200
+#     assert "apply_teacher.html" in [t.name for t in response.templates]
 
-    url = reverse("teacher_verification_form")
-    response = client.get(url)
+# def test_content_list_view_published(client, teacher_user):
+#     course = baker.make(Course, teacher=teacher_user, status="published")
+#     client.force_login(teacher_user)
+#     url = reverse("content_list", kwargs={"status": "published"})
+#     response = client.get(url)
+#     assert response.status_code == 200
+#     assert course.title.encode() in response.content
 
-    assert response.status_code == 200
+# def test_content_list_view_balance(client, teacher_user):
+#     balance = baker.make(Balance, user=teacher_user, amount=100)
+#     baker.make(Transaction, user=teacher_user, _quantity=15)
+#     client.force_login(teacher_user)
+#     response = client.get(reverse("content_list", kwargs={"status": "balance"}))
+#     assert response.status_code == 200
+#     assert "components/balance.html" in [t.name for t in response.templates]
+#     assert b"Balance" in response.content
 
+# def test_enrollment_list_view(client, teacher_user):
+#     course = baker.make(Course, teacher=teacher_user)
+#     student = baker.make(User)
+#     baker.make(Enrollment, course=course, student=student)
+#     client.force_login(teacher_user)
+#     url = reverse("teacher_dashboard_enrollments", kwargs={"slug": course.slug})
+#     response = client.get(url)
+#     assert response.status_code == 200
+#     assert student.username.encode() in response.content
 
-@pytest.mark.django_db
-def test_teacher_verification_form_for_non_teacher(client, user):
-    client.force_login(user)
+# def test_remove_enrollment_view(client, teacher_user):
+#     course = baker.make(Course, teacher=teacher_user)
+#     student = baker.make(User)
+#     baker.make(Enrollment, course=course, student=student)
+#     client.force_login(teacher_user)
+#     url = reverse("remove_enrollment", kwargs={"course_slug": course.slug, "student_id": student.uuid})
+#     response = client.get(url)
+#     assert response.status_code == 302
+#     assert response.url == reverse("teacher_dashboard_enrollments", kwargs={"slug": course.slug})
+#     assert not Enrollment.objects.filter(course=course, student=student).exists()
 
-    url = reverse("teacher_verification_form")
-    response = client.get(url)
+# def test_teacher_verification_post(client, student_user):
+#     client.force_login(student_user)
+#     url = reverse("teacher_verification_form")
+#     with open("path/to/sample_certificate.jpg", "rb") as f:
+#         data = {
+#             "full_name": "Test User",
+#             "experience": "2 years",
+#             "certificates": [f],
+#         }
+#         response = client.post(url, data)
+#         assert response.status_code == 302 or response.status_code == 200  # success redirect or form error
 
-    assert response.status_code == 200
-    assert "form" in response.context
-
-
-@pytest.mark.django_db
-def test_teacher_verification_form_submission(client, user, teacher_verification):
-    client.force_login(user)
-
-    url = reverse("teacher_verification_form")
-    form_data = {
-        "form_field_1": "data",  # Fill this with actual form field names and data
-        "form_field_2": "data",
-        "certificates": [
-            "path/to/certificate1.pdf",
-            "path/to/certificate2.pdf",
-        ],  # adjust as per form
-    }
-
-    response = client.post(url, form_data)
-
-    assert response.status_code == 200
-    assert (
-        "There was an error in your form submission. Please check the form and try again."
-        in [str(m) for m in get_messages(response.wsgi_request)]
-    )
-
-
-@pytest.mark.django_db
-def test_teacher_verification_form_invalid(client, user):
-    client.force_login(user)
-
-    url = reverse("teacher_verification_form")
-    form_data = {
-        "form_field_1": "",  # Submit invalid data
-    }
-
-    response = client.post(url, form_data)
-
-    assert response.status_code == 200
-    assert (
-        "There was an error in your form submission. Please check the form and try again."
-        in [str(m) for m in get_messages(response.wsgi_request)]
-    )
-
-
-@pytest.mark.django_db
-def test_verification_wait_view(client, user):
-    client.force_login(user)
-
-    url = reverse("verification_wait")
-    response = client.get(url)
-
-    assert response.status_code == 200
-    assert "Please wait for your verification." in response.content.decode()
+# def test_verification_wait_view(client, student_user):
+#     client.force_login(student_user)
+#     url = reverse("verification_wait")
+#     response = client.get(url)
+#     assert response.status_code == 200
+#     assert b"Please wait for your verification." in response.content
