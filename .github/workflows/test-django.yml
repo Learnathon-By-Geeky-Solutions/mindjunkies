@@ -2,12 +2,7 @@ name: Django CI & Postgres Test
 
 on:
   workflow_call:
-    inputs:
-      python-version:
-        description: 'Python version to use'
-        required: false
-        default: '3.13'
-        type: string
+  workflow_dispatch:
 
 jobs:
   django_test:
