@@ -1,0 +1,37 @@
+name: Django CI
+
+on:
+  push:
+    branches: [test-deployment-do, deployment-digitalocean]
+  pull_request:
+    branches: [test-deployment-do, deployment-digitalocean]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.13]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install uv
+      run: |
+        pip install uv
+
+    - name: Install dependencies
+      run: |
+        uv sync
+
+    - name: Run Tests and Generate Coverage Report
+      env:
+        DJANGO_SETTINGS_MODULE: project.settings
+      run: |
+        uv run pytest -n auto
