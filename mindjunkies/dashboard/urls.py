@@ -1,11 +1,10 @@
 from django.urls import path
 
-from .views import (ContentListView, EnrollmentListView, RemoveEnrollmentView, TeacherVerificationView,
-                    VerificationWaitView, DraftView,ArchiveView)
-
+from mindjunkies.dashboard.views import ContentListView, EnrollmentListView, RemoveEnrollmentView, TeacherVerificationView,
+from mindjunkies.dashboard.views import TeacherPermissionView, VerificationWaitView
 urlpatterns = [
     path("teacher/", TeacherPermissionView.as_view(), name="teacher_permission"),
-    path("content/<str:status>/", ContentListView.as_view(), name="dashboard"),
+    path("content/", ContentListView.as_view(), name="dashboard"),
     path(
         "enrollments/<str:slug>/",
         EnrollmentListView.as_view(),
@@ -24,6 +23,5 @@ urlpatterns = [
     path(
         "verification_wait/", VerificationWaitView.as_view(), name="verification_wait"
     ),
-    path('content/draft',DraftView.as_view(),name='draft_content' ),
-    path('content/archive',ArchiveView.as_view(),name='archive_content' ),
+
 ]

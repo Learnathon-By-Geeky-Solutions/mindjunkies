@@ -20,7 +20,6 @@ from .models import Certificate, TeacherVerification
 VIEW_COURSE_PERMISSION = "courses.view_course"
 
 
-
 class TeacherPermissionView(LoginRequiredMixin, View):
     def get(self, request: HttpRequest) -> HttpResponse:
         if request.user.is_teacher:
