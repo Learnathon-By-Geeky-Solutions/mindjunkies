@@ -1,5 +1,6 @@
 from project.settings.base import *
 
+SECRET_KEY = config("SECRET_KEY")
 
 DATABASES = {
     "default": {
