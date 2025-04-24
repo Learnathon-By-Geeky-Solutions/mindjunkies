@@ -59,6 +59,6 @@ jobs:
 
       - name: Run Tests
         env:
-          DJANGO_SETTINGS_MODULE: mindjunkies.settings.test
+          DJANGO_SETTINGS_MODULE: project.settings.test
         run: |
           uv run pytest -n auto --reuse-db
