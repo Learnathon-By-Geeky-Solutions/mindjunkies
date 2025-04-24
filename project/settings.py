@@ -1,6 +1,4 @@
-from project.settings.base import *
-
-SECRET_KEY = config("SECRET_KEY")
+from project.settings_modules.base import *
 
 DATABASES = {
     "default": {
