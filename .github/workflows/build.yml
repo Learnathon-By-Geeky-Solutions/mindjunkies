@@ -1,16 +1,17 @@
 name: Build Docker Container & Push to DO Registry
 
 on:
-  workflow_call:
-  workflow_dispatch:
   push:
     branches: [test-deployment-do, deployment-digitalocean]
   pull_request:
     branches: [test-deployment-do, deployment-digitalocean]
 
 jobs:
-  test_django_job:
-    uses: Learnathon-By-Geeky-Solutions/mindjunkies/.github/workflows/test-django.yml@deployment-digitalocean
+  django_test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
     env:
       DJANGO_SETTINGS_MODULE: project.settings
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
@@ -30,9 +31,38 @@ jobs:
       CLOUDINARY_NAME: ${{ secrets.CLOUDINARY_NAME }}
       CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
       CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+
+      TEST_PASS: ${{ secrets.TEST_PASS }}
+
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.13]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        run: |
+          pip install uv
+
+      - name: Install dependencies
+        run: |
+          uv sync
+
+      - name: Run Tests and Generate Coverage Report
+        env:
+          DJANGO_SETTINGS_MODULE: project.settings
+        run: |
+          uv run pytest -n auto
+
   build:
     runs-on: ubuntu-latest
-    needs: [test_django_job]
+    needs: [django_test]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -56,6 +86,7 @@ jobs:
       - name: Push image
         run: |
           docker push registry.digitalocean.com/mindjunkies/django-mindjunkies-web --all-tags
-          - name: K8s cluster kubeconfig file with/ short-lived creds
-            run: |
-              doctl kubernetes cluster kubeconfig save --expiry-seconds 600 django-mindjunkies
+
+      - name: K8s cluster kubeconfig file with/ short-lived creds
+        run: |
+          doctl kubernetes cluster kubeconfig save --expiry-seconds 600 django-mindjunkies
