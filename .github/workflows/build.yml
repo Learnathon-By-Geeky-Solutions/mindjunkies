@@ -10,13 +10,13 @@ on:
 
 jobs:
   sonarqube:
-    uses: Learnathon-By-Geeky-Solutions/mindjunkies/.github/workflows/sonarqube.yml@test-deployment-do
+    uses: Learnathon-By-Geeky-Solutions/mindjunkies/.github/workflows/sonarqube.yml@deployment-digitalocean
   build:
     runs-on: ubuntu-latest
     needs: [sonarqube]
     env:
       CLUSTER_NAME: django-mindjunkies
-      SECRET_KEY: test-key-not-good-maybe-make-one-better
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
