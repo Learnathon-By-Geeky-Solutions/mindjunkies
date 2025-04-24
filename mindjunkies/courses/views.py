@@ -85,7 +85,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
     model = Course
     form_class = CourseForm
     template_name = "courses/create_course.html"
-    success_url = reverse_lazy("dashboard")
+    success_url = reverse_lazy("dashboard", kwargs={"status": "pending"})
 
     def get(self, request):
         if CourseToken.objects.filter(teacher=request.user, status="pending").exists():
@@ -93,7 +93,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
                 request,
                 "You have a pending course token. Please wait for it to be approved.",
             )
-            return redirect(reverse("dashboard"))
+            return redirect(reverse("dashboard", kwargs={"status": "pending"}))
         else:
             return super().get(request)
 
@@ -204,6 +204,13 @@ class RatingCreateView(CreateView):
     form_class = RatingForm
     template_name = "courses/rate_course.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        if course.teacher == request.user:
+            messages.error(request, "You cannot rate your own course.")
+            return redirect(reverse("lecture_home", kwargs={"course_slug": course.slug}))
+        return super().dispatch(request, *args, **kwargs)
+    
     def get_initial(self):
         initial = super().get_initial()
         course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
