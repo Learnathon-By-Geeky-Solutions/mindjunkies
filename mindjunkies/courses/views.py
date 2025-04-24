@@ -61,7 +61,7 @@ class NewCourseView(BaseCourseView):
 
         new_courses = Course.objects.exclude(
             id__in=[course.id for course in enrolled_courses]
-        ).order_by("-created_at")[:3]
+        ).order_by("-created_at")[:4]
 
         context["new_courses"] = new_courses
         return context
@@ -76,13 +76,13 @@ class PopularCoursesView(BaseCourseView):
 
         new_courses = Course.objects.exclude(
             id__in=[course.id for course in enrolled_courses]
-        ).order_by("-created_at")[:3]
+        ).order_by("-created_at")[:4]
 
         courses = Course.objects.exclude(
             id__in=new_courses.values_list("id", flat=True)
         ).exclude(id__in=[course.id for course in enrolled_courses])
 
-        popular_courses = courses.order_by("-enrollments")[:3]
+        popular_courses = courses.order_by("-enrollments")[:4]
         context["popular_courses"] = popular_courses
         return context
 
