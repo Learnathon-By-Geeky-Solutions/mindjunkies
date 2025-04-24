@@ -90,3 +90,16 @@ jobs:
       - name: K8s cluster kubeconfig file with/ short-lived creds
         run: |
           doctl kubernetes cluster kubeconfig save --expiry-seconds 600 django-mindjunkies
+
+      - name: Update Deployment image
+        run: |
+          kubectl set image deployment/django-mindjunkies-web-deployment django-mindjunkies-web=registry.digitalocean.com/mindjunkies/django-mindjunkies-web:${GITHUB_SHA::7}-${GITHUB_RUN_ID::5}
+
+      - name: Wait for rollout to finish
+        run: |
+          kubectl rollout status deployment/django-mindjunkies-web-deployment
+
+      - name: Post-build Django Commands - migrate
+        run: |
+          export SINGLE_POD_NAME=$(kubectl get pod -l app=django-mindjunkies-web-deployment -o jsonpath="{.items[0].metadata.name}")
+          kubectl exec -it $SINGLE_POD_NAME -- bash /app/migrate.sh
