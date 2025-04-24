@@ -151,7 +151,7 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
         enrolled = course.enrollments.filter(
             student=request.user, status="active"
         ).exists()
-
+    
     paginator = Paginator(ratings, 5)
     page = request.GET.get("page", 1)
     try:
