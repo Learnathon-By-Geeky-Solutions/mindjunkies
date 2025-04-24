@@ -55,9 +55,9 @@ jobs:
 
       - name: Run Tests and Generate Coverage Report
         env:
-          DJANGO_SETTINGS_MODULE: project.settings.test
+          DJANGO_SETTINGS_MODULE: project.settings
         run: |
-          uv run pytest --ds=project.settings.test --cov=mindjunkies --cov-report=xml --reuse-db
+          uv run pytest --cov=mindjunkies --cov-report=xml --reuse-db
           ls -l coverage.xml  # Check if coverage.xml exists
 
       - name: SonarCloud Scan
