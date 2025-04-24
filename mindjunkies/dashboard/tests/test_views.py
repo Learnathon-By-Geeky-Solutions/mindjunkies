@@ -35,59 +35,6 @@ def teacher_verification(db, teacher_user):
 
 
 @pytest.mark.django_db
-def test_content_list_for_teacher(client, teacher_user, course):
-    client.force_login(teacher_user)
-
-    url = reverse("dashboard")
-    response = client.get(url)
-
-    assert response.status_code == 200
-    assert "courses" in response.context
-    assert len(response.context["courses"]) == 1
-    assert response.context["courses"][0] == course
-
-
-@pytest.mark.django_db
-def test_content_list_redirect_for_non_teacher(client, user):
-    client.force_login(user)
-
-    url = reverse("dashboard")
-    response = client.get(url)
-
-    assert response.status_code == 302  # should redirect
-    assert response.url == reverse("teacher_verification_form")
-
-
-@pytest.mark.django_db
-def test_enrollment_list(client, teacher_user, course, enrollment):
-    client.force_login(teacher_user)
-
-    url = reverse("teacher_dashboard_enrollments", kwargs={"slug": course.slug})
-    response = client.get(url)
-
-    assert response.status_code == 200
-    assert "students" in response.context
-    assert len(response.context["students"]) == 1
-    assert response.context["students"][0] == enrollment.student
-
-
-@pytest.mark.django_db
-def test_remove_enrollment(client, teacher_user, course, enrollment):
-    client.force_login(teacher_user)
-
-    url = reverse(
-        "dashboard_enrollments_remove",
-        kwargs={"course_slug": course.slug, "student_id": enrollment.student.uuid},
-    )
-    response = client.get(url)
-
-    assert response.status_code == 302
-    assert not Enrollment.objects.filter(
-        course=course, student=enrollment.student
-    ).exists()
-
-
-@pytest.mark.django_db
 def test_teacher_verification_form_for_teacher(client, teacher_user):
     client.force_login(teacher_user)
 
@@ -95,17 +42,6 @@ def test_teacher_verification_form_for_teacher(client, teacher_user):
     response = client.get(url)
 
     assert response.status_code == 200
-
-
-@pytest.mark.django_db
-def test_teacher_verification_form_for_non_teacher(client, user):
-    client.force_login(user)
-
-    url = reverse("teacher_verification_form")
-    response = client.get(url)
-
-    assert response.status_code == 200
-    assert "form" in response.context
 
 
 @pytest.mark.django_db

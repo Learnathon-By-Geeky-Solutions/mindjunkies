@@ -1,4 +1,4 @@
-name: Django CI & Postgres Test
+name: Django CI
 
 on:
   workflow_call:
@@ -10,50 +10,31 @@ jobs:
     defaults:
       run:
         working-directory: .
-    env:
-      DJANGO_SECRET_KEY: test-key-not-good-maybe-make-one-better
-      POSTGRES_DB: dockerdb
-      POSTGRES_PASSWORD: mysecretpassword
-      POSTGRES_USER: myuser
-      POSTGRES_HOST: localhost
-      POSTGRES_PORT: 5432
-      DB_IGNORE_SSL: "true"
 
-    services:
-      postgres_main:
-        image: postgres:17
-        env:
-          POSTGRES_DB: ${{ env.POSTGRES_DB }}
-          POSTGRES_USER: ${{ env.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready 
-          --health-interval 10s 
-          --health-timeout 5s 
-          --health-retries 5
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [ 3.11, 3.12, 3.13 ]
+        python-version: [3.12, 3.13]
+
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Install uv
         run: |
           python -m pip install --upgrade pip
           pip install uv
+
       - name: Install Dependencies
         run: |
           uv sync --all-groups
+
       - name: Create .env file
         run: |
           touch .env
-          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
           echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
@@ -73,8 +54,10 @@ jobs:
           echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> .env
 
           echo "TEST_PASS=${{ secrets.TEST_PASS }}" >> .env
-          echo "NPM_BIN_PATH=${{ secrets.NPM_BIN_PATH }}" >> .env
         shell: bash
+
       - name: Run Tests
+        env:
+          DJANGO_SETTINGS_MODULE: mindjunkies.settings.test
         run: |
           uv run pytest -n auto --reuse-db

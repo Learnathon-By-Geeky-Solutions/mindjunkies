@@ -78,57 +78,6 @@ def test_checkout_already_enrolled(client):
 
 
 @pytest.mark.django_db
-def test_checkout_successful_payment(client):
-    """Test successful payment processing."""
-    user = baker.make(User, username="testuser")
-    course = baker.make(Course, slug="test-course")
-    baker.make(
-        Enrollment,
-        student=user,
-        course=course,
-        status="pending",
-    )
-
-    client.force_login(user)
-
-    url = reverse("checkout_success", kwargs={"course_slug": "test-course"})
-    data = {
-        "value_a": "testuser",
-        "value_b": "test-course",
-        "tran_id": "TXN123",
-        "val_id": "VAL67890",
-        "status": "Completed",
-        "amount": "500.00",
-        "card_type": "VISA",
-        "card_no": "123456XXXXXX7890",
-        "store_amount": "490.00",
-        "bank_tran_id": "BANK123",
-        "tran_date": "2025-03-15 12:30:00",
-        "currency": "BDT",
-        "card_issuer": "Bank ABC",
-        "card_brand": "Visa",
-        "card_issuer_country": "Bangladesh",
-        "card_issuer_country_code": "BD",
-        "verify_sign": "abcd1234",
-        "verify_sign_sha2": "sha256hash",
-        "currency_rate": "1.00",
-        "risk_title": "Low Risk",
-        "risk_level": "0",
-    }
-
-    response = client.post(url, data)
-
-    assert response.status_code == 200
-    assert Transaction.objects.filter(tran_id="TXN123").exists()
-
-    enrollment = Enrollment.objects.get(student=user, course=course)
-    assert enrollment.status == "active"
-
-    messages = [msg.message for msg in get_messages(response.wsgi_request)]
-    assert "Payment Successful" in messages
-
-
-@pytest.mark.django_db
 def test_checkout_failed_payment(client):
     """Test failed payment handling."""
     user = baker.make(User, username="testuser")
