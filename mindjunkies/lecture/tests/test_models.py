@@ -19,7 +19,7 @@ def course(db, teacher):
 
 @pytest.fixture
 def module(db, course):
-    return Module.objects.create(title="Test Module", course=course)
+    return Module.objects.create(title="Test Module", course=course, details="hello")
 
 
 @pytest.fixture
