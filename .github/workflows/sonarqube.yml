@@ -1,8 +1,10 @@
 name: SonarQube Analysis
 
 on:
-  workflow_call:
-  workflow_dispatch:
+  push:
+    branches: [test-deployment-do, deployment-digitalocean]
+  pull_request:
+    branches: [test-deployment-do, deployment-digitalocean]
 
 jobs:
   sonarqube:
