@@ -8,7 +8,6 @@ dependencies = [
     "authlib>=1.5.1",
     "cloudinary>=1.42.2",
     "crispy-tailwind>=1.0.3",
-    "dj-database-url>=2.3.0",
     "django>=5.1.7",
     "django-allauth[socialaccount]>=65.4.1",
     "django-categories>=2.0.0",
@@ -16,32 +15,17 @@ dependencies = [
     "django-elasticsearch-dsl>=8.0",
     "django-htmx>=1.23.0",
     "django-taggit>=6.1.0",
-    "django-template-partials>=24.4",
+    "django-tailwind-cli>=4.2.3",
     "django-unfold>=0.54.0",
-    "factory-boy>=3.3.3",
     "markdown>=3.7",
     "pillow>=11.1.0",
     "psycopg2-binary>=2.9.10",
-    "pytest-factoryboy>=2.7.0",
     "python-decouple>=3.8",
     "sslcommerz-lib>=1.0",
 ]
 
 [dependency-groups]
 dev = [
-    "django-browser-reload>=1.18.0",
-    "django-extensions>=3.2.3",
-    "django-silk>=5.3.2",
-    "django-tailwind-cli>=4.1.0",
-    "freezegun>=1.5.1",
-    "model-bakery>=1.20.4",
-    "pre-commit>=4.1.0",
-    "pytest>=8.3.5",
-    "pytest-cov>=6.0.0",
-    "pytest-django>=4.10.0",
-    "pytest-mock>=3.14.0",
-    "pytest-xdist>=3.6.1",
-    "requests-mock>=1.12.1",
     "ruff>=0.9.10",
 ]
 prod = [

@@ -1,0 +1,61 @@
+name: Django CI & Postgres Test
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  push:
+    branches:
+      - test-deployment
+    pull_request:
+      branches:
+        - test-deployment
+
+jobs:
+  django_test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    env:
+      DJANGO_SECRET_KEY: test-key-not-good-maybe-make-one-better
+      POSTGRES_DB: dockerdb
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_USER: myuser
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      DB_IGNORE_SSL: "true"
+
+    services:
+      postgres_main:
+        image: postgres:17
+        env:
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready 
+          --health-interval 10s 
+          --health-timeout 5s 
+          --health-retries 5
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.11, 3.12, 3.13]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install uv
+        run: |
+          python -m pip install --upgrade pip
+          pip install uv
+      - name: Install Dependencies
+        run: |
+          uv sync
+      - name: Run Tests
+        run: |
+          uv run pytest --reuse-db
