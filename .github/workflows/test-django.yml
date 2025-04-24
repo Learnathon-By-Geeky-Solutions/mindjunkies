@@ -1,12 +1,8 @@
 name: Django CI & Postgres Test
 
 on:
-  push:
-    branches:
-      - test-deployment-do
-  pull_request:
-    branches:
-      - test-deployment-do
+  workflow_call:
+  workflow_dispatch:
 
 jobs:
   django_test:
