@@ -10,22 +10,13 @@ jobs:
     defaults:
       run:
         working-directory: .
-    env:
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      POSTGRES_DB: dockerdb
-      POSTGRES_PASSWORD: mysecretpassword
-      POSTGRES_USER: myuser
-      POSTGRES_HOST: localhost
-      POSTGRES_PORT: 5432
-      DB_IGNORE_SSL: "true"
-
     services:
       postgres_main:
         image: postgres:17
         env:
-          POSTGRES_DB: ${{ env.POSTGRES_DB }}
-          POSTGRES_USER: ${{ env.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: dockerdb
+          POSTGRES_USER: myuser
+          POSTGRES_PASSWORD: mysecretpassword
         ports:
           - 5432:5432
         options: >-
@@ -33,26 +24,30 @@ jobs:
           --health-interval 10s 
           --health-timeout 5s 
           --health-retries 5
+
     strategy:
       max-parallel: 4
       matrix:
         python-version: [3.12, 3.13]
+
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Install uv
         run: |
           python -m pip install --upgrade pip
           pip install uv
+
       - name: Install Dependencies
         run: |
           uv sync --all-groups
+
       - name: Create .env file
         run: |
-          touch .env
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
           echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
@@ -73,6 +68,16 @@ jobs:
 
           echo "TEST_PASS=${{ secrets.TEST_PASS }}" >> .env
         shell: bash
+
+      - name: Export Environment Variables from .env
+        run: |
+          set -a
+          source .env
+          set +a
+        shell: bash
+
       - name: Run Tests
+        env:
+          DJANGO_SETTINGS_MODULE: mindjunkies.settings.test
         run: |
           uv run pytest -n auto --reuse-db
