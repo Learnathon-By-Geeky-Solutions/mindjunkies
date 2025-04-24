@@ -53,7 +53,7 @@ jobs:
           pip install uv
       - name: Install Dependencies
         run: |
-          uv sync
+          uv sync --all-groups
       - name: Run Tests
         run: |
           uv run pytest -n auto --reuse-db
