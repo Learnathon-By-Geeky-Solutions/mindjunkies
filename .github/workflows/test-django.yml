@@ -54,6 +54,7 @@ jobs:
           echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> .env
 
           echo "TEST_PASS=${{ secrets.TEST_PASS }}" >> .env
+          echo "DJANGO_SETTINGS_MODULE=project.settings.test" >> .env
         shell: bash
 
       - name: Run Tests
