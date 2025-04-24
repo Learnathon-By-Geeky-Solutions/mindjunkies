@@ -40,7 +40,6 @@ jobs:
           echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >>   .env
           echo "DEFAULT_FROM_EMAIL=${{ secrets.DEFAULT_FROM_EMAIL }}" >> .env
 
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
           echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> .env
 
           echo "JITSI_APP_ID=${{ secrets.JITSI_APP_ID }}" >> .env
