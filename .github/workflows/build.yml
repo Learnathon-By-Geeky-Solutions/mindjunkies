@@ -8,7 +8,7 @@ on:
 
 jobs:
   test_django_job:
-    uses: Learnathon-By-Geeky-Solutions/mindjunkies/.github/workflows/test-django.yaml@test-deployment-do
+    uses: Learnathon-By-Geeky-Solutions/mindjunkies/.github/workflows/test-django.yml@test-deployment-do
   build:
     runs-on: ubuntu-latest
     needs: [test_django_job]
