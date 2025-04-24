@@ -4,7 +4,7 @@ from mindjunkies.dashboard.views import ContentListView, EnrollmentListView, Rem
 from mindjunkies.dashboard.views import TeacherPermissionView, VerificationWaitView, TeacherVerificationView
 urlpatterns = [
     path("teacher/", TeacherPermissionView.as_view(), name="teacher_permission"),
-    path("content/", ContentListView.as_view(), name="dashboard"),
+    path("content/<str:status>", ContentListView.as_view(), name="dashboard"),
     path(
         "enrollments/<str:slug>/",
         EnrollmentListView.as_view(),
