@@ -8,61 +8,62 @@ python manage.py test
 
 ```
 docker build -f Dockerfile \
-  -t registry.digitalocean.com/cfe-k8s/django-k8s-web:latest 
-  -t registry.digitalocean.com/cfe-k8s/django-k8s-web:v1 
+  -t registry.digitalocean.com/mindjunkies/django-mindjunkies-web:latest 
+  -t registry.digitalocean.com/mindjunkies/django-mindjunkies-web:v1 \
+  .
 ```
 
 3. Push Container with 2 tags: latest and random
 
 ```
-docker push registry.digitalocean.com/cfe-k8s/django-k8s-web --all-tags
+docker push registry.digitalocean.com/mindjunkies/django-mindjunkies-web --all-tags
 ```
 
 4. Update secrets (if needed)
 
 ```
-kubectl delete secret django-k8s-web-prod-env
-kubectl create secret generic django-k8s-web-prod-env --from-env-file=web/.env.prod
+kubectl delete secret django-mindjunkies-prod-env
+kubectl create secret generic django-mindjunkies-prod-env --from-env-file=.env.prod
 
 ```
 
-5. Update Deployment `k8s/apps/django-k8s-web.yaml`:
+5. Update Deployment `k8s/apps/django-mindjunkies-web.yaml`:
 
 Add in a rollout strategy:
 
 
 `imagePullPolicy: Always`
 
-CHange 
+Change 
 ```
-image: registry.digitalocean.com/cfe-k8s/django-k8s-web:latest
+image: registry.digitalocean.com/mindjunkies/django-mindjunkies-web:latest
 ```
 to
 
 ```
-image: registry.digitalocean.com/cfe-k8s/django-k8s-web:v1 
+image: registry.digitalocean.com/mindjunkies/django-mindjunkies-web:v1 
 ```
 Notice that we need `v1` to change over time.
 
 
 ```
-kubectl apply -f k8s/apps/django-k8s-web.yaml
+kubectl apply -f k8s/apps/django-mindjunkies-web.yaml
 ```
 
 6. Roll Update:
 ```
-kubectl rollout status deployment/django-k8s-web-deployment
+kubectl rollout status deployment/django-mindjunkis-web-deployment
 ```
 7. Migrate database
 
 Get a single pod (either method works)
 
 ```
-export SINGLE_POD_NAME=$(kubectl get pod -l app=django-k8s-web-deployment -o jsonpath="{.items[0].metadata.name}")
+export SINGLE_POD_NAME=$(kubectl get pod -l app=django-mindjunkies-web-deployment -o jsonpath="{.items[0].metadata.name}")
 ```
 or 
 ```
-export SINGLE_POD_NAME=$(kubectl get pod -l=app=django-k8s-web-deployment -o NAME | tail -n 1)
+export SINGLE_POD_NAME=$(kubectl get pod -l=app=django-mindjunkies-web-deployment -o NAME | tail -n 1)
 ```
 
 Then run `migrate.sh` 
