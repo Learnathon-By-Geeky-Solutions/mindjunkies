@@ -1,4 +1,4 @@
-from project.settings.base import *
+from project.settings_modules.base import *
 
 DEBUG = True
 

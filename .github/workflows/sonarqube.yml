@@ -2,11 +2,9 @@ name: SonarQube Analysis
 
 on:
   push:
-    branches:
-      - main
+    branches: [test-deployment-do, deployment-digitalocean]
   pull_request:
-    branches:
-      - main
+      branches: [test-deployment-do, deployment-digitalocean]
 
 jobs:
   sonarqube:
@@ -44,7 +42,6 @@ jobs:
           echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >>   .env
           echo "DEFAULT_FROM_EMAIL=${{ secrets.DEFAULT_FROM_EMAIL }}" >> .env
 
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
           echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> .env
 
           echo "JITSI_APP_ID=${{ secrets.JITSI_APP_ID }}" >> .env
@@ -55,7 +52,6 @@ jobs:
           echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> .env
 
           echo "TEST_PASS=${{ secrets.TEST_PASS }}" >> .env
-          echo "NPM_BIN_PATH=${{ secrets.NPM_BIN_PATH }}" >> .env
         shell: bash
 
       - name: Run Tests and Generate Coverage Report
