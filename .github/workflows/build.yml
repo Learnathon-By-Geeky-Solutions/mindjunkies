@@ -1,8 +1,6 @@
 name: Build Docker Container & Push to DO Registry
 
 on:
-  workflow_call:
-  workflow_dispatch:
   push:
     branches: [test-deployment-do]
   pull_request:
