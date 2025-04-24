@@ -7,6 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "authlib>=1.5.1",
     "cloudinary>=1.42.2",
+    "coverage>=7.8.0",
     "crispy-tailwind>=1.0.3",
     "django>=5.1.7",
     "django-allauth[socialaccount]>=65.4.1",
@@ -18,16 +19,18 @@ dependencies = [
     "django-tailwind-cli>=4.2.3",
     "django-unfold>=0.54.0",
     "markdown>=3.7",
+    "model-bakery>=1.20.4",
     "pillow>=11.1.0",
     "psycopg2-binary>=2.9.10",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+    "pytest-django>=4.11.1",
+    "pytest-xdist>=3.6.1",
     "python-decouple>=3.8",
     "sslcommerz-lib>=1.0",
 ]
 
 [dependency-groups]
-dev = [
-    "ruff>=0.9.10",
-]
 prod = [
     "gunicorn>=23.0.0",
     "whitenoise>=6.9.0",
