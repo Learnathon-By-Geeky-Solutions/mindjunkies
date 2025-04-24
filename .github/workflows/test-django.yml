@@ -8,10 +8,6 @@ on:
         required: false
         default: '3.13'
         type: string
-  push:
-    branches: [ test-deployment-do, deployment-digitalocean ]
-  pull_request:
-    branches: [ test-deployment-do, deployment-digitalocean ]
 
 jobs:
   django_test:
