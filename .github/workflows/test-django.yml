@@ -1,4 +1,4 @@
-name: Django CI & Postgres Test
+name: Django CI
 
 on:
   workflow_call:
@@ -10,20 +10,6 @@ jobs:
     defaults:
       run:
         working-directory: .
-    services:
-      postgres_main:
-        image: postgres:17
-        env:
-          POSTGRES_DB: dockerdb
-          POSTGRES_USER: myuser
-          POSTGRES_PASSWORD: mysecretpassword
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready 
-          --health-interval 10s 
-          --health-timeout 5s 
-          --health-retries 5
 
     strategy:
       max-parallel: 4
@@ -48,6 +34,7 @@ jobs:
 
       - name: Create .env file
         run: |
+          touch .env
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
           echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
@@ -67,13 +54,6 @@ jobs:
           echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> .env
 
           echo "TEST_PASS=${{ secrets.TEST_PASS }}" >> .env
-        shell: bash
-
-      - name: Export Environment Variables from .env
-        run: |
-          set -a
-          source .env
-          set +a
         shell: bash
 
       - name: Run Tests
