@@ -7,9 +7,21 @@ on:
     branches: [test-deployment-do, deployment-digitalocean]
 
 jobs:
-  build:
-
+  django_test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    env:
+      DJANGO_SETTINGS_MODULE: project.settings
+
+      CLOUDINARY_NAME: ${{ secrets.CLOUDINARY_NAME }}
+      CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+      CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+
+
+
+
     strategy:
       max-parallel: 4
       matrix:
