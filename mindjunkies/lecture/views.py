@@ -32,6 +32,19 @@ def get_today_range() -> Tuple[timezone.datetime, timezone.datetime]:
     end = today.replace(hour=23, minute=59, second=59, microsecond=999999)
     return start, end
 
+def get_this_week_range() -> Tuple[timezone.datetime, timezone.datetime]:
+    """Get the start and end of the current week."""
+    today = localtime(now())
+    start = today - timedelta(days=today.weekday())
+    start = start.replace(hour=0, minute=0, second=0, microsecond=0)
+    end = start + timedelta(days=6, hours=23, minutes=59, seconds=59, microseconds=999999)
+    return start, end
+
+
+
+# When querying your database or filtering data:
+# Filter out records where date == today
+
 
 def check_course_enrollment(user, course):
     """Check if a user is enrolled in a course or is staff."""
@@ -69,14 +82,24 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         course = self.get_course()
         today_start, today_end = get_today_range()
+        week_start, week_end = get_this_week_range()
 
         # Use cached queryset to avoid repeating filters
+        current_live_class= get_current_live_class(course)
         live_classes_today = list(
             course.live_classes.filter(
                 scheduled_at__range=(today_start, today_end)
-            ).order_by("scheduled_at")
+            ).
+            order_by("scheduled_at")
         )
-
+        live_classes_this_week = list(
+    course.live_classes.filter(
+        scheduled_at__range=(week_start, week_end)
+    ).exclude(
+        scheduled_at__range=(today_start, today_end)
+    ).order_by("scheduled_at")
+)
+        
         context.update({
             "course": course,
             "modules": course.modules.all(),
@@ -84,6 +107,7 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
             "isTeacher": is_teacher_for_course(self.request.user, course),
             "current_live_class": get_current_live_class(course),
             "todays_live_classes": live_classes_today,
+            "this_weeks_live_classes": live_classes_this_week,
         })
         return context
 

@@ -298,7 +298,7 @@ class ReplyDeletionView(LoginRequiredMixin, View):
 class ReplyFormView(LoginRequiredMixin, CourseContextMixin, View):
     def get(self, request, *args, **kwargs):
         reply_id = self.kwargs.get("reply_id")
-        print(f"Reply ID received: {reply_id}")
+       
         reply = get_object_or_404(Reply, id=reply_id)
         if not reply:
             reply = get_object_or_404(ForumComment, id=reply_id)
