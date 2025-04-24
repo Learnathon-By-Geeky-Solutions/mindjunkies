@@ -1,31 +1,80 @@
 name: Build Docker Container & Push to DO Registry
 
 on:
-  workflow_call:
-  workflow_dispatch:
   push:
     branches: [test-deployment-do, deployment-digitalocean]
   pull_request:
     branches: [test-deployment-do, deployment-digitalocean]
 
 jobs:
-  sonarqube:
-    uses: Learnathon-By-Geeky-Solutions/mindjunkies/.github/workflows/sonarqube.yml@test-deployment-do
+  django_test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    env:
+      DJANGO_SETTINGS_MODULE: project.settings
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+
+      JITSI_APP_ID: ${{ secrets.JITSI_APP_ID }}
+      JITSI_SECRET: ${{ secrets.JITSI_SECRET }}
+
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+
+      EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+      EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+      DEFAULT_FROM_EMAIL: ${{ secrets.DEFAULT_FROM_EMAIL }}
+
+      CLOUDINARY_NAME: ${{ secrets.CLOUDINARY_NAME }}
+      CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+      CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+
+      TEST_PASS: ${{ secrets.TEST_PASS }}
+
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.13]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        run: |
+          pip install uv
+
+      - name: Install dependencies
+        run: |
+          uv sync
+
+      - name: Run Tests and Generate Coverage Report
+        env:
+          DJANGO_SETTINGS_MODULE: project.settings
+        run: |
+          uv run pytest -n auto
+
   build:
     runs-on: ubuntu-latest
-    needs: [sonarqube]
-    env:
-      CLUSTER_NAME: django-mindjunkies
-      SECRET_KEY: test-key-not-good-maybe-make-one-better
+    needs: [django_test]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DO_API_TOKEN_KEY }}
+
       - name: Login to DO Container Registry with short-lived token
         run: doctl registry login --expiry-seconds 1200
+
       - name: Build container image
         working-directory: .
         run: |
@@ -33,9 +82,11 @@ jobs:
             -t registry.digitalocean.com/mindjunkies/django-mindjunkies-web:latest \
             -t registry.digitalocean.com/mindjunkies/django-mindjunkies-web:${GITHUB_SHA::7}-${GITHUB_RUN_ID::5} \
             .
+
       - name: Push image
         run: |
           docker push registry.digitalocean.com/mindjunkies/django-mindjunkies-web --all-tags
-          - name: K8s cluster kubeconfig file with/ short-lived creds
-            run: |
-              doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ env.CLUSTER_NAME }}
+
+      - name: K8s cluster kubeconfig file with/ short-lived creds
+        run: |
+          doctl kubernetes cluster kubeconfig save --expiry-seconds 600 django-mindjunkies
