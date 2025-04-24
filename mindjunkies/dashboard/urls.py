@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import (ContentListView, EnrollmentListView, RemoveEnrollmentView, TeacherVerificationView,
-                    VerificationWaitView, DraftView,ArchiveView)
+                    VerificationWaitView, DraftView,ArchiveView,TeacherPermissionView)
 
 urlpatterns = [
     path("teacher/", TeacherVerificationView.as_view(), name="teacher_permission"),
