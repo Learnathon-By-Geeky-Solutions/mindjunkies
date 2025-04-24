@@ -14,11 +14,17 @@ jobs:
         working-directory: .
     env:
       DJANGO_SETTINGS_MODULE: project.settings
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
 
       CLOUDINARY_NAME: ${{ secrets.CLOUDINARY_NAME }}
       CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
       CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
 
+      TEST_PASS: ${{ secrets.TEST_PASS }}
 
 
 
