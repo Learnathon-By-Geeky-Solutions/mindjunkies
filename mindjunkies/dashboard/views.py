@@ -6,9 +6,12 @@ from django.urls import reverse_lazy
 from django.utils.timezone import now
 from django.views import View
 from django.views.generic.edit import FormView
+from django.core.paginator import Paginator
+
 
 from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course, Enrollment
+from mindjunkies.payments.models import Transaction, Balance, BalanceHistory
 
 from .forms import TeacherVerificationForm
 from .mixins import CustomPermissionRequiredMixin
@@ -27,18 +30,54 @@ class TeacherPermissionView(LoginRequiredMixin, View):
         return render(request, "apply_teacher.html")
 
 
-class ContentListView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
+class ContentListView(LoginRequiredMixin, View):
     permission_required = VIEW_COURSE_PERMISSION
 
-    def get(self, request: HttpRequest) -> HttpResponse:
+    def get(self, request: HttpRequest, status:str) -> HttpResponse:
         if not request.user.is_teacher:
             return redirect("teacher_permission")
 
-        courses = Course.objects.filter(teacher=request.user)
+        
+        courses = Course.objects.filter(teacher=request.user, status="published")
         context = {
             "courses": courses,
+            "status": "Published",
         }
-        return render(request, "components/contents.html", context)
+        print(status)
+        print(request.user)
+
+        if status == "draft":
+            courses = Course.objects.filter(teacher=request.user, status="draft")
+            context["courses"] = courses
+            context["status"] = "Draft"
+            return render(request, "components/contents.html", context)
+        elif status == "archived":
+            courses = Course.objects.filter(teacher=request.user, status="archived")
+            context["courses"] = courses
+            context["status"] = "Archived"
+            return render(request, "components/contents.html", context)
+        
+        elif status == "balance":
+            balance = Balance.objects.filter(user=request.user).first()
+            print(balance)
+            if not balance:
+                balance = Balance.objects.create(user=request.user, amount=0)
+            transactions = Transaction.objects.filter(user=request.user).order_by('-tran_date')  
+
+            page_number = request.GET.get("page", 1)
+            paginator = Paginator(transactions, 10)  # Show 10 transactions per page
+            page_obj = paginator.get_page(page_number)
+
+            context["balance"] = balance
+            context["transactions"] = page_obj
+            context["status"] = "Balance"
+            return render(request, "components/balance.html", context)
+
+                
+        else:
+            return render(request, "components/contents.html", context)
+    
+
 
 
 class EnrollmentListView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
@@ -130,3 +169,28 @@ class VerificationWaitView(LoginRequiredMixin, View):
             "verification_wait.html",
             {"message": "Please wait for your verification."},
         )
+    
+class DraftView(LoginRequiredMixin, View):
+    permission_required = VIEW_COURSE_PERMISSION
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        if not request.user.is_teacher:
+            return redirect("teacher_verification_form")
+
+        courses = Course.objects.filter(teacher=request.user, status="draft")
+        context = {
+            "courses": courses,
+        }
+        return render(request, "components/draft.html", context)
+class ArchiveView(LoginRequiredMixin, View):
+    permission_required = VIEW_COURSE_PERMISSION
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        if not request.user.is_teacher:
+            return redirect("teacher_verification_form")
+
+        courses = Course.objects.filter(teacher=request.user, status="draft")
+        context = {
+            "courses": courses,
+        }
+        return render(request, "components/archive.html", context)    
