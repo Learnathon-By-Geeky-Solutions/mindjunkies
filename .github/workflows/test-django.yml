@@ -2,11 +2,9 @@ name: Django CI & Postgres Test
 
 on:
   push:
-    branches:
-      - test-deployment-do
+    branches: [test-deployment-do, deployment-digitalocean]
   pull_request:
-    branches:
-      - test-deployment-do
+    branches: [test-deployment-do, deployment-digitalocean]
 
 jobs:
   django_test:
