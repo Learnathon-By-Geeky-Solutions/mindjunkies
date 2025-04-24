@@ -2,7 +2,12 @@ name: Django CI & Postgres Test
 
 on:
   workflow_call:
-  workflow_dispatch:
+    inputs:
+      python-version:
+        description: 'Python version to use'
+        required: false
+        default: '3.13'
+        type: string
   push:
     branches: [ test-deployment-do, deployment-digitalocean ]
   pull_request:
