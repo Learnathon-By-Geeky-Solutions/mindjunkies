@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     # third party apps
     "crispy_forms",
     "crispy_tailwind",
+    "django_tailwind_cli",
     "cloudinary",
     "categories",
     "categories.editor",
@@ -74,7 +75,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
     # custom middleware here
     "django_htmx.middleware.HtmxMiddleware",
 ]

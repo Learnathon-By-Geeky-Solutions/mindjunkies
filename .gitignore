@@ -98,3 +98,4 @@ dev.ps1
 
 
 .kube
+.env.prod

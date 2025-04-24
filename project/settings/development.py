@@ -13,14 +13,4 @@ DATABASES = {
     }
 }
 
-INSTALLED_APPS += [
-    "django_browser_reload",
-    "django_extensions",
-    "silk",
-    "django_tailwind_cli",
-]
 
-MIDDLEWARE = (
-    ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE +
-    ["django_browser_reload.middleware.BrowserReloadMiddleware"]
-)

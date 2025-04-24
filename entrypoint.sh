@@ -1,7 +1,11 @@
 #!/bin/bash
-APP_PORT=${APP_PORT:-8080}
-cd /app/
 
-uv run python manage.py tailwind build
+echo "Collecting static files..."
 uv run python manage.py collectstatic --noinput
-uv run gunicorn --worker-tmp-dir /dev/shm project.wsgi:application --bind "0.0.0.0:${APP_PORT}"
+
+echo "Starting Gunicorn server..."
+uv run gunicorn project.wsgi:application \
+    --bind 0.0.0.0:${PORT:-8000} \
+    --workers 3 \
+    --threads 2 \
+    --timeout 120

@@ -6,7 +6,7 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://mindjunkies.up.railway.app",
+    f"http://{config('DOMAIN_NAME')}",
 ]
 
 DATABASES = {
@@ -19,3 +19,8 @@ DATABASES = {
         "PORT": config("POSTGRES_PORT"),
     }
 }
+
+if not config("DB_IGNORE_SSL", default=False, cast=bool):
+    DATABASES["default"]["OPTIONS"] = {
+        "sslmode": "require",
+    }

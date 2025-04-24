@@ -24,8 +24,7 @@ urlpatterns = [
     path("forums/", include("mindjunkies.forums.urls")),
 ]
 
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
 if settings.DEBUG:
-    urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]
-    urlpatterns += (path("__reload__/", include("django_browser_reload.urls")),)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
