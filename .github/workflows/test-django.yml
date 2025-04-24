@@ -11,7 +11,7 @@ jobs:
       run:
         working-directory: .
     env:
-      DJANGO_SECRET_KEY: test-key-not-good-maybe-make-one-better
+      SECRET_KEY: test-key-not-good-maybe-make-one-better
       POSTGRES_DB: dockerdb
       POSTGRES_PASSWORD: mysecretpassword
       POSTGRES_USER: myuser
@@ -36,7 +36,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [ 3.11, 3.12, 3.13 ]
+        python-version: [3.12, 3.13]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -73,7 +73,6 @@ jobs:
           echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> .env
 
           echo "TEST_PASS=${{ secrets.TEST_PASS }}" >> .env
-          echo "NPM_BIN_PATH=${{ secrets.NPM_BIN_PATH }}" >> .env
         shell: bash
       - name: Run Tests
         run: |

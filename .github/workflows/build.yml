@@ -16,7 +16,7 @@ jobs:
     needs: [test_django_job]
     env:
       CLUSTER_NAME: django-mindjunkies
-      DJANGO_SECRET_KEY: test-key-not-good-maybe-make-one-better
+      SECRET_KEY: test-key-not-good-maybe-make-one-better
     steps:
       - name: Checkout code
         uses: actions/checkout@v2

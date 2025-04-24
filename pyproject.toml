@@ -59,4 +59,4 @@ DJANGO_SETTINGS_MODULE = "project.settings.test"
 django_find_project = true
 python_files = ["test_*.py", "*_tests.py", "tests.py"]
 testpaths = ["tests", "mindjunkies"]
-addopts = "--reuse-db --tb=short --capture=no --cov=mindjunkies --cov-report=xml --cov-config=.coveragerc"
+addopts = "--reuse-db --tb=short -n auto --capture=no --cov=mindjunkies --cov-report=xml --cov-config=.coveragerc"
