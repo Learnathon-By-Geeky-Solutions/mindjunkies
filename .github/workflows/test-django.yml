@@ -3,12 +3,6 @@ name: Django CI & Postgres Test
 on:
   workflow_call:
   workflow_dispatch:
-  push:
-    branches:
-      - test-deployment
-    pull_request:
-      branches:
-        - test-deployment
 
 jobs:
   django_test:
@@ -58,4 +52,4 @@ jobs:
           uv sync
       - name: Run Tests
         run: |
-          uv run pytest --reuse-db
+          uv run pytest -n auto --reuse-db
