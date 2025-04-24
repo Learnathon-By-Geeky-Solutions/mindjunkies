@@ -1,332 +1,265 @@
-import pytest
-from django.contrib.auth import get_user_model
-from django.contrib.messages.storage.fallback import FallbackStorage
-from django.http import HttpRequest
-from django.test import Client, RequestFactory, TestCase
+from django.test import TestCase, Client
 from django.urls import reverse
+from django.contrib.auth.models import User
+from django.utils.text import slugify
 
 from mindjunkies.courses.models import Course, Module
-from mindjunkies.forums.forms import ForumCommentForm, ForumReplyForm, ForumTopicForm
-from mindjunkies.forums.models import ForumComment, ForumTopic, Reply
-from mindjunkies.forums.views import (CommentSubmissionView, ForumHomeView, ForumThreadDetailsView, ForumThreadView,
-                                      LikeCommentView, LikePostView, LikeReplyView, ReplySubmissionView,
-                                      TopicSubmissionView)
-
-User = get_user_model()
-
-
-@pytest.mark.django_db
-class TestCourseContextMixin(TestCase):
+from mindjunkies.forums.models import ForumTopic, ForumComment, Reply, LikedPost, LikedComment, LikedReply
+from mindjunkies.forums.views import (
+    ForumHomeView, ForumThreadView, ForumThreadDetailsView,
+    TopicSubmissionView, TopicUpdateView, TopicDeletionView,
+    CommentSubmissionView, CommentDeletionView,
+    ReplySubmissionView, ReplyDeletionView, ReplyFormView,
+    LikePostView, LikeCommentView, LikeReplyView
+)
+from django.conf import settings
+class ForumTests(TestCase):
     def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123'
         )
-
-    def test_get_course(self):
-        """Test that get_course returns the correct course based on slug"""
-        view = ForumHomeView()
-        view.kwargs = {"course_slug": self.course.slug}
-        course = view.get_course()
-
-        self.assertEqual(course, self.course)
-
-    def test_get_context_data(self):
-        """Test that course is added to context"""
-        request = self.factory.get("/")
-        request.user = self.user
-
-        view = ForumHomeView()
-        view.request = request
-        view.kwargs = {"course_slug": self.course.slug}
-
-        context = view.get_context_data()
-
-        self.assertEqual(context["course"], self.course)
-
-
-@pytest.mark.django_db
-class TestForumThreadView(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="testuser", password="password")
+        self.user2 = User.objects.create_user(
+            username='testuser2',
+            email='test2@example.com',
+            password='testpass123'
+        )
+       
+        
+        # Create a Course with a teacher
         self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
+            title='Test Course',
+            slug='test-course',
+            teacher=self.user,  # Assign the user as the teacher
+            short_introduction='Test introduction',  # Required field
+            course_description='Test description',  # Required field
+            level='beginner',  # Required field
+            course_price=0.00,  # Required field
         )
         self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
+            course=self.course,
+            title='Test Module'
         )
+        
         self.topic = ForumTopic.objects.create(
-            title="Test Topic",
-            slug="test-topic",
-            content="Test Content",
+            title='Test Topic',
+            content='Test content',
             author=self.user,
             course=self.course,
-            module=self.module,
+            module=self.module
         )
-
-    def test_get_module(self):
-        """Test that get_module returns the correct module"""
-        view = ForumThreadView()
-        view.kwargs = {"module_id": self.module.id}
-        module = view.get_module()
-
-        self.assertEqual(module, self.module)
-
-    def test_get_context_data(self):
-        """Test that module and form are added to context"""
-        request = self.factory.get("/")
-        request.user = self.user
-
-        view = ForumThreadView()
-        view.request = request
-        view.kwargs = {"course_slug": self.course.slug, "module_id": self.module.id}
-
-        context = view.get_context_data()
-
-        self.assertEqual(context["module"], self.module)
-        self.assertIsInstance(context["form"], ForumTopicForm)
-
-
-@pytest.mark.django_db
-class TestForumThreadDetailsView(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
-        )
-        self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
-        )
-        self.topic = ForumTopic.objects.create(
-            title="Test Topic",
-            slug="test-topic",
-            content="Test Content",
-            author=self.user,
-            course=self.course,
-            module=self.module,
-        )
-
-    def test_get_topic(self):
-        """Test that get_topic returns the correct topic"""
-        view = ForumThreadDetailsView()
-        view.kwargs = {"topic_id": self.topic.id}
-        topic = view.get_topic()
-
-        self.assertEqual(topic, self.topic)
-
-
-@pytest.mark.django_db
-class TestTopicSubmissionView(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
-        )
-        self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
-        )
-
-    def test_post_valid_form(self):
-        """Test topic submission with valid form data"""
-        request = self.factory.post(
-            "/",
-            {
-                "title": "New Topic",
-                "content": "Topic content",
-                "module": self.module.id,
-            },
-        )
-        request.user = self.user
-
-        # Add messages support to request
-        setattr(request, "session", "session")
-        messages = FallbackStorage(request)
-        setattr(request, "_messages", messages)
-
-        view = TopicSubmissionView.as_view()
-        view(request, course_slug=self.course.slug, module_id=self.module.id)
-
-        # Check that a new topic was created
-        self.assertEqual(ForumTopic.objects.count(), 1)
-        topic = ForumTopic.objects.first()
-        self.assertEqual(topic.title, "New Topic")
-        self.assertEqual(topic.author, self.user)
-        self.assertEqual(topic.course, self.course)
-        self.assertEqual(topic.module, self.module)
-
-
-@pytest.mark.django_db
-class TestCommentSubmissionView(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
-        )
-        self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
-        )
-        self.topic = ForumTopic.objects.create(
-            title="Test Topic",
-            slug="test-topic",
-            content="Test Content",
-            author=self.user,
-            course=self.course,
-            module=self.module,
-        )
-
-    def test_post_valid_comment(self):
-        """Test comment submission with valid data"""
-        request = self.factory.post("/", {"content": "Test comment content"})
-        request.user = self.user
-
-        # Add messages support to request
-        setattr(request, "session", "session")
-        messages = FallbackStorage(request)
-        setattr(request, "_messages", messages)
-
-        view = CommentSubmissionView.as_view()
-        view(request, course_slug=self.course.slug, topic_id=self.topic.id)
-
-        # Check that a new comment was created
-        self.assertEqual(ForumComment.objects.count(), 1)
-        comment = ForumComment.objects.first()
-        self.assertEqual(comment.content, "Test comment content")
-        self.assertEqual(comment.author, self.user)
-        self.assertEqual(comment.topic, self.topic)
-
-
-@pytest.mark.django_db
-class TestReplySubmissionView(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
-        )
-        self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
-        )
-        self.topic = ForumTopic.objects.create(
-            title="Test Topic",
-            slug="test-topic",
-            content="Test Content",
-            author=self.user,
-            course=self.course,
-            module=self.module,
-        )
+        
         self.comment = ForumComment.objects.create(
-            topic=self.topic, author=self.user, content="Test comment"
+            topic=self.topic,
+            content='Test comment',
+            author=self.user
         )
-
-    def test_post_valid_reply(self):
-        """Test reply submission with valid data"""
-        request = self.factory.post("/", {"body": "Test reply body"})
-        request.user = self.user
-
-        # Add messages support to request
-        setattr(request, "session", "session")
-        messages = FallbackStorage(request)
-        setattr(request, "_messages", messages)
-
-        view = ReplySubmissionView.as_view()
-        view(
-            request,
-            course_slug=self.course.slug,
-            topic_id=self.topic.id,
-            comment_id=self.comment.id,
-        )
-
-        # Check that a new reply was created
-        self.assertEqual(Reply.objects.count(), 1)
-        reply = Reply.objects.first()
-        self.assertEqual(reply.body, "Test reply body")
-        self.assertEqual(reply.author, self.user)
-        self.assertEqual(reply.parent_comment, self.comment)
-
-
-@pytest.mark.django_db
-class TestLikeViews(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
-        )
-        self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
-        )
-        self.topic = ForumTopic.objects.create(
-            title="Test Topic",
-            slug="test-topic",
-            content="Test Content",
-            author=self.user,
-            course=self.course,
-            module=self.module,
-        )
-        self.comment = ForumComment.objects.create(
-            topic=self.topic, author=self.user, content="Test comment"
-        )
+        
         self.reply = Reply.objects.create(
-            parent_comment=self.comment, author=self.user, body="Test reply"
+            parent_comment=self.comment,
+            body='Test reply',
+            author=self.user
         )
+  
 
-    def test_like_topic(self):
-        """Test liking a topic directly"""
-        # Directly test the like functionality
-        self.topic.likes.add(self.user)
-        self.assertTrue(self.topic.likes.filter(username=self.user.username).exists())
+    def test_forum_home_view_authenticated(self):
+        self.client.login(username='testuser', password='testpass123')
+        url = reverse('forum_home', kwargs={'course_slug': self.course.slug})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'forums/forum_home.html')
+        self.assertEqual(response.context['course'], self.course)
 
-        # Test unliking
-        self.topic.likes.remove(self.user)
-        self.assertFalse(self.topic.likes.filter(username=self.user.username).exists())
+    def test_forum_home_view_unauthenticated(self):
+        url = reverse('forum_home', kwargs={'course_slug': self.course.slug})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)  # Redirects to login
 
-    def test_like_comment(self):
-        """Test liking a comment directly"""
-        # Directly test the like functionality
-        self.comment.likes.add(self.user)
-        self.assertTrue(self.comment.likes.filter(username=self.user.username).exists())
+    def test_forum_thread_view(self):
+        self.client.login(username='testuser', password='testpass123')
+        url = reverse('forum_thread', kwargs={
+            'course_slug': self.course.slug,
+            'module_id': self.module.id
+        })
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'forums/forum_threads.html')
+        self.assertEqual(response.context['module'], self.module)
+        self.assertIn(self.topic, response.context['posts'])
 
-    def test_like_reply(self):
-        """Test liking a reply directly"""
-        # Directly test the like functionality
-        self.reply.likes.add(self.user)
-        self.assertTrue(self.reply.likes.filter(username=self.user.username).exists())
+    def test_forum_thread_view_search(self):
+        self.client.login(username='testuser', password='testpass123')
+        url = reverse('forum_thread', kwargs={
+            'course_slug': self.course.slug,
+            'module_id': self.module.id
+        }) + '?search=Test'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(self.topic, response.context['posts'])
+
+    def test_forum_thread_details_view(self):
+        self.client.login(username='testuser', password='testpass123')
+        url = reverse('forum_thread_details', kwargs={
+            'course_slug': self.course.slug,
+            'module_id': self.module.id,
+            'topic_id': self.topic.id
+        })
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'forums/forum_thread_details.html')
+        self.assertEqual(response.context['topic'], self.topic)
+        self.assertEqual(response.context['module'], self.module)
+
+    def test_topic_submission_view(self):
+        self.client.login(username='testuser', password='testpass123')
+        url = reverse('forum_thread', kwargs={
+            'course_slug': self.course.slug,
+            'module_id': self.module.id
+        })
+        data = {
+            'title': 'New Topic',
+            'content': 'New content'
+        }
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)  # Redirects after success
+        self.assertTrue(ForumTopic.objects.filter(title='New Topic').exists())
+
+    def test_topic_update_view(self):
+        self.client.login(username='testuser', password='testpass123')
+        url = reverse('topic_update', kwargs={
+            'course_slug': self.course.slug,
+            'module_id': self.module.id,
+            'topic_id': self.topic.id
+        })
+        data = {
+            'title': 'Updated Topic',
+            'content': 'Updated content'
+        }
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
+        self.topic.refresh_from_db()
+        self.assertEqual(self.topic.title, 'Updated Topic')
+
+    def test_topic_deletion_view(self):
+        self.client.login(username='testuser', password='testpass123')
+        url = reverse('topic_delete', kwargs={
+            'course_slug': self.course.slug,
+            'module_id': self.module.id,
+            'topic_id': self.topic.id
+        })
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(ForumTopic.objects.filter(id=self.topic.id).exists())
+
+    def test_comment_submission_view(self):
+        self.client.login(username='testuser', password='testpass123')
+        url = reverse('forum_thread_details', kwargs={
+            'course_slug': self.course.slug,
+            'module_id': self.module.id,
+            'topic_id': self.topic.id
+        })
+        data = {'content': 'New comment'}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(ForumComment.objects.filter(content='New comment').exists())
+
+    def test_comment_deletion_view(self):
+        self.client.login(username='testuser', password='testpass123')
+        url = reverse('comment_delete', kwargs={
+            'course_slug': self.course.slug,
+            'module_id': self.module.id,
+            'topic_id': self.topic.id,
+            'comment_id': self.comment.id
+        })
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(ForumComment.objects.filter(id=self.comment.id).exists())
+
+    def test_reply_submission_view(self):
+        self.client.login(username='testuser', password='testpass123')
+        url = reverse('forum_thread_details', kwargs={
+            'course_slug': self.course.slug,
+            'module_id': self.module.id,
+            'topic_id': self.topic.id
+        })
+        data = {'body': 'New reply'}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Reply.objects.filter(body='New reply').exists())
+
+    def test_reply_deletion_view(self):
+        self.client.login(username='testuser', password='testpass123')
+        url = reverse('reply_delete', kwargs={
+            'course_slug': self.course.slug,
+            'module_id': self.module.id,
+            'topic_id': self.topic.id,
+            'reply_id': self.reply.id
+        })
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+
+    def test_reply_form_view_get(self):
+        self.client.login(username='testuser', password='testpass123')
+        url = reverse('reply_form', kwargs={
+            'course_slug': self.course.slug,
+            'module_id': self.module.id,
+            'topic_id': self.topic.id,
+            'reply_id': self.reply.id
+        })
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'forums/reply_form.html')
+        self.assertEqual(response.context['reply'], self.reply)
+
+    def test_reply_form_view_post(self):
+        self.client.login(username='testuser', password='testpass123')
+        url = reverse('reply_form', kwargs={
+            'course_slug': self.course.slug,
+            'module_id': self.module.id,
+            'topic_id': self.topic.id,
+            'reply_id': self.reply.id
+        })
+        data = {'body': 'New nested reply'}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'forums/reply.html')
+        self.assertTrue(Reply.objects.filter(body='New nested reply').exists())
+
+    def test_like_post_view(self):
+        self.client.login(username='testuser', password='testpass123')
+        url = reverse('like_post', kwargs={'pk': self.topic.id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(LikedPost.objects.filter(topic=self.topic, user=self.user).exists())
+        
+        # Test unlike
+        response = self.client.post(url)
+        self.assertFalse(LikedPost.objects.filter(topic=self.topic, user=self.user).exists())
+
+    def test_like_comment_view(self):
+        self.client.login(username='testuser', password='testpass123')
+        url = reverse('like_comment', kwargs={'pk': self.comment.id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(LikedComment.objects.filter(comment=self.comment, user=self.user).exists())
+
+    def test_like_reply_view(self):
+        self.client.login(username='testuser', password='testpass123')
+        url = reverse('like_reply', kwargs={'pk': self.reply.id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(LikedReply.objects.filter(reply=self.reply, user=self.user).exists())
+
+    def test_forum_topic_model(self):
+        self.assertEqual(str(self.topic), 'Test Topic')
+        self.assertEqual(self.topic.slug, slugify('Test Topic'))
+        self.assertEqual(self.topic.get_reply_count(), 1)
+        self.assertEqual(self.topic.get_last_activity(), max(self.comment.created_at, self.topic.updated_at))
+
+    def test_forum_comment_model(self):
+        self.assertEqual(str(self.comment), f"Reply by {self.user.username} on {self.topic.title}")
+
+    def test_reply_model(self):
+        self.assertEqual(str(self.reply), f"{self.user.username} : {self.reply.body[:30]}")
