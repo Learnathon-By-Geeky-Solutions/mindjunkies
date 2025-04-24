@@ -11,15 +11,17 @@ services:
 
   
 
+
   redis:
     image: redis:latest
     container_name: redis
     ports:
       - "6379:6379"
-    # environment:
-    #   - REDIS_PASSWORD=cdhhwfjw8jdjs  # Add this line for Redis password
-    # command: ["redis-server", "--requirepass", "cdhhwfjw8jdjs"]  # Require Redis password
-    restart: always  
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    restart: always
+
 
 volumes:
   esdata01:
