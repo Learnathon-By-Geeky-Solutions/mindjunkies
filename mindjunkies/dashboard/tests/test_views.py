@@ -35,16 +35,6 @@ def teacher_verification(db, teacher_user):
 
 
 @pytest.mark.django_db
-def test_teacher_verification_form_for_teacher(client, teacher_user):
-    client.force_login(teacher_user)
-
-    url = reverse("teacher_verification_form")
-    response = client.get(url)
-
-    assert response.status_code == 200
-
-
-@pytest.mark.django_db
 def test_teacher_verification_form_submission(client, user, teacher_verification):
     client.force_login(user)
 

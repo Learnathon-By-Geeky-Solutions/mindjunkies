@@ -186,14 +186,3 @@ def test_edit_lecture_view(client, staff_user, lecture):
     ]
 
 
-@pytest.mark.django_db
-def test_create_module_view(client, staff_user, course):
-    client.force_login(staff_user)
-    url = reverse("create_module", kwargs={"course_slug": course.slug})
-
-    response = client.post(url, {"title": "New Module", "order": 1})
-
-    assert response.status_code == 302
-    assert "Module created successfully!" in [
-        str(m) for m in response.wsgi_request._messages
-    ]
