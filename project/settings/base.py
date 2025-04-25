@@ -1,12 +1,11 @@
 from pathlib import Path
 
 import cloudinary
-from decouple import config, Csv
+import cloudinary.uploader
+from decouple import config
 from django.utils.translation import gettext_lazy as _
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-
-# Cloudinary setup
+# Configuration
 cloudinary.config(
     cloud_name=config("CLOUDINARY_NAME"),
     api_key=config("CLOUDINARY_API_KEY"),
@@ -14,15 +13,24 @@ cloudinary.config(
     secure=True,
 )
 
-CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": config("CLOUDINARY_NAME"),
-    "API_KEY": config("CLOUDINARY_API_KEY"),
-    "API_SECRET": config("CLOUDINARY_API_SECRET"),
-}
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config("SECRET_KEY")
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost", cast=Csv())
+DEBUG = config("DEBUG", default=False, cast=bool)
+
+ALLOWED_HOSTS = [
+    config("ALLOWED_HOSTS"),
+    "localhost",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://mindjunkies.up.railway.app",
+]
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -30,13 +38,13 @@ INTERNAL_IPS = [
 
 INSTALLED_APPS = [
     "django_elasticsearch_dsl",
-    "unfold",
-    "unfold.contrib.filters",
-    "unfold.contrib.forms",
-    "unfold.contrib.inlines",
-    "unfold.contrib.import_export",
-    "unfold.contrib.guardian",
-    "unfold.contrib.simple_history",
+    "unfold",  # before django.contrib.admin
+    "unfold.contrib.filters",  # optional, if special filters are needed
+    "unfold.contrib.forms",  # optional, if special form elements are needed
+    "unfold.contrib.inlines",  # optional, if special inlines are needed
+    "unfold.contrib.import_export",  # optional, if django-import-export package is used
+    "unfold.contrib.guardian",  # optional, if django-guardian package is used
+    "unfold.contrib.simple_history",  # optional, if django-simple-history package is used
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -45,7 +53,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "django.contrib.postgres",
-    # custom apps
+    # custom mindjunkies
     "mindjunkies.home",
     "mindjunkies.accounts",
     "mindjunkies.courses",
@@ -54,17 +62,19 @@ INSTALLED_APPS = [
     "mindjunkies.live_classes",
     "mindjunkies.forums",
     "mindjunkies.payments",
-    # third party apps
+    # third party mindjunkies
+    "django_tailwind_cli",
+    "django_browser_reload",
     "crispy_forms",
     "crispy_tailwind",
-    "django_tailwind_cli",
     "cloudinary",
     "categories",
     "categories.editor",
+    "silk",
     "django_htmx",
+    "template_partials",
+    "django_extensions",
     "taggit",
-    "storages",
-    "cloudinary_storage",
     # allauth
     "allauth",
     "allauth.account",
@@ -73,6 +83,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "silk.middleware.SilkyMiddleware",
     "allauth.account.middleware.AccountMiddleware",  # allauth
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -81,6 +92,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
     # custom middleware here
     "django_htmx.middleware.HtmxMiddleware",
 ]
@@ -109,7 +121,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "project.wsgi.application"
 
+# Database
+# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",         # <host>:<port>/<db>
+        "OPTIONS": {
+            "PASSWORD": config('REDIS_PASSWORD'),               # match your requirepass
+            # optionally: "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
+
 ELASTICSEARCH_DSL = {"default": {"hosts": "http://localhost:9200"}}
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -131,41 +167,33 @@ AUTHENTICATION_BACKENDS = [
     "allauth.account.auth_backends.AuthenticationBackend",  # allauth
 ]
 
+# Internationalization
+# https://docs.djangoproject.com/en/5.1/topics/i18n/
+
 LANGUAGE_CODE = "en-us"
+
 TIME_ZONE = "Asia/Dhaka"
+
 USE_I18N = True
+
 USE_TZ = True
 
-STORAGES = {
-    "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-        "OPTIONS": {
-            "bucket_name": "mindjunkies",
-            "access_key": config("AWS_ACCESS_KEY_ID"),
-            "secret_key": config("AWS_SECRET_ACCESS_KEY"),
-            "region_name": "blr1",
-            "endpoint_url": "https://blr1.digitaloceanspaces.com",
-            "default_acl": "public-read",
-            "file_overwrite": False,
-            "location": "static",
-        },
-    },
-}
-
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.1/howto/static-files/
+STATIC_URL = "/static/"
 
 STATICFILES_DIRS = [
     BASE_DIR / "mindjunkies/static",
 ]
-STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-MEDIA_URL = "/media/"
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 LOGIN_REDIRECT_URL = "/"
+
 AUTH_USER_MODEL = "accounts.User"
 
 # allauth settings
@@ -207,6 +235,8 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 # django unfold setting
+
+
 UNFOLD = {
     "SITE_TITLE": "Mind Junkies",
     "SITE_HEADER": "Mind Junkies",

@@ -45,7 +45,7 @@ class CreateLiveClassView(LoginRequiredMixin, CreateView):
             if token.status == "pending":
                 messages.error(
                     request,
-                    "Permission for this course is pending. Please wait for it to be approved.",
+                    "The course still unverified.\nPlease wait for it to be approved.",
                 )
                 return redirect(
                     reverse("lecture_home", kwargs={"course_slug": self.course.slug})

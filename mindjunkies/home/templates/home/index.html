@@ -1,256 +1,289 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block head_title %}Home{% endblock head_title %} {% load static %} {% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/index.css' %}" />
+{% endblock extra_head %} {% block extra_js %}
+<script src="{% static 'js/index.js' %}"></script>
+{% endblock extra_js %} {% block main_content %} {% if not user.is_authenticated or not last_lecture %}
+<section class="relative bg-slate-50 py-24 px-4 sm:px-6 overflow-hidden font-serif">
+    <!-- Animated geometric accents -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <!-- Left side geometric shape with floating animation -->
+        <div
+            class="absolute -left-20 top-0 w-1/3 h-full bg-gradient-to-br from-blue-50 to-indigo-100 rounded-r-[100px] animate-pulse"
+            style="animation-duration: 8s"
+        ></div>
 
-{% block head_title %}Home{% endblock head_title %}
-{% load static %}
-{% block extra_head %}
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
-   {% endblock extra_head %}
-{% block extra_js %}
-    <script src="{% static 'js/index.js' %}"></script>
-{% endblock extra_js %}
+        <!-- Right side accent circle with slow rotation -->
+        <div
+            class="absolute -right-40 -top-40 w-96 h-96 bg-gradient-to-bl from-blue-500/10 to-indigo-500/10 rounded-full animate-spin"
+            style="animation-duration: 20s"
+        ></div>
 
-
-{% block main_content %}
-
-
-    {% if not user.is_authenticated or not last_lecture  %}
-    <section class="relative bg-slate-50 py-24 px-4 sm:px-6 overflow-hidden font-serif">
-        <!-- Animated geometric accents -->
-        <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <!-- Left side geometric shape with floating animation -->
-            <div class="absolute -left-20 top-0 w-1/3 h-full bg-gradient-to-br from-blue-50 to-indigo-100 rounded-r-[100px] animate-pulse"
-                 style="animation-duration: 8s;"></div>
-
-            <!-- Right side accent circle with slow rotation -->
-            <div class="absolute -right-40 -top-40 w-96 h-96 bg-gradient-to-bl from-blue-500/10 to-indigo-500/10 rounded-full animate-spin"
-                 style="animation-duration: 20s;"></div>
-
-            <!-- Bottom accent line with shimmer effect -->
-            <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500/0 via-blue-500/30 to-blue-500/0">
-                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/70 to-transparent animate-shimmer"
-                     style="background-size: 200% 100%;"></div>
-            </div>
+        <!-- Bottom accent line with shimmer effect -->
+        <div
+            class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500/0 via-blue-500/30 to-blue-500/0"
+        >
+            <div
+                class="absolute inset-0 bg-gradient-to-r from-transparent via-white/70 to-transparent animate-shimmer"
+                style="background-size: 200% 100%"
+            ></div>
         </div>
+    </div>
 
-        <div class="container mx-auto max-w-6xl relative z-10">
-            <div class="flex flex-col lg:flex-row items-center gap-16 px-4">
-                <!-- Text content with fade-in and slide-up animations -->
-                <div class="lg:w-3/5 space-y-1 opacity-0 animate-fadeIn" style="animation-duration: 1s; animation-fill-mode: forwards;">
-                    <!-- Subtle badge with pulse effect -->
-                    <div class="inline-block p-2 rounded-full bg-blue-100 text-blue-700 text-sm font-medium mb-2 transition-all duration-300 hover:bg-blue-200 hover:scale-105">
-                        Transform Your Future
-                    </div>
-
-                    <h1 class="text-4xl md:text-5xl font-bold text-slate-800 leading-tight">
-                        Welcome to <span class="relative inline-block pb-2">
-                            <img src="{% static 'images/logo.png' %}" alt="Logo" class="h-30 transform transition-transform duration-700 hover:scale-105">
-                            <span class="absolute -bottom-1 left-0 w-0 h-1 bg-blue-500 animate-expandWidth"
-                                  style="animation-duration: 1.5s; animation-fill-mode: forwards; animation-delay: 0.5s;"></span>
-                        </span>
-                    </h1>
-
-                    <p class="text-lg text-slate-600 leading-relaxed max-w-xl opacity-0 animate-fadeIn"
-                       style="animation-delay: 0.3s; animation-duration: 1s; animation-fill-mode: forwards;">
-                        Expand your knowledge with our cutting-edge Learning Management System.
-                        Dive into a world of courses designed to elevate your skills and advance your career.
-                    </p>
-
-                    <!-- Elegant buttons with hover effects -->
-                    <div class="flex flex-wrap gap-6 pt-4 opacity-0 animate-fadeIn"
-                         style="animation-delay: 0.6s; animation-duration: 1s; animation-fill-mode: forwards;">
-                        <a href="{% url 'account_login' %}">
-                            <button class="cursor-pointer bg-blue-600 p-3 text-white font-medium rounded-md transition-all duration-300 hover:bg-blue-700 hover:shadow-lg hover:-translate-y-1">
-                                Get Started
-                            </button>
-                        </a>
-                        <a href="#courses">
-                            <button class="font-serif cursor-pointer bg-white p-3 text-blue-600 border border-blue-600 font-medium rounded-md transition-all duration-300 hover:bg-blue-50 hover:shadow-lg hover:-translate-y-1">
-                                Explore Courses
-                            </button>
-                        </a>
-                    </div>
+    <div class="container mx-auto max-w-6xl relative z-10">
+        <div class="flex flex-col lg:flex-row items-center gap-16 px-4">
+            <!-- Text content with fade-in and slide-up animations -->
+            <div
+                class="lg:w-3/5 space-y-1 opacity-0 animate-fadeIn"
+                style="animation-duration: 1s; animation-fill-mode: forwards"
+            >
+                <!-- Subtle badge with pulse effect -->
+                <div
+                    class="inline-block p-2 rounded-full bg-blue-100 text-blue-700 text-sm font-medium mb-2 transition-all duration-300 hover:bg-blue-200 hover:scale-105"
+                >
+                    Transform Your Future
                 </div>
 
-                <!-- Creative visual element with animation -->
-                <div class="lg:w-2/5 mt-5 mb-3 lg:mt-0 opacity-0 animate-slideInRight"
-                     style="animation-delay: 0.3s; animation-duration: 1s; animation-fill-mode: forwards;">
-                    <div class="relative mx-auto max-w-md">
-                        <!-- Decorative frame with subtle pulse -->
-                        <div class="absolute -inset-6 border-2 border-dashed border-blue-200 rounded-xl animate-pulse"
-                             style="animation-duration: 4s;"></div>
+                <h1 class="text-4xl md:text-5xl font-bold text-slate-800 leading-tight">
+                    Welcome to
+                    <span class="relative inline-block pb-2">
+                        <img
+                            src="{% static 'images/logo.png' %}"
+                            alt="Logo"
+                            class="h-30 transform transition-transform duration-700 hover:scale-105"
+                        />
+                        <span
+                            class="absolute -bottom-1 left-0 w-0 h-1 bg-blue-500 animate-expandWidth"
+                            style="animation-duration: 1.5s; animation-fill-mode: forwards; animation-delay: 0.5s"
+                        ></span>
+                    </span>
+                </h1>
 
-                        <!-- Main visual element with hover effect -->
-                        <div class="relative bg-white p-10 rounded-lg shadow-lg border border-slate-100 m-4 transition-all duration-500 hover:shadow-xl">
-                            <!-- Stats with count-up animation -->
-                            <div class="grid grid-cols-2 gap-8">
-                                <div class="text-center p-4 border-r border-b border-slate-100 transition-all duration-300 hover:bg-blue-50">
-                                    <div class="text-3xl font-bold text-blue-600 mb-2 counter" data-target="500">0</div>
-                                    <div class="text-sm text-slate-500">Courses</div>
-                                </div>
-                                <div class="text-center p-4 border-b border-slate-100 transition-all duration-300 hover:bg-blue-50">
-                                    <div class="text-3xl font-bold text-indigo-600 mb-2 counter" data-target="50">0</div>
-                                    <div class="text-sm text-slate-500">Instructors</div>
-                                </div>
-                                <div class="text-center p-4 border-r border-slate-100 transition-all duration-300 hover:bg-blue-50">
-                                    <div class="text-3xl font-bold text-blue-600 mb-2">24/7</div>
-                                    <div class="text-sm text-slate-500">Support</div>
-                                </div>
-                                <div class="text-center p-4 transition-all duration-300 hover:bg-blue-50">
-                                    <div class="text-3xl font-bold text-indigo-600 mb-2 counter" data-target="100">0</div>
-                                    <div class="text-sm text-slate-500">Satisfaction</div>
-                                </div>
-                            </div>
+                <p
+                    class="text-lg text-slate-600 leading-relaxed max-w-xl opacity-0 animate-fadeIn"
+                    style="animation-delay: 0.3s; animation-duration: 1s; animation-fill-mode: forwards"
+                >
+                    Expand your knowledge with our cutting-edge Learning Management System. Dive into a world of
+                    courses designed to elevate your skills and advance your career.
+                </p>
 
-                            <!-- Elegant quote with fade-in -->
-                            <div class="mt-8 pt-6 border-t border-slate-100 opacity-0 animate-fadeIn"
-                                 style="animation-delay: 1s; animation-duration: 1s; animation-fill-mode: forwards;">
-                                <p class="text-slate-600 italic text-sm leading-relaxed px-2">
-                                    "Education is the most powerful weapon which you can use to change the world."
-                                </p>
-                                <p class="text-right text-xs text-slate-500 mt-3 pr-2">— Nelson Mandela</p>
+                <!-- Elegant buttons with hover effects -->
+                <div
+                    class="flex flex-wrap gap-6 pt-4 opacity-0 animate-fadeIn"
+                    style="animation-delay: 0.6s; animation-duration: 1s; animation-fill-mode: forwards"
+                >
+                    <a href="{% url 'account_login' %}">
+                        <button
+                            class="cursor-pointer bg-blue-600 p-3 text-white font-medium rounded-md transition-all duration-300 hover:bg-blue-700 hover:shadow-lg hover:-translate-y-1"
+                        >
+                            Get Started
+                        </button>
+                    </a>
+                    <a href="#courses">
+                        <button
+                            class="font-serif cursor-pointer bg-white p-3 text-blue-600 border border-blue-600 font-medium rounded-md transition-all duration-300 hover:bg-blue-50 hover:shadow-lg hover:-translate-y-1"
+                        >
+                            Explore Courses
+                        </button>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Creative visual element with animation -->
+            <div
+                class="lg:w-2/5 mt-5 mb-3 lg:mt-0 opacity-0 animate-slideInRight"
+                style="animation-delay: 0.3s; animation-duration: 1s; animation-fill-mode: forwards"
+            >
+                <div class="relative mx-auto max-w-md">
+                    <!-- Decorative frame with subtle pulse -->
+                    <div
+                        class="absolute -inset-6 border-2 border-dashed border-blue-200 rounded-xl animate-pulse"
+                        style="animation-duration: 4s"
+                    ></div>
+
+                    <!-- Main visual element with hover effect -->
+                    <div
+                        class="relative bg-white p-10 rounded-lg shadow-lg border border-slate-100 m-4 transition-all duration-500 hover:shadow-xl"
+                    >
+                        <!-- Stats with count-up animation -->
+                        <div class="grid grid-cols-2 gap-8">
+                            <div
+                                class="text-center p-4 border-r border-b border-slate-100 transition-all duration-300 hover:bg-blue-50"
+                            >
+                                <div class="text-3xl font-bold text-blue-600 mb-2 counter" data-target="500">0</div>
+                                <div class="text-sm text-slate-500">Courses</div>
                             </div>
+                            <div
+                                class="text-center p-4 border-b border-slate-100 transition-all duration-300 hover:bg-blue-50"
+                            >
+                                <div class="text-3xl font-bold text-indigo-600 mb-2 counter" data-target="50">0</div>
+                                <div class="text-sm text-slate-500">Instructors</div>
+                            </div>
+                            <div
+                                class="text-center p-4 border-r border-slate-100 transition-all duration-300 hover:bg-blue-50"
+                            >
+                                <div class="text-3xl font-bold text-blue-600 mb-2">24/7</div>
+                                <div class="text-sm text-slate-500">Support</div>
+                            </div>
+                            <div class="text-center p-4 transition-all duration-300 hover:bg-blue-50">
+                                <div class="text-3xl font-bold text-indigo-600 mb-2 counter" data-target="100">0</div>
+                                <div class="text-sm text-slate-500">Satisfaction</div>
+                            </div>
+                        </div>
+
+                        <!-- Elegant quote with fade-in -->
+                        <div
+                            class="mt-8 pt-6 border-t border-slate-100 opacity-0 animate-fadeIn"
+                            style="animation-delay: 1s; animation-duration: 1s; animation-fill-mode: forwards"
+                        >
+                            <p class="text-slate-600 italic text-sm leading-relaxed px-2">
+                                "Education is the most powerful weapon which you can use to change the world."
+                            </p>
+                            <p class="text-right text-xs text-slate-500 mt-3 pr-2">— Nelson Mandela</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Add the required CSS animations and JavaScript for counters -->
+    <!-- Add the required CSS animations and JavaScript for counters -->
+</section>
 
-
-
-    </section>
-
-
-
-  <div class="p-8">
+<div class="p-8">
     <h2 class="text-4xl text-gray-800 font-bold pb-2 font-serif">Empowering Learning, Anywhere, Anytime</h2>
-    <p class="text-lg text-gray-500 font-serif">From foundational knowledge to advanced mastery, Biddyapith helps you learn, grow, and succeed at your own pace.</p>
-  </div>
-
-
-{% else %}
-{% include 'home/continue_learning.html' %}
-
-{% endif %}
-<div class="relative z-10 border-t border-base-content/10">
-  <!-- Main Categories Bar -->
-  <div class="bg-base-100 shadow-sm px-5 py-2">
-      <div class="container mx-auto">
-          <ul class="flex items-center overflow-x-auto" id="categoryBar">
-              {% for category in categories %}
-                  <li class="relative">
-                      <a href="{% url 'home' %}?category={{ category.slug }}"
-                      class="block px-6 py-4 text-sm font-medium hover:text-primary transition-colors
-                             {% if category.slug == active_category.slug %}text-primary border-b-2 border-primary{% else %}text-base-content/80{% endif %}"
-                      hx-get="{% url 'home' %}?category={{ category.slug }}"
-                      hx-target="#subcategories-container"
-                      hx-trigger="mouseenter"
-                      hx-swap="innerHTML"
-                      hx-push-url="true"
-                      onmouseenter="setActiveCategory(this)"
-                      onclick="setActiveCategory(this)"
-                     >
-                          {{ category.name }}
-                      </a>
-                  </li>
-              {% endfor %}
-          </ul>
-      </div>
-  </div>
-
-  <!-- Subcategories Bar -->
-  <div id="subcategories-container">
-    {% include "home/subcategory.html" %}
-  </div>
+    <p class="text-lg text-gray-500 font-serif">
+        From foundational knowledge to advanced mastery, Biddyapith helps you learn, grow, and succeed at your own
+        pace.
+    </p>
 </div>
-  <div id="courses" class="">
-    <h1 class="font-serif text-4xl md:text-5xl font-medium  text-center my-8 py-2">
 
-          Explore Our Courses
+{% else %} {% include 'home/continue_learning.html' %} {% endif %}
+<div class="relative z-10 border-t border-base-content/10">
+    <!-- Main Categories Bar -->
+    <div class="bg-base-100 shadow-sm px-5 py-2">
+        <div class="container mx-auto">
+            <ul class="flex items-center overflow-x-auto" id="categoryBar">
+                {% for category in categories %}
+                <li class="relative">
+                    <a
+                        class="cursor-pointer block px-6 py-4 text-sm font-medium hover:text-primary transition-colors {% if category.slug == active_category.slug %}text-primary border-b-2 border-primary{% else %}text-base-content/80{% endif %}"
+                        hx-get="{% url 'home' %}?category={{ category.slug }}"
+                        hx-target="#subcategories-container"
+                        hx-trigger="mouseenter"
+                        hx-swap="innerHTML"
+                        onmouseenter="setActiveCategory(this)"
+                        onclick="setActiveCategory(this)"
+                    >
+                        {{ category.name }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 
-      </h1>
+    <!-- Subcategories Bar -->
+    <div id="subcategories-container">{% include "home/subcategory.html" %}</div>
+</div>
+<div id="courses" class="">
+    <h1 class="font-serif text-4xl md:text-5xl font-medium text-center my-8 py-2">Explore Our Courses</h1>
     {% if enrolled_courses%}
     <section id="enrolled-courses" class="p-10">
         <div class="container mx-auto px-4">
-            <h2 class=" font-serif text-2xl font-bold text-gray-900 mb-6 m-4">My Courses</h2>
+            <h2 class="font-serif text-2xl font-bold text-gray-900 mb-6 m-4">My Courses</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {% for course in enrolled_courses %}
-                    {% include 'home/card.html' %}
+                    {% for token in course.tokens.all %}
+                        {% if token.status == "approved" %}
+                            {% include 'home/card.html' %}
+                        {% endif %}
+                    {% endfor %}
                 {% endfor %}
             </div>
         </div>
-       <a href="{% url 'my_course_list'%}"> <button class="px-6 py-2 m-4 cursor-pointer font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 transition-colors duration-200">
-            Show all my courses
-          </button></a>
+        <a href="{% url 'my_course_list'%}">
+            <button
+                class="px-6 py-2 m-4 cursor-pointer font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 transition-colors duration-200"
+            >
+                Show all my courses
+            </button></a
+        >
     </section>
-    {% endif %}
-    {% if new_courses%}
-    <section id="new-courses" class="p-10 ">
+    {% endif %} {% if new_courses%}
+    <section id="new-courses" class="p-10">
         <div class="consultant mx-auto my-2 px-4">
             <h2 class="font-serif text-2xl font-semibold mb-6 m-4">Recently Introduced</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {% for course in new_courses %}
-                    {% include 'home/card.html' %}
+                    {% for token in course.tokens.all %}
+                        {% if token.status == "approved" %}
+                            {% include 'home/card.html' %}
+                        {% endif %}
+                    {% endfor %}
                 {% endfor %}
             </div>
-
         </div>
-        <a href="{% url 'new_course' %}"><button class="px-6 py-2 m-4 cursor-pointer font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 transition-colors duration-200">
-            Show all new courses
-          </button></a>
-
+        <a href="{% url 'new_course' %}"
+            ><button
+                class="px-6 py-2 m-4 cursor-pointer font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 transition-colors duration-200"
+            >
+                Show all new courses
+            </button></a
+        >
     </section>
 
-
-    {% endif %}
-
+    {% endif %} 
     {% if courses%}
-    <section id="courses" class="bg-base-200 p-10">
-        <div class="container mx-auto px-4">
-            <h2 class="font-serif text-2xl font-semibold text-gray-800 mb-6 m-4">Popular Courses</h2>
+    <section id="popular-courses" class="p-10">
+        <div class="consultant mx-auto my-2 px-4">
+            <h2 class="font-serif text-2xl font-semibold mb-6 m-4">Popular Courses</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {% for course in courses %}
-                    {% include 'home/card.html' %}
+                    {% for token in course.tokens.all %}
+                        {% if token.status == "approved" %}
+                            {% include 'home/card.html' %}  
+                        {% endif %}
+                    {% endfor %}
                 {% endfor %}
             </div>
         </div>
-        <a href="{% url 'my_course_list'%}"> <button class="px-6 py-2 m-4 cursor-pointer font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 transition-colors duration-200">
-            Show all popular courses
-          </button></a>
+        <a href="{% url 'popular_course' %}"
+            ><button
+                class="px-6 py-2 m-4 cursor-pointer font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 transition-colors duration-200"
+            >
+                Show all popular courses
+            </button></a
+        >
     </section>
+
     {% endif %}
-  </div>
+</div>
 
-    <section class="p-10">
-        {% include 'home/goal.html' %}
-    </section>
-    <section class="p-10 bg-base-200">
-        {% include 'home/review.html' %}
-    </section>
-    <script>
-       function setActiveCategory(element) {
-    // Remove active class from all category links
-    document.querySelectorAll('#categoryBar a').forEach(link => {
-        link.classList.remove('text-primary', 'border-b-2', 'border-primary');
-        link.classList.add('text-base-content/80');
-    });
+<section class="p-10">{% include 'home/goal.html' %}</section>
+<section class="p-10 bg-base-200">{% include 'home/review.html' %}</section>
+<script>
+    function setActiveCategory(element) {
+        // Remove active class from all category links
+        document.querySelectorAll("#categoryBar a").forEach((link) => {
+            link.classList.remove("text-primary", "border-b-2", "border-primary");
+            link.classList.add("text-base-content/80");
+        });
 
-    // Add active class to clicked element
-    element.classList.remove('text-base-content/80');
-    element.classList.add('text-primary', 'border-b-2', 'border-primary');
-}
-    </script>
+        // Add active class to clicked element
+        element.classList.remove("text-base-content/80");
+        element.classList.add("text-primary", "border-b-2", "border-primary");
+    }
+</script>
 
-    <style>
-        /* Hide scrollbar but keep functionality */
-        .no-scrollbar::-webkit-scrollba#r {
-            display: none;
-        }
+<style>
+    /* Hide scrollbar but keep functionality */
+    .no-scrollbar::-webkit-scrollba#r {
+        display: none;
+    }
 
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
 {% endblock main_content %}

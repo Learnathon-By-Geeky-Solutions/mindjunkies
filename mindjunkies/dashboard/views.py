@@ -2,6 +2,8 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.urls import reverse_lazy
 from django.utils.timezone import now
 from django.views import View
@@ -20,6 +22,7 @@ from .models import Certificate, TeacherVerification
 VIEW_COURSE_PERMISSION = "courses.view_course"
 
 
+
 class TeacherPermissionView(LoginRequiredMixin, View):
     def get(self, request: HttpRequest) -> HttpResponse:
         if request.user.is_teacher:
@@ -29,11 +32,19 @@ class TeacherPermissionView(LoginRequiredMixin, View):
             return redirect("verification_wait")
         return render(request, "apply_teacher.html")
 
-
+@method_decorator(cache_page(60 * 5), name="dispatch")  # cache for 5 minutes
 class ContentListView(LoginRequiredMixin, View):
+    
     permission_required = VIEW_COURSE_PERMISSION
 
+
+    def get_queryset(self):
+            import time
+            time.sleep(5)
+            return super().get_queryset() 
+
     def get(self, request: HttpRequest, status:str) -> HttpResponse:
+        print("🔴 view code executing!")   # ← this only appears on a cache MISS
         if not request.user.is_teacher:
             return redirect("teacher_permission")
 
@@ -43,19 +54,24 @@ class ContentListView(LoginRequiredMixin, View):
             "courses": courses,
             "status": "Published",
         }
-        print(status)
-        print(request.user)
+        
+       
+        if status == "published":
+            courses = Course.objects.filter(teacher=request.user, status="published")
+            context["courses"] = courses
+            context["status"] = "published"
+            return render(request, "components/content.html", context)
 
-        if status == "draft":
+        elif status == "draft":
             courses = Course.objects.filter(teacher=request.user, status="draft")
             context["courses"] = courses
             context["status"] = "Draft"
-            return render(request, "components/contents.html", context)
+            return render(request, "components/draft.html", context)
         elif status == "archived":
             courses = Course.objects.filter(teacher=request.user, status="archived")
             context["courses"] = courses
             context["status"] = "Archived"
-            return render(request, "components/contents.html", context)
+            return render(request, "components/archive.html", context)
         
         elif status == "balance":
             balance = Balance.objects.filter(user=request.user).first()
@@ -76,6 +92,9 @@ class ContentListView(LoginRequiredMixin, View):
                 
         else:
             return render(request, "components/contents.html", context)
+        
+
+         
     
 
 
