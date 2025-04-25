@@ -99,3 +99,4 @@ dev.ps1
 
 .kube
 .env.prod
+.django_tailwind_cli
