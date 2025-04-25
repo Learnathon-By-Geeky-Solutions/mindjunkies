@@ -137,7 +137,7 @@ CACHES = {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/1",         # <host>:<port>/<db>
         "OPTIONS": {
-            "PASSWORD": "cdhhwfjw8jdjs",               # match your requirepass
+            "PASSWORD": config('REDIS_PASSWORD'),               # match your requirepass
             # optionally: "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
     }
