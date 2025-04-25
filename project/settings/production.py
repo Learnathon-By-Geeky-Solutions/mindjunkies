@@ -8,10 +8,6 @@ DEBUG = False
 
 # CSRF_TRUSTED_ORIGINS = config("TRUSTED_DOMAINS", cast=Csv())
 
-INSTALLED_APPS += [
-    "storages",
-]
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -27,3 +23,4 @@ if not config("DB_IGNORE_SSL", default=False, cast=bool):
     DATABASES["default"]["OPTIONS"] = {
         "sslmode": "require",
     }
+

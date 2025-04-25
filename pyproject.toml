@@ -12,9 +12,11 @@ dependencies = [
     "django>=5.1.7",
     "django-allauth[socialaccount]>=65.4.1",
     "django-categories>=2.0.0",
+    "django-cloudinary-storage>=0.3.0",
     "django-crispy-forms>=2.3",
     "django-elasticsearch-dsl>=8.0",
     "django-htmx>=1.23.0",
+    "django-storages[s3]>=1.14.6",
     "django-taggit>=6.1.0",
     "django-tailwind-cli>=4.2.3",
     "django-unfold>=0.54.0",
@@ -36,7 +38,7 @@ dependencies = [
 [dependency-groups]
 prod = [
     "boto3>=1.38.2",
-    "django-storages>=1.14.6",
+    "django-storages[boto3]>=1.14.6",
     "gunicorn>=23.0.0",
     "whitenoise>=6.9.0",
 ]

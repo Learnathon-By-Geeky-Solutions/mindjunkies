@@ -14,7 +14,11 @@ cloudinary.config(
     secure=True,
 )
 
-DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": config("CLOUDINARY_NAME"),
+    "API_KEY": config("CLOUDINARY_API_KEY"),
+    "API_SECRET": config("CLOUDINARY_API_SECRET"),
+}
 
 SECRET_KEY = config("SECRET_KEY")
 
@@ -59,6 +63,8 @@ INSTALLED_APPS = [
     "categories.editor",
     "django_htmx",
     "taggit",
+    "storages",
+    "cloudinary_storage",
     # allauth
     "allauth",
     "allauth.account",
@@ -87,7 +93,7 @@ TEMPLATES = [
         "DIRS": [
             BASE_DIR / "mindjunkies/templates",
             BASE_DIR / "mindjunkies/accounts/templates/accounts/",
-            ],
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -125,17 +131,38 @@ AUTHENTICATION_BACKENDS = [
     "allauth.account.auth_backends.AuthenticationBackend",  # allauth
 ]
 
-
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Asia/Dhaka"
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = "/static/"
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        "OPTIONS": {
+            "bucket_name": "mindjunkies",
+            "access_key": config("AWS_ACCESS_KEY_ID"),
+            "secret_key": config("AWS_SECRET_ACCESS_KEY"),
+            "region_name": "blr1",
+            "endpoint_url": "https://blr1.digitaloceanspaces.com",
+            "default_acl": "public-read",
+            "file_overwrite": False,
+            "location": "static",
+        },
+    },
+}
+
+
 STATICFILES_DIRS = [
     BASE_DIR / "mindjunkies/static",
-    ]
+]
+STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+MEDIA_URL = "/media/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_REDIRECT_URL = "/"

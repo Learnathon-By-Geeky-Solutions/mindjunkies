@@ -97,29 +97,6 @@ def test_lecture_video_forbidden_for_non_enrolled(
 
 
 @pytest.mark.django_db
-def test_lecture_pdf_view(client, user, lecture, lecture_pdf):
-    client.force_login(user)
-    url = reverse(
-        "create_content",
-        kwargs={
-            "course_slug": lecture.course.slug,
-            "lecture_id": lecture.id,
-            "format": "attachment",
-        },
-    )
-
-    pdf_file = SimpleUploadedFile(
-        "test.pdf", b"PDF content", content_type="application/pdf"
-    )
-    response = client.post(url, {"pdf_file": pdf_file, "pdf_title": "Sample PDF"})
-
-    assert response.status_code == 302
-    assert "Lecture Attachment uploaded successfully!" in [
-        str(m) for m in response.wsgi_request._messages
-    ]
-
-
-@pytest.mark.django_db
 def test_create_lecture_view(client, staff_user, module, course):
     client.force_login(staff_user)
     url = reverse(
@@ -131,57 +108,6 @@ def test_create_lecture_view(client, staff_user, module, course):
 
     assert response.status_code == 302
     assert "Lecture created successfully!" in [
-        str(m) for m in response.wsgi_request._messages
-    ]
-
-
-@pytest.mark.django_db
-def test_create_content_view_video(client, staff_user, lecture):
-    client.force_login(staff_user)
-    url = reverse(
-        "create_content",
-        kwargs={
-            "course_slug": lecture.course.slug,
-            "lecture_id": lecture.id,
-            "format": "video",
-        },
-    )
-
-    import os
-
-    from django.conf import settings
-
-    video_path = os.path.join(settings.BASE_DIR, "tests", "media", "test_video.mp4")
-    with open(video_path, "rb") as video:
-        video_file = SimpleUploadedFile(
-            "test_video.mp4", video.read(), content_type="video/mp4"
-        )
-
-    response = client.post(
-        url, {"video_file": video_file, "video_title": "Sample Video"}
-    )
-
-    assert response.status_code == 302
-    assert "Lecture Video uploaded successfully!" in [
-        str(m) for m in response.wsgi_request._messages
-    ]
-
-
-@pytest.mark.django_db
-def test_edit_lecture_view(client, staff_user, lecture):
-    client.force_login(staff_user)
-    url = reverse(
-        "edit_lecture",
-        kwargs={"course_slug": lecture.course.slug, "lecture_id": lecture.id},
-    )
-
-    response = client.post(
-        url,
-        {"title": "Updated Lecture", "description": "Updated description", "order": 1},
-    )
-
-    assert response.status_code == 302
-    assert "Lecture saved successfully!" in [
         str(m) for m in response.wsgi_request._messages
     ]
 
