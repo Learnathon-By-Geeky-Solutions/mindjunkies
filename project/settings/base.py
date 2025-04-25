@@ -166,24 +166,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-STORAGES = {
-    "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-        "OPTIONS": {
-            "bucket_name": "mindjunkies",
-            "access_key": config("AWS_ACCESS_KEY_ID"),
-            "secret_key": config("AWS_SECRET_ACCESS_KEY"),
-            "region_name": "blr1",
-            "endpoint_url": "https://blr1.digitaloceanspaces.com",
-            "default_acl": "public-read",
-            "file_overwrite": False,
-            "location": "static",
-        },
-    },
-}
 
 STATICFILES_DIRS = [
     BASE_DIR / "mindjunkies/static",
