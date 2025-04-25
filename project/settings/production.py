@@ -8,6 +8,10 @@ DEBUG = False
 
 # CSRF_TRUSTED_ORIGINS = config("TRUSTED_DOMAINS", cast=Csv())
 
+INSTALLED_APPS += [
+    "storages",
+]
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
