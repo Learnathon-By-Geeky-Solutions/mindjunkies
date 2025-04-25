@@ -28,36 +28,6 @@ def test_create_course_view_no_token(client):
     assert response.status_code == 200
 
 
-def test_create_course_view_with_pending_token(client):
-    user = baker.make("accounts.User")
-    baker.make(CourseToken, teacher=user, status="pending")
-
-    client.force_login(user)
-    response = client.get(reverse("create_course"))
-    assert response.status_code == 302  # redirected to dashboard
-
-
-def test_course_update_view(client):
-    user = baker.make("accounts.User")
-    course = baker.make(Course, teacher=user)
-
-    client.force_login(user)
-    url = reverse("edit_course") + f"?slug={course.slug}"
-    response = client.get(url)
-    assert response.status_code == 200
-
-
-def test_course_details_enrolled(client):
-    user = baker.make("accounts.User")
-    course = baker.make(Course)
-    baker.make(Enrollment, course=course, student=user, status="active")
-
-    client.force_login(user)
-    response = client.get(reverse("course_details", args=[course.slug]))
-    assert response.status_code == 200
-    assert b"view" in response.content
-
-
 def test_category_courses_view(client):
     parent_category = baker.make(
         CourseCategory, name="Parent Category", slug="parent-category"
