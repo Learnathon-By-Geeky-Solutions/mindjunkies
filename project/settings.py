@@ -132,6 +132,18 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",         # <host>:<port>/<db>
+        "OPTIONS": {
+            "PASSWORD": "cdhhwfjw8jdjs",               # match your requirepass
+            # optionally: "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
+
 ELASTICSEARCH_DSL = {"default": {"hosts": "http://localhost:9200"}}
 
 

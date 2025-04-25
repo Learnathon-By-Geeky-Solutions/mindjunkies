@@ -192,10 +192,12 @@
         <div class="container mx-auto px-4">
             <h2 class="font-serif text-2xl font-bold text-gray-900 mb-6 m-4">My Courses</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                {% for course in enrolled_courses %} 
-                   
-                         {% include 'home/card.html'%} 
-                   
+                {% for course in enrolled_courses %}
+                    {% for token in course.tokens.all %}
+                        {% if token.status == "approved" %}
+                            {% include 'home/card.html' %}
+                        {% endif %}
+                    {% endfor %}
                 {% endfor %}
             </div>
         </div>
@@ -213,10 +215,12 @@
             <h2 class="font-serif text-2xl font-semibold mb-6 m-4">Recently Introduced</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {% for course in new_courses %}
-                   
-                      {% include 'home/card.html' %}
-                  
-            {% endfor %}
+                    {% for token in course.tokens.all %}
+                        {% if token.status == "approved" %}
+                            {% include 'home/card.html' %}
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
             </div>
         </div>
         <a href="{% url 'new_course' %}"
@@ -235,11 +239,12 @@
             <h2 class="font-serif text-2xl font-semibold mb-6 m-4">Popular Courses</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {% for course in courses %}
-                 
-                    {% include 'home/card.html' %}
-                 
-            {% endfor %}
-            
+                    {% for token in course.tokens.all %}
+                        {% if token.status == "approved" %}
+                            {% include 'home/card.html' %}  
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
             </div>
         </div>
         <a href="{% url 'popular_course' %}"

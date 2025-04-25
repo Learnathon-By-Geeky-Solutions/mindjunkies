@@ -6,6 +6,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from django.utils import timezone
 from model_bakery import baker
+from django.contrib.messages import get_messages
+
 
 baker.generators.add(
     CloudinaryField, lambda: "https://res.cloudinary.com/demo/video/upload/sample.mp4"
@@ -97,28 +99,59 @@ def test_lecture_video_forbidden_for_non_enrolled(
 
 
 @pytest.mark.django_db
-def test_lecture_pdf_view(client, user, lecture, lecture_pdf):
+def test_create_video_content_success(client):
+    # Create a user and log them in
+    user = baker.make(User)
     client.force_login(user)
-    url = reverse(
-        "create_content",
-        kwargs={
-            "course_slug": lecture.course.slug,
-            "lecture_id": lecture.id,
-            "format": "attachment",
-        },
-    )
 
-    pdf_file = SimpleUploadedFile(
-        "test.pdf", b"PDF content", content_type="application/pdf"
-    )
-    response = client.post(url, {"pdf_file": pdf_file, "pdf_title": "Sample PDF"})
+    # Create course and lecture
+    course = baker.make("lecture.Course")
+    lecture = baker.make("lecture.Lecture", course=course)
 
-    assert response.status_code == 302
-    assert "Lecture Attachment uploaded successfully!" in [
-        str(m) for m in response.wsgi_request._messages
-    ]
+    # Grant user permission via CourseToken
+    baker.make("lecture.CourseToken", course=course, teacher=user, status="approved")
 
+    url = reverse("create_content", kwargs={
+        "course_slug": course.slug,
+        "lecture_id": lecture.id,
+        "format": "video"
+    })
 
+    video_data = {
+        "title": "Test Lecture",
+        "video_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    }
+
+    response = client.post(url, video_data, follow=True)
+
+    assert response.status_code == 200
+    assert LectureVideo.objects.filter(lecture=lecture).exists()
+    messages = list(get_messages(response.wsgi_request))
+    assert any("uploaded successfully" in str(msg) for msg in messages)
+
+@pytest.mark.django_db
+def test_create_content_without_token(client):
+    user = baker.make(django_user_model)
+    client.force_login(user)
+
+    course = baker.make("lecture.Course")
+    lecture = baker.make("lecture.Lecture", course=course)
+
+    # Intentionally skipping CourseToken
+
+    url = reverse("create_content", kwargs={
+        "course_slug": course.slug,
+        "lecture_id": lecture.id,
+        "format": "video"
+    })
+
+    response = client.get(url, follow=True)
+    messages = list(get_messages(response.wsgi_request))
+    
+    assert response.status_code == 200
+    assert any("do not have permission" in str(msg) for msg in messages)
+
+    
 @pytest.mark.django_db
 def test_create_lecture_view(client, staff_user, module, course):
     client.force_login(staff_user)

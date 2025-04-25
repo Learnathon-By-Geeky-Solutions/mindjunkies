@@ -81,7 +81,7 @@ def test_transaction_str():
 
     transaction = baker.make(Transaction, user=user, course=course)
 
-    assert str(transaction) == f"{user.username} - {course.title}"
+    assert str(transaction) == f"{user.username} bought - {course.title}"
 
 
 @pytest.mark.django_db
