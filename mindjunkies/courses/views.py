@@ -117,7 +117,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
                 request,
                 "You have a pending course token. Please wait for it to be approved.",
             )
-            return redirect(reverse("dashboard", kwargs={"status": "pending"}))
+            return redirect(reverse("dashboard", kwargs={"status": "published"}))
         else:
             return super().get(request)
 
