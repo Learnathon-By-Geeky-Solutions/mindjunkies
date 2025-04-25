@@ -2,9 +2,11 @@ name: SonarQube Analysis
 
 on:
   push:
-    branches: [test-deployment-do, deployment-digitalocean]
+    branches:
+      - main
   pull_request:
-      branches: [test-deployment-do, deployment-digitalocean]
+    branches:
+      - main
 
 jobs:
   sonarqube:
@@ -33,7 +35,10 @@ jobs:
       - name: Create .env file
         run: |
           touch .env
+          echo "DJANGO_SETTINGS_MODULE=project.settings.test" >> .env
           echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+          echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> .env
+          
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
           echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
@@ -42,7 +47,6 @@ jobs:
           echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >>   .env
           echo "DEFAULT_FROM_EMAIL=${{ secrets.DEFAULT_FROM_EMAIL }}" >> .env
 
-          echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> .env
 
           echo "JITSI_APP_ID=${{ secrets.JITSI_APP_ID }}" >> .env
           echo "JITSI_SECRET=${{ secrets.JITSI_SECRET }}" >> .env
@@ -52,6 +56,9 @@ jobs:
           echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> .env
 
           echo "TEST_PASS=${{ secrets.TEST_PASS }}" >> .env
+          echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> .env
+          echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> .env
+          echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> .env
         shell: bash
 
       - name: Run Tests and Generate Coverage Report

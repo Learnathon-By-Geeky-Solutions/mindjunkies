@@ -2,9 +2,9 @@ name: Build Docker Container & Push to DO Registry
 
 on:
   push:
-    branches: [test-deployment-do, deployment-digitalocean]
+    branches: [ main, deployment-digitalocean]
   pull_request:
-    branches: [test-deployment-do, deployment-digitalocean]
+    branches: [ main, deployment-digitalocean]
 
 jobs:
   django_test:
