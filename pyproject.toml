@@ -55,7 +55,7 @@ extend-select = [
 ]
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "project.settings"
+DJANGO_SETTINGS_MODULE = "project.settings.test"
 django_find_project = true
 python_files = ["test_*.py", "*_tests.py", "tests.py"]
 testpaths = ["tests", "mindjunkies"]
