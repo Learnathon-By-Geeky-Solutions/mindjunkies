@@ -34,6 +34,8 @@ class TeacherPermissionView(LoginRequiredMixin, View):
 class ContentListView(LoginRequiredMixin, View):
     permission_required = VIEW_COURSE_PERMISSION
 
+   
+
     def get(self, request: HttpRequest, status:str) -> HttpResponse:
         if not request.user.is_teacher:
             return redirect("teacher_permission")
