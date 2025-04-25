@@ -59,7 +59,6 @@ INSTALLED_APPS = [
     "categories.editor",
     "django_htmx",
     "taggit",
-    "storages",
     # allauth
     "allauth",
     "allauth.account",
