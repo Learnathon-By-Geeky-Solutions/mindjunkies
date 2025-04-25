@@ -93,10 +93,11 @@ jobs:
 
       - name: Update deployment secrets
         run: |
-          cat << EOF >> .env.prod
+          echo "Creating .env.prod file from GitHub Secrets..."
+          cat << EOF > .env.prod
           DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}
           DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
-          DJANGO_SUERPUSER_EMAIL=${{ secrets.DJANGO_SUERPUSER_EMAIL }}
+          DJANGO_SUERUSER_EMAIL=${{ secrets.DJANGO_SUERUSER_EMAIL }}
           SECRET_KEY=${{ secrets.SECRET_KEY }}
           ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}
           POSTGRES_DB=${{ secrets.POSTGRES_DB }}
@@ -105,7 +106,8 @@ jobs:
           POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
           POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
           EOF
-          kubectl delete secret django-mindjunkies-prod-env
+          echo "Updating Kubernetes Secret..."
+          kubectl delete secret django-mindjunkies-prod-env --ignore-not-found
           kubectl create secret generic django-mindjunkies-prod-env --from-env-file=.env.prod
 
       - name: Update Deployment image
