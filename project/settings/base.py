@@ -2,7 +2,7 @@ from pathlib import Path
 
 import cloudinary
 import cloudinary.uploader
-from decouple import config
+from decouple import config, Csv
 from django.utils.translation import gettext_lazy as _
 
 # Configuration
@@ -13,24 +13,20 @@ cloudinary.config(
     secure=True,
 )
 
-DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": config("CLOUDINARY_NAME"),
+    "API_KEY": config("CLOUDINARY_API_KEY"),
+    "API_SECRET": config("CLOUDINARY_API_SECRET"),
+}
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = config("SECRET_KEY")
 
-DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = [
-    config("ALLOWED_HOSTS"),
-    "localhost",
-]
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost", cast=Csv())
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://mindjunkies.up.railway.app",
-]
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -75,6 +71,7 @@ INSTALLED_APPS = [
     "template_partials",
     "django_extensions",
     "taggit",
+    "cloudinary_storage",
     # allauth
     "allauth",
     "allauth.account",
@@ -125,13 +122,6 @@ WSGI_APPLICATION = "project.wsgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
-
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -178,22 +168,35 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-STATIC_URL = "/static/"
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        "OPTIONS": {
+            "bucket_name": "mindjunkies",
+            "access_key": config("AWS_ACCESS_KEY_ID"),
+            "secret_key": config("AWS_SECRET_ACCESS_KEY"),
+            "region_name": "blr1",
+            "endpoint_url": "https://blr1.digitaloceanspaces.com",
+            "default_acl": "public-read",
+            "file_overwrite": False,
+            "location": "static",
+        },
+    },
+}
 
 STATICFILES_DIRS = [
     BASE_DIR / "mindjunkies/static",
 ]
+STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+MEDIA_URL = "/media/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
 LOGIN_REDIRECT_URL = "/"
-
 AUTH_USER_MODEL = "accounts.User"
 
 # allauth settings
