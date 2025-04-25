@@ -94,9 +94,13 @@ jobs:
         run: |
           echo "Creating .env.prod file from GitHub Secrets..."
           cat << EOF > .env.prod
+          
           DJANGO_SETTINGS_MODULE=project.settings.production
           SECRET_KEY=${{ secrets.SECRET_KEY }}
           ALLOWED_HOSTS=209.38.124.215
+          
+          AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           
           DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}
           DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
@@ -137,7 +141,8 @@ jobs:
         run: |
           kubectl rollout status deployment/django-mindjunkies-web-deployment
 
-      - name: Post-build Django Commands - migrate
+      - name: Post-build Django Commands - migrate, collectstatic
         run: |
           export SINGLE_POD_NAME=$(kubectl get pod -l app=django-mindjunkies-web-deployment -o jsonpath="{.items[0].metadata.name}")
           kubectl exec -it $SINGLE_POD_NAME -- bash /app/migrate.sh
+          kubectl exec -it $SINGLE_POD_NAME -- bash /app/collectstatic.sh
