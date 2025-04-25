@@ -94,7 +94,7 @@ jobs:
         run: |
           echo "Creating .env.prod file from GitHub Secrets..."
           cat << EOF > .env.prod
-          DJANGO_SETTINGS_MODULE: project.settings.production
+          DJANGO_SETTINGS_MODULE=project.settings.production
           DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}
           DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
           DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUERUSER_EMAIL }}
