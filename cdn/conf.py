@@ -11,5 +11,5 @@ AWS_S3_OBJECT_PARAMETERS = {
     "ACL": "public-read",
 }
 AWS_LOCATION = config("AWS_LOCATION")
-DEFAULT_FILE_STORAGE = config("DEFAULT_FILE_STORAGE")
-STATICFILES_STORAGE = config("STATICFILES_STORAGE")
+DEFAULT_FILE_STORAGE = "mindjunkies.cdn.backends.MediaRootS3Boto3Storage"
+STATICFILES_STORAGE = "mindjunkies.cdn.backends.StaticRootS3Boto3Storage"
