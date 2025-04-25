@@ -1,4 +1,4 @@
-from project.settings_modules.base import *
+from project.settings.base import *
 
 
 DATABASES = {
