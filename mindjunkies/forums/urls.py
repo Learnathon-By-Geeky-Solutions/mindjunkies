@@ -55,7 +55,7 @@ urlpatterns = [
         name="delete_comment",
     ),
     path(
-        "delreply/<str:course_slug>/<str:module_id>/<str:topic_id>/<str:reply_id>",
+        "delreply/<str:reply_id>",
         views.ReplyDeletionView.as_view(),
         name="delete_reply",
     ),

@@ -1,5 +1,5 @@
 <div class="">
-    <a hx-get=""
+    <a hx-get="{% url 'liked_reply' reply.id %}"
        hx-target="closest div"
        hx-swap="outerHTML"
        class="flex items-center cursor-pointer text-xs text-gray-700 hover:text-blue-600">

@@ -279,20 +279,22 @@ class ReplySubmissionView(LoginRequiredMixin, View):
 
 
 class ReplyDeletionView(LoginRequiredMixin, View):
-    def post(self, request, *args, **kwargs):
-        course_slug = self.kwargs.get("course_slug")
-        topic_id = self.kwargs.get("topic_id")
-        module_id = self.kwargs.get("module_id")
+   def post(self, request, *args, **kwargs):
         reply_id = self.kwargs.get("reply_id")
-        comment = get_object_or_404(Reply, id=reply_id)
-        comment.delete()
-        messages.success(request, "Comment deleted successfully.")
-        return redirect(
-            "forum_thread_details",
-            topic_id=topic_id,
-            course_slug=course_slug,
-            module_id=module_id,
-        )
+        reply = get_object_or_404(Reply, id=reply_id)
+        
+        # Check if the user is authorized to delete the reply
+        if request.user != reply.author:
+            messages.error(request, "You are not authorized to delete this reply.")
+            return render(request, "forums/partials/empty.html", status=403)
+        
+        reply.delete()
+        messages.success(request, "Reply deleted successfully.")
+        
+        # Return an empty response for HTMX to remove the element
+        return render(request, "forums/partials/empty.html", {})
+
+    
 
 
 class ReplyFormView(LoginRequiredMixin, CourseContextMixin, View):
