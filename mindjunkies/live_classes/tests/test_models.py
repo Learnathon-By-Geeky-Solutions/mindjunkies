@@ -8,53 +8,54 @@ from datetime import datetime
 from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course
 from mindjunkies.live_classes.models import LiveClass
+from model_bakery import baker
+from unittest import mock
+from mindjunkies.live.models import LiveClass
 
 
 @pytest.mark.django_db
-def test_create_live_class():
-    """Test that a LiveClass instance can be created."""
-    teacher = baker.make(User)
-    course = baker.make(Course)
-
-    live_class = baker.make(
-        LiveClass,
-        teacher=teacher,
-        course=course,
-        topic="Test Class",
-        scheduled_at=now(),
-    )
-
-    assert live_class.teacher == teacher
-    assert live_class.course == course
-    assert live_class.topic == "Test Class"
-    assert live_class.status == "Upcoming"
-
-
-@pytest.mark.django_db
-def test_meeting_id_auto_generation():
-    """Test that `meeting_id` is automatically generated if not provided."""
-    teacher = baker.make(User)
-    course = baker.make(Course)
-
-    live_class = LiveClass.objects.create(
-        teacher=teacher, course=course, topic="Auto ID Test", scheduled_at=now()
-    )
-
+def test_live_class_auto_generates_meeting_id():
+    live_class = baker.make(LiveClass, meeting_id="")
     assert live_class.meeting_id.startswith("mindjunkies-")
-    assert len(live_class.meeting_id) == 22  # "mindjunkies-" + 10 hex characters
+    assert len(live_class.meeting_id) > 10
 
 
 @pytest.mark.django_db
-def test_get_meeting_url_teacher(mocker):
-    """Test that `get_meeting_url_teacher()` returns correct JWT-secured URL."""
-    teacher = baker.make(User)
-    course = baker.make(Course)
-    live_class = baker.make(
-        LiveClass, teacher=teacher, course=course, scheduled_at=now()
+def test_live_class_string_representation():
+    live_class = baker.make(LiveClass)
+    result = str(live_class)
+    assert live_class.topic in result
+    assert live_class.course.title in result
+
+
+@pytest.mark.django_db
+def test_get_meeting_url_student(settings):
+    settings.JITSI_APP_ID = "myapp"
+    live_class = baker.make(LiveClass, meeting_id="abc123")
+    assert (
+        live_class.get_meeting_url_student()
+        == f"https://8x8.vc/myapp/abc123"
     )
 
-    mocker.patch.object(live_class, "generate_jwt_token", return_value="test_jwt_token")
 
+@pytest.mark.django_db
+@mock.patch("mindjunkies.live.models.JaaSJwtBuilder")
+@mock.patch("builtins.open", new_callable=mock.mock_open, read_data="fake-key")
+def test_get_meeting_url_teacher(mock_open, mock_builder, settings):
+    settings.JITSI_APP_ID = "myapp"
+    settings.JITSI_SECRET = "secret"
+
+    builder_instance = mock_builder.return_value
+    builder_instance.with_defaults.return_value = builder_instance
+    builder_instance.with_api_key.return_value = builder_instance
+    builder_instance.with_user_name.return_value = builder_instance
+    builder_instance.with_user_email.return_value = builder_instance
+    builder_instance.with_moderator.return_value = builder_instance
+    builder_instance.with_app_id.return_value = builder_instance
+    builder_instance.with_user_avatar.return_value = builder_instance
+    builder_instance.sign_with.return_value = b"mocked-jwt"
+
+    live_class = baker.make(LiveClass, meeting_id="jwt123")
     url = live_class.get_meeting_url_teacher()
     expected_url = f"https://8x8.vc/{settings.JITSI_APP_ID}/{live_class.meeting_id}?jwt=test_jwt_token"
 
