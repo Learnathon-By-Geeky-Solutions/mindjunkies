@@ -33,6 +33,9 @@ jobs:
       CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
 
       TEST_PASS: ${{ secrets.TEST_PASS }}
+      REDIS_HOST: ${{ secrets.REDIS_HOST }}
+      REDIS_PORT: ${{ secrets.REDIS_PORT }}
+      REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
 
     strategy:
       max-parallel: 4
@@ -128,6 +131,10 @@ jobs:
           CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
 
           TEST_PASS=${{ secrets.TEST_PASS }}" >> .env
+          REDIS_HOST=${{ secrets.REDIS_HOST }}
+          REDIS_PORT=${{ secrets.REDIS_PORT }}
+          REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+          
           EOF
           echo "Updating Kubernetes Secret..."
           kubectl delete secret django-mindjunkies-prod-env --ignore-not-found
