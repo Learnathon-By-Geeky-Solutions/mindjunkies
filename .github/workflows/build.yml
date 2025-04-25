@@ -144,5 +144,7 @@ jobs:
       - name: Post-build Django Commands - migrate, collectstatic
         run: |
           export SINGLE_POD_NAME=$(kubectl get pod -l app=django-mindjunkies-web-deployment -o jsonpath="{.items[0].metadata.name}")
+          echo "Running migrations on pod: $SINGLE_POD_NAME"
           kubectl exec -it $SINGLE_POD_NAME -- bash /app/migrate.sh
+          echo "Collecting static files on pod: $SINGLE_POD_NAME"
           kubectl exec -it $SINGLE_POD_NAME -- bash /app/collectstatic.sh
