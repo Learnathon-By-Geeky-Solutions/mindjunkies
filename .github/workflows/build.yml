@@ -97,16 +97,16 @@ jobs:
           DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}
           DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
           DJANGO_SUERPUSER_EMAIL=${{ secrets.DJANGO_SUERPUSER_EMAIL }}
-          DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
-          ENV_ALLOWED_HOST=${{ secrets.ENV_ALLOWED_HOST }}
+          SECRET_KEY=${{ secrets.SECRET_KEY }}
+          ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}
           POSTGRES_DB=${{ secrets.POSTGRES_DB }}
           POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_USER=${{ secrets.POSTGRES_USER }}
           POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
           POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
           EOF
-          kubectl delete secret django-mindjunkies-web-prod-env
-          kubectl create secret generic django-mindjunkies-web-prod-env --from-env-file=.env.prod
+          kubectl delete secret django-mindjunkies-prod-env
+          kubectl create secret generic django-mindjunkies-prod-env --from-env-file=.env.prod
 
       - name: Update Deployment image
         run: |
