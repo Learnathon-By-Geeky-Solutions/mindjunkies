@@ -51,6 +51,10 @@ class HomeView(View):
         last_lecture = None
 
         if request.user.is_authenticated:
+            lastvisitedmodule= LastVisitedModule.objects.filter(
+                user=request.user, lecture__course__in=enrolled_courses
+            ).order_by("-last_visited").first()
+
             continue_lecture = (
                 Lecture.objects.filter(course__enrollments__student=request.user)
                 .annotate(
@@ -68,6 +72,7 @@ class HomeView(View):
                     student=request.user, course=last_lecture.course
                 ).progression
 
+
         context = {
             "new_courses": new_courses,
             "courses": courses,
@@ -79,6 +84,7 @@ class HomeView(View):
             "active_category": active_category,
             "last_lecture": last_lecture,
             "progression": progression,
+            "lastvisitedmodule": lastvisitedmodule,
         }
 
         if request.headers.get("HX-Request"):

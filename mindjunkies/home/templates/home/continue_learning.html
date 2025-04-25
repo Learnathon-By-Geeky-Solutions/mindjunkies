@@ -66,11 +66,12 @@
                                         {{last_lecture}}</h4>
                                    
                                 </div>
+                                
                                 <div class="hidden md:block">
-                                    <button
-                                        class=" text-sm px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+                                   <a href="{% url 'lecture_home' last_lecture.course.slug %}?module_id={{last_lecture.module.id }}"> <button
+                                        class="cursor-pointer text-sm px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
                                         Continue
-                                    </button>
+                                    </button></a>
                                 </div>
                             </div>
                         </div>
