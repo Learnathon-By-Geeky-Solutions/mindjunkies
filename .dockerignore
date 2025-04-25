@@ -60,6 +60,7 @@ coverage.html
 # Environments
 /local
 /.env
+.env
 .venv
 ENV/
 env.bak/
@@ -95,9 +96,3 @@ scripts
 certificates
 git.sh
 dev.ps1
-
-
-.kube
-.env.prod
-.django_tailwind_cli
-pytest-log.txt

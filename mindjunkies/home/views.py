@@ -49,10 +49,10 @@ class HomeView(View):
 
         progression = None
         last_lecture = None
-     
+        lastvisitedmodule = None
 
         if request.user.is_authenticated:
-            lastvisitedmodule= LastVisitedModule.objects.filter(
+            lastvisitedmodule = LastVisitedModule.objects.filter(
                 user=request.user, lecture__course__in=enrolled_courses
             ).order_by("-last_visited").first()
 

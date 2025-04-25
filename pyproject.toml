@@ -12,6 +12,7 @@ dependencies = [
     "django>=5.1.7",
     "django-allauth[socialaccount]>=65.4.1",
     "django-categories>=2.0.0",
+    "django-cloudinary-storage>=0.3.0",
     "django-crispy-forms>=2.3",
     "django-elasticsearch-dsl>=8.0",
     "django-htmx>=1.23.0",
@@ -47,6 +48,8 @@ dev = [
     "ruff>=0.9.10",
 ]
 prod = [
+    "boto3>=1.38.2",
+    "django-storages>=1.14.6",
     "gunicorn>=23.0.0",
     "whitenoise>=6.9.0",
 ]
@@ -67,7 +70,7 @@ extend-select = [
 ]
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "project.settings"
+DJANGO_SETTINGS_MODULE = "project.settings.test"
 django_find_project = true
 python_files = ["test_*.py", "*_tests.py", "tests.py"]
 testpaths = ["tests", "mindjunkies"]
