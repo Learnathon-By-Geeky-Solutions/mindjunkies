@@ -170,7 +170,8 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     course = get_object_or_404(Course, slug=slug)
     ratings = course.get_individual_ratings()
     enrolled = False
-
+    num_lectures = course.modules.aggregate(models.Count("lectures"))["lectures__count"]
+   
     if request.user.is_authenticated:
         enrolled = course.enrollments.filter(
             student=request.user, status="active"
@@ -189,6 +190,7 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
         "course_detail": course,
         "ratings": paginated_ratings,
         "student": enrolled,
+        "num_lectures": num_lectures,
     }
     return render(request, "courses/course_details.html", context)
 
