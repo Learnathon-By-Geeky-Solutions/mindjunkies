@@ -54,17 +54,24 @@ class ContentListView(LoginRequiredMixin, View):
             "courses": courses,
             "status": "Published",
         }
+        
+       
+        if status == "published":
+            courses = Course.objects.filter(teacher=request.user, status="published")
+            context["courses"] = courses
+            context["status"] = "published"
+            return render(request, "components/content.html", context)
 
-        if status == "draft":
+        elif status == "draft":
             courses = Course.objects.filter(teacher=request.user, status="draft")
             context["courses"] = courses
             context["status"] = "Draft"
-            return render(request, "components/contents.html", context)
+            return render(request, "components/draft.html", context)
         elif status == "archived":
             courses = Course.objects.filter(teacher=request.user, status="archived")
             context["courses"] = courses
             context["status"] = "Archived"
-            return render(request, "components/contents.html", context)
+            return render(request, "components/archive.html", context)
         
         elif status == "balance":
             balance = Balance.objects.filter(user=request.user).first()

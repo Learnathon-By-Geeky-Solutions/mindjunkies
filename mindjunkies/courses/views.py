@@ -68,7 +68,7 @@ class NewCourseView(BaseCourseView):
 
 
 class PopularCoursesView(BaseCourseView):
-    template_name = "courses/popular_courses.html"
+    template_name = "courses/popular_course.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -76,13 +76,13 @@ class PopularCoursesView(BaseCourseView):
 
         new_courses = Course.objects.exclude(
             id__in=[course.id for course in enrolled_courses]
-        ).order_by("-created_at")[:4]
+        ).order_by("-created_at")
 
         courses = Course.objects.exclude(
             id__in=new_courses.values_list("id", flat=True)
         ).exclude(id__in=[course.id for course in enrolled_courses])
 
-        popular_courses = courses.order_by("-enrollments")[:4]
+        popular_courses = courses.order_by("-enrollments")
         context["popular_courses"] = popular_courses
         return context
 

@@ -39,7 +39,7 @@ class HomeView(View):
 
         new_courses = Course.objects.exclude(
             id__in=[course.id for course in enrolled_courses]
-        ).order_by("-created_at")[:3]
+        ).order_by("-created_at")
 
         courses = Course.objects.exclude(
             id__in=new_courses.values_list("id", flat=True)
