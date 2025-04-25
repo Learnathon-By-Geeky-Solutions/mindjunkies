@@ -105,6 +105,25 @@ jobs:
           POSTGRES_USER=${{ secrets.POSTGRES_USER }}
           POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
           POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
+          SECRET_KEY=${{ secrets.SECRET_KEY }}
+          GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}
+
+          EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}
+          EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}
+          DEFAULT_FROM_EMAIL=${{ secrets.DEFAULT_FROM_EMAIL }}
+
+          ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}
+
+          JITSI_APP_ID=${{ secrets.JITSI_APP_ID }}
+          JITSI_SECRET=${{ secrets.JITSI_SECRET }}
+
+          CLOUDINARY_NAME=${{ secrets.CLOUDINARY_NAME }}
+          CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
+
+          TEST_PASS=${{ secrets.TEST_PASS }}" >> .env
           EOF
           echo "Updating Kubernetes Secret..."
           kubectl delete secret django-mindjunkies-prod-env --ignore-not-found
