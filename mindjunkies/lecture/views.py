@@ -190,9 +190,10 @@ class CreateLectureView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin,
     template_name = "lecture/create_lecture.html"
 
     def dispatch(self, request, *args, **kwargs):
-        """Ensure the course exists before proceeding"""
         self.module = get_object_or_404(Module, id=self.kwargs["module_id"])
         self.course = self.get_course()
+        if not is_teacher_for_course(request.user, self.course):
+            return HttpResponseForbidden("You are not allowed to create a lecture for this course.")
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -275,6 +276,13 @@ class EditLectureView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, U
     form_class = LectureForm
     template_name = "lecture/create_lecture.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        self.course = self.get_course()
+        lecture = self.get_object()
+        if not is_teacher_for_course(request.user, self.course):
+            return HttpResponseForbidden("You are not allowed to edit this lecture.")
+        return super().dispatch(request, *args, **kwargs)
+
     def get_object(self, queryset=None):
         """Get the lecture object based on the slug from the URL"""
         lecture_id = self.kwargs.get("lecture_id")
@@ -304,8 +312,10 @@ class CreateModuleView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, 
     template_name = "lecture/create_module.html"
 
     def dispatch(self, request, *args, **kwargs):
-        """Ensure the course exists before proceeding"""
         self.course = self.get_course()
+        lecture = self.get_object()
+        if not is_teacher_for_course(request.user, self.course):
+            return HttpResponseForbidden("You are not allowed to edit this lecture.")
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -353,6 +363,11 @@ class ModuleEditView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, Up
     model = Module
     form_class = ModuleForm
     template_name = "lecture/create_module.html"
+    def dispatch(self, request, *args, **kwargs):
+        self.course = self.get_course()
+        if not is_teacher_for_course(request.user, self.course):
+            return HttpResponseForbidden("You are not allowed to edit a module for this course.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
         """Get the module object based on the slug from the URL"""
