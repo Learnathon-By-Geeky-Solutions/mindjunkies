@@ -7,8 +7,8 @@ from django.utils.text import slugify
 from django.core.exceptions import ValidationError
 
 from mindjunkies.courses.models import Course, Module, CourseCategory
-from mindjunkies.lectures.models import Lecture, LecturePDF, LectureVideo
-from mindjunkies.lectures.forms import LectureForm, LecturePDFForm, LectureVideoForm, ModuleForm
+from mindjunkies.lecture.models import Lecture, LecturePDF, LectureVideo
+from mindjunkies.lecture.forms import LectureForm, LecturePDFForm, LectureVideoForm, ModuleForm
 
 User = get_user_model()
 
@@ -284,4 +284,4 @@ class TestLectureVideoForm(TestCase):
         video = form.save(commit=False)
         video.lecture = self.lecture
         video.save()
-        self.assertEqual
+        self.assertEqual(video.video_title, "Test Video")

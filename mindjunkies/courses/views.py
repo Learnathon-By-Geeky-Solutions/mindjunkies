@@ -68,7 +68,7 @@ class NewCourseView(BaseCourseView):
 
 
 class PopularCoursesView(BaseCourseView):
-    template_name = "courses/popular_courses.html"
+    template_name = "courses/popular_course.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -76,13 +76,13 @@ class PopularCoursesView(BaseCourseView):
 
         new_courses = Course.objects.exclude(
             id__in=[course.id for course in enrolled_courses]
-        ).order_by("-created_at")[:4]
+        ).order_by("-created_at")
 
         courses = Course.objects.exclude(
             id__in=new_courses.values_list("id", flat=True)
         ).exclude(id__in=[course.id for course in enrolled_courses])
 
-        popular_courses = courses.order_by("-enrollments")[:4]
+        popular_courses = courses.order_by("-enrollments")
         context["popular_courses"] = popular_courses
         return context
 
@@ -117,7 +117,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
                 request,
                 "You have a pending course token. Please wait for it to be approved.",
             )
-            return redirect(reverse("dashboard", kwargs={"status": "pending"}))
+            return redirect(reverse("dashboard", kwargs={"status": "published"}))
         else:
             return super().get(request)
 
@@ -170,7 +170,8 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     course = get_object_or_404(Course, slug=slug)
     ratings = course.get_individual_ratings()
     enrolled = False
-
+    num_lectures = course.modules.aggregate(models.Count("lectures"))["lectures__count"]
+   
     if request.user.is_authenticated:
         enrolled = course.enrollments.filter(
             student=request.user, status="active"
@@ -189,6 +190,7 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
         "course_detail": course,
         "ratings": paginated_ratings,
         "student": enrolled,
+        "num_lectures": num_lectures,
     }
     return render(request, "courses/course_details.html", context)
 
