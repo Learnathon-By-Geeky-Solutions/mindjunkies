@@ -60,7 +60,6 @@ INSTALLED_APPS = [
     "mindjunkies.payments",
     # third party mindjunkies
     "django_tailwind_cli",
-    "django_browser_reload",
     "crispy_forms",
     "crispy_tailwind",
     "cloudinary",
@@ -89,7 +88,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
     # custom middleware here
     "django_htmx.middleware.HtmxMiddleware",
 ]
