@@ -49,6 +49,7 @@ class HomeView(View):
 
         progression = None
         last_lecture = None
+     
 
         if request.user.is_authenticated:
             lastvisitedmodule= LastVisitedModule.objects.filter(
