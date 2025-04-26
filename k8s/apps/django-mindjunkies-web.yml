@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-mindjunkies-web-deployment
+  labels:
+    app: django-mindjunkies-web-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: django-mindjunkies-web-deployment
+  template:
+    metadata:
+      labels:
+        app: django-mindjunkies-web-deployment
+    spec:
+      containers:
+      - name: django-mindjunkies-web
+        image: registry.digitalocean.com/mindjunkies/django-mindjunkies-web:latest
+        imagePullPolicy: Always
+        envFrom:
+          - secretRef:
+              name: django-mindjunkies-prod-env
+        env:
+          - name: PORT
+            value: "8000"
+        ports:
+          - containerPort: 8000
+      imagePullSecrets:
+          - name: mindjunkies
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: django-mindjunkies-web-service
+spec:
+  type: LoadBalancer
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8000
+  selector:
+    app: django-mindjunkies-web-deployment

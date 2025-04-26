@@ -1,0 +1,157 @@
+name: Build Docker Container & Push to DO Registry
+
+on:
+  push:
+    branches: [ main, deployment-digitalocean]
+  pull_request:
+    branches: [ main, deployment-digitalocean]
+
+jobs:
+  django_test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    env:
+      DJANGO_SETTINGS_MODULE: project.settings.test
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+
+      JITSI_APP_ID: ${{ secrets.JITSI_APP_ID }}
+      JITSI_SECRET: ${{ secrets.JITSI_SECRET }}
+
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+
+      EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+      EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+      DEFAULT_FROM_EMAIL: ${{ secrets.DEFAULT_FROM_EMAIL }}
+
+      CLOUDINARY_NAME: ${{ secrets.CLOUDINARY_NAME }}
+      CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+      CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+
+      TEST_PASS: ${{ secrets.TEST_PASS }}
+      REDIS_HOST: ${{ secrets.REDIS_HOST }}
+      REDIS_PORT: ${{ secrets.REDIS_PORT }}
+      REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.13]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        run: |
+          pip install uv
+
+      - name: Install dependencies
+        run: |
+          uv sync
+
+      - name: Run Tests and Generate Coverage Report
+        env:
+          DJANGO_SETTINGS_MODULE: project.settings.test
+        run: |
+          uv run pytest -n auto
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_API_TOKEN_KEY }}
+
+      - name: Login to DO Container Registry with short-lived token
+        run: doctl registry login --expiry-seconds 1200
+
+      - name: Build container image
+        working-directory: .
+        run: |
+          docker build -f Dockerfile \
+            -t registry.digitalocean.com/mindjunkies/django-mindjunkies-web:latest \
+            -t registry.digitalocean.com/mindjunkies/django-mindjunkies-web:${GITHUB_SHA::7}-${GITHUB_RUN_ID::5} \
+            .
+
+      - name: Push image
+        run: |
+          docker push registry.digitalocean.com/mindjunkies/django-mindjunkies-web --all-tags
+
+      - name: K8s cluster kubeconfig file with/ short-lived creds
+        run: |
+          doctl kubernetes cluster kubeconfig save --expiry-seconds 600 django-mindjunkies
+
+      - name: Update deployment secrets
+        run: |
+          echo "Creating .env.prod file from GitHub Secrets..."
+          cat << EOF > .env.prod
+          
+          DJANGO_SETTINGS_MODULE=project.settings.production
+          SECRET_KEY=${{ secrets.SECRET_KEY }}
+          ALLOWED_HOSTS=209.38.124.215,*.mindjunkies.tech,mindjunkies.tech
+          
+          AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          
+          DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}
+          DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
+          DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUERUSER_EMAIL }}
+          
+          POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+          POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
+          POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
+          
+          GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}
+
+          EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}
+          EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}
+          DEFAULT_FROM_EMAIL=${{ secrets.DEFAULT_FROM_EMAIL }}
+
+          JITSI_APP_ID=${{ secrets.JITSI_APP_ID }}
+          JITSI_SECRET=${{ secrets.JITSI_SECRET }}
+
+          CLOUDINARY_NAME=${{ secrets.CLOUDINARY_NAME }}
+          CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
+
+          TEST_PASS=${{ secrets.TEST_PASS }}" >> .env
+          REDIS_HOST=${{ secrets.REDIS_HOST }}
+          REDIS_PORT=${{ secrets.REDIS_PORT }}
+          REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+          
+          EOF
+          echo "Updating Kubernetes Secret..."
+          kubectl delete secret django-mindjunkies-prod-env --ignore-not-found
+          kubectl create secret generic django-mindjunkies-prod-env --from-env-file=.env.prod
+
+      - name: Update Deployment image
+        run: |
+          kubectl set image deployment/django-mindjunkies-web-deployment django-mindjunkies-web=registry.digitalocean.com/mindjunkies/django-mindjunkies-web:${GITHUB_SHA::7}-${GITHUB_RUN_ID::5}
+
+      - name: Wait for rollout to finish
+        run: |
+          kubectl rollout status deployment/django-mindjunkies-web-deployment
+
+      - name: Post-build Django Commands - migrate, collectstatic
+        run: |
+          export SINGLE_POD_NAME=$(kubectl get pod -l app=django-mindjunkies-web-deployment -o jsonpath="{.items[0].metadata.name}")
+          echo "Running migrations on pod: $SINGLE_POD_NAME"
+          kubectl exec -it $SINGLE_POD_NAME -- bash /app/migrate.sh
+          echo "Collecting static files on pod: $SINGLE_POD_NAME"
+          kubectl exec -it $SINGLE_POD_NAME -- bash /app/collectstatic.sh
