@@ -56,7 +56,8 @@ class HomeView(View):
                 user=request.user, lecture__course__in=enrolled_courses
             ).order_by("-last_visited").first()
 
-            continue_lecture = (
+            if lastvisitedmodule.exists():
+                continue_lecture = (
                 Lecture.objects.filter(course__enrollments__student=request.user)
                 .annotate(
                     last_visited_at=models.Subquery(
