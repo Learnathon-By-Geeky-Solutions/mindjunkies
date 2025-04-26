@@ -88,6 +88,11 @@ class HomeView(View):
             "lastvisitedmodule": lastvisitedmodule,
         }
 
+        print()
+        print(last_lecture)
+        print(lastvisitedmodule)
+        print()
+
         if request.headers.get("HX-Request"):
             return render(request, "home/subcategory.html", context)
 
