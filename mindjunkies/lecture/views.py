@@ -82,7 +82,9 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
     def check_course_enrollment(self, course):
         """Check if the user is enrolled in the course."""
         if course.teacher == self.request.user:
-            course_token = CourseToken(course=course)
+            course_token = CourseToken.objects.get(course=course)
+            print(course)
+            print(course_token.status)
             if course_token.status == "approved":
                 return True
             return False

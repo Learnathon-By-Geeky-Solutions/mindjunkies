@@ -7,7 +7,6 @@ from django.utils.text import slugify
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.exceptions import ValidationError
 
-
 from config.models import BaseModel
 from taggit.managers import TaggableManager
 
@@ -62,7 +61,7 @@ class Course(BaseModel):
     )
 
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="draft", blank=True)
-        
+
     published_on = models.DateTimeField(null=True, blank=True)
 
     paid_course = models.BooleanField(default=False)
@@ -74,7 +73,7 @@ class Course(BaseModel):
     number_of_ratings = models.PositiveIntegerField(default=0)
 
     # Tags for the course
-    tags = TaggableManager(blank=True)    
+    tags = TaggableManager(blank=True)
 
     def __str__(self):
         return self.title
@@ -190,18 +189,13 @@ class Module(BaseModel):
 
     def __str__(self):
         return f"{self.title} - {self.course.title}"
-    
 
     def save(self, *args, **kwargs):
         # self.full_clean()  # call clean() before saving
-        print("self for module",self.course)
+        print("self for module", self.course)
         if Module.objects.filter(course=self.course, order=self.order).exclude(pk=self.pk).exists():
             raise ValidationError(f"Order {self.order} already exists in this Course.\nModule cannot have same order")
         super().save(*args, **kwargs)
-    
-
-
-
 
 
 class CourseToken(models.Model):
@@ -212,8 +206,7 @@ class CourseToken(models.Model):
 
     def __str__(self):
         return f"Token for {self.course.title} by {self.teacher.username}"
-    
-    
+
 
 class LastVisitedCourse(models.Model):
     user = models.ForeignKey(user, on_delete=models.CASCADE)
