@@ -9,6 +9,7 @@
             height: auto;
             aspect-ratio: 16/9;
         }
+
         .video-container {
             max-width: 1024px;
             width: 100%;
@@ -41,25 +42,26 @@
             <main class="flex-1 overflow-y-auto">
                 <!-- Breadcrumb Navigation -->
                 <!-- Breadcrumb Navigation -->
-<div class="flex items-center justify-between p-4 border-b bg-base-100 shadow-sm">
-    <div class="flex items-center gap-2 text-sm breadcrumbs">
-        <ul>
-            <li><a href="#" class="text-primary hover:underline">{{module.title}}</a></li>
-            <li><a href="#" class="text-primary hover:underline">Lecture {{lecture.order}}</a></li>
-            <li class="text-base-content/70">{{lecture.title}}</li>
-        </ul>
-    </div>
-    <div class="flex gap-2">
-        <button id="mark-completed-btn" class="btn btn-outline btn-success btn-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            Mark as Completed
-        </button>
-        <a href="#" class="btn btn-primary btn-sm">Next</a>
-    </div>
-</div>
-
+                <div class="flex items-center justify-between p-4 border-b bg-base-100 shadow-sm">
+                    <div class="flex items-center gap-2 text-sm breadcrumbs">
+                        <ul>
+                            <li><a href="#" class="text-primary hover:underline">{{ module.title }}</a></li>
+                            <li><a href="#" class="text-primary hover:underline">Lecture {{ lecture.order }}</a></li>
+                            <li class="text-base-content/70">{{ lecture.title }}</li>
+                        </ul>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="mark-completed-btn" class="btn btn-outline btn-success btn-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M5 13l4 4L19 7"/>
+                            </svg>
+                            Mark as Completed
+                        </button>
+                        <a href="#" class="btn btn-primary btn-sm">Next</a>
+                    </div>
+                </div>
                 <!-- Video Content -->
                 <div class="p-6 max-w-6xl mx-auto">
                     <div class="rounded-xl bg-base-200 shadow-md overflow-hidden">
@@ -86,13 +88,17 @@
                             </button>
                             <div class="flex gap-2">
                                 <button class="btn btn-ghost btn-sm" title="Download materials">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                         viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                                     </svg>
                                 </button>
                                 <button class="btn btn-ghost btn-sm" title="Share">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                         viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
                                     </svg>
                                 </button>
                             </div>
@@ -103,19 +109,20 @@
                     <div class="mt-6 bg-base-100 rounded-xl p-5 shadow-md">
                         <h2 class="text-xl font-bold mb-2">Welcome to machine learning!</h2>
                         <p class="text-base-content/80">
-                            In this lecture, you'll learn the fundamentals of machine learning and get an overview of the course content.
+                            In this lecture, you'll learn the fundamentals of machine learning and get an overview of
+                            the course content.
                         </p>
                     </div>
                 </div>
             </main>
         </div>
-        {% include 'lecture/lecture_content.html'%}
+        {% include 'lecture/lecture_content.html' %}
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.7.0/video.min.js"
             integrity="sha256-uNxDfF9Tdb1GQ9Gb7DRVcWD6uDY/vNyhvuspnJP567I=" crossorigin="anonymous"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const player = videojs('course-video', {
                 controls: true,
                 autoplay: false,
@@ -124,7 +131,7 @@
                 playbackRates: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]
             });
 
-            player.ready(function() {
+            player.ready(function () {
                 console.log("Video.js Player is Ready!");
             });
 

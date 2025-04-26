@@ -54,8 +54,8 @@
                             {% for transaction in transactions %}
                                 <tr>
                                     <td>{{ transaction.tran_date }}</td>
-                                    <td>{{ transaction.tran.course.title }}</td>
-                                    <td> {{ transaction.tran.user.username}} </td>
+                                    <td>{{ transaction.course.title }}</td>
+                                    <td> {{ transaction.user.username}} </td>
                                     <td class="text-right text-success font-medium">+৳{{ transaction.amount}}</td>
                                 </tr>
                                 {% empty %}

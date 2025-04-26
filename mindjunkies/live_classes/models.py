@@ -43,6 +43,8 @@ class LiveClass(models.Model):
             script_dir = os.path.dirname(__file__)
             fp = os.path.join(script_dir, "private.pem")
 
+            print(fp)
+
             with open(fp) as reader:
                 jaas_jwt = JaaSJwtBuilder()
 
