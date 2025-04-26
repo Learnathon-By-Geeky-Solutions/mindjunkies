@@ -26,7 +26,7 @@
             </div>
         </div>
 
-        <form method="POST" action="{% url 'create_course'%}" enctype="multipart/form-data" class="bg-white shadow-xl rounded-xl">
+        <form method="POST" action="" enctype="multipart/form-data" class="bg-white shadow-xl rounded-xl">
             {% csrf_token %}
 
             <!-- Drawer Structure -->
@@ -158,6 +158,7 @@
                                 </h2>
                                 <div class="space-y-6">
                                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        {% if verification %}
                                         <div class="form-control">
                                             <div class="card bg-base-200 p-4 rounded-lg">
                                                 <div class="card-body p-2">
@@ -166,6 +167,16 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        {% else %}
+                                        <div class="form-control">
+                                            <div class="card bg-base-200 p-4 rounded-lg">
+                                                <div class="card-body p-2">
+                                                    <h3 class="card-title text-base mb-2">Course Status</h3>
+                                                    {{ form.status|as_crispy_field }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
                                         <div class="form-control">
                                             <div class="card bg-base-200 p-4 rounded-lg">
                                                 <div class="card-body p-2">

@@ -8,6 +8,10 @@ text_area = "form-input mt-1 block w-full p-2 border border-gray-300 rounded-md 
 
 
 class CourseForm(forms.ModelForm):
+    status = forms.ChoiceField(
+        choices=[('active', 'Active'), ('inactive', 'Inactive')],  # Example choices
+        widget=forms.Select(attrs={'disabled': 'disabled'})
+    )
     class Meta:
         model = Course
         fields = [
@@ -30,6 +34,8 @@ class CourseForm(forms.ModelForm):
             "course_image": forms.FileInput(),
             "preview_video": forms.FileInput(),
         }
+
+    
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
