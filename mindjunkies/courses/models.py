@@ -196,14 +196,14 @@ class Module(BaseModel):
     
 
     def save(self, *args, **kwargs):
-        self.full_clean()  # call clean() before saving
+        # self.full_clean()  # call clean() before saving
+        print("self for module",self.course)
+        if Module.objects.filter(course=self.course, order=self.order).exclude(pk=self.pk).exists():
+            raise ValidationError(f"Order {self.order} already exists in this Course.\nModule cannot have same order")
         super().save(*args, **kwargs)
     
 
-    def clean(self):
-        super().clean()
-        if Module.objects.filter(course=self.course, order=self.order).exclude(pk=self.pk).exists():
-            raise ValidationError(f"Order {self.order} already exists in this Course.\nModule cannnot have same order")
+
 
 
 
