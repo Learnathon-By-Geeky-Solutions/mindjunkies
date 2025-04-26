@@ -49,14 +49,15 @@ class HomeView(View):
 
         progression = None
         last_lecture = None
-        lastvisitedmodule = None
+        lastvisitedmodule = []
+        continue_lecture = []
 
         if request.user.is_authenticated:
             lastvisitedmodule = LastVisitedModule.objects.filter(
                 user=request.user, lecture__course__in=enrolled_courses
             ).order_by("-last_visited").first()
 
-            if lastvisitedmodule.exists():
+            if lastvisitedmodule:
                 continue_lecture = (
                 Lecture.objects.filter(course__enrollments__student=request.user)
                 .annotate(
@@ -68,7 +69,7 @@ class HomeView(View):
                 )
                 .order_by("-last_visited_at", "title")
             )
-            if continue_lecture.exists():
+            if continue_lecture:
                 last_lecture = continue_lecture.first()
                 progression = Enrollment.objects.get(
                     student=request.user, course=last_lecture.course
