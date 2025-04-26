@@ -32,7 +32,7 @@ class TeacherPermissionView(LoginRequiredMixin, View):
             return redirect("verification_wait")
         return render(request, "apply_teacher.html")
 
-@method_decorator(cache_page(60 * 5), name="dispatch")  # cache for 5 minutes
+  # cache for 5 minutes
 class ContentListView(LoginRequiredMixin, View):
     
     permission_required = VIEW_COURSE_PERMISSION
@@ -63,8 +63,10 @@ class ContentListView(LoginRequiredMixin, View):
             return render(request, "components/content.html", context)
 
         elif status == "draft":
+            print("🔴 view code executing!")   # ← this only appears on a cache MISS
             courses = Course.objects.filter(teacher=request.user, status="draft")
             context["courses"] = courses
+            print(courses)
             context["status"] = "Draft"
             return render(request, "components/draft.html", context)
         elif status == "archived":
@@ -91,7 +93,7 @@ class ContentListView(LoginRequiredMixin, View):
 
                 
         else:
-            return render(request, "components/contents.html", context)
+            return render(request, "components/content.html", context)
         
 
          

@@ -1,287 +1,204 @@
-import pytest
-from django.contrib.auth import get_user_model
 from django.test import TestCase
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django import forms
+from django.contrib.auth import get_user_model
 from django.utils.text import slugify
-from django.core.exceptions import ValidationError
-
-from mindjunkies.courses.models import Course, Module, CourseCategory
-from mindjunkies.lecture.models import Lecture, LecturePDF, LectureVideo
-from mindjunkies.lecture.forms import LectureForm, LecturePDFForm, LectureVideoForm, ModuleForm
+from mindjunkies.courses.models import Course, Module
+from mindjunkies.forums.models import ForumTopic, ForumComment, Reply, LikedPost, LikedComment, LikedReply
+from datetime import datetime
 
 User = get_user_model()
 
-
-@pytest.mark.django_db
-class TestLectureForm(TestCase):
+class ForumModelsTestCase(TestCase):
     def setUp(self):
+        # Create test user
         self.user = User.objects.create_user(
-            username="teacher",
-            password="password",
-            email="teacher@example.com",
+            username='testuser',
+            email='test@example.com',
+            password='testpass123'
         )
-        self.category = CourseCategory.objects.create(
-            name="Test Category",
-            slug="test-category",
+        self.user2 = User.objects.create_user(
+            username='testuser2',
+            email='test2@example.com',
+            password='testpass123'
         )
+
+        # Create test course and module
         self.course = Course.objects.create(
             title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed description",
+            short_introduction="This is a short intro.",
+            course_description="Detailed description of the course.",
             teacher=self.user,
-            level="beginner",
-            category=self.category,
-            course_image="course_images/test_image.jpg",  # Mock CloudinaryField
-            preview_video="videos/test_preview.mp4",  # Mock CloudinaryField
+            slug="test-course",
         )
         self.module = Module.objects.create(
-            title="Test Module",
-            details="Module details",
-            order=1,
             course=self.course,
+            details="Test module details",
+            title='Test Module'
+            
         )
 
-    def test_valid_form(self):
-        """Test valid LectureForm data"""
-        data = {
-            "title": "Test Lecture",
-            "description": "Lecture description",
-            "learning_objective": "Learn something",
-            "order": 1,
-        }
-        form = LectureForm(data=data)
-        self.assertTrue(form.is_valid())
-        lecture = form.save(commit=False)
-        lecture.course = self.course  # Required field
-        lecture.module = self.module  # Required field
-        lecture.save()
-        self.assertEqual(lecture.title, "Test Lecture")
-        self.assertEqual(lecture.slug, slugify("Test Lecture"))
-        self.assertEqual(lecture.description, "Lecture description")
-        self.assertEqual(lecture.learning_objective, "Learn something")
-        self.assertEqual(lecture.order, 1)
-        self.assertEqual(lecture.course, self.course)
-        self.assertEqual(lecture.module, self.module)
-
-    def test_invalid_form_missing_title(self):
-        """Test invalid LectureForm with missing title"""
-        data = {
-            "description": "Lecture description",
-            "learning_objective": "Learn something",
-            "order": 1,
-        }
-        form = LectureForm(data=data)
-        self.assertFalse(form.is_valid())
-        self.assertIn("title", form.errors)
-
-    def test_invalid_form_negative_order(self):
-        """Test invalid LectureForm with negative order"""
-        data = {
-            "title": "Test Lecture",
-            "description": "Lecture description",
-            "learning_objective": "Learn something",
-            "order": -1,
-        }
-        form = LectureForm(data=data)
-        self.assertFalse(form.is_valid())
-        self.assertIn("order", form.errors)
-
-    def test_unique_order_per_module(self):
-        """Test unique order per module validation"""
-        Lecture.objects.create(
+        # Create test forum topic
+        self.topic = ForumTopic.objects.create(
+            title='Test Topic',
+            content='This is a test topic',
+            author=self.user,
             course=self.course,
-            module=self.module,
-            title="Existing Lecture",
-            slug="existing-lecture",
-            order=1,
+            module=self.module
         )
-        data = {
-            "title": "Test Lecture",
-            "description": "Lecture description",
-            "learning_objective": "Learn something",
-            "order": 1,  # Conflicts with existing lecture
-        }
-        form = LectureForm(data=data)
-        self.assertTrue(form.is_valid())  # Form validates, but save raises ValidationError
-        lecture = form.save(commit=False)
-        lecture.course = self.course
-        lecture.module = self.module
-        with self.assertRaises(ValidationError) as cm:
-            lecture.save()
-        self.assertIn("Order 1 already exists in this module", str(cm.exception))
 
+        # Create test forum comment
+        self.comment = ForumComment.objects.create(
+            topic=self.topic,
+            content='This is a test comment',
+            author=self.user
+        )
 
-@pytest.mark.django_db
-class TestLecturePDFForm(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(
-            username="teacher",
-            password="password",
-            email="teacher@example.com",
+        # Create test reply
+        self.reply = Reply.objects.create(
+            author=self.user,
+            parent_comment=self.comment,
+            body='This is a test reply'
         )
-        self.category = CourseCategory.objects.create(
-            name="Test Category",
-            slug="test-category",
-        )
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed description",
-            teacher=self.user,
-            level="beginner",
-            category=self.category,
-            course_image="course_images/test_image.jpg",
-            preview_video="videos/test_preview.mp4",
-        )
-        self.module = Module.objects.create(
-            title="Test Module",
-            details="Module details",
-            order=1,
+
+    def test_forum_topic_creation(self):
+        """Test ForumTopic model creation and attributes"""
+        self.assertEqual(self.topic.title, 'Test Topic')
+        self.assertEqual(self.topic.slug, slugify('Test Topic'))
+        self.assertEqual(self.topic.content, 'This is a test topic')
+        self.assertEqual(self.topic.author, self.user)
+        self.assertEqual(self.topic.course, self.course)
+        self.assertEqual(self.topic.module, self.module)
+        self.assertIsInstance(self.topic.created_at, datetime)
+        self.assertIsInstance(self.topic.updated_at, datetime)
+        self.assertEqual(str(self.topic), 'Test Topic')
+
+    def test_forum_topic_save_slug(self):
+        """Test ForumTopic slug generation on save"""
+        topic = ForumTopic.objects.create(
+            title='Another Test Topic',
+            content='Another test',
+            author=self.user,
             course=self.course,
+            module=self.module
         )
-        self.lecture = Lecture.objects.create(
-            course=self.course,
-            module=self.module,
-            title="Test Lecture",
-            slug="test-lecture",
-            order=1,
+        self.assertEqual(topic.slug, slugify('Another Test Topic'))
+
+    def test_forum_topic_get_reply_count(self):
+        """Test ForumTopic get_reply_count method"""
+        ForumComment.objects.create(
+            topic=self.topic,
+            content='Another comment',
+            author=self.user
         )
+          # Two comments
 
-    def test_valid_form(self):
-        """Test valid LecturePDFForm data"""
-        pdf_content = b"%PDF-1.4 fake PDF content"
-        pdf_file = SimpleUploadedFile("test.pdf", pdf_content, content_type="application/pdf")
-        data = {"pdf_title": "Test PDF"}
-        files = {"pdf_file": pdf_file}
-        form = LecturePDFForm(data=data, files=files)
-        self.assertTrue(form.is_valid())
-        pdf = form.save(commit=False)
-        pdf.lecture = self.lecture
-        pdf.save()
-        self.assertEqual(pdf.pdf_title, "Test PDF")
-        self.assertEqual(pdf.lecture, self.lecture)
-        self.assertTrue(pdf.pdf_file.name.startswith("lecture_pdfs/test"))
-
-    def test_valid_form_with_lecture(self):
-        """Test LecturePDFForm save with lecture parameter"""
-        pdf_content = b"%PDF-1.4 fake PDF content"
-        pdf_file = SimpleUploadedFile("test.pdf", pdf_content, content_type="application/pdf")
-        data = {"pdf_title": "Test PDF"}
-        files = {"pdf_file": pdf_file}
-        form = LecturePDFForm(data=data, files=files)
-        self.assertTrue(form.is_valid())
-        pdf = form.save(lecture=self.lecture)
-        self.assertEqual(pdf.pdf_title, "Test PDF")
-        self.assertEqual(pdf.lecture, self.lecture)
-        self.assertTrue(pdf.pdf_file.name.startswith("lecture_pdfs/test"))
-
-    def test_invalid_pdf_extension(self):
-        """Test invalid PDF extension"""
-        txt_file = SimpleUploadedFile("test.txt", b"Text content", content_type="text/plain")
-        data = {"pdf_title": "Test PDF"}
-        files = {"pdf_file": txt_file}
-        form = LecturePDFForm(data=data, files=files)
-        self.assertFalse(form.is_valid())
-        self.assertIn("pdf_file", form.errors)
-        self.assertEqual(form.errors["pdf_file"], ["Only PDF files are allowed."])
-
-    def test_invalid_pdf_size(self):
-        """Test oversized PDF file"""
-        large_content = b"%PDF-1.4 " + b"0" * (6 * 1024 * 1024)  # 6MB
-        pdf_file = SimpleUploadedFile("large.pdf", large_content, content_type="application/pdf")
-        data = {"pdf_title": "Test PDF"}
-        files = {"pdf_file": pdf_file}
-        form = LecturePDFForm(data=data, files=files)
-        self.assertFalse(form.is_valid())
-        self.assertIn("pdf_file", form.errors)
-        self.assertEqual(form.errors["pdf_file"], ["File size must be less than 5MB."])
-
-    def test_missing_pdf_file(self):
-        """Test form with missing pdf_file"""
-        data = {"pdf_title": "Test PDF"}
-        form = LecturePDFForm(data=data, files={})
-        self.assertTrue(form.is_valid())  # pdf_file is not required
-        pdf = form.save(lecture=self.lecture)
-        self.assertEqual(pdf.pdf_title, "Test PDF")
-        self.assertEqual(pdf.lecture, self.lecture)
-        self.assertFalse(pdf.pdf_file)
-
-
-@pytest.mark.django_db
-class TestLectureVideoForm(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(
-            username="teacher",
-            password="password",
-            email="teacher@example.com",
+    def test_forum_topic_get_last_activity(self):
+        """Test ForumTopic get_last_activity method"""
+        comment2 = ForumComment.objects.create(
+            topic=self.topic,
+            content='Newer comment',
+            author=self.user
         )
-        self.category = CourseCategory.objects.create(
-            name="Test Category",
-            slug="test-category",
-        )
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed description",
-            teacher=self.user,
-            level="beginner",
-            category=self.category,
-            course_image="course_images/test_image.jpg",
-            preview_video="videos/test_preview.mp4",
-        )
-        self.module = Module.objects.create(
-            title="Test Module",
-            details="Module details",
-            order=1,
-            course=self.course,
-        )
-        self.lecture = Lecture.objects.create(
-            course=self.course,
-            module=self.module,
-            title="Test Lecture",
-            slug="test-lecture",
-            order=1,
-        )
+        last_activity = self.topic.get_last_activity()
+        self.assertEqual(last_activity, comment2.created_at)
 
-    def test_valid_form(self):
-        """Test valid LectureVideoForm data"""
-        data = {
-            "video_title": "Test Video",
-            "video_file": "videos/test_video.mp4",  # Mock CloudinaryField
-        }
-        form = LectureVideoForm(data=data)
-        self.assertTrue(form.is_valid())
-        video = form.save(commit=False)
-        video.lecture = self.lecture
-        video.save()
-        self.assertEqual(video.video_title, "Test Video")
-        self.assertEqual(video.video_file, "videos/test_video.mp4")
-        self.assertEqual(video.lecture, self.lecture)
-
-    def test_invalid_video_extension(self):
-        """Test invalid video extension"""
-        data = {
-            "video_title": "Test Video",
-            "video_file": "videos/test_video.txt",  # Invalid extension
-        }
-        form = LectureVideoForm(data=data)
-        self.assertFalse(form.is_valid())
-        self.assertIn("video_file", form.errors)
+    def test_liked_post_creation(self):
+        """Test LikedPost model creation"""
+        liked_post = LikedPost.objects.create(
+            topic=self.topic,
+            user=self.user2
+        )
+        self.assertEqual(liked_post.topic, self.topic)
+        self.assertEqual(liked_post.user, self.user2)
+        self.assertIsInstance(liked_post.created, datetime)
         self.assertEqual(
-            form.errors["video_file"],
-            ["Only video files (.mp4, .avi, .mov, .mkv) are allowed."],
+            str(liked_post),
+            f"{self.user2.username} : {self.topic.content[:30]}"
         )
 
-    def test_missing_video_file(self):
-        """Test form with missing video_file"""
-        data = {"video_title": "Test Video"}
-        form = LectureVideoForm(data=data)
-        
-        video = form.save(commit=False)
-        video.lecture = self.lecture
-        video.save()
-        self.assertEqual
+    def test_forum_comment_creation(self):
+        """Test ForumComment model creation"""
+        self.assertEqual(self.comment.topic, self.topic)
+        self.assertEqual(self.comment.content, 'This is a test comment')
+        self.assertEqual(self.comment.author, self.user)
+        self.assertIsInstance(self.comment.created_at, datetime)
+        self.assertIsInstance(self.comment.updated_at, datetime)
+        self.assertEqual(
+            str(self.comment),
+            f"Reply by {self.user.username} on {self.topic.title}"
+        )
+
+    def test_liked_comment_creation(self):
+        """Test LikedComment model creation"""
+        liked_comment = LikedComment.objects.create(
+            comment=self.comment,
+            user=self.user2
+        )
+        self.assertEqual(liked_comment.comment, self.comment)
+        self.assertEqual(liked_comment.user, self.user2)
+        self.assertIsInstance(liked_comment.created, datetime)
+       
+
+    def test_reply_creation(self):
+        """Test Reply model creation"""
+        self.assertEqual(self.reply.author, self.user)
+        self.assertEqual(self.reply.parent_comment, self.comment)
+        self.assertEqual(self.reply.body, 'This is a test reply')
+        self.assertIsInstance(self.reply.created, datetime)
+       
+
+    def test_reply_to_reply(self):
+        """Test Reply to another reply"""
+        child_reply = Reply.objects.create(
+            author=self.user2,
+            parent_reply=self.reply,
+            body='This is a nested reply'
+        )
+        self.assertEqual(child_reply.parent_reply, self.reply)
+        self.assertIsNone(child_reply.parent_comment)
+        self.assertEqual(child_reply.body, 'This is a nested reply')
+
+    def test_liked_reply_creation(self):
+        """Test LikedReply model creation"""
+        liked_reply = LikedReply.objects.create(
+            reply=self.reply,
+            user=self.user2
+        )
+        self.assertEqual(liked_reply.reply, self.reply)
+        self.assertEqual(liked_reply.user, self.user2)
+        self.assertIsInstance(liked_reply.created, datetime)
+        self.assertEqual(
+            str(liked_reply),
+            f"{self.user2.username} : {self.reply.body[:30]}"
+        )
+
+    def test_forum_topic_ordering(self):
+        """Test ForumTopic Meta ordering"""
+        topic2 = ForumTopic.objects.create(
+            title='Second Topic',
+            content='Second test',
+            author=self.user,
+            course=self.course,
+            module=self.module
+        )
+        topics = ForumTopic.objects.all()
+        self.assertEqual(topics[0], topic2)  # Newer topic first
+
+    def test_forum_comment_ordering(self):
+        """Test ForumComment Meta ordering"""
+        comment2 = ForumComment.objects.create(
+            topic=self.topic,
+            content='Second comment',
+            author=self.user
+        )
+        comments = ForumComment.objects.all()
+        self.assertEqual(comments[0], self.comment)  # Older comment first
+
+    def test_reply_ordering(self):
+        """Test Reply Meta ordering"""
+        reply2 = Reply.objects.create(
+            author=self.user,
+            parent_comment=self.comment,
+            body='Second reply'
+        )
+        replies = Reply.objects.all()
+        self.assertEqual(replies[0], self.reply)  # Older reply first
