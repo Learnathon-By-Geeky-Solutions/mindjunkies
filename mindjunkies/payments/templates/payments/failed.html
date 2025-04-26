@@ -3,21 +3,17 @@
 {% block head_title %} Payment Failed {% endblock %}
 
 {% block extra_head %}
-
     <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com" integrity="sha384-3lMDj6taqFU4WaVzghegEgWEX1nCLsIUZrlpmlpbokCN0Cfv3WQZD7N4svloi+3n"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        body {
+            font-family: 'Inter', sans-serif;
         }
-
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         .animate-fade-in {
             animation: fadeIn 0.6s ease-out forwards;
         }
@@ -25,7 +21,6 @@
 {% endblock %}
 
 {% block main_content %}
-    <!-- Added container with flex centering classes -->
     <div class="min-h-screen w-full flex items-center justify-center p-4">
         <div class="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden animate-fade-in">
             <!-- Failed Header -->
@@ -33,7 +28,7 @@
                 <div class="flex justify-center">
                     <div class="rounded-full bg-white/20 p-3 backdrop-blur-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24"
-                            stroke="black">
+                            stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                         </svg>

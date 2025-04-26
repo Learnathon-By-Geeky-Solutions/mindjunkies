@@ -40,16 +40,25 @@
             <!-- Main Content -->
             <main class="flex-1 overflow-y-auto">
                 <!-- Breadcrumb Navigation -->
-                <div class="flex items-center justify-between p-4 border-b bg-base-100 shadow-sm">
-                    <div class="flex items-center gap-2 text-sm breadcrumbs">
-                        <ul>
-                            <li><a href="#" class="text-primary hover:underline">{{module.title}}</a></li>
-                            <li><a href="#" class="text-primary hover:underline">Lecture {{lecture.order}}</a></li>
-                            <li class="text-base-content/70">{{lecture.title}}</li>
-                        </ul>
-                    </div>
-                    <a href="#" class="btn btn-primary btn-sm">Next</a>
-                </div>
+                <!-- Breadcrumb Navigation -->
+<div class="flex items-center justify-between p-4 border-b bg-base-100 shadow-sm">
+    <div class="flex items-center gap-2 text-sm breadcrumbs">
+        <ul>
+            <li><a href="#" class="text-primary hover:underline">{{module.title}}</a></li>
+            <li><a href="#" class="text-primary hover:underline">Lecture {{lecture.order}}</a></li>
+            <li class="text-base-content/70">{{lecture.title}}</li>
+        </ul>
+    </div>
+    <div class="flex gap-2">
+        <button id="mark-completed-btn" class="btn btn-outline btn-success btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            Mark as Completed
+        </button>
+        <a href="#" class="btn btn-primary btn-sm">Next</a>
+    </div>
+</div>
 
                 <!-- Video Content -->
                 <div class="p-6 max-w-6xl mx-auto">
