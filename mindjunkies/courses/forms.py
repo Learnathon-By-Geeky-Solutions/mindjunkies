@@ -8,10 +8,6 @@ text_area = "form-input mt-1 block w-full p-2 border border-gray-300 rounded-md 
 
 
 class CourseForm(forms.ModelForm):
-    status = forms.ChoiceField(
-        choices=[('active', 'Active'), ('inactive', 'Inactive')],  # Example choices
-        widget=forms.Select(attrs={'disabled': 'disabled'})
-    )
     class Meta:
         model = Course
         fields = [

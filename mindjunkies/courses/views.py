@@ -109,10 +109,9 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
     model = Course
     form_class = CourseForm
     template_name = "courses/create_course.html"
-    success_url = reverse_lazy("dashboard", kwargs={"status": "pending"})
-    print("Jifat")
+    success_url = reverse_lazy("dashboard")
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(self, **kwargs)
+        context = super().get_context_data(**kwargs)
         status = False
         if CourseToken.objects.filter(teacher=self.request.user, status="pending").exists():
             status = True
@@ -125,7 +124,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
                 request,
                 "You have a pending course token. Please wait for it to be approved.",
             )
-            return redirect(reverse("dashboard", kwargs={"status": "published"}))
+            return redirect(reverse("dashboard"))
         else:
             return super().get(request)
 

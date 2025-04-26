@@ -11,12 +11,12 @@ from django.views.generic.edit import FormView
 from django.core.paginator import Paginator
 
 from mindjunkies.accounts.models import User
-from mindjunkies.courses.models import Course, Enrollment
+from mindjunkies.courses.models import Course, Enrollment, CourseToken
 from mindjunkies.payments.models import Transaction, Balance, BalanceHistory
 
-from .forms import TeacherVerificationForm
-from .mixins import CustomPermissionRequiredMixin
-from .models import Certificate, TeacherVerification
+from mindjunkies.dashboard.forms import TeacherVerificationForm
+from mindjunkies.dashboard.mixins import CustomPermissionRequiredMixin
+from mindjunkies.dashboard.models import Certificate, TeacherVerification
 
 VIEW_COURSE_PERMISSION = "courses.view_course"
 
@@ -31,23 +31,31 @@ class TeacherPermissionView(LoginRequiredMixin, View):
         return render(request, "apply_teacher.html")
 
 
-@method_decorator(cache_page(60 * 5), name="dispatch")  # cache for 5 minutes
 class TeacherHome(LoginRequiredMixin, View):
     permission_required = VIEW_COURSE_PERMISSION
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         if not request.user.is_teacher:
             return redirect("teacher_permission")
+        
 
         courses = Course.objects.filter(teacher=request.user, status="published")
+        unverified_courses = []
+
+        tokens = CourseToken.objects.filter(teacher=request.user, status="pending")
+        print(tokens)
+        for token in tokens: 
+            print(token.course)
+            unverified_courses.append(token.course)
+
         context = {
             "courses": courses,
             "status": "Published",
+            "unverified_courses": unverified_courses,
         }
         return render(request, "components/content.html", context)
 
 
-@method_decorator(cache_page(60 * 5), name="dispatch")  # cache for 5 minutes
 class ContentListView(LoginRequiredMixin, View):
     permission_required = VIEW_COURSE_PERMISSION
 
