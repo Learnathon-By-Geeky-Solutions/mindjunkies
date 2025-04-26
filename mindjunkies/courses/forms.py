@@ -8,6 +8,7 @@ text_area = "form-input mt-1 block w-full p-2 border border-gray-300 rounded-md 
 
 
 class CourseForm(forms.ModelForm):
+  
     class Meta:
         model = Course
         fields = [
