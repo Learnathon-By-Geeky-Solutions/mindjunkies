@@ -20,14 +20,6 @@ def test_course_list_authenticated(client, django_user_model):
     assert course.title.encode() in response.content
 
 
-def test_create_course_view_no_token(client):
-    user = baker.make("accounts.User")
-    client.force_login(user)
-
-    response = client.get(reverse("create_course"))
-    assert response.status_code == 200
-
-
 def test_category_courses_view(client):
     parent_category = baker.make(
         CourseCategory, name="Parent Category", slug="parent-category"

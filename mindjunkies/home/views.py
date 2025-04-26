@@ -39,7 +39,7 @@ class HomeView(View):
 
         new_courses = Course.objects.exclude(
             id__in=[course.id for course in enrolled_courses]
-        ).order_by("-created_at")
+        ).order_by("-created_at").filter(status="published")
 
         courses = Course.objects.exclude(
             id__in=new_courses.values_list("id", flat=True)
@@ -73,7 +73,7 @@ class HomeView(View):
                     student=request.user, course=last_lecture.course
                 ).progression
 
-
+                print(new_courses)
         context = {
             "new_courses": new_courses,
             "courses": courses,

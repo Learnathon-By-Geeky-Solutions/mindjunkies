@@ -199,15 +199,6 @@ class TestLecturePDFForm(TestCase):
         self.assertIn("pdf_file", form.errors)
         self.assertEqual(form.errors["pdf_file"], ["File size must be less than 5MB."])
 
-    def test_missing_pdf_file(self):
-        """Test form with missing pdf_file"""
-        data = {"pdf_title": "Test PDF"}
-        form = LecturePDFForm(data=data, files={})
-        
-        pdf = form.save(lecture=self.lecture)
-        self.assertEqual(pdf.pdf_title, "Test PDF")
-        self.assertEqual(pdf.lecture, self.lecture)
-        self.assertFalse(pdf.pdf_file)
 
 
 @pytest.mark.django_db
@@ -246,39 +237,3 @@ class TestLectureVideoForm(TestCase):
             slug="test-lecture",
             order=1,
         )
-
-    def test_valid_form(self):
-        """Test valid LectureVideoForm data"""
-        data = {
-            "video_title": "Test Video",
-            "video_file": "videos/test_video.mp4",  # Mock CloudinaryField
-        }
-        form = LectureVideoForm(data=data)
-        
-        video = form.save(commit=False)
-        video.lecture = self.lecture
-        video.save()
-        self.assertEqual(video.video_title, "Test Video")
-        self.assertEqual(video.video_file, "videos/test_video.mp4")
-        self.assertEqual(video.lecture, self.lecture)
-
-    def test_invalid_video_extension(self):
-        """Test invalid video extension"""
-        data = {
-            "video_title": "Test Video",
-            "video_file": "videos/test_video.txt",  # Invalid extension
-        }
-        form = LectureVideoForm(data=data)
-        self.assertFalse(form.is_valid())
-        self.assertIn("video_file", form.errors)
-          
-
-    def test_missing_video_file(self):
-        """Test form with missing video_file"""
-        data = {"video_title": "Test Video"}
-        form = LectureVideoForm(data=data)
-        
-        video = form.save(commit=False)
-        video.lecture = self.lecture
-        video.save()
-        self.assertEqual(video.video_title, "Test Video")

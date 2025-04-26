@@ -110,6 +110,14 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
     form_class = CourseForm
     template_name = "courses/create_course.html"
     success_url = reverse_lazy("dashboard", kwargs={"status": "pending"})
+    print("Jifat")
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(self, **kwargs)
+        status = False
+        if CourseToken.objects.filter(teacher=self.request.user, status="pending").exists():
+            status = True
+        context["verification"] = status
+        return context
 
     def get(self, request):
         if CourseToken.objects.filter(teacher=request.user, status="pending").exists():
@@ -148,10 +156,12 @@ class CourseUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         slug = self.request.GET.get("slug")
+        print(get_object_or_404(Course, slug=slug))
         return get_object_or_404(Course, slug=slug) if slug else None
 
     def form_valid(self, form):
         messages.success(self.request, "Course saved successfully!")
+
         form.save()
         print(form)
         return redirect(reverse("course_details", kwargs={"slug": form.instance.slug}))

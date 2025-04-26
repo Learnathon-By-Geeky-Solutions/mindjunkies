@@ -10,7 +10,6 @@ from django.views import View
 from django.views.generic.edit import FormView
 from django.core.paginator import Paginator
 
-
 from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course, Enrollment
 from mindjunkies.payments.models import Transaction, Balance, BalanceHistory
@@ -22,49 +21,55 @@ from .models import Certificate, TeacherVerification
 VIEW_COURSE_PERMISSION = "courses.view_course"
 
 
-
 class TeacherPermissionView(LoginRequiredMixin, View):
     def get(self, request: HttpRequest) -> HttpResponse:
         if request.user.is_teacher:
-            return redirect("dashboard",status="published")  # Redirect if already a teacher
+            return redirect("dashboard")  # Redirect if already a teacher
 
         elif TeacherVerification.objects.filter(user=request.user).exists():
             return redirect("verification_wait")
         return render(request, "apply_teacher.html")
 
+
 @method_decorator(cache_page(60 * 5), name="dispatch")  # cache for 5 minutes
-class ContentListView(LoginRequiredMixin, View):
-    
+class TeacherHome(LoginRequiredMixin, View):
     permission_required = VIEW_COURSE_PERMISSION
 
-
-    def get_queryset(self):
-            import time
-            time.sleep(5)
-            return super().get_queryset() 
-
-    def get(self, request: HttpRequest, status:str) -> HttpResponse:
-        print("🔴 view code executing!")   # ← this only appears on a cache MISS
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         if not request.user.is_teacher:
             return redirect("teacher_permission")
 
-        
         courses = Course.objects.filter(teacher=request.user, status="published")
         context = {
             "courses": courses,
             "status": "Published",
         }
-        
-       
-        if status == "published":
-            courses = Course.objects.filter(teacher=request.user, status="published")
-            context["courses"] = courses
-            context["status"] = "published"
-            return render(request, "components/content.html", context)
+        return render(request, "components/content.html", context)
 
-        elif status == "draft":
+
+@method_decorator(cache_page(60 * 5), name="dispatch")  # cache for 5 minutes
+class ContentListView(LoginRequiredMixin, View):
+    permission_required = VIEW_COURSE_PERMISSION
+
+    def get_queryset(self):
+        import time
+        time.sleep(5)
+        return super().get_queryset()
+
+    def get(self, request: HttpRequest, status: str) -> HttpResponse:
+        if not request.user.is_teacher:
+            return redirect("teacher_permission")
+
+        courses = Course.objects.filter(teacher=request.user, status="published")
+        context = {
+            "courses": courses,
+            "status": "Published",
+        }
+
+        if status == "draft":
             courses = Course.objects.filter(teacher=request.user, status="draft")
             context["courses"] = courses
+            print(courses)
             context["status"] = "Draft"
             return render(request, "components/draft.html", context)
         elif status == "archived":
@@ -72,13 +77,13 @@ class ContentListView(LoginRequiredMixin, View):
             context["courses"] = courses
             context["status"] = "Archived"
             return render(request, "components/archive.html", context)
-        
+
         elif status == "balance":
             balance = Balance.objects.filter(user=request.user).first()
             print(balance)
             if not balance:
                 balance = Balance.objects.create(user=request.user, amount=0)
-            transactions = Transaction.objects.filter(user=request.user).order_by('-tran_date')  
+            transactions = Transaction.objects.filter(user=request.user).order_by('-tran_date')
 
             page_number = request.GET.get("page", 1)
             paginator = Paginator(transactions, 10)  # Show 10 transactions per page
@@ -88,15 +93,8 @@ class ContentListView(LoginRequiredMixin, View):
             context["transactions"] = page_obj
             context["status"] = "Balance"
             return render(request, "components/balance.html", context)
-
-                
         else:
-            return render(request, "components/contents.html", context)
-        
-
-         
-    
-
+            return redirect("dashboard")
 
 
 class EnrollmentListView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
@@ -142,7 +140,7 @@ class TeacherVerificationView(FormView):
 
     def get(self, request):
         if request.user.is_teacher:
-            redirect("dashboard",status="published")  # Redirect if already a teacher
+            redirect("dashboard")  # Redirect if already a teacher
 
         elif TeacherVerification.objects.filter(user=request.user).exists():
             return redirect("verification_wait")
@@ -188,7 +186,8 @@ class VerificationWaitView(LoginRequiredMixin, View):
             "verification_wait.html",
             {"message": "Please wait for your verification."},
         )
-    
+
+
 class DraftView(LoginRequiredMixin, View):
     permission_required = VIEW_COURSE_PERMISSION
 
@@ -201,6 +200,8 @@ class DraftView(LoginRequiredMixin, View):
             "courses": courses,
         }
         return render(request, "components/draft.html", context)
+
+
 class ArchiveView(LoginRequiredMixin, View):
     permission_required = VIEW_COURSE_PERMISSION
 
@@ -212,4 +213,4 @@ class ArchiveView(LoginRequiredMixin, View):
         context = {
             "courses": courses,
         }
-        return render(request, "components/archive.html", context)    
+        return render(request, "components/archive.html", context)

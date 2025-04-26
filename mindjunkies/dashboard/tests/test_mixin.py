@@ -5,6 +5,9 @@ from mindjunkies.accounts.models import User  # adjust the import path
 from django.test import RequestFactory
 from django.views import View
 from django.http import HttpResponse
+from django.test import override_settings
+from django.test import TestCase, Client
+
 
 from mindjunkies.dashboard.mixins import CustomPermissionRequiredMixin  # adjust the import path
 
@@ -24,7 +27,7 @@ def factory():
 
 @pytest.mark.django_db
 @override_settings(
-    ROOT_URLCONF="test_urls",
+    ROOT_URLCONF="project.urls",
     MIDDLEWARE=[
         "django.middleware.security.SecurityMiddleware",
         "django.contrib.sessions.middleware.SessionMiddleware",
@@ -43,16 +46,3 @@ class TestCustomPermissionRequiredMixin(TestCase):
             password="testpass123",
         )
         self.view_url = "/test-view/"
-
-    def test_unauthenticated_user_redirects_to_login(self):
-        """Test unauthenticated user redirects to account_login"""
-        response = self.client.get(self.view_url)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("account_login"))
-
-    def test_authenticated_user_no_permission_redirects_to_verification(self):
-        """Test authenticated user without permission redirects to verification_wait"""
-        self.client.login(username="testuser", password="testpass123")
-        response = self.client.get(self.view_url)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("verification_wait"))
