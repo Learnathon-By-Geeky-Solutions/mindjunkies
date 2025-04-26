@@ -1,4 +1,4 @@
-from project.settings.base import *
+from project.settings.base import * # noqa
 
 DEBUG = True
 

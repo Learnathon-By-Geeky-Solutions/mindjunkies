@@ -110,7 +110,7 @@ jobs:
         run: |
           docker build -f Dockerfile \
             -t registry.digitalocean.com/mindjunkies/django-mindjunkies-web:latest \
-            -t registry.digitalocean.com/mindjunkies/django-mindjunkies-web:${GITHUB_SHA::7}-${GITHUB_RUN_ID::5} \
+            -t registry.digitalocean.com/mindjunkies/django-mindjunkies-web:${GITHUB_SHA::7}-${GITHUB_RUN_ID::7} \
             .
 
       - name: Push image
@@ -170,7 +170,7 @@ jobs:
 
       - name: Update Deployment image
         run: |
-          kubectl set image deployment/django-mindjunkies-web-deployment django-mindjunkies-web=registry.digitalocean.com/mindjunkies/django-mindjunkies-web:${GITHUB_SHA::7}-${GITHUB_RUN_ID::5}
+          kubectl set image deployment/django-mindjunkies-web-deployment django-mindjunkies-web=registry.digitalocean.com/mindjunkies/django-mindjunkies-web:${GITHUB_SHA::7}-${GITHUB_RUN_ID::7}
 
       - name: Wait for rollout to finish
         run: |

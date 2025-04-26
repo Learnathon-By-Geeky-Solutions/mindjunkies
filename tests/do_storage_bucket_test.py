@@ -13,18 +13,18 @@ client = session.client(
 response = client.list_buckets()
 print(response)
 
-
+FILE_NAME = 'test.txt'
 # upload file
-with open('test.txt', 'rb') as file_contents:
+with open(FILE_NAME, 'rb') as file_contents:
     client.put_object(
         Bucket='mindjunkies',
-        Key='test.txt',
+        Key=FILE_NAME,
         Body=file_contents,
     )
 
 # download file
 client.download_file(
     Bucket='mindjunkies',
-    Key='test.txt',
+    Key=FILE_NAME,
     Filename='tmp/test.txt',
 )

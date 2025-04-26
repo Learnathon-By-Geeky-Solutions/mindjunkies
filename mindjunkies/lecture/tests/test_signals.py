@@ -131,7 +131,7 @@ class TestLectureCompletionAdditionalCases(TestCase):
         
         # Create completions for two lectures
         completion1 = LectureCompletion.objects.create(user=self.student, lecture=self.lecture1)
-        completion2 = LectureCompletion.objects.create(user=self.student, lecture=self.lecture2)
+        LectureCompletion.objects.create(user=self.student, lecture=self.lecture2)
         
         # Refresh enrollment
         self.enrollment.refresh_from_db()

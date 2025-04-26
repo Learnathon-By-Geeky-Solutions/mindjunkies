@@ -107,7 +107,7 @@ class TestCertificateAdmin:
         certificate = baker.make(Certificate, description="Test Certificate")
         
         # Set up the admin
-        certificate_admin = CertificateAdmin(Certificate, admin_site)
+        CertificateAdmin(Certificate, admin_site)
         
         # Test that the certificate was created correctly
         assert certificate.description == "Test Certificate"
