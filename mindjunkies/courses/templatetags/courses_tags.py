@@ -19,3 +19,7 @@ def times(number):
 @register.filter
 def subtract(value, arg):
     return int(value) - int(arg)
+
+@register.filter(name="add_class")
+def add_class(field, css_class):
+    return field.as_widget(attrs={"class": css_class})

@@ -1,11 +1,12 @@
 from django.urls import path
 
 from .views import (ContentListView, EnrollmentListView, RemoveEnrollmentView, TeacherVerificationView,
-                    VerificationWaitView, DraftView,ArchiveView,TeacherPermissionView)
+                    VerificationWaitView, DraftView, ArchiveView, TeacherPermissionView, TeacherHome)
 
 urlpatterns = [
     path("teacher/", TeacherVerificationView.as_view(), name="teacher_permission"),
-    path("content/<str:status>/", ContentListView.as_view(), name="dashboard"),
+    path("home/", TeacherHome.as_view(), name="dashboard"),
+    path("home/<str:status>/", ContentListView.as_view(), name="dashboard-content"),
     path(
         "enrollments/<str:slug>/",
         EnrollmentListView.as_view(),
@@ -24,6 +25,6 @@ urlpatterns = [
     path(
         "verification_wait/", VerificationWaitView.as_view(), name="verification_wait"
     ),
-    path('content/draft',DraftView.as_view(),name='draft_content' ),
-    path('content/archive',ArchiveView.as_view(),name='archive_content' ),
+    path('content/draft', DraftView.as_view(), name='draft_content'),
+    path('content/archive', ArchiveView.as_view(), name='archive_content'),
 ]
