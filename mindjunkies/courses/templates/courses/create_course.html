@@ -10,96 +10,270 @@
 {% endblock extra_head %}
 
 {% block main_content %}
-<div class="container mx-auto px-4 py-8 max-w-5xl">
-    <h1 class="text-3xl font-bold mb-8 text-gray-800">Create a New Course</h1>
-
-    <form method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded-lg">
-        {% csrf_token %}
-        
-        <!-- Drawer Structure -->
-        <div class="drawer lg:drawer-open">
-            <input id="course-drawer" type="checkbox" class="drawer-toggle" />
-            
-            <!-- Drawer Content (Main Form Area) -->
-            <div class="drawer-content p-6">
-                <!-- Basic Info Section -->
-                <div id="basic-info" class="section-content border-base-300 bg-base-100 p-10 rounded-lg">
-                    <h2 class="text-2xl font-semibold mb-6 text-gray-700">Basic Info</h2>
-                    <div class="space-y-6">
-                        {{ form.title|as_crispy_field }}
-                        {{ form.short_introduction|as_crispy_field }}
-                        {{ form.category|as_crispy_field }}
-                        {{ form.level|as_crispy_field }}
-                    </div>
-                </div>
-
-                <!-- Content Section -->
-                <div id="content" class="section-content border-base-300 bg-base-100 p-10 rounded-lg hidden">
-                    <h2 class="text-2xl font-semibold mb-6 text-gray-700">Content</h2>
-                    <div class="space-y-6">
-                        {{ form.course_description|as_crispy_field }}
-                        {{ form.course_image|as_crispy_field }}
-                        {{ form.preview_video|as_crispy_field }}
-                        {{ form.course_price|as_crispy_field }}
-                        {{ form.tags|as_crispy_field }}
-                    </div>
-                </div>
-
-                <!-- Settings Section -->
-                {% if request.GET.slug %}
-                <div id="settings" class="section-content border-base-300 bg-base-100 p-10 rounded-lg hidden">
-                    <h2 class="text-2xl font-semibold mb-6 text-gray-700">Settings</h2>
-                    <div class="space-y-6 space-x-0">
-                        {{ form.published|as_crispy_field }}
-                        {{ form.paid_course|as_crispy_field }}
-                        {{ form.upcoming|as_crispy_field }}
-                    </div>
-                </div>
-                {% endif %}
-
-                <!-- Form Actions -->
-                <div class="mt-8 flex justify-end space-x-4">
-                    <button type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">Cancel</button>
-                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700">Save Course</button>
-                    
-                </div>
-            </div>
-
-            <!-- Drawer Sidebar -->
-            <div class="drawer-side">
-                <label for="course-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-                <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
-                    <li><a href="#basic-info" class="section-link active text-lg font-medium underline hover:text-indigo-600">Basic Info</a></li>
-                    <li><a href="#content" class="section-link text-lg font-medium hover:text-indigo-600">Content</a></li>
-                    {% if request.GET.slug %}
-                    <li><a href="#settings" class="section-link text-lg font-medium hover:text-indigo-600">Settings</a></li>
-                    {% endif %}
-             </ul>
+<div class="min-h-screen bg-gray-50">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <div class="flex items-center justify-between mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">
+                <span class="text-primary">Create</span> a New Course
+            </h1>
+            <div class="lg:hidden">
+                <label for="course-drawer" class="btn btn-primary btn-sm drawer-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                    Navigation
+                </label>
             </div>
         </div>
-    </form>
-</div>
 
+        <form method="POST" action="" enctype="multipart/form-data" class="bg-white shadow-xl rounded-xl">
+            {% csrf_token %}
+
+            <!-- Drawer Structure -->
+            <div class="drawer lg:drawer-open">
+                <input id="course-drawer" type="checkbox" class="drawer-toggle" />
+
+                <!-- Drawer Sidebar -->
+                <div class="drawer-side z-10">
+                    <label for="course-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+                    <div class="menu p-4 w-80 h-full bg-base-200 text-base-content">
+                        <div class="px-4 py-6 border-b border-gray-200">
+                            <h2 class="text-xl font-bold text-primary">Course Sections</h2>
+                            <p class="text-sm text-gray-500 mt-1">Complete all sections to create your course</p>
+                        </div>
+                        <ul class="mt-6 space-y-2">
+                            <li>
+                                <a href="#basic-info" class="section-link flex items-center p-3 text-base font-medium rounded-lg hover:bg-base-300 group">
+                                    <span class="flex items-center justify-center w-8 h-8 text-white bg-gray-400 rounded-full mr-3">1</span>
+                                    <span>Basic Info</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#content" class="section-link flex items-center p-3 text-base font-medium rounded-lg hover:bg-base-300 group">
+                                    <span class="flex items-center justify-center w-8 h-8 text-white bg-gray-400 rounded-full mr-3">2</span>
+                                    <span>Course Content</span>
+                                </a>
+                            </li>
+                            {% if request.GET.slug %}
+                            <li>
+                                <a href="#settings" class="section-link flex items-center p-3 text-base font-medium rounded-lg hover:bg-base-300 group">
+                                    <span class="flex items-center justify-center w-8 h-8 text-white bg-gray-400 rounded-full mr-3">3</span>
+                                    <span>Course Settings</span>
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                        
+                        <div class="mt-auto pt-6 border-t border-gray-200">
+                            <div class="px-4 py-2">
+                                <div class="text-sm text-gray-500">Completion Status</div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                                    <div class="bg-primary h-2.5 rounded-full" style="width: 33%"></div>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1">1 of 3 sections completed</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Drawer Content (Main Form Area) -->
+                <div class="drawer-content">
+                    
+                    <!-- All form fields are always in the DOM, just hidden/shown with display CSS -->
+                    <div id="form-sections">
+                        <!-- Basic Info Section -->
+                        <div id="basic-info" class="section-content p-6 lg:p-10">
+                            <div class="bg-base-100 rounded-xl shadow-sm border border-gray-100 p-6 lg:p-8">
+                                <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+                                    <span class="flex items-center justify-center w-8 h-8 text-white bg-primary rounded-full mr-3 text-sm">1</span>
+                                    Basic Information
+                                </h2>
+                                <div class="space-y-6">
+                                    <div class="form-control w-full">
+                                        {{ form.title|as_crispy_field }}
+                                    </div>
+                                    <div class="form-control w-full">
+                                        {{ form.short_introduction|as_crispy_field }}
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="form-control w-full">
+                                            {{ form.category|as_crispy_field }}
+                                        </div>
+                                        <div class="form-control w-full">
+                                            {{ form.level|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Content Section -->
+                        <div id="content" class="section-content p-6 lg:p-10" style="display: none;">
+                            <div class="bg-base-100 rounded-xl shadow-sm border border-gray-100 p-6 lg:p-8">
+                                <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+                                    <span class="flex items-center justify-center w-8 h-8 text-white bg-primary rounded-full mr-3 text-sm">2</span>
+                                    Course Content
+                                </h2>
+                                <div class="space-y-6">
+                                    <div class="form-control w-full">
+                                        {{ form.course_description|as_crispy_field }}
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="form-control w-full">
+                                            <div class="card bg-base-200 p-4 rounded-lg">
+                                                <div class="card-body p-2">
+                                                    <h3 class="card-title text-base mb-2">Course Image</h3>
+                                                    {{ form.course_image|as_crispy_field }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="form-control w-full">
+                                            {{ form.course_price|as_crispy_field }}
+                                        </div>
+                                        <div class="form-control w-full">
+                                            {{ form.tags|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Settings Section -->
+                        {% if request.GET.slug %}
+                        <div id="settings" class="section-content p-6 lg:p-10" style="display: none;">
+                            <div class="bg-base-100 rounded-xl shadow-sm border border-gray-100 p-6 lg:p-8">
+                                <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+                                    <span class="flex items-center justify-center w-8 h-8 text-white bg-primary rounded-full mr-3 text-sm">3</span>
+                                    Course Settings
+                                </h2>
+                                <div class="space-y-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        <div class="form-control">
+                                            <div class="card bg-base-200 p-4 rounded-lg">
+                                                <div class="card-body p-2">
+                                                    <h3 class="card-title text-base mb-2">Course Status</h3>
+                                                    {{ form.status|as_crispy_field }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-control">
+                                            <div class="card bg-base-200 p-4 rounded-lg">
+                                                <div class="card-body p-2">
+                                                    <h3 class="card-title text-base mb-2">Payment Option</h3>
+                                                    {{ form.paid_course|as_crispy_field }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-control">
+                                            <div class="card bg-base-200 p-4 rounded-lg">
+                                                <div class="card-body p-2">
+                                                    <h3 class="card-title text-base mb-2">Coming Soon</h3>
+                                                    {{ form.upcoming|as_crispy_field }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="p-6 lg:p-10 border-t border-gray-200 bg-gray-50 rounded-b-xl">
+                        <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                            <div class="text-sm text-gray-500">
+                                <span class="font-medium">Note:</span> All fields marked with * are required
+                            </div>
+                            <div class="flex gap-3">
+                                <button type="button" class="btn btn-outline">Cancel</button>
+                                <button type="submit" class="btn btn-primary" id="submit-button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-1">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Save Course
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const links = document.querySelectorAll('.section-link');
     const sections = document.querySelectorAll('.section-content');
+    const progressBar = document.querySelector('.bg-primary');
+    let completedSections = 1;
+    const totalSections = links.length;
 
+    // Update progress bar
+    function updateProgress() {
+        const percentage = (completedSections / totalSections) * 100;
+        progressBar.style.width = `${percentage}%`;
+        document.querySelector('.text-xs.text-gray-500').textContent = 
+            `${completedSections} of ${totalSections} sections completed`;
+    }
+
+    // Simple navigation between sections
     links.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             
-            // Remove active classes and hide all sections
+            // Remove active classes from all links
             links.forEach(l => {
-                l.classList.remove('active', 'underline');
+                l.classList.remove('active');
+                // Reset number background
+                const numSpan = l.querySelector('span:first-child');
+                if (numSpan) {
+                    numSpan.classList.remove('bg-primary');
+                    numSpan.classList.add('bg-gray-400');
+                }
+                
+                // Remove check icon
+                const checkIcon = l.querySelector('svg');
+                if (checkIcon) checkIcon.remove();
             });
-            sections.forEach(s => s.classList.add('hidden'));
             
-            // Add active class and underline to clicked link and show target section
-            this.classList.add('active', 'underline');
+            // Hide all sections
+            sections.forEach(s => {
+                s.style.display = 'none';
+            });
+
+            // Add active class to clicked link
+            this.classList.add('active');
+            
+            // Change number background to primary
+            const numSpan = this.querySelector('span:first-child');
+            numSpan.classList.remove('bg-gray-400');
+            numSpan.classList.add('bg-primary');
+            
+            // Add check icon if not already present
+            if (!this.querySelector('svg')) {
+                const checkIcon = document.createElement('div');
+                checkIcon.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 ml-auto text-primary">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                `;
+                this.appendChild(checkIcon.firstElementChild);
+                
+                // Mark section as completed if not already
+                const sectionIndex = Array.from(links).indexOf(this);
+                if (sectionIndex >= completedSections) {
+                    completedSections = sectionIndex + 1;
+                    updateProgress();
+                }
+            }
+
+            // Show target section
             const targetSection = document.getElementById(this.getAttribute('href').substring(1));
-            targetSection.classList.remove('hidden');
+            targetSection.style.display = 'block';
 
             // Close drawer on mobile after selection
             const drawerToggle = document.getElementById('course-drawer');
@@ -108,6 +282,53 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+    
+    // Add Next/Back buttons to each section
+    sections.forEach((section, index) => {
+        const isLastSection = index === sections.length - 1;
+        const buttonContainer = document.createElement('div');
+        buttonContainer.className = 'flex justify-between mt-8';
+        
+        // Back button (except for first section)
+        if (index > 0) {
+            const backButton = document.createElement('button');
+            backButton.type = 'button';
+            backButton.className = 'btn btn-outline';
+            backButton.textContent = 'Back';
+            backButton.addEventListener('click', () => {
+                // Navigate to previous section
+                links[index - 1].click();
+            });
+            buttonContainer.appendChild(backButton);
+        } else {
+            // Empty div for spacing
+            const spacer = document.createElement('div');
+            buttonContainer.appendChild(spacer);
+        }
+        
+        // Next button (except for last section)
+        if (!isLastSection) {
+            const nextButton = document.createElement('button');
+            nextButton.type = 'button';
+            nextButton.className = 'btn btn-primary';
+            nextButton.textContent = 'Next';
+            nextButton.addEventListener('click', () => {
+                // Navigate to next section
+                links[index + 1].click();
+            });
+            buttonContainer.appendChild(nextButton);
+        }
+        
+        section.appendChild(buttonContainer);
+    });
+    
+    // Initialize progress
+    updateProgress();
 });
+
+// Initialize SimpleMDE for markdown editor if present
+ 
+    
+
 </script>
 {% endblock main_content %}

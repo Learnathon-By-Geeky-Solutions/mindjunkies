@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 <div id="reply-form-{{reply.id}}">
     <form
-        hx-post="{% url 'reply_form' reply_id=reply.id %}"
+        hx-post="{% url 'reply_form'  reply_id=reply.id %}"
         hx-target="this"
         hx-swap="outerHTML"
     >
@@ -12,7 +12,7 @@
           <button type="submit" class="btn btn-sm btn-primary">Submit Reply</button>
           <button type="button" class="btn btn-sm btn-ghost" onclick="closeReplyForm('{{reply.id}}')">Cancel</button>
         </div>
-       
+
     </form>
 </div>
 <script>

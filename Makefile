@@ -26,6 +26,10 @@ migrate:
 runserver:
 	uv run python manage.py runserver
 
+.PHONY: run
+run:
+	uv run python manage.py tailwind runserver
+
 .PHONY: superuser
 superuser:
 	uv run python manage.py createsuperuser
@@ -36,3 +40,11 @@ test:
 
 .PHONY: update
 update: sync migrate install-pre-commit;
+
+
+.PHONY: commit
+commit:
+	git status
+	@read -p "Enter commit message: " msg; \
+	git add .; \
+	git commit -m "$$msg"

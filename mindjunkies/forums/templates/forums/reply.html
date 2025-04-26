@@ -1,7 +1,9 @@
-{% comment %} This is a recursive template for rendering comments at any nesting level Usage: {% include
-  "components/comment.html" with reply=reply depth=0 %} {% endcomment %}
+{% comment %}
+This is a recursive template for rendering replies at any nesting level
+Usage: {% include "forums/reply.html" with reply=reply depth=0 course=course module=module topic=topic replyForm=replyForm %}
+{% endcomment %}
 
-<div class="comment-container {% if depth > 0 %}ml-12{% endif %} mb-4">
+<div id="reply-{{ reply.id }}" class="comment-container {% if depth > 0 %}ml-12{% endif %} mb-4">
     <div class="flex">
         <!-- Avatar with initials -->
         <div class="flex-shrink-0 mr-3">
@@ -15,30 +17,27 @@
         </div>
 
         <div class="flex-grow">
-            <!-- Comment Header -->
+            <!-- Reply Header -->
             <div class="flex items-center mb-1">
                 <span class="font-medium mr-2">{{ reply.author }}</span>
                 <span class="badge badge-primary badge-sm text-xs">Learner</span>
-
             </div>
-            <div class="{% if depth > 0 %}text-xs{% else %}text-xs{% endif %} text-gray-500">{{ reply.created }}</div>
-            <!-- Comment Content -->
+            <div class="{% if depth > 0 %}text-xs{% else %}text-xs{% endif %} text-gray-500">{{ reply.created_at }}</div>
+            <!-- Reply Content -->
             <div class="text-gray-800 mb-2">
                 <p>{{ reply.body }}</p>
             </div>
 
-            <!-- Comment Actions -->
+            <!-- Reply Actions -->
             <div class="flex items-center space-x-4 mb-3">
-                {% include 'forums/partials/like_reply.html' %}
-
+                {% include 'forums/partials/like_reply.html' with reply=reply %}
                 <button
                     class="btn btn-ghost btn-xs flex cursor-pointer items-center text-blue-600 hover:text-blue-800"
-                    hx-get="{% url 'reply_form' reply.id %}"
-                    hx-target="#reply-form-container-{{ reply.id }}"
+                    hx-get="{% url 'reply_form'  reply.id %}"
+                    hx-target="#reply-form-container-{{ reply.parent_comment.id }}"
                     hx-swap="innerHTML"
                     hx-trigger="click"
-                    data-reply-id="{{ reply.id }}"
-                    onclick="toggleReplyForm('reply-form-container-{{ reply.id }}')"
+                    onclick="toggleReplyForm(event, '{{ reply.parent_comment.id }}')"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -54,46 +53,41 @@
                             d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                         />
                     </svg>
-                    Reply{% if depth > 0 %} {{ depth }}{% endif %}
+                    Reply
                 </button>
-                <form method="post" action="{% url 'delete_reply' course.slug module.id topic.id reply.id %}"
-                      class="flex items-center text-gray-700 hover:text-red-600 {% if depth > 0 %}text-xs{% endif %}">
-                    {% csrf_token %}
-                    <button type="submit" class="flex cursor-pointer items-center text-red-600 text-red-800 text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             class="{% if depth > 0 %}h-4 w-4{% else %}h-5 w-5{% endif %} mr-1" fill="none"
-                             viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                        Delete
-                </form>
+                {% if request.user == reply.author %}
+                    <form method="post"
+                          hx-post="{% url 'delete_reply' reply_id=reply.id %}"
+                          hx-target="#reply-{{ reply.id }}"
+                          hx-swap="outerHTML"
+                          class="flex items-center">
+                        {% csrf_token %}
+                        <button type="submit" class="flex items-center text-gray-700 hover:text-red-600 {% if depth > 0 %}text-xs{% endif %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="{% if depth > 0 %}h-4 w-4{% else %}h-5 w-5{% endif %} mr-1"
+                                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            Delete
+                        </button>
+                    </form>
+                {% endif %}
             </div>
-
-
-            <!-- Add this container right after the above div -->
-
 
             <!-- Reply Form Container -->
-            <div id="reply-form-container-{{ reply.id }}" class="mb-4"></div>
+            <div id="reply-form-container-{{ reply.parent_comment.id }}" class="mb-4"></div>
 
             <!-- Child Replies Container -->
-            <div class="mb-2">
-                {% for child_reply in reply.replies.all %}
-                    {% include "forums/reply.html" with reply=child_reply depth=depth|add:1 %}
-                {% endfor %}
-            </div>
+            <!-- Removed recursive replies as Reply model doesn't support nesting -->
         </div>
     </div>
 </div>
 
 <script>
-    function toggleReplyForm(formId) {
-        const form = document.getElementById(formId);
-        if (form.classList.contains("hidden")) {
-            form.classList.remove("hidden");
-        } else {
-            form.classList.add("hidden");
+    function toggleReplyForm(event, commentId) {
+        const container = document.getElementById('reply-form-container-' + commentId);
+        if (container.innerHTML.trim() !== '') {
+            event.preventDefault();
+            container.innerHTML = '';
         }
     }
 </script>

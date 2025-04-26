@@ -2,28 +2,30 @@ import secrets
 import string
 
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 from django.views.generic import View
 from sslcommerz_lib import SSLCOMMERZ
-from django.contrib.auth.mixins import LoginRequiredMixin
-
 
 from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course, Enrollment
 
-from .models import PaymentGateway, Transaction
+from .models import PaymentGateway, Transaction, Balance, BalanceHistory
 
 
 def unique_transaction_id_generator(
     size=10, chars=string.ascii_uppercase + string.digits
 ):
-    return "".join(secrets.choice(chars) for _ in range(size))
+    trans_id = "".join(secrets.choice(chars) for _ in range(size))
+    if Transaction.objects.filter(tran_id=trans_id).exists():
+        return unique_transaction_id_generator(size, chars)
+    return trans_id
 
 
-@method_decorator(require_GET, name='dispatch')
+@method_decorator(require_GET, name="dispatch")
 class CheckoutView(View, LoginRequiredMixin):
     def get(self, request, course_slug):
         if not request.user.is_authenticated:
@@ -31,6 +33,8 @@ class CheckoutView(View, LoginRequiredMixin):
             return redirect("account_login")
         user = request.user
         course = get_object_or_404(Course, slug=course_slug)
+
+        Balance.objects.get_or_create(user=course.teacher, defaults={"amount": 0})
 
         transaction_id = unique_transaction_id_generator()
         enrollment, _ = Enrollment.objects.get_or_create(
@@ -91,6 +95,7 @@ class CheckoutView(View, LoginRequiredMixin):
         messages.error(request, "Payment gateway initialization failed")
         return redirect("home")
 
+
 @method_decorator(csrf_exempt, name="dispatch")
 class CheckoutSuccessView(View):
     """Handles payment success response from SSLCommerz."""
@@ -131,12 +136,30 @@ class CheckoutSuccessView(View):
                 risk_level=data["risk_level"],
             )
 
+            # BalanceHistory.objects.create(user=user, transaction)
+            teacher = course.teacher
+            transaction = Transaction.objects.get(tran_id=data["tran_id"])
+            prev_balance = teacher.balance.amount
+            teacher.balance.amount += course.course_price
+            teacher.balance.save()
+
+            new_balance = teacher.balance.amount
+
+            BalanceHistory.objects.create(
+                user=teacher,
+                transaction=transaction,
+                amount=course.course_price,
+                new_balance=new_balance,
+                previous_balance=prev_balance,
+                description="Enrollment successful"
+            )
+
             # Update enrollment status
             enrollment.status = "active"
             enrollment.save()
 
             messages.success(request, "Payment Successful")
-            return render(request, self.template_name, {"enrollment": enrollment})
+            return render(request, self.template_name, {"enrollment": enrollment, "course": course})
 
         except Exception as e:
             print(f"Error in processing success response: {e}")

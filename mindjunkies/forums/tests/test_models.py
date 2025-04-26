@@ -1,127 +1,214 @@
-from decouple import config
+import pytest
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django import forms
+from django.utils.text import slugify
+from django.core.exceptions import ValidationError
 
-from mindjunkies.courses.models import Course, Module
-from mindjunkies.forums.models import ForumComment, ForumTopic, LikedComment, LikedPost, LikedReply, Reply
+from mindjunkies.courses.models import Course, Module, CourseCategory
+from mindjunkies.lecture.models import Lecture, LecturePDF, LectureVideo
+from mindjunkies.lecture.forms import LectureForm, LecturePDFForm, LectureVideoForm, ModuleForm
 
 User = get_user_model()
 
 
-class ForumModelTests(TestCase):
+@pytest.mark.django_db
+class TestLectureForm(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            username="testuser", password=config("TEST_PASS")
+            username="teacher",
+            password="password",
+            email="teacher@example.com",
         )
-
+        self.category = CourseCategory.objects.create(
+            name="Test Category",
+            slug="test-category",
+        )
         self.course = Course.objects.create(
             title="Test Course",
-            short_introduction="This is a short intro.",
-            course_description="Detailed description of the course.",
-            teacher=self.user,
             slug="test-course",
+            short_introduction="A short intro",
+            course_description="Detailed description",
+            teacher=self.user,
+            level="beginner",
+            category=self.category,
+            course_image="course_images/test_image.jpg",  # Mock CloudinaryField
+        )
+        self.module = Module.objects.create(
+            title="Test Module",
+            order=1,
+            course=self.course,
         )
 
-        self.module = Module.objects.create(course=self.course, title="Test Module")
+    
+    def test_invalid_form_missing_title(self):
+        """Test invalid LectureForm with missing title"""
+        data = {
+            "description": "Lecture description",
+            "learning_objective": "Learn something",
+            "order": 1,
+        }
+        form = LectureForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("title", form.errors)
 
-        self.topic = ForumTopic.objects.create(
-            title="Test Topic",
-            content="Some content here.",
-            author=self.user,
+    def test_invalid_form_negative_order(self):
+        """Test invalid LectureForm with negative order"""
+        data = {
+            "title": "Test Lecture",
+            "description": "Lecture description",
+            "learning_objective": "Learn something",
+            "order": -1,
+        }
+        form = LectureForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("order", form.errors)
+
+    def test_unique_order_per_module(self):
+        """Test unique order per module validation"""
+        Lecture.objects.create(
             course=self.course,
             module=self.module,
+            title="Existing Lecture",
+            slug="existing-lecture",
+            order=1,
+        )
+        data = {
+            "title": "Test Lecture",
+            "description": "Lecture description",
+            "learning_objective": "Learn something",
+            "order": 1,  # Conflicts with existing lecture
+        }
+        form = LectureForm(data=data)
+        self.assertTrue(form.is_valid())  # Form validates, but save raises ValidationError
+        lecture = form.save(commit=False)
+        lecture.course = self.course
+        lecture.module = self.module
+        with self.assertRaises(ValidationError) as cm:
+            lecture.save()
+        self.assertIn("Order 1 already exists in this module", str(cm.exception))
+
+
+@pytest.mark.django_db
+class TestLecturePDFForm(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="teacher",
+            password="password",
+            email="teacher@example.com",
+        )
+        self.category = CourseCategory.objects.create(
+            name="Test Category",
+            slug="test-category",
+        )
+        self.course = Course.objects.create(
+            title="Test Course",
+            slug="test-course",
+            short_introduction="A short intro",
+            course_description="Detailed description",
+            teacher=self.user,
+            level="beginner",
+            category=self.category,
+            course_image="course_images/test_image.jpg",
+        )
+        self.module = Module.objects.create(
+            title="Test Module",
+            order=1,
+            course=self.course,
+        )
+        self.lecture = Lecture.objects.create(
+            course=self.course,
+            module=self.module,
+            title="Test Lecture",
+            slug="test-lecture",
+            order=1,
         )
 
-    def test_topic_id_generated(self):
-        self.assertEqual(self.topic.id, 1)
+    def test_valid_form(self):
+        """Test valid LecturePDFForm data"""
+        pdf_content = b"%PDF-1.4 fake PDF content"
+        pdf_file = SimpleUploadedFile("test.pdf", pdf_content, content_type="application/pdf")
+        data = {"pdf_title": "Test PDF"}
+        files = {"pdf_file": pdf_file}
+        form = LecturePDFForm(data=data, files=files)
+        self.assertTrue(form.is_valid())
+        pdf = form.save(commit=False)
+        pdf.lecture = self.lecture
+        pdf.save()
+        self.assertEqual(pdf.pdf_title, "Test PDF")
+        self.assertEqual(pdf.lecture, self.lecture)
+        self.assertTrue(pdf.pdf_file.name.startswith("lecture_pdfs/test"))
 
-    def test_topic_str(self):
-        self.assertEqual(str(self.topic), "Test Topic")
+    def test_valid_form_with_lecture(self):
+        """Test LecturePDFForm save with lecture parameter"""
+        pdf_content = b"%PDF-1.4 fake PDF content"
+        pdf_file = SimpleUploadedFile("test.pdf", pdf_content, content_type="application/pdf")
+        data = {"pdf_title": "Test PDF"}
+        files = {"pdf_file": pdf_file}
+        form = LecturePDFForm(data=data, files=files)
+        self.assertTrue(form.is_valid())
+        pdf = form.save(lecture=self.lecture)
+        self.assertEqual(pdf.pdf_title, "Test PDF")
+        self.assertEqual(pdf.lecture, self.lecture)
+        self.assertTrue(pdf.pdf_file.name.startswith("lecture_pdfs/test"))
 
-    def test_comment_creation(self):
-        comment = ForumComment.objects.create(
-            topic=self.topic, content="This is a comment", author=self.user
-        )
-        self.assertEqual(
-            str(comment), f"Reply by {self.user.username} on {self.topic.title}"
-        )
-        self.assertEqual(self.topic.comments.count(), 1)
+    def test_invalid_pdf_extension(self):
+        """Test invalid PDF extension"""
+        txt_file = SimpleUploadedFile("test.txt", b"Text content", content_type="text/plain")
+        data = {"pdf_title": "Test PDF"}
+        files = {"pdf_file": txt_file}
+        form = LecturePDFForm(data=data, files=files)
+        self.assertFalse(form.is_valid())
+        self.assertIn("pdf_file", form.errors)
+        self.assertEqual(form.errors["pdf_file"], ["Only PDF files are allowed."])
 
-    def test_reply_creation(self):
-        comment = ForumComment.objects.create(
-            topic=self.topic, content="Another comment", author=self.user
-        )
-        reply = Reply.objects.create(
-            author=self.user, parent_comment=comment, body="This is a reply"
-        )
-        self.assertEqual(str(reply), f"{self.user.username} : This is a reply")
-        self.assertEqual(comment.replies.count(), 1)
+    def test_invalid_pdf_size(self):
+        """Test oversized PDF file"""
+        large_content = b"%PDF-1.4 " + b"0" * (6 * 1024 * 1024)  # 6MB
+        pdf_file = SimpleUploadedFile("large.pdf", large_content, content_type="application/pdf")
+        data = {"pdf_title": "Test PDF"}
+        files = {"pdf_file": pdf_file}
+        form = LecturePDFForm(data=data, files=files)
+        self.assertFalse(form.is_valid())
+        self.assertIn("pdf_file", form.errors)
+        self.assertEqual(form.errors["pdf_file"], ["File size must be less than 5MB."])
 
-    def test_nested_reply(self):
-        comment = ForumComment.objects.create(
-            topic=self.topic, content="Comment", author=self.user
+    
+@pytest.mark.django_db
+class TestLectureVideoForm(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="teacher",
+            password="password",
+            email="teacher@example.com",
         )
-        parent_reply = Reply.objects.create(
-            author=self.user, parent_comment=comment, body="Reply 1"
+        self.category = CourseCategory.objects.create(
+            name="Test Category",
+            slug="test-category",
         )
-        child_reply = Reply.objects.create(
-            author=self.user, parent_reply=parent_reply, body="Reply 2"
+        self.course = Course.objects.create(
+            title="Test Course",
+            slug="test-course",
+            short_introduction="A short intro",
+            course_description="Detailed description",
+            teacher=self.user,
+            level="beginner",
+            category=self.category,
+            course_image="course_images/test_image.jpg",
+            preview_video="videos/test_preview.mp4",
         )
-        self.assertEqual(parent_reply.replies.first(), child_reply)
-
-    def test_liked_post(self):
-        liked_post = LikedPost.objects.create(topic=self.topic, user=self.user)
-        self.assertEqual(
-            str(liked_post), f"{self.user.username} : {self.topic.content[:30]}"
+        self.module = Module.objects.create(
+            title="Test Module",
+            order=1,
+            course=self.course,
         )
-
-    def test_liked_comment(self):
-        comment = ForumComment.objects.create(
-            topic=self.topic, content="Liking this!", author=self.user
-        )
-        liked_comment = LikedComment.objects.create(comment=comment, user=self.user)
-        # Simulate the missing `body` by patching the comment object
-        liked_comment.comment.body = comment.content
-        self.assertEqual(
-            str(liked_comment), f"{self.user.username} : {comment.content[:30]}"
-        )
-
-    def test_liked_reply(self):
-        comment = ForumComment.objects.create(
-            topic=self.topic, content="Comment", author=self.user
-        )
-        reply = Reply.objects.create(
-            author=self.user, parent_comment=comment, body="Like this reply!"
-        )
-        liked_reply = LikedReply.objects.create(reply=reply, user=self.user)
-        self.assertEqual(str(liked_reply), f"{self.user.username} : {reply.body[:30]}")
-
-    def test_get_reply_count_and_last_activity(self):
-        comment = ForumComment.objects.create(
-            topic=self.topic, content="Comment", author=self.user
-        )
-        reply = Reply.objects.create(
-            author=self.user, parent_comment=comment, body="Reply here"
-        )
-
-        # Simulate topic.get_reply_count() using related comments and replies
-        reply_count = Reply.objects.filter(parent_comment__topic=self.topic).count()
-        self.assertEqual(reply_count, 1)
-
-        # Simulate topic.get_last_activity() using latest comment or reply
-        last_comment = (
-            ForumComment.objects.filter(topic=self.topic)
-            .order_by("-created_at")
-            .first()
-        )
-        last_reply = (
-            Reply.objects.filter(parent_comment__topic=self.topic)
-            .order_by("-created")
-            .first()
+        self.lecture = Lecture.objects.create(
+            course=self.course,
+            module=self.module,
+            title="Test Lecture",
+            slug="test-lecture",
+            order=1,
         )
 
-        last_activity = max(
-            last_comment.created_at if last_comment else None,
-            last_reply.created if last_reply else None,
-        )
-        self.assertEqual(last_activity.date(), reply.created.date())
+

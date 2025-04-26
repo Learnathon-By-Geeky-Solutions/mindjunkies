@@ -1,15 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import models
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.decorators.http import require_http_methods
-from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.views.generic import TemplateView
-from django.urls import reverse_lazy
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.generic.edit import CreateView, UpdateView
 
 from mindjunkies.courses.models import Course, CourseCategory, Enrollment
 
@@ -28,8 +27,6 @@ def course_list(request: HttpRequest) -> HttpResponse:
         enrolled = Enrollment.objects.filter(student=request.user)
         enrolled_classes = [ec.course for ec in enrolled]
 
-    print(teacher_classes)
-
     context = {
         "courses": courses,
         "enrolled_classes": enrolled_classes,
@@ -39,30 +36,53 @@ def course_list(request: HttpRequest) -> HttpResponse:
     return render(request, "courses/course_list.html", context)
 
 
-class NewCourseView(TemplateView):
+from django.views.generic import TemplateView
+from .models import Course, Enrollment
+
+
+class BaseCourseView(TemplateView):
+    def get_enrolled_courses(self):
+        if self.request.user.is_authenticated:
+            enrollments = Enrollment.objects.filter(
+                student=self.request.user, status="active"
+            ).prefetch_related("course")
+            return [enrollment.course for enrollment in enrollments]
+        return []
+
+
+class NewCourseView(BaseCourseView):
     template_name = "courses/new_course.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        enrolled_courses = []
-        if self.request.user.is_authenticated:
-            # Get user's enrolled courses
-            enrollments = Enrollment.objects.filter(
-                student=self.request.user, status="active"
-            ).prefetch_related("course")
-            enrolled_courses = [enrollment.course for enrollment in enrollments]
+        enrolled_courses = self.get_enrolled_courses()
 
-        # Get courses taught by the user if they're a teacher
-
-        # Get new courses (excluding enrolled ones)
         new_courses = Course.objects.exclude(
             id__in=[course.id for course in enrolled_courses]
+        ).order_by("-created_at")[:4]
 
-        ).order_by("-created_at")[:3]
         context["new_courses"] = new_courses
         return context
 
-        # Add data to context
+
+class PopularCoursesView(BaseCourseView):
+    template_name = "courses/popular_course.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        enrolled_courses = self.get_enrolled_courses()
+
+        new_courses = Course.objects.exclude(
+            id__in=[course.id for course in enrolled_courses]
+        ).order_by("-created_at")
+
+        courses = Course.objects.exclude(
+            id__in=new_courses.values_list("id", flat=True)
+        ).exclude(id__in=[course.id for course in enrolled_courses])
+
+        popular_courses = courses.order_by("-enrollments")
+        context["popular_courses"] = popular_courses
+        return context
 
 
 class MyCoursesView(LoginRequiredMixin, TemplateView):
@@ -72,10 +92,13 @@ class MyCoursesView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
 
         # With prefetch for better performance
-        enrolled_courses = Course.objects.filter(
-            enrollments__student=self.request.user,
-            enrollments__status="active"
-        ).prefetch_related('enrollments').distinct()
+        enrolled_courses = (
+            Course.objects.filter(
+                enrollments__student=self.request.user, enrollments__status="active"
+            )
+            .prefetch_related("enrollments")
+            .distinct()
+        )
         context["enrolled_courses"] = enrolled_courses
         return context
 
@@ -84,7 +107,14 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
     model = Course
     form_class = CourseForm
     template_name = "courses/create_course.html"
-    success_url = reverse_lazy('dashboard')
+    success_url = reverse_lazy("dashboard")
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        status = False
+        if CourseToken.objects.filter(teacher=self.request.user, status="pending").exists():
+            status = True
+        context["verification"] = status
+        return context
 
     def get(self, request):
         if CourseToken.objects.filter(teacher=request.user, status="pending").exists():
@@ -107,6 +137,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
 
         messages.success(self.request, "Course saved successfully!")
         return super().form_valid(form)
+
     def form_invalid(self, form):
         messages.error(
             self.request, f"There was an error processing the form: {form.errors}"
@@ -126,10 +157,11 @@ class CourseUpdateView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         messages.success(self.request, "Course saved successfully!")
+
+        form.save()
         return redirect(reverse("course_details", kwargs={"slug": form.instance.slug}))
 
     def form_invalid(self, form):
-        print("Form errors:", form.errors)  # Log the errors to the console
         messages.error(
             self.request, f"There was an error processing the form: {form.errors}"
         )
@@ -142,12 +174,13 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     course = get_object_or_404(Course, slug=slug)
     ratings = course.get_individual_ratings()
     enrolled = False
-
+    num_lectures = course.modules.aggregate(models.Count("lectures"))["lectures__count"]
+   
     if request.user.is_authenticated:
         enrolled = course.enrollments.filter(
             student=request.user, status="active"
         ).exists()
-
+    
     paginator = Paginator(ratings, 5)
     page = request.GET.get("page", 1)
     try:
@@ -160,7 +193,8 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     context = {
         "course_detail": course,
         "ratings": paginated_ratings,
-        "accessed": enrolled,
+        "student": enrolled,
+        "num_lectures": num_lectures,
     }
     return render(request, "courses/course_details.html", context)
 
@@ -195,12 +229,18 @@ def category_courses(request, slug):
     )
 
 
-
 class RatingCreateView(CreateView):
     model = Rating
     form_class = RatingForm
     template_name = "courses/rate_course.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        if course.teacher == request.user:
+            messages.error(request, "You cannot rate your own course.")
+            return redirect(reverse("lecture_home", kwargs={"course_slug": course.slug}))
+        return super().dispatch(request, *args, **kwargs)
+    
     def get_initial(self):
         initial = super().get_initial()
         course = get_object_or_404(Course, slug=self.kwargs["course_slug"])

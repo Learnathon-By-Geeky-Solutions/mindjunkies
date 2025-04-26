@@ -1,3 +1,4 @@
+{% load tailwind_cli %}
 {% load static tailwind_cli %}
 {% load django_htmx %}
 <!DOCTYPE html>
@@ -8,9 +9,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
     <!-- Add these to the head tag of your HTML -->
 
-
     <title>
-        {% block head_title %}LMS{% endblock head_title %}
+        {% block head_title %}
+        Biddyapith
+        {% endblock head_title %}
     </title>
     <script src="https://unpkg.com/htmx.org@2.0.4"
             integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+"
@@ -25,7 +27,7 @@
 
 
 {% include 'includes/message.html' %}
-               
+
 
 <main class="">
     {% block main_content %}{% endblock main_content %}

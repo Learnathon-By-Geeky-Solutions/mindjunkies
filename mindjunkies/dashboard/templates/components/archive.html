@@ -1,0 +1,40 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load courses_tags %}
+
+{% block dashboard_content %}
+    <div class="bg-gray-50 min-h-screen">
+        <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+            <!-- Published Courses Section -->
+            <div class="mb-10">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-3xl font-semibold text-gray-900">Archive Courses</h1>
+
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div
+                        class="grid grid-cols-6 bg-gray-50 text-gray-500 text-sm font-medium px-6 py-4 border-b border-gray-200">
+                        <span class="col-span-2">Course</span>
+                        <span>Price</span>
+                        <span class="text-center">Enrollments</span>
+                        <span class="text-center">Status</span>
+                        <span class="text-right">Actions</span>
+                    </div>
+
+                    {% for course in courses %}
+                        {% include 'dashboard/course_row.html' %}
+                    {% empty %}
+                        <div class="px-6 py-8 text-center text-gray-500">
+                            <p>You don't have any published courses yet.</p>
+                            <button
+                                class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                                Create Your First Course
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock dashboard_content %}

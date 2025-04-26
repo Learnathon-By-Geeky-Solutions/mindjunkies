@@ -56,10 +56,9 @@ class LiveClass(models.Model):
                     .with_user_avatar("")
                     .sign_with(reader.read())
                 )
-                print(token.decode())
                 return token.decode()
         except Exception as e:
-            print(e)
+            print("Error generating jwt token: ", e)
 
     def get_meeting_url_teacher(self):
         """Return the secure Jitsi meeting URL with JWT authentication."""

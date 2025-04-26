@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('courses', '0005_course_tags'),
+        ("courses", "0005_course_tags"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='course',
-            name='progression',
+            model_name="course",
+            name="progression",
             field=models.PositiveIntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='module',
-            name='progression',
+            model_name="module",
+            name="progression",
             field=models.PositiveIntegerField(default=0),
         ),
     ]

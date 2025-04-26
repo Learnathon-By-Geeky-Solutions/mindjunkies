@@ -8,24 +8,52 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('courses', '0007_remove_course_progression_remove_module_progression_and_more'),
-        ('lecture', '0003_alter_lecturevideo_video_file'),
+        (
+            "courses",
+            "0007_remove_course_progression_remove_module_progression_and_more",
+        ),
+        ("lecture", "0003_alter_lecturevideo_video_file"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='LastVisitedModule',
+            name="LastVisitedModule",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('last_visited', models.DateTimeField(auto_now=True)),
-                ('lecture', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='lecture.lecture')),
-                ('module', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='courses.module')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("last_visited", models.DateTimeField(auto_now=True)),
+                (
+                    "lecture",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="lecture.lecture",
+                    ),
+                ),
+                (
+                    "module",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="courses.module"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-last_visited'],
-                'unique_together': {('module', 'user', 'lecture')},
+                "ordering": ["-last_visited"],
+                "unique_together": {("module", "user", "lecture")},
             },
         ),
     ]
