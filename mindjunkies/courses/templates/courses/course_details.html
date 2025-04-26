@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load courses_tags %}
+{% load cloudinary %}
 
 {% block head_title %}{{ course_detail.title }} - MindJunkies{% endblock %}
 
@@ -396,8 +397,9 @@
                                             allowfullscreen></iframe>
                                 </div>
                             {% else %}
-                                <img src="{% static '' %}" alt="Course Thumbnail"
-                                     class="rounded-lg w-full h-auto max-h-48 object-cover mb-4">
+                                <div class="w-full h-[200px] flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
+                                    {% cloudinary course_detail.course_image fetch_format="auto" quality="auto" width=300 height=200 crop="pad" background="auto" class="rounded-t-2xl object-contain transition-all duration-700 ease-in-out transform group-hover:scale-110" %}
+                                </div>
                             {% endif %}
                             <div class="text-3xl font-bold mb-4">${{ course_detail.course_price }}</div>
 
