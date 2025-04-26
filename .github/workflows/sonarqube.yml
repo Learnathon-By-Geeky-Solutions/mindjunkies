@@ -35,7 +35,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        command: ["redis-server", "--requirepass", "${{ secrets.REDIS_PASSWORD }}", "--bind", "0.0.0.0"]
+        args: ["--requirepass", "${{ secrets.REDIS_PASSWORD }}", "--bind", "0.0.0.0"]
 
     steps:
       - name: Checkout Repo
