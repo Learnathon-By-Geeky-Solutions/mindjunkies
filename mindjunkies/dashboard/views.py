@@ -30,15 +30,9 @@ class TeacherPermissionView(LoginRequiredMixin, View):
             return redirect("verification_wait")
         return render(request, "apply_teacher.html")
 
-<<<<<<< HEAD
-  # cache for 5 minutes
-class ContentListView(LoginRequiredMixin, View):
-    
-=======
 
 @method_decorator(cache_page(60 * 5), name="dispatch")  # cache for 5 minutes
 class TeacherHome(LoginRequiredMixin, View):
->>>>>>> 9dff5337abe729fb28319a6ef60f194c16de99fb
     permission_required = VIEW_COURSE_PERMISSION
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -52,10 +46,6 @@ class TeacherHome(LoginRequiredMixin, View):
         }
         return render(request, "components/content.html", context)
 
-<<<<<<< HEAD
-        elif status == "draft":
-            print("🔴 view code executing!")   # ← this only appears on a cache MISS
-=======
 
 @method_decorator(cache_page(60 * 5), name="dispatch")  # cache for 5 minutes
 class ContentListView(LoginRequiredMixin, View):
@@ -77,7 +67,6 @@ class ContentListView(LoginRequiredMixin, View):
         }
 
         if status == "draft":
->>>>>>> 9dff5337abe729fb28319a6ef60f194c16de99fb
             courses = Course.objects.filter(teacher=request.user, status="draft")
             context["courses"] = courses
             print(courses)
@@ -105,16 +94,7 @@ class ContentListView(LoginRequiredMixin, View):
             context["status"] = "Balance"
             return render(request, "components/balance.html", context)
         else:
-<<<<<<< HEAD
-            return render(request, "components/content.html", context)
-        
-
-         
-    
-
-=======
             return redirect("dashboard")
->>>>>>> 9dff5337abe729fb28319a6ef60f194c16de99fb
 
 
 class EnrollmentListView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
