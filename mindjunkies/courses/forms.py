@@ -22,7 +22,6 @@ class CourseForm(forms.ModelForm):
             "paid_course",
             "course_price",
             "upcoming",
-            "preview_video",
             "tags",
         ]
         widgets = {
