@@ -49,12 +49,12 @@ def get_this_week_range() -> Tuple[timezone.datetime, timezone.datetime]:
 
 def check_course_enrollment(user, course):
     """Check if a user is enrolled in a course or is staff."""
-    return user.is_staff or course.enrollments.filter(student=user).exists()
+    return course.teacher == user or course.enrollments.filter(student=user, status="active").exists()
 
 
 def is_teacher_for_course(user, course):
     """Check if user is a teacher for the course."""
-    return user.is_staff or course.teacher == user
+    return course.teacher == user
 
 
 def get_current_live_class(course):
@@ -83,10 +83,11 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
         """Check if the user is enrolled in the course."""
         if course.teacher == self.request.user:
             course_token = CourseToken.objects.get(course=course)
+            print(course)
             print(course_token.status)
-            if course_token.status == "pending":
-                return False
-            
+            if course_token.status == "approved":
+                return True
+            return False
         return self.request.user.is_staff or course.enrollments.filter(student=self.request.user, status='active').exists()
 
     def dispatch(self, request, *args, **kwargs):

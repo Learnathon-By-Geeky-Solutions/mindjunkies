@@ -145,24 +145,21 @@ class CheckoutSuccessView(View):
 
             new_balance = teacher.balance.amount
 
-            
-
-
             BalanceHistory.objects.create(
-                user=teacher, 
-                transaction=transaction, 
+                user=teacher,
+                transaction=transaction,
                 amount=course.course_price,
-                new_balance = new_balance,
-                previous_balance = prev_balance,
-                description = "Enrollment successfull"
-                )
+                new_balance=new_balance,
+                previous_balance=prev_balance,
+                description="Enrollment successful"
+            )
 
             # Update enrollment status
             enrollment.status = "active"
             enrollment.save()
 
             messages.success(request, "Payment Successful")
-            return render(request, self.template_name, {"enrollment": enrollment})
+            return render(request, self.template_name, {"enrollment": enrollment, "course": course})
 
         except Exception as e:
             print(f"Error in processing success response: {e}")
