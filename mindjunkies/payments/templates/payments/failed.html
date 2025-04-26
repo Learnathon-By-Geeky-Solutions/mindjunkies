@@ -3,8 +3,6 @@
 {% block head_title %} Payment Failed {% endblock %}
 
 {% block extra_head %}
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com" integrity="sha384-3lMDj6taqFU4WaVzghegEgWEX1nCLsIUZrlpmlpbokCN0Cfv3WQZD7N4svloi+3n"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -24,13 +22,11 @@
     <div class="min-h-screen w-full flex items-center justify-center p-4">
         <div class="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden animate-fade-in">
             <!-- Failed Header -->
-            <div class="bg-gradient-to-r from-rose-800 to-pink-800 p-6 text-white text-center">
+            <div class="bg-gradient-to-r from-rose-600 to-red-600 p-6 text-white text-center">
                 <div class="flex justify-center">
                     <div class="rounded-full bg-white/20 p-3 backdrop-blur-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                         </svg>
                     </div>
                 </div>
@@ -43,39 +39,34 @@
                 <div class="bg-rose-50 rounded-lg p-4 border border-rose-100 mb-6">
                     <div class="flex items-start">
                         <div class="flex-shrink-0 text-rose-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                fill="currentColor">
-                                <path fill-rule="evenodd"
-                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                    clip-rule="evenodd"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                             </svg>
                         </div>
                         <div class="ml-3">
                             <p class="text-sm text-rose-700">
-                                Your payment couldn't be processed. This could be due to insufficient funds, an expired
-                                card, or a temporary issue with your payment method.
+                                Your payment couldn't be processed. This could be due to insufficient funds, an expired card, or a temporary issue with your payment method.
                             </p>
                         </div>
                     </div>
                 </div>
 
                 <div class="text-center">
-                    <p class="text-slate-600 mb-6">Don't worry! You can try again with a different payment method or
-                        contact our support team for assistance.</p>
+                    <p class="text-slate-600 mb-6">Don't worry! You can try again with a different payment method or contact our support team for assistance.</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        <a href="javascript:history.back()"
-                        class="btn btn-outline">
+                        <a href="javascript:history.back()" 
+                           class="inline-block w-full py-3 px-6 text-center border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition duration-200 transform hover:-translate-y-1">
                             Try Again
                         </a>
 
-                        <a href="{% url 'home' %}"
-                        class="btn btn-primary bg-indigo-600 hover:bg-indigo-700">
+                        <a href="{% url 'home' %}" 
+                           class="inline-block w-full py-3 px-6 text-center bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 rounded-lg text-white font-medium transition duration-200 transform hover:-translate-y-1">
                             Go to Home
                         </a>
                     </div>
 
-                    <p class="mt-2 text-xs text-slate-500">
+                    <p class="mt-6 text-xs text-slate-500">
                         No charges have been made to your account.
                     </p>
                 </div>
