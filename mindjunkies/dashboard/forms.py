@@ -16,3 +16,10 @@ class TeacherVerificationForm(forms.ModelForm):
             "experience",
             "social_media",
         ]
+        widgets = {
+            "portfolio_links": forms.Textarea(attrs={"rows": 2, "class": "form-control"}),
+            "important_links": forms.Textarea(attrs={"rows": 2, "class": "form-control"}),
+            "experience": forms.Textarea(attrs={"rows": 2, "class": "form-control"}),
+            "social_media": forms.Textarea(attrs={"rows": 2, "class": "form-control"}),
+        }
+
