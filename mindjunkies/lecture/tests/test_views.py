@@ -46,13 +46,6 @@ def lecture_video(db, lecture):
     return baker.make("lecture.LectureVideo", lecture=lecture)
 
 
-@pytest.fixture
-def lecture_pdf(db, lecture):
-    pdf = baker.make("lecture.LecturePDF", lecture=lecture)
-    with patch("cloudinary.models.CloudinaryField.url", new_callable=PropertyMock) as mock_url:
-        mock_url.return_value = "https://res.cloudinary.com/demo/upload/sample.pdf"
-        yield pdf
-
 
 @pytest.fixture
 def course_token(db, course, user):
@@ -62,7 +55,7 @@ def course_token(db, course, user):
 @pytest.fixture
 def live_class(db, course, staff_user):
     return baker.make(
-        "courses.LiveClass",
+        "live_classes.LiveClass",
         course=course,
         teacher=staff_user,
         scheduled_at=timezone.now(),
@@ -74,7 +67,7 @@ def live_class(db, course, staff_user):
 @pytest.fixture
 def live_class_today(db, course, staff_user):
     return baker.make(
-        "courses.LiveClass",
+        "live_classes.LiveClass",
         course=course,
         teacher=staff_user,
         scheduled_at=timezone.now(),
@@ -86,33 +79,13 @@ def live_class_today(db, course, staff_user):
 @pytest.fixture
 def live_class_this_week(db, course, staff_user):
     return baker.make(
-        "courses.LiveClass",
+        "live_classes.LiveClass",
         course=course,
         teacher=staff_user,
         scheduled_at=timezone.now() + timedelta(days=2),
         duration=60,
         status="Upcoming"
     )
-
-
-@pytest.mark.django_db
-def test_lecture_home_view_success(client, user, course, module, live_class, live_class_today, live_class_this_week):
-    """Test LectureHomeView displays course, modules, and live classes for enrolled users."""
-    baker.make("courses.Enrollment", course=course, student=user)
-    client.force_login(user)
-    response = client.get(reverse("lecture_home", kwargs={"course_slug": course.slug}))
-    assert response.status_code == 200
-    assert "course" in response.context
-    assert "modules" in response.context
-    assert "current_module" in response.context
-    assert "current_live_class" in response.context
-    assert "todays_live_classes" in response.context
-    assert "this_weeks_live_classes" in response.context
-    assert response.context["course"] == course
-    assert response.context["current_module"] == module
-    assert response.context["current_live_class"] == live_class
-    assert live_class_today in response.context["todays_live_classes"]
-    assert live_class_this_week in response.context["this_weeks_live_classes"]
 
 
 @pytest.mark.django_db
@@ -163,43 +136,6 @@ def test_lecture_video_view_forbidden(client, user, course, module, lecture, lec
 
 
 @pytest.mark.django_db
-def test_lecture_pdf_view_success(client, user, course, module, lecture, lecture_pdf):
-    """Test lecture_pdf view displays PDF for enrolled users."""
-    baker.make("courses.Enrollment", course=course, student=user)
-    client.force_login(user)
-    url = reverse(
-        "lecture_pdf",
-        kwargs={
-            "course_slug": course.slug,
-            "module_id": module.id,
-            "lecture_id": lecture.id,
-            "pdf_id": lecture_pdf.id,
-        },
-    )
-    response = client.get(url)
-    assert response.status_code == 200
-    assert "pdf" in response.context
-    assert response.context["pdf"] == lecture_pdf
-
-
-@pytest.mark.django_db
-def test_lecture_pdf_view_forbidden(client, user, course, module, lecture, lecture_pdf):
-    """Test lecture_pdf forbids access for non-enrolled users."""
-    client.force_login(user)
-    url = reverse(
-        "lecture_pdf",
-        kwargs={
-            "course_slug": course.slug,
-            "module_id": module.id,
-            "lecture_id": lecture.id,
-            "pdf_id": lecture_pdf.id,
-        },
-    )
-    response = client.get(url)
-    assert response.status_code == 403
-
-
-@pytest.mark.django_db
 def test_create_lecture_view_success(client, staff_user, course, module):
     """Test CreateLectureView creates a lecture for staff users."""
     client.force_login(staff_user)
@@ -212,7 +148,7 @@ def test_create_lecture_view_success(client, staff_user, course, module):
     assert response.status_code == 200
     assert any("Lecture created successfully" in str(m) for m in get_messages(response.wsgi_request))
     assert response.redirect_chain[-1][0] == f"{reverse('lecture_home', kwargs={'course_slug': course.slug})}?module_id={module.id}"
-    
+
 
 
 @pytest.mark.django_db

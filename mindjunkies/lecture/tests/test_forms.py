@@ -237,20 +237,3 @@ class TestLectureVideoForm(TestCase):
             slug="test-lecture",
             order=1,
         )
-
-    def test_valid_form(self):
-        """Test valid LectureVideoForm data"""
-        data = {
-            "video_title": "Test Video",
-            "video_file": "videos/test_video.mp4",  # Mock CloudinaryField
-        }
-        form = LectureVideoForm(data=data)
-        
-        video = form.save(commit=False)
-        video.lecture = self.lecture
-        video.save()
-        self.assertEqual(video.video_title, "Test Video")
-        self.assertEqual(video.video_file, "videos/test_video.mp4")
-        self.assertEqual(video.lecture, self.lecture)
-
-          

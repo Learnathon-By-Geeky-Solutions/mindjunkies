@@ -140,7 +140,7 @@ class TeacherVerificationView(FormView):
 
     def get(self, request):
         if request.user.is_teacher:
-            redirect("dashboard", status="published")  # Redirect if already a teacher
+            redirect("dashboard")  # Redirect if already a teacher
 
         elif TeacherVerification.objects.filter(user=request.user).exists():
             return redirect("verification_wait")

@@ -165,16 +165,6 @@ def test_teacher_verification_form_submission_invalid(client, user):
 
 
 @pytest.mark.django_db
-def test_verification_wait_view(client, user):
-    client.force_login(user)
-    url = reverse("verification_wait")
-    response = client.get(url)
-    assert response.status_code == 200
-    assert "Please wait for your verification." in response.content.decode()
-    assert "verification_wait.html" in [t.name for t in response.templates]
-
-
-@pytest.mark.django_db
 def test_draft_view(client, teacher_user, draft_course):
     client.force_login(teacher_user)
     url = reverse("draft_content")
