@@ -34,11 +34,9 @@ class TestLectureForm(TestCase):
             level="beginner",
             category=self.category,
             course_image="course_images/test_image.jpg",  # Mock CloudinaryField
-            preview_video="videos/test_preview.mp4",  # Mock CloudinaryField
         )
         self.module = Module.objects.create(
             title="Test Module",
-            details="Module details",
             order=1,
             course=self.course,
         )
@@ -134,11 +132,9 @@ class TestLecturePDFForm(TestCase):
             level="beginner",
             category=self.category,
             course_image="course_images/test_image.jpg",
-            preview_video="videos/test_preview.mp4",
         )
         self.module = Module.objects.create(
             title="Test Module",
-            details="Module details",
             order=1,
             course=self.course,
         )
@@ -222,11 +218,9 @@ class TestLectureVideoForm(TestCase):
             level="beginner",
             category=self.category,
             course_image="course_images/test_image.jpg",
-            preview_video="videos/test_preview.mp4",
         )
         self.module = Module.objects.create(
             title="Test Module",
-            details="Module details",
             order=1,
             course=self.course,
         )

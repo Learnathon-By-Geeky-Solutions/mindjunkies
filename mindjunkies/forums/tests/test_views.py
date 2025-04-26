@@ -88,7 +88,7 @@ class TestForumThreadView(TestCase):
             level="beginner",
         )
         self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
+            title="Test Module", course=self.course, order=1
         )
         self.topic = ForumTopic.objects.create(
             title="Test Topic",
@@ -133,7 +133,7 @@ class TestForumThreadDetailsView(TestCase):
             level="beginner",
         )
         self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
+            title="Test Module", course=self.course, order=1
         )
         self.topic = ForumTopic.objects.create(
             title="Test Topic",
@@ -191,7 +191,7 @@ class TestTopicSubmissionView(TestCase):
             level="beginner",
         )
         self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
+            title="Test Module", course=self.course, order=1
         )
 
     def test_post_valid_form(self):
@@ -262,7 +262,7 @@ class TestTopicUpdateView(TestCase):
             level="beginner",
         )
         self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
+            title="Test Module", course=self.course, order=1
         )
         self.topic = ForumTopic.objects.create(
             title="Test Topic",
@@ -360,7 +360,7 @@ class TestTopicDeletionView(TestCase):
             level="beginner",
         )
         self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
+            title="Test Module", course=self.course, order=1
         )
         self.topic = ForumTopic.objects.create(
             title="Test Topic",
@@ -408,7 +408,7 @@ class TestCommentSubmissionView(TestCase):
             level="beginner",
         )
         self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
+            title="Test Module", course=self.course, order=1
         )
         self.topic = ForumTopic.objects.create(
             title="Test Topic",
@@ -490,7 +490,7 @@ class TestCommentDeletionView(TestCase):
             level="beginner",
         )
         self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
+            title="Test Module", course=self.course, order=1
         )
         self.topic = ForumTopic.objects.create(
             title="Test Topic",
@@ -546,7 +546,7 @@ class TestReplySubmissionView(TestCase):
             level="beginner",
         )
         self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
+            title="Test Module", course=self.course, order=1
         )
         self.topic = ForumTopic.objects.create(
             title="Test Topic",
@@ -633,7 +633,7 @@ class TestReplyDeletionView(TestCase):
             level="beginner",
         )
         self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
+            title="Test Module", course=self.course, order=1
         )
         self.topic = ForumTopic.objects.create(
             title="Test Topic",
@@ -682,7 +682,7 @@ class TestReplyFormView(TestCase):
             level="beginner",
         )
         self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
+            title="Test Module", course=self.course, order=1
         )
         self.topic = ForumTopic.objects.create(
             title="Test Topic",
@@ -762,7 +762,7 @@ class TestLikeViews(TestCase):
             level="beginner",
         )
         self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
+            title="Test Module", course=self.course, order=1
         )
         self.topic = ForumTopic.objects.create(
             title="Test Topic",
