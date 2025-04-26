@@ -58,7 +58,12 @@
                                     <td> {{ transaction.tran.user.username}} </td>
                                     <td class="text-right text-success font-medium">+৳{{ transaction.amount}}</td>
                                 </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-gray-600">No transactions available.</td>
+                                </tr>
 
+                                               
                             {% endfor %}
                             </tbody>
                         </table>

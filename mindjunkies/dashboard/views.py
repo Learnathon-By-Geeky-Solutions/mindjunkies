@@ -26,7 +26,7 @@ VIEW_COURSE_PERMISSION = "courses.view_course"
 class TeacherPermissionView(LoginRequiredMixin, View):
     def get(self, request: HttpRequest) -> HttpResponse:
         if request.user.is_teacher:
-            return redirect("dashboard")  # Redirect if already a teacher
+            return redirect("dashboard",status="published")  # Redirect if already a teacher
 
         elif TeacherVerification.objects.filter(user=request.user).exists():
             return redirect("verification_wait")
@@ -142,7 +142,7 @@ class TeacherVerificationView(FormView):
 
     def get(self, request):
         if request.user.is_teacher:
-            redirect("dashboard")  # Redirect if already a teacher
+            redirect("dashboard",status="published")  # Redirect if already a teacher
 
         elif TeacherVerification.objects.filter(user=request.user).exists():
             return redirect("verification_wait")
