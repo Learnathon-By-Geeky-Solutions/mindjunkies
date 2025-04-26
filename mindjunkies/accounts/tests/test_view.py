@@ -33,4 +33,3 @@ def test_profile_update_view_post_valid(authenticated_client):
         "address": "Earth",
     }
     response = authenticated_client.post(url, data)
-    print("\n ========================================= print me ", response)

@@ -7,4 +7,3 @@ DATABASES = {
     }
 }
 
-print("Hello, World!")

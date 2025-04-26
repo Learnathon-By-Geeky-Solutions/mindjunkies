@@ -11,7 +11,6 @@ client = session.client(
 )
 
 response = client.list_buckets()
-print(response)
 
 FILE_NAME = 'test.txt'
 # upload file
