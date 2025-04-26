@@ -45,8 +45,9 @@
                 <div class="flex items-center justify-between p-4 border-b bg-base-100 shadow-sm">
                     <div class="flex items-center gap-2 text-sm breadcrumbs">
                         <ul>
-                            <li><a href="#" class="text-primary hover:underline">{{ module.title }}</a></li>
-                            <li><a href="#" class="text-primary hover:underline">Lecture {{ lecture.order }}</a></li>
+                            <li><a href="{% url 'lecture_home' course.slug %}?module_id={{ module.id }}"
+                                   class="text-primary hover:underline">{{ module.title }}</a></li>
+                            <li>Lecture {{ lecture.order }}</li>
                             <li class="text-base-content/70">{{ lecture.title }}</li>
                         </ul>
                     </div>
@@ -61,8 +62,8 @@
                         </button>
                         <a href="#" class="btn btn-primary btn-sm">Next</a>
                     </div>
-                </div>
-                <!-- Video Content -->
+                </div
+                    <!-- Video Content -->
                 <div class="p-6 max-w-6xl mx-auto">
                     <div class="rounded-xl bg-base-200 shadow-md overflow-hidden">
                         <div class="video-container w-full">
