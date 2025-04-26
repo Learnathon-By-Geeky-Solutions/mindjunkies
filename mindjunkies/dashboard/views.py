@@ -43,9 +43,7 @@ class TeacherHome(LoginRequiredMixin, View):
         unverified_courses = []
 
         tokens = CourseToken.objects.filter(teacher=request.user, status="pending")
-        print(tokens)
-        for token in tokens: 
-            print(token.course)
+        for token in tokens:
             unverified_courses.append(token.course)
 
         context = {

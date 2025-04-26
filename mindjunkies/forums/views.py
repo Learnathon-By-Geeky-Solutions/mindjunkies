@@ -82,11 +82,9 @@ class ForumThreadView(LoginRequiredMixin, CourseContextMixin, TemplateView):
         context["form"] = ForumTopicForm(course_slug=course_slug)
 
         search_query = self.request.GET.get("search")
-        print(f"Search query: {search_query}")
         if search_query:
             forumlist = ForumTopicDocument.search().query("match", title=search_query)
             context["posts"] = forumlist.to_queryset()
-            print(forumlist.to_queryset())
 
         return context
 

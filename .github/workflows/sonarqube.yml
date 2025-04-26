@@ -87,7 +87,7 @@ jobs:
       - name: Wait for Services to be Ready
         run: |
           echo "Waiting for Elasticsearch and Redis to be healthy..."
-          sleep 30  # Optional, just to make sure services are ready
+          sleep 20  # Optional, just to make sure services are ready
 
       - name: Run Tests and Generate Coverage Report
         env:

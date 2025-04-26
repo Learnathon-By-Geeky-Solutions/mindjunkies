@@ -27,8 +27,6 @@ def course_list(request: HttpRequest) -> HttpResponse:
         enrolled = Enrollment.objects.filter(student=request.user)
         enrolled_classes = [ec.course for ec in enrolled]
 
-    print(teacher_classes)
-
     context = {
         "courses": courses,
         "enrolled_classes": enrolled_classes,
@@ -155,18 +153,15 @@ class CourseUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         slug = self.request.GET.get("slug")
-        print(get_object_or_404(Course, slug=slug))
         return get_object_or_404(Course, slug=slug) if slug else None
 
     def form_valid(self, form):
         messages.success(self.request, "Course saved successfully!")
 
         form.save()
-        print(form)
         return redirect(reverse("course_details", kwargs={"slug": form.instance.slug}))
 
     def form_invalid(self, form):
-        print("Form errors:", form.errors)  # Log the errors to the console
         messages.error(
             self.request, f"There was an error processing the form: {form.errors}"
         )
