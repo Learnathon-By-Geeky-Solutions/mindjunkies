@@ -22,6 +22,7 @@ from mindjunkies.courses.models import Course, Module, CourseToken
 
 from .forms import LectureForm, LecturePDFForm, LectureVideoForm, ModuleForm
 from .models import Lecture, LectureCompletion, LecturePDF, LectureVideo, LastVisitedModule
+from .tests.test_views import course_token
 
 
 # Utility functions to reduce complexity
@@ -32,6 +33,7 @@ def get_today_range() -> Tuple[timezone.datetime, timezone.datetime]:
     end = today.replace(hour=23, minute=59, second=59, microsecond=999999)
     return start, end
 
+
 def get_this_week_range() -> Tuple[timezone.datetime, timezone.datetime]:
     """Get the start and end of the current week."""
     today = localtime(now())
@@ -39,7 +41,6 @@ def get_this_week_range() -> Tuple[timezone.datetime, timezone.datetime]:
     start = start.replace(hour=0, minute=0, second=0, microsecond=0)
     end = start + timedelta(days=6, hours=23, minutes=59, seconds=59, microseconds=999999)
     return start, end
-
 
 
 # When querying your database or filtering data:
@@ -78,6 +79,25 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
             return get_object_or_404(Module, id=module_id)
         return course.modules.first()
 
+    def check_course_enrollment(self, course):
+        """Check if the user is enrolled in the course."""
+        if course.teacher == self.request.user:
+            course_token = CourseToken(course=course)
+            if course_token.status == "approved":
+                return True
+            return False
+        return self.request.user.is_staff or course.enrollments.filter(student=self.request.user, status='active').exists()
+
+    def dispatch(self, request, *args, **kwargs):
+        course = self.get_course()
+        if not self.check_course_enrollment(course):
+            if course.teacher == request.user:
+                messages.error(request, "Your course is not approved yet.")
+            else:
+                messages.error(request, "You are not enrolled in this course.")
+            return redirect("course_details", slug=course.slug)
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         course = self.get_course()
@@ -85,7 +105,7 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
         week_start, week_end = get_this_week_range()
 
         # Use cached queryset to avoid repeating filters
-        current_live_class= get_current_live_class(course)
+        current_live_class = get_current_live_class(course)
         live_classes_today = list(
             course.live_classes.filter(
                 scheduled_at__range=(today_start, today_end)
@@ -93,13 +113,13 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
             order_by("scheduled_at")
         )
         live_classes_this_week = list(
-    course.live_classes.filter(
-        scheduled_at__range=(week_start, week_end)
-    ).exclude(
-        scheduled_at__range=(today_start, today_end)
-    ).order_by("scheduled_at")
-)
-        
+            course.live_classes.filter(
+                scheduled_at__range=(week_start, week_end)
+            ).exclude(
+                scheduled_at__range=(today_start, today_end)
+            ).order_by("scheduled_at")
+        )
+
         context.update({
             "course": course,
             "modules": course.modules.all(),
@@ -122,7 +142,7 @@ def lecture_video(request: HttpRequest, course_slug: str, module_id: str, lectur
 
     # Update last visited module
     LastVisitedModule.objects.update_or_create(
-        user=request.user, module=module, lecture=lecture, 
+        user=request.user, module=module, lecture=lecture,
         defaults={"last_visited": timezone.now()}
     )
 
@@ -143,14 +163,14 @@ def lecture_video(request: HttpRequest, course_slug: str, module_id: str, lectur
 
 @login_required
 @require_http_methods(["GET"])
-def lecture_pdf(request: HttpRequest, course_slug: str, module_id:int, lecture_id: int, pdf_id: int) -> HttpResponse:
+def lecture_pdf(request: HttpRequest, course_slug: str, module_id: int, lecture_id: int, pdf_id: int) -> HttpResponse:
     """View to display a lecture PDF."""
     pdf = get_object_or_404(LecturePDF, id=pdf_id)
     lecture = get_object_or_404(Lecture, id=lecture_id)
     course = get_object_or_404(Course, slug=course_slug)
     module = get_object_or_404(Module, id=module_id)
 
-    context = {"course": course, "pdf": pdf, "module":module, "lecture": lecture,}
+    context = {"course": course, "pdf": pdf, "module": module, "lecture": lecture, }
     return render(request, "lecture/lecture_pdf.html", context)
 
 
@@ -163,7 +183,7 @@ class CourseObjectMixin:
 
 class LectureFormMixin:
     """Mixin for common lecture form handling."""
-    
+
     def handle_form_validation(self, form, success_message):
         """Common form validation handling."""
         try:
@@ -174,7 +194,7 @@ class LectureFormMixin:
             error_message = "Order number already exists" if isinstance(e, IntegrityError) else str(e)
             messages.error(self.request, error_message)
             return self.form_invalid(form)
-    
+
     def form_invalid(self, form):
         messages.error(
             self.request,
@@ -201,12 +221,12 @@ class CreateLectureView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin,
         saved_lecture = form.save(commit=False)
         saved_lecture.course = self.course
         saved_lecture.module = self.module
-        
+
         return self.handle_form_validation(
-            form, 
+            form,
             "Lecture created successfully!"
         )
-    
+
     def get_success_url(self, instance):
         return redirect(
             f"{reverse('lecture_home', kwargs={'course_slug': self.course.slug})}?module_id={self.module.id}"
@@ -257,7 +277,7 @@ class CreateContentView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin,
         saved_content = form.save(commit=False)
         saved_content.lecture = self.lecture
         saved_content.save()
-        
+
         messages.success(
             self.request,
             f"Lecture {self.kwargs['format'].capitalize()} uploaded successfully!",
@@ -294,7 +314,7 @@ class EditLectureView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, U
             form,
             "Lecture saved successfully!"
         )
-    
+
     def get_success_url(self, instance):
         return redirect("lecture_home", course_slug=self.kwargs["course_slug"])
 
@@ -310,34 +330,34 @@ class CreateModuleView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, 
     model = Module
     form_class = ModuleForm
     template_name = "lecture/create_module.html"
+
     def dispatch(self, request, *args, **kwargs):
         self.course = self.get_course()
-        
+
         if not is_teacher_for_course(request.user, self.course):
             return HttpResponseForbidden("You are not allowed to edit this lecture.")
         return super().dispatch(request, *args, **kwargs)
-   
+
     def form_valid(self, form):
         """Assign the module to the correct course before saving"""
         instance = form.save(commit=False)
         instance.course = self.course
-        
+
         return self.handle_form_validation(
             form,
             "Module created successfully!"
         )
-    
+
     def get_success_url(self, instance):
         return redirect(
             reverse("lecture_home", kwargs={"course_slug": self.course.slug})
         )
+
     def get_context_data(self, **kwargs):
         """Pass the course to the template for context"""
         context = super().get_context_data(**kwargs)
         context["course"] = self.get_course()
         return context
-
-   
 
 
 class DeleteLectureView(LoginRequiredMixin, CourseObjectMixin, View):
@@ -353,16 +373,20 @@ class DeleteLectureView(LoginRequiredMixin, CourseObjectMixin, View):
         lecture.delete()
         messages.success(request, "Lecture deleted successfully.")
         return redirect(reverse("lecture_home", kwargs={"course_slug": course_slug}))
+
+
 class MarkLectureCompleteView(LoginRequiredMixin, View):
     def get(self, request, course_slug, lecture_id):
         lecture = get_object_or_404(Lecture, id=lecture_id)
         LectureCompletion.objects.get_or_create(user=request.user, lecture=lecture)
         return redirect(request.META.get('HTTP_REFERER', '/'))
-    
+
+
 class ModuleEditView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, UpdateView):
     model = Module
     form_class = ModuleForm
     template_name = "lecture/create_module.html"
+
     def dispatch(self, request, *args, **kwargs):
         self.course = self.get_course()
         if not is_teacher_for_course(request.user, self.course):
@@ -380,7 +404,7 @@ class ModuleEditView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, Up
             form,
             "Module saved successfully!"
         )
-    
+
     def get_success_url(self, instance):
         return redirect("lecture_home", course_slug=self.kwargs["course_slug"])
 
@@ -389,8 +413,9 @@ class ModuleEditView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, Up
         context = super().get_context_data(**kwargs)
         context["module"] = self.get_object()
         context["course"] = self.get_course()
-        return context    
-    
+        return context
+
+
 class DeleteModuleView(LoginRequiredMixin, CourseObjectMixin, View):
     def get(self, request, course_slug, module_id):
         module = get_object_or_404(Module, id=module_id)
@@ -401,9 +426,3 @@ class DeleteModuleView(LoginRequiredMixin, CourseObjectMixin, View):
         module.delete()
         messages.success(request, "Module deleted successfully.")
         return redirect(reverse("lecture_home", kwargs={"course_slug": course_slug}))
-              
-                      
-                      
-    
-    
-                    
