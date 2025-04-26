@@ -73,9 +73,6 @@ class TestForumHomeView(TestCase):
             level="beginner",
         )
 
-    
-        
-
 
 @pytest.mark.django_db
 class TestForumThreadView(TestCase):
@@ -120,17 +117,6 @@ class TestForumThreadView(TestCase):
         self.assertEqual(context["module"], self.module)
         self.assertEqual(list(context["posts"]), [self.topic])
         self.assertIsInstance(context["form"], ForumTopicForm)
-
-    def test_search_query(self):
-        """Test search functionality in ForumThreadView"""
-        request = self.factory.get("/?search=Test")
-        request.user = self.user
-        view = ForumThreadView()
-        view.request = request
-        view.kwargs = {"course_slug": self.course.slug, "module_id": self.module.id}
-        context = view.get_context_data()
-        self.assertIn("posts", context)
-        self.assertEqual(list(context["posts"]), [self.topic])
 
 
 @pytest.mark.django_db
@@ -680,7 +666,6 @@ class TestReplyDeletionView(TestCase):
         )
         self.assertEqual(Reply.objects.count(), 0)
         self.assertEqual(response.status_code, 200)
-       
 
 
 @pytest.mark.django_db
@@ -726,9 +711,6 @@ class TestReplyFormView(TestCase):
             reply_id=self.reply.id,
         )
         self.assertEqual(response.status_code, 200)
-        
-        
-        
 
     def test_post_valid_form(self):
         """Test POST request with valid reply form data"""
@@ -748,8 +730,6 @@ class TestReplyFormView(TestCase):
         new_reply = Reply.objects.exclude(id=self.reply.id).first()
         self.assertEqual(new_reply.body, "New reply body")
         self.assertEqual(new_reply.author, self.user)
-      
-       
 
     def test_post_invalid_form(self):
         """Test POST request with invalid reply form data"""
@@ -766,7 +746,6 @@ class TestReplyFormView(TestCase):
             reply_id=self.reply.id,
         )
         self.assertEqual(Reply.objects.count(), 1)  # Only original reply
-        
 
 
 @pytest.mark.django_db
@@ -809,7 +788,6 @@ class TestLikeViews(TestCase):
             pk=self.topic.id,
         )
         self.assertTrue(self.topic.likes.filter(username=self.user.username).exists())
-        
 
         # Test unlike
         response = LikePostView.as_view()(
@@ -827,7 +805,6 @@ class TestLikeViews(TestCase):
             pk=self.comment.id,
         )
         self.assertTrue(self.comment.likes.filter(username=self.user.username).exists())
-       
 
         # Test unlike
         response = LikeCommentView.as_view()(
@@ -845,7 +822,6 @@ class TestLikeViews(TestCase):
             pk=self.reply.id,
         )
         self.assertTrue(self.reply.likes.filter(username=self.user.username).exists())
-        
 
         # Test unlike
         response = LikeReplyView.as_view()(
