@@ -165,7 +165,7 @@
             <ul class="flex items-center overflow-x-auto" id="categoryBar">
                 {% for category in categories %}
                 <li class="relative">
-                    <a
+                    <a  href="{% url 'category_courses' category.slug %}"
                         class="cursor-pointer block px-6 py-4 text-sm font-medium hover:text-primary transition-colors {% if category.slug == active_category.slug %}text-primary border-b-2 border-primary{% else %}text-base-content/80{% endif %}"
                         hx-get="{% url 'home' %}?category={{ category.slug }}"
                         hx-target="#subcategories-container"

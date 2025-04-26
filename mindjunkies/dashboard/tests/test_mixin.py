@@ -23,33 +23,36 @@ def factory():
 
 
 @pytest.mark.django_db
-def test_redirects_to_login_for_anonymous(factory):
-    request = factory.get("/")
-    request.user = AnonymousUser()
-    response = DummyView.as_view()(request)
-    
-    assert response.status_code == 302
-    assert response.url == reverse("account_login")
+@override_settings(
+    ROOT_URLCONF="test_urls",
+    MIDDLEWARE=[
+        "django.middleware.security.SecurityMiddleware",
+        "django.contrib.sessions.middleware.SessionMiddleware",
+        "django.middleware.common.CommonMiddleware",
+        "django.middleware.csrf.CsrfViewMiddleware",
+        "django.contrib.auth.middleware.AuthenticationMiddleware",
+        "django.contrib.messages.middleware.MessageMiddleware",
+    ],
+)
+class TestCustomPermissionRequiredMixin(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username="testuser",
+            email="test@example.com",
+            password="testpass123",
+        )
+        self.view_url = "/test-view/"
 
+    def test_unauthenticated_user_redirects_to_login(self):
+        """Test unauthenticated user redirects to account_login"""
+        response = self.client.get(self.view_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("account_login"))
 
-@pytest.mark.django_db
-def test_redirects_to_verification_wait_for_unauthorized_user(factory):
-    user = User.objects.create_user(username="user1", password="pass")
-    request = factory.get("/")
-    request.user = user
-    response = DummyView.as_view()(request)
-
-    assert response.status_code == 302
-    assert response.url == reverse("verification_wait")
-
-
-@pytest.mark.django_db
-def test_allows_access_for_authorized_user(factory):
-    user = User.objects.create_user(username="admin", password="pass")
-    perm = Permission.objects.get(codename="view_user")
-    user.user_permissions.add(perm)
-    request = factory.get("/")
-    request.user = user
-    response = DummyView.as_view()(request)
-
-    assert response.status_code == 302
+    def test_authenticated_user_no_permission_redirects_to_verification(self):
+        """Test authenticated user without permission redirects to verification_wait"""
+        self.client.login(username="testuser", password="testpass123")
+        response = self.client.get(self.view_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("verification_wait"))

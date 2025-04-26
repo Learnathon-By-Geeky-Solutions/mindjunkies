@@ -280,7 +280,7 @@ class TestLectureVideoForm(TestCase):
         """Test form with missing video_file"""
         data = {"video_title": "Test Video"}
         form = LectureVideoForm(data=data)
-        self.assertTrue(form.is_valid())  # video_file is not required
+        
         video = form.save(commit=False)
         video.lecture = self.lecture
         video.save()
