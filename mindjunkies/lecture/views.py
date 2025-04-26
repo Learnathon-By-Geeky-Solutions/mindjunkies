@@ -310,14 +310,13 @@ class CreateModuleView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, 
     model = Module
     form_class = ModuleForm
     template_name = "lecture/create_module.html"
-
     def dispatch(self, request, *args, **kwargs):
         self.course = self.get_course()
-        lecture = self.get_object()
+        
         if not is_teacher_for_course(request.user, self.course):
             return HttpResponseForbidden("You are not allowed to edit this lecture.")
         return super().dispatch(request, *args, **kwargs)
-
+   
     def form_valid(self, form):
         """Assign the module to the correct course before saving"""
         instance = form.save(commit=False)
@@ -332,12 +331,13 @@ class CreateModuleView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, 
         return redirect(
             reverse("lecture_home", kwargs={"course_slug": self.course.slug})
         )
-
     def get_context_data(self, **kwargs):
         """Pass the course to the template for context"""
         context = super().get_context_data(**kwargs)
-        context["course"] = self.course
+        context["course"] = self.get_course()
         return context
+
+   
 
 
 class DeleteLectureView(LoginRequiredMixin, CourseObjectMixin, View):
