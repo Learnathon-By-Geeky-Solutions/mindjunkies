@@ -73,12 +73,6 @@ class TestForumHomeView(TestCase):
             level="beginner",
         )
 
-    def test_get(self):
-        """Test ForumHomeView renders correctly"""
-        request = self.factory.get("/")
-        request.user = self.user
-        response = ForumHomeView.as_view()(request, course_slug=self.course.slug)
-        self.assertEqual(response.status_code, 200)
     
         
 

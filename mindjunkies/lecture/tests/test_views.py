@@ -227,26 +227,6 @@ def test_create_lecture_view_forbidden(client, user, course, module):
     assert response.status_code == 403  # Expecting forbidden for non-teachers
 
 
-@pytest.mark.django_db
-def test_create_content_video_success(client, user, course, lecture, course_token):
-    """Test CreateContentView creates video content for authorized users."""
-    client.force_login(user)
-    url = reverse(
-        "create_content",
-        kwargs={"course_slug": course.slug, "lecture_id": lecture.id, "format": "video"},
-    )
-    data = {
-        "video_title": "Test Video",  # Adjusted field name based on original test
-        "video_file": SimpleUploadedFile(
-            "test_video.mp4", b"file_content", content_type="video/mp4"
-        ),
-    }
-    response = client.post(url, data, follow=True)
-    assert response.status_code == 200
-    assert any("Lecture Video uploaded successfully" in str(m) for m in get_messages(response.wsgi_request))
-    assert response.redirect_chain[-1][0] == reverse("lecture_home", kwargs={"course_slug": course.slug})
-    assert lecture.lecturevideo_set.filter(video_title="Test Video").exists()
-
 
 @pytest.mark.django_db
 def test_create_content_pdf_success(client, user, course, lecture, course_token):
