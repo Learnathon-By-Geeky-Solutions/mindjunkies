@@ -72,7 +72,7 @@ class BalanceHistory(BaseModel):
     description = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"{self.user.username} - {self.amount} - {self.created_at.date()}"
+        return f"{self.user.username} - {self.amount} - {self.created_at}"
 
 
 class PaymentGateway(models.Model):

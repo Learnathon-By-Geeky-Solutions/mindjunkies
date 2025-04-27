@@ -106,6 +106,7 @@ def test_balance_str():
 def test_balance_history_str():
     """Test __str__() method for BalanceHistory model."""
     user = baker.make(User, username="testuser")
-    balance_history = baker.make(BalanceHistory, user=user, amount=50.00)
+    time = datetime.datetime.now()
+    balance_history = baker.make(BalanceHistory, user=user, amount=50.00, created_at=time)
 
-    assert str(balance_history) == f"{user.username} - {balance_history.amount} - {datetime.datetime.today().date()}"
+    assert str(balance_history) == f"{user.username} - {balance_history.amount} - {time}"
