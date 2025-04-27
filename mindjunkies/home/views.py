@@ -16,15 +16,11 @@ class HomeView(View):
         active_category = None
 
         if active_category_slug:
-            try:
-                active_category = CourseCategory.objects.prefetch_related("children").get(
-                    slug=active_category_slug, parent__isnull=True
-                )
-            except CourseCategory.DoesNotExist:
-                pass
-
-        if not active_category and categories.exists():
-            active_category = categories.first()
+            active_category = CourseCategory.objects.prefetch_related("children").get(
+                slug=active_category_slug, parent__isnull=True
+            )
+        else:
+            active_category = CourseCategory.objects.first()
 
         enrolled_courses = []
         teacher_courses = []
@@ -47,34 +43,6 @@ class HomeView(View):
 
         featured_courses = Course.objects.filter(status="published")
 
-        progression = None
-        last_lecture = None
-        lastvisitedmodule = []
-        continue_lecture = []
-
-        if request.user.is_authenticated:
-            lastvisitedmodule = LastVisitedModule.objects.filter(
-                user=request.user, lecture__course__in=enrolled_courses
-            ).order_by("-last_visited").first()
-
-            if lastvisitedmodule:
-                continue_lecture = (
-                    Lecture.objects.filter(course__enrollments__student=request.user)
-                    .annotate(
-                        last_visited_at=models.Subquery(
-                            LastVisitedModule.objects.filter(
-                                user=request.user, lecture=models.OuterRef("pk")
-                            ).values("last_visited")[:1]
-                        )
-                    )
-                    .order_by("-last_visited_at", "title")
-                )
-            if continue_lecture:
-                last_lecture = continue_lecture.first()
-                progression = Enrollment.objects.get(
-                    student=request.user, course=last_lecture.course
-                ).progression
-
         context = {
             "new_courses": new_courses,
             "courses": courses,
@@ -84,9 +52,6 @@ class HomeView(View):
             "teacher_courses": teacher_courses,
             "course_list": featured_courses,
             "active_category": active_category,
-            "last_lecture": last_lecture,
-            "progression": progression,
-            "lastvisitedmodule": lastvisitedmodule,
         }
 
         if request.headers.get("HX-Request"):
