@@ -1,70 +1,110 @@
 import pytest
-from django.conf import settings
-from django.utils.timezone import now, make_aware
-from freezegun import freeze_time
-from model_bakery import baker
-from datetime import datetime
+import uuid
+from unittest.mock import patch, mock_open
 
-from mindjunkies.accounts.models import User
-from mindjunkies.courses.models import Course
-from mindjunkies.live_classes.models import LiveClass
+from django.urls import reverse
 from model_bakery import baker
-from unittest import mock
+
 from mindjunkies.live_classes.models import LiveClass
+
+
+@pytest.fixture
+def user(db):
+    return baker.make('accounts.User')
+
+
+@pytest.fixture
+def course(db, user):
+    return baker.make('courses.Course', teacher=user)
+
+
+@pytest.fixture
+def live_class(db, user, course):
+    return baker.make(LiveClass, teacher=user, course=course)
 
 
 @pytest.mark.django_db
-def test_live_class_auto_generates_meeting_id():
-    live_class = baker.make(LiveClass, meeting_id="")
-    assert live_class.meeting_id.startswith("mindjunkies-")
+def test_live_class_auto_meeting_id_generation(course, user):
+    """
+    Test that a meeting_id is auto-generated if not provided during save.
+    """
+    live_class = LiveClass.objects.create(
+        course=course,
+        teacher=user,
+        topic="Test Live Class",
+        scheduled_at="2025-05-01 12:00",
+        duration=60,
+    )
+    assert live_class.meeting_id.startswith('mindjunkies-')
     assert len(live_class.meeting_id) > 10
 
 
 @pytest.mark.django_db
-def test_live_class_string_representation():
-    live_class = baker.make(LiveClass)
-    result = str(live_class)
-    assert live_class.topic in result
-    assert live_class.course.title in result
+def test_live_class_str_representation(live_class):
+    """
+    Test the __str__ method returns the correct format.
+    """
+    expected_str = f"{live_class.topic} - {live_class.course.title} ({live_class.scheduled_at})"
+    assert str(live_class) == expected_str
 
 
 @pytest.mark.django_db
-def test_get_meeting_url_student(settings):
-    settings.JITSI_APP_ID = "myapp"
-    live_class = baker.make(LiveClass, meeting_id="abc123")
-    assert (
-        live_class.get_meeting_url_student()
-        == "https://8x8.vc/myapp/abc123"
-    )
+@patch("mindjunkies.live_classes.models.open", new_callable=mock_open, read_data="PRIVATE_KEY")
+@patch("mindjunkies.live_classes.models.JaaSJwtBuilder")
+def test_generate_jwt_token_success(mock_jwt_builder, mock_file, live_class, settings):
+    """
+    Test successful JWT token generation.
+    """
+    fake_token = b'fake.jwt.token'
+    mock_instance = mock_jwt_builder.return_value
+    mock_instance.with_defaults.return_value = mock_instance
+    mock_instance.with_api_key.return_value = mock_instance
+    mock_instance.with_user_name.return_value = mock_instance
+    mock_instance.with_user_email.return_value = mock_instance
+    mock_instance.with_moderator.return_value = mock_instance
+    mock_instance.with_app_id.return_value = mock_instance
+    mock_instance.with_user_avatar.return_value = mock_instance
+    mock_instance.sign_with.return_value = fake_token
+
+    settings.JITSI_SECRET = "testsecret"
+    settings.JITSI_APP_ID = "testappid"
+
+    token = live_class.generate_jwt_token()
+
+    assert token == "fake.jwt.token"
+    mock_file.assert_called_once()  # Ensure private.pem was opened
+    mock_instance.sign_with.assert_called_once()
 
 
 @pytest.mark.django_db
-def test_get_meeting_url_student():
-    """Test that `get_meeting_url_student()` returns correct student URL."""
-    teacher = baker.make(User)
-    course = baker.make(Course)
-    live_class = baker.make(
-        LiveClass, teacher=teacher, course=course, scheduled_at=now()
-    )
+@patch("mindjunkies.live_classes.models.open", side_effect=FileNotFoundError)
+def test_generate_jwt_token_failure(mock_file, live_class):
+    """
+    Test generate_jwt_token handles missing file gracefully.
+    """
+    token = live_class.generate_jwt_token()
+    assert token is None  # Since it prints error but doesn't crash
 
+
+@pytest.mark.django_db
+@patch("mindjunkies.live_classes.models.LiveClass.generate_jwt_token", return_value="test.jwt.token")
+def test_get_meeting_url_teacher(mock_generate_token, live_class, settings):
+    """
+    Test teacher meeting URL generation with JWT.
+    """
+    settings.JITSI_APP_ID = "testappid"
+    url = live_class.get_meeting_url_teacher()
+
+    assert url == f"https://8x8.vc/testappid/{live_class.meeting_id}?jwt=test.jwt.token"
+    mock_generate_token.assert_called_once()
+
+
+@pytest.mark.django_db
+def test_get_meeting_url_student(live_class, settings):
+    """
+    Test student meeting URL generation (without JWT).
+    """
+    settings.JITSI_APP_ID = "testappid"
     url = live_class.get_meeting_url_student()
-    expected_url = f"https://8x8.vc/{settings.JITSI_APP_ID}/{live_class.meeting_id}"
 
-    assert url == expected_url
-
-
-@pytest.mark.django_db
-@freeze_time("2025-03-15 12:00:00")
-def test_live_class_str_method():
-    """Test the `__str__()` method of `LiveClass`."""
-    teacher = baker.make(User)
-    course = baker.make(Course, title="Django Basics")
-    live_class = baker.make(
-        LiveClass,
-        teacher=teacher,
-        course=course,
-        topic="Intro to Django",
-        scheduled_at=make_aware(datetime(2025, 3, 15, 12, 0, 0)),
-    )
-
-    assert str(live_class) == "Intro to Django - Django Basics (2025-03-15 12:00:00+06:00)"
+    assert url == f"https://8x8.vc/testappid/{live_class.meeting_id}"

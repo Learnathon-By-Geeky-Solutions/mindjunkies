@@ -10,7 +10,7 @@ from mindjunkies.courses.models import Course, Enrollment
 
 User = get_user_model()
 
-pytestmark = pytest.mark.django_db  # Use the database for tests
+pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture
@@ -56,7 +56,6 @@ def test_home_view_authenticated(auth_client, create_user):
     )
 
 
-# ✅ Test `search_view` with a matching query
 def test_search_view_with_results(client):
     """Test search with a query that matches course titles."""
     baker.make(Course, title="Python Programming")
@@ -69,7 +68,6 @@ def test_search_view_with_results(client):
     assert len(response.context["courses"]) == 2  # Both courses match
 
 
-# ✅ Test `search_view` with no results
 def test_search_view_no_results(client):
     """Test search with a query that returns no courses."""
     baker.make(Course, title="Java Programming")  # This course should not match
@@ -81,7 +79,6 @@ def test_search_view_no_results(client):
     assert len(response.context["courses"]) == 0  # No match
 
 
-# ✅ Test `search_view` with an empty query
 def test_search_view_empty_query(client):
     """Test search with an empty query (should return no results)."""
     response = client.get(reverse("search_view") + "?search=")
@@ -89,3 +86,11 @@ def test_search_view_empty_query(client):
     assert response.status_code == 200
     assert "courses" in response.context
     assert len(response.context["courses"]) == 0  # No search term entered
+
+
+def test_home_view_hx_request(auth_client):
+    """Test home view with HX-Request header (should render subcategory template)."""
+    response = auth_client.get(reverse("home"), HTTP_HX_Request="true")
+
+    assert response.status_code == 200
+    assert "home/subcategory.html" in [t.name for t in response.templates]

@@ -12,7 +12,9 @@ urlpatterns = [
     path(
         "rate/<slug:course_slug>/", views.RatingCreateView.as_view(), name="rate_course"
     ),
+    path("delete/<slug:course_slug>/", views.DeleteCourseView.as_view(), name="delete_course"),
     path("<str:slug>/", views.course_details, name="course_details"),
     path("<str:course_slug>/", include("mindjunkies.lecture.urls")),
     path("<str:course_slug>/forums/", include("mindjunkies.forums.urls")),
+    
 ]

@@ -31,11 +31,11 @@
                         {% include 'dashboard/course_row.html' %}
                     {% empty %}
                         <div class="px-6 py-8 text-center text-gray-500">
-                            <p>You don't have any published courses yet.</p>
-                            <a href="{% url 'create_course' %}">
+                            <p>You don't have any published courses yet. Check in draft or archived for unpublised course</p>
+                            <a href="{% url 'draft_content' %}">
                                 <button
                                     class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-                                    Create Your First Course
+                                    Draft Courses
                                 </button>
                             </a>
                         </div>
@@ -114,13 +114,17 @@
                                               d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                     </svg>
                                 </a>
-                                <button class="text-gray-500 hover:text-red-600 p-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                         viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                    </svg>
-                                </button>
+                                <a href="{% url 'delete_course' course.slug %}" onclick="return confirm('Are you sure you want to delete this course?');">
+                                    <button class="text-gray-500 hover:text-red-600 p-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                             viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                    </button>
+
+                                </a>
+                               
                             </div>
                         </div>
                     {% empty %}

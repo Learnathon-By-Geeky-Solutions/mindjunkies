@@ -138,12 +138,14 @@ class CheckoutSuccessView(View):
 
             # BalanceHistory.objects.create(user=user, transaction)
             teacher = course.teacher
+            balance, _ = Balance.objects.get_or_create(user=user, defaults={"amount": 0})
+
             transaction = Transaction.objects.get(tran_id=data["tran_id"])
             prev_balance = teacher.balance.amount
             teacher.balance.amount += course.course_price
-            teacher.balance.save()
+            balance.save()
 
-            new_balance = teacher.balance.amount
+            new_balance = balance.amount
 
             BalanceHistory.objects.create(
                 user=teacher,
