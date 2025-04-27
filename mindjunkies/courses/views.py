@@ -282,3 +282,20 @@ class RatingCreateView(CreateView):
         course.update_rating()
 
         return redirect(reverse("course_details", kwargs={"slug": course.slug}))
+    
+class DeleteCourseView(LoginRequiredMixin, TemplateView):
+        model = Course
+        template_name = "components/content.html"
+        success_url = reverse_lazy("dashboard")
+
+        def get_context_data(self, **kwargs):
+            context = super().get_context_data(**kwargs)
+            course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+            context["course"] = course
+            return context
+
+        def post(self, request, *args, **kwargs):
+            course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+            course.delete()
+            messages.success(request, "Course deleted successfully!")
+            return redirect(self.success_url)
