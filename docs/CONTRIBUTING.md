@@ -80,15 +80,10 @@ git push origin feature/your-feature-name
 
 ### 📜 Pull Request Guidelines
 - Target the develop branch, NOT the main branch.
-
 - Ensure your branch is up-to-date with develop (git pull origin develop).
-
 - Keep Pull Requests focused: one PR = one feature/fix.
-
 - Write clear and concise PR titles and descriptions.
-
 - Add tests if you add new features.
-
 - Update documentation if needed.
 
 
