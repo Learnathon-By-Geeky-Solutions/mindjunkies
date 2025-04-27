@@ -83,8 +83,6 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
         """Check if the user is enrolled in the course."""
         if course.teacher == self.request.user:
             course_token = CourseToken.objects.get(course=course)
-            print(course)
-            print(course_token.status)
             if course_token.status == "approved":
                 return True
             return False
@@ -107,7 +105,6 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
         week_start, week_end = get_this_week_range()
 
         # Use cached queryset to avoid repeating filters
-        current_live_class = get_current_live_class(course)
         live_classes_today = list(
             course.live_classes.filter(
                 scheduled_at__range=(today_start, today_end)
@@ -300,7 +297,6 @@ class EditLectureView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, U
 
     def dispatch(self, request, *args, **kwargs):
         self.course = self.get_course()
-        lecture = self.get_object()
         if not is_teacher_for_course(request.user, self.course):
             return HttpResponseForbidden("You are not allowed to edit this lecture.")
         return super().dispatch(request, *args, **kwargs)

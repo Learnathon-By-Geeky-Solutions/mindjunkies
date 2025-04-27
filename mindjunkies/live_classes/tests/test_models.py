@@ -34,7 +34,7 @@ def test_get_meeting_url_student(settings):
     live_class = baker.make(LiveClass, meeting_id="abc123")
     assert (
         live_class.get_meeting_url_student()
-        == f"https://8x8.vc/myapp/abc123"
+        == "https://8x8.vc/myapp/abc123"
     )
 
 

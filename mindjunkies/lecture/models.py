@@ -43,15 +43,14 @@ class Lecture(BaseModel):
 
     def clean(self):
         super().clean()
-        if hasattr(self, "module") and self.module and self.order is not None:
-            if (
-                Lecture.objects.filter(module=self.module, order=self.order)
+        if (hasattr(self, "module") and self.module and self.order is not None and
+            Lecture.objects.filter(module=self.module, order=self.order)
                 .exclude(pk=self.pk)
                 .exists()
-            ):
-                raise ValidationError(
-                    f"Order {self.order} already exists in this module."
-                )
+        ):
+            raise ValidationError(
+                f"Order {self.order} already exists in this module."
+            )
 
 
 class LecturePDF(BaseModel):

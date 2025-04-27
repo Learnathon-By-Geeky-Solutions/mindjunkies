@@ -59,23 +59,22 @@ class HomeView(View):
 
             if lastvisitedmodule:
                 continue_lecture = (
-                Lecture.objects.filter(course__enrollments__student=request.user)
-                .annotate(
-                    last_visited_at=models.Subquery(
-                        LastVisitedModule.objects.filter(
-                            user=request.user, lecture=models.OuterRef("pk")
-                        ).values("last_visited")[:1]
+                    Lecture.objects.filter(course__enrollments__student=request.user)
+                    .annotate(
+                        last_visited_at=models.Subquery(
+                            LastVisitedModule.objects.filter(
+                                user=request.user, lecture=models.OuterRef("pk")
+                            ).values("last_visited")[:1]
+                        )
                     )
+                    .order_by("-last_visited_at", "title")
                 )
-                .order_by("-last_visited_at", "title")
-            )
             if continue_lecture:
                 last_lecture = continue_lecture.first()
                 progression = Enrollment.objects.get(
                     student=request.user, course=last_lecture.course
                 ).progression
 
-                print(new_courses)
         context = {
             "new_courses": new_courses,
             "courses": courses,
@@ -94,14 +93,12 @@ class HomeView(View):
             return render(request, "home/subcategory.html", context)
 
         return render(request, "home/index.html", context)
-    
 
 
 @require_http_methods(["GET"])
 def search_view(request):
     query = request.GET.get("search", "").strip()
     highlighted_courses = []
-    print(query)
 
     if query:
         courses = Course.objects.filter(title__icontains=query)
@@ -110,8 +107,6 @@ def search_view(request):
             highlighted_courses.append(
                 {"course": course, "highlighted_title": mark_safe(highlighted_title)}
             )
-
-    print(highlighted_courses)
 
     return render(
         request,

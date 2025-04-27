@@ -63,13 +63,3 @@ class TestGetEnrollmentFilter(TestCase):
         """Test that the filter handles None as user gracefully"""
         result = get_enrollment(self.course, None)
         self.assertIsNone(result)
-
-    def test_template_usage(self):
-        """Test the filter in a template context"""
-        context = template.Context({
-            "course": self.course,
-            "user": self.user,
-        })
-        template_str = "{% load enrollment_tags %}{{ course|get_enrollment:user }}"
-        t = template.Template(template_str)
-         # Check Enrollment object representation

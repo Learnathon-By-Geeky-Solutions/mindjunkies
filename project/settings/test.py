@@ -1,5 +1,4 @@
-from project.settings.base import *
-
+from project.settings.base import *  # noqa
 
 DATABASES = {
     "default": {
@@ -8,4 +7,3 @@ DATABASES = {
     }
 }
 
-print("Hello, World!")

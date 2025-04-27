@@ -3,11 +3,6 @@ from decouple import config, Csv
 
 DEBUG = False
 
-# CSRF_COOKIE_SECURE = True
-# SESSION_COOKIE_SECURE = True
-
-# CSRF_TRUSTED_ORIGINS = config("TRUSTED_DOMAINS", cast=Csv())
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",

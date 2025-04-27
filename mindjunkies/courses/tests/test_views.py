@@ -36,9 +36,6 @@ def test_category_courses_view(client):
     url = reverse("category_courses", args=[parent_category.slug])
     response = client.get(url)
     content = response.content.decode("utf-8")
-    print()
-    print(content)
-    print()
 
     assert response.status_code == 200
     assert course_1.title in content

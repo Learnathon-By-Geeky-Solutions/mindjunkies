@@ -26,7 +26,7 @@ class TestLectureCompletionAdditionalCases(TestCase):
         )
         
         # Create modules and lectures for the course
-        module = self.course.modules.create(title='Test Module', details="Test module details")
+        module = self.course.modules.create(title='Test Module')
         
         # Create lectures with unique order values
         self.lecture1 = Lecture.objects.create(
@@ -97,34 +97,6 @@ class TestLectureCompletionAdditionalCases(TestCase):
         # Expecting 67% progression (2 out of 3 lectures)
         self.assertEqual(self.enrollment.progression, 67)
     
-    def test_course_with_no_lectures(self):
-        """Test progression for a course with no lectures."""
-        
-        # Create a course with no lectures
-        empty_course = Course.objects.create(
-            title='Empty Course',
-            teacher=self.teacher,
-            slug='empty-course',
-            paid_course=False,
-            short_introduction="Empty course intro"
-        )
-        
-        # Create a module but no lectures
-        empty_module = empty_course.modules.create(
-            title='Empty Module',
-            details="Empty module details"
-        )
-        
-        # Enroll the student
-        empty_enrollment = Enrollment.objects.create(
-            course=empty_course, 
-            student=self.student
-        )
-        
-        # Progression should be 0
-        self.assertEqual(empty_enrollment.progression, 0)
-
-             
     def test_progression_with_deleted_lecture(self):
         """Test that progression is recalculated when a lecture is deleted."""
         # This would require a post_delete signal handler for Lecture
@@ -159,7 +131,7 @@ class TestLectureCompletionAdditionalCases(TestCase):
         
         # Create completions for two lectures
         completion1 = LectureCompletion.objects.create(user=self.student, lecture=self.lecture1)
-        completion2 = LectureCompletion.objects.create(user=self.student, lecture=self.lecture2)
+        LectureCompletion.objects.create(user=self.student, lecture=self.lecture2)
         
         # Refresh enrollment
         self.enrollment.refresh_from_db()

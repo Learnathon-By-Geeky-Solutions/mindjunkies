@@ -43,9 +43,7 @@ class TeacherHome(LoginRequiredMixin, View):
         unverified_courses = []
 
         tokens = CourseToken.objects.filter(teacher=request.user, status="pending")
-        print(tokens)
-        for token in tokens: 
-            print(token.course)
+        for token in tokens:
             unverified_courses.append(token.course)
 
         context = {
@@ -77,7 +75,6 @@ class ContentListView(LoginRequiredMixin, View):
         if status == "draft":
             courses = Course.objects.filter(teacher=request.user, status="draft")
             context["courses"] = courses
-            print(courses)
             context["status"] = "Draft"
             return render(request, "components/draft.html", context)
         elif status == "archived":
@@ -88,7 +85,6 @@ class ContentListView(LoginRequiredMixin, View):
 
         elif status == "balance":
             balance = Balance.objects.filter(user=request.user).first()
-            print(balance)
             if not balance:
                 balance = Balance.objects.create(user=request.user, amount=0)
             transactions = Transaction.objects.filter(user=request.user).order_by('-tran_date')
@@ -126,13 +122,10 @@ class RemoveEnrollmentView(LoginRequiredMixin, CustomPermissionRequiredMixin, Vi
     def get(
         self, request: HttpRequest, course_slug: str, student_id: str
     ) -> HttpResponse:
-        print("watch me", course_slug, student_id)
 
         course = get_object_or_404(Course, slug=course_slug)
         student = get_object_or_404(User, uuid=student_id)
         t_enrollment = get_object_or_404(Enrollment, student=student, course=course)
-
-        print(t_enrollment)
 
         course.save()  # Unclear why saving is necessary here — can possibly be removed
 

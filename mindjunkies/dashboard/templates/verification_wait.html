@@ -4,64 +4,83 @@
 {% block title %}Verification Pending - MindJunkies{% endblock %}
 
 {% block main_content %}
-<div class="container mx-auto py-12 px-4">
-    <div class="max-w-3xl mx-auto">
-        <div class="card bg-base-100 shadow-xl">
-            <div class="card-body items-center text-center">
-                <!-- Status Icon -->
-                <div class="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-
-                <!-- Status Title -->
-                <h2 class="card-title text-3xl font-bold mb-2">Verification Pending</h2>
-                <p class="text-base-content/70 mb-2">Your application has been submitted and is currently under review</p>
-
-                <!-- Progress Indicator -->
-                <div class="w-full max-w-md mb-8">
-                    <ul class="steps steps-vertical md:steps-horizontal w-full">
-                        <li class="step step-primary">Application Submitted</li>
-                        <li class="step step-primary">Under Review</li>
-                        <li class="step">Verification Complete</li>
-                    </ul>
-                </div>
-
-                <!-- Information Card -->
-                <div class="bg-base-200 rounded-lg p-6 w-full mb-8">
-                    <h3 class="font-semibold text-lg mb-4">What happens next?</h3>
-                    <ul class="space-y-3 text-left">
-                        <li class="flex items-start">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>Our team will review your application within <strong>3-5 business days</strong></span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>You'll receive an email notification once your verification is complete</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>We may contact you if additional information is needed</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Application Details -->
-                <div class="w-full">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-semibold text-lg">Application Details</h3>
-                        <span class="badge badge-primary">Submitted on {{ submission_date|default:"May 15, 2023" }}</span>
+    <div class="container mx-auto py-12 px-4">
+        <div class="max-w-3xl mx-auto">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <!-- Status Icon -->
+                    <div class="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-primary" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="table table-zebra w-full">
-                            <tbody>
+
+                    <!-- Status Title -->
+                    <h2 class="card-title text-3xl font-bold mb-2">Verification Pending</h2>
+                    <p class="text-base-content/70 mb-2">Your application has been submitted and is currently under
+                        review</p>
+
+                    <!-- Progress Indicator -->
+                    <div class="w-full max-w-md mb-8">
+                        <ul class="steps steps-vertical md:steps-horizontal w-full">
+                            <li class="step step-primary">Application Submitted</li>
+                            <li class="step step-primary">Under Review</li>
+                            <li class="step">Verification Complete</li>
+                        </ul>
+                    </div>
+
+                    <!-- Information Card -->
+                    <div class="bg-base-200 rounded-lg p-6 w-full mb-8">
+                        <h3 class="font-semibold text-lg mb-4">What happens next?</h3>
+                        <ul class="space-y-3 text-left">
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" fill="none"
+                                     viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span>Our team will review your application within <strong>3-5 business days</strong></span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" fill="none"
+                                     viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span>You'll receive an email notification once your verification is complete</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" fill="none"
+                                     viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span>We may contact you if additional information is needed</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Application Details -->
+                    <div class="w-full">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-semibold text-lg">Application Details</h3>
+                            <span
+                                class="badge badge-primary">Submitted on {{ submission_date|default:"May 15, 2023" }}</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="table table-zebra w-full">
+                                <thead>
+                                <tr>
+                                    <th class="text-left">Field</th>
+                                    <th class="text-left">Value</th>
+                                </tr>
+                                </thead>
+                                <tbody>
                                 <tr>
                                     <td class="font-medium">Name</td>
                                     <td>{{ user.get_full_name|default:"John Doe" }}</td>
@@ -74,57 +93,62 @@
                                     <td class="font-medium">Status</td>
                                     <td><span class="badge badge-warning">Pending Review</span></td>
                                 </tr>
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Action Buttons -->
-                <div class="card-actions justify-center mt-8">
-                    <a href="{% url 'home' %}" class="btn btn-outline">Return to Home</a>
-                    <a href="#" class="btn btn-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                        </svg>
-                        Contact Support
-                    </a>
+                    <!-- Action Buttons -->
+                    <div class="card-actions justify-center mt-8">
+                        <a href="{% url 'home' %}" class="btn btn-outline">Return to Home</a>
+                        <a href="#" class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+                            </svg>
+                            Contact Support
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- FAQ Section -->
-        <div class="mt-8">
-            <h3 class="text-xl font-bold text-center mb-6">Frequently Asked Questions</h3>
-            <div class="space-y-4">
-                <div class="collapse collapse-arrow bg-base-100 shadow-md">
-                    <input type="checkbox" />
-                    <div class="collapse-title font-medium">
-                        How long does the verification process take?
+            <!-- FAQ Section -->
+            <div class="mt-8">
+                <h3 class="text-xl font-bold text-center mb-6">Frequently Asked Questions</h3>
+                <div class="space-y-4">
+                    <div class="collapse collapse-arrow bg-base-100 shadow-md">
+                        <input type="checkbox"/>
+                        <div class="collapse-title font-medium">
+                            How long does the verification process take?
+                        </div>
+                        <div class="collapse-content">
+                            <p>The verification process typically takes 3-5 business days. During peak periods, it may
+                                take up to 7 business days.</p>
+                        </div>
                     </div>
-                    <div class="collapse-content">
-                        <p>The verification process typically takes 3-5 business days. During peak periods, it may take up to 7 business days.</p>
+                    <div class="collapse collapse-arrow bg-base-100 shadow-md">
+                        <input type="checkbox"/>
+                        <div class="collapse-title font-medium">
+                            Can I edit my application while it's pending?
+                        </div>
+                        <div class="collapse-content">
+                            <p>No, you cannot edit your application once it's submitted. If you need to make changes,
+                                please contact our support team.</p>
+                        </div>
                     </div>
-                </div>
-                <div class="collapse collapse-arrow bg-base-100 shadow-md">
-                    <input type="checkbox" />
-                    <div class="collapse-title font-medium">
-                        Can I edit my application while it's pending?
-                    </div>
-                    <div class="collapse-content">
-                        <p>No, you cannot edit your application once it's submitted. If you need to make changes, please contact our support team.</p>
-                    </div>
-                </div>
-                <div class="collapse collapse-arrow bg-base-100 shadow-md">
-                    <input type="checkbox" />
-                    <div class="collapse-title font-medium">
-                        What happens if my verification is rejected?
-                    </div>
-                    <div class="collapse-content">
-                        <p>If your verification is rejected, you'll receive an email with the reason. You can address the issues and reapply after 30 days.</p>
+                    <div class="collapse collapse-arrow bg-base-100 shadow-md">
+                        <input type="checkbox"/>
+                        <div class="collapse-title font-medium">
+                            What happens if my verification is rejected?
+                        </div>
+                        <div class="collapse-content">
+                            <p>If your verification is rejected, you'll receive an email with the reason. You can
+                                address the issues and reapply after 30 days.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}

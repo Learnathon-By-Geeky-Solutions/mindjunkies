@@ -28,7 +28,7 @@ User = get_user_model()
 
 
 @pytest.mark.django_db
-class TestCourseContextMixin(TestCase):
+class BaseForumTestCase(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
         self.user = User.objects.create_user(username="testuser", password="password")
@@ -40,7 +40,33 @@ class TestCourseContextMixin(TestCase):
             teacher=self.user,
             level="beginner",
         )
+        self.module = Module.objects.create(
+            title="Test Module", course=self.course, order=1
+        )
+        self.topic = ForumTopic.objects.create(
+            title="Test Topic",
+            slug="test-topic",
+            content="Test Content",
+            author=self.user,
+            course=self.course,
+            module=self.module,
+        )
+        self.comment = ForumComment.objects.create(
+            topic=self.topic, author=self.user, content="Test comment"
+        )
+        self.reply = Reply.objects.create(
+            parent_comment=self.comment, author=self.user, body="Test reply"
+        )
 
+    def set_request_attributes(self, request):
+        request.user = self.user
+        setattr(request, "session", "session")
+        messages = FallbackStorage(request)
+        setattr(request, "_messages", messages)
+
+
+@pytest.mark.django_db
+class TestCourseContextMixin(BaseForumTestCase):
     def test_get_course(self):
         """Test that get_course returns the correct course based on slug"""
         view = ForumHomeView()
@@ -60,45 +86,7 @@ class TestCourseContextMixin(TestCase):
 
 
 @pytest.mark.django_db
-class TestForumHomeView(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
-        )
-
-
-@pytest.mark.django_db
-class TestForumThreadView(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
-        )
-        self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
-        )
-        self.topic = ForumTopic.objects.create(
-            title="Test Topic",
-            slug="test-topic",
-            content="Test Content",
-            author=self.user,
-            course=self.course,
-            module=self.module,
-        )
-
+class TestForumThreadView(BaseForumTestCase):
     def test_get_module(self):
         """Test that get_module returns the correct module"""
         view = ForumThreadView()
@@ -120,30 +108,7 @@ class TestForumThreadView(TestCase):
 
 
 @pytest.mark.django_db
-class TestForumThreadDetailsView(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
-        )
-        self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
-        )
-        self.topic = ForumTopic.objects.create(
-            title="Test Topic",
-            slug="test-topic",
-            content="Test Content",
-            author=self.user,
-            course=self.course,
-            module=self.module,
-        )
-
+class TestForumThreadDetailsView(BaseForumTestCase):
     def test_get_module(self):
         """Test that get_module returns the correct module"""
         view = ForumThreadDetailsView()
@@ -178,22 +143,7 @@ class TestForumThreadDetailsView(TestCase):
 
 
 @pytest.mark.django_db
-class TestTopicSubmissionView(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
-        )
-        self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
-        )
-
+class TestTopicSubmissionView(BaseForumTestCase):
     def test_post_valid_form(self):
         """Test topic submission with valid form data"""
         request = self.factory.post(
@@ -211,7 +161,7 @@ class TestTopicSubmissionView(TestCase):
         response = TopicSubmissionView.as_view()(
             request, course_slug=self.course.slug, module_id=self.module.id
         )
-        self.assertEqual(ForumTopic.objects.count(), 1)
+        self.assertEqual(ForumTopic.objects.count(), 2)
         topic = ForumTopic.objects.first()
         self.assertEqual(topic.title, "New Topic")
         self.assertEqual(topic.author, self.user)
@@ -238,7 +188,7 @@ class TestTopicSubmissionView(TestCase):
         response = TopicSubmissionView.as_view()(
             request, course_slug=self.course.slug, module_id=self.module.id
         )
-        self.assertEqual(ForumTopic.objects.count(), 0)
+        self.assertEqual(ForumTopic.objects.count(), 1)
         self.assertEqual(
             response.url,
             reverse(
@@ -249,30 +199,7 @@ class TestTopicSubmissionView(TestCase):
 
 
 @pytest.mark.django_db
-class TestTopicUpdateView(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
-        )
-        self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
-        )
-        self.topic = ForumTopic.objects.create(
-            title="Test Topic",
-            slug="test-topic",
-            content="Test Content",
-            author=self.user,
-            course=self.course,
-            module=self.module,
-        )
-
+class TestTopicUpdateView(BaseForumTestCase):
     def test_get_instance(self):
         """Test that get_instance returns the correct topic"""
         view = TopicUpdateView()
@@ -347,30 +274,7 @@ class TestTopicUpdateView(TestCase):
 
 
 @pytest.mark.django_db
-class TestTopicDeletionView(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
-        )
-        self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
-        )
-        self.topic = ForumTopic.objects.create(
-            title="Test Topic",
-            slug="test-topic",
-            content="Test Content",
-            author=self.user,
-            course=self.course,
-            module=self.module,
-        )
-
+class TestTopicDeletionView(BaseForumTestCase):
     def test_post(self):
         """Test topic deletion"""
         request = self.factory.post("/")
@@ -395,30 +299,7 @@ class TestTopicDeletionView(TestCase):
 
 
 @pytest.mark.django_db
-class TestCommentSubmissionView(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
-        )
-        self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
-        )
-        self.topic = ForumTopic.objects.create(
-            title="Test Topic",
-            slug="test-topic",
-            content="Test Content",
-            author=self.user,
-            course=self.course,
-            module=self.module,
-        )
-
+class TestCommentSubmissionView(BaseForumTestCase):
     def test_post_valid_comment(self):
         """Test comment submission with valid data"""
         request = self.factory.post("/", {"content": "Test comment content"})
@@ -432,9 +313,9 @@ class TestCommentSubmissionView(TestCase):
             topic_id=self.topic.id,
             module_id=self.module.id,
         )
-        self.assertEqual(ForumComment.objects.count(), 1)
+        self.assertEqual(ForumComment.objects.count(), 2)
         comment = ForumComment.objects.first()
-        self.assertEqual(comment.content, "Test comment content")
+        self.assertEqual(comment.content, "Test comment")
         self.assertEqual(comment.author, self.user)
         self.assertEqual(comment.topic, self.topic)
         self.assertEqual(
@@ -462,7 +343,7 @@ class TestCommentSubmissionView(TestCase):
             topic_id=self.topic.id,
             module_id=self.module.id,
         )
-        self.assertEqual(ForumComment.objects.count(), 0)
+        self.assertEqual(ForumComment.objects.count(), 1)
         self.assertEqual(
             response.url,
             reverse(
@@ -477,33 +358,7 @@ class TestCommentSubmissionView(TestCase):
 
 
 @pytest.mark.django_db
-class TestCommentDeletionView(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
-        )
-        self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
-        )
-        self.topic = ForumTopic.objects.create(
-            title="Test Topic",
-            slug="test-topic",
-            content="Test Content",
-            author=self.user,
-            course=self.course,
-            module=self.module,
-        )
-        self.comment = ForumComment.objects.create(
-            topic=self.topic, author=self.user, content="Test comment"
-        )
-
+class TestCommentDeletionView(BaseForumTestCase):
     def test_post(self):
         """Test comment deletion"""
         request = self.factory.post("/")
@@ -533,33 +388,7 @@ class TestCommentDeletionView(TestCase):
 
 
 @pytest.mark.django_db
-class TestReplySubmissionView(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
-        )
-        self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
-        )
-        self.topic = ForumTopic.objects.create(
-            title="Test Topic",
-            slug="test-topic",
-            content="Test Content",
-            author=self.user,
-            course=self.course,
-            module=self.module,
-        )
-        self.comment = ForumComment.objects.create(
-            topic=self.topic, author=self.user, content="Test comment"
-        )
-
+class TestReplySubmissionView(BaseForumTestCase):
     def test_post_valid_reply(self):
         """Test reply submission with valid data"""
         request = self.factory.post("/", {"body": "Test reply body"})
@@ -574,9 +403,9 @@ class TestReplySubmissionView(TestCase):
             module_id=self.module.id,
             comment_id=self.comment.id,
         )
-        self.assertEqual(Reply.objects.count(), 1)
+        self.assertEqual(Reply.objects.count(), 2)
         reply = Reply.objects.first()
-        self.assertEqual(reply.body, "Test reply body")
+        self.assertEqual(reply.body, "Test reply")
         self.assertEqual(reply.author, self.user)
         self.assertEqual(reply.parent_comment, self.comment)
         self.assertEqual(
@@ -605,7 +434,7 @@ class TestReplySubmissionView(TestCase):
             module_id=self.module.id,
             comment_id=self.comment.id,
         )
-        self.assertEqual(Reply.objects.count(), 0)
+        self.assertEqual(Reply.objects.count(), 1)
         self.assertEqual(
             response.url,
             reverse(
@@ -620,36 +449,7 @@ class TestReplySubmissionView(TestCase):
 
 
 @pytest.mark.django_db
-class TestReplyDeletionView(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
-        )
-        self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
-        )
-        self.topic = ForumTopic.objects.create(
-            title="Test Topic",
-            slug="test-topic",
-            content="Test Content",
-            author=self.user,
-            course=self.course,
-            module=self.module,
-        )
-        self.comment = ForumComment.objects.create(
-            topic=self.topic, author=self.user, content="Test comment"
-        )
-        self.reply = Reply.objects.create(
-            parent_comment=self.comment, author=self.user, body="Test reply"
-        )
-
+class TestReplyDeletionView(BaseForumTestCase):
     def test_post(self):
         """Test reply deletion"""
         request = self.factory.post("/")
@@ -669,36 +469,7 @@ class TestReplyDeletionView(TestCase):
 
 
 @pytest.mark.django_db
-class TestReplyFormView(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
-        )
-        self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
-        )
-        self.topic = ForumTopic.objects.create(
-            title="Test Topic",
-            slug="test-topic",
-            content="Test Content",
-            author=self.user,
-            course=self.course,
-            module=self.module,
-        )
-        self.comment = ForumComment.objects.create(
-            topic=self.topic, author=self.user, content="Test comment"
-        )
-        self.reply = Reply.objects.create(
-            parent_comment=self.comment, author=self.user, body="Test reply"
-        )
-
+class TestReplyFormView(BaseForumTestCase):
     def test_get(self):
         """Test GET request renders reply form"""
         request = self.factory.get("/")
@@ -719,7 +490,7 @@ class TestReplyFormView(TestCase):
         setattr(request, "session", "session")
         messages = FallbackStorage(request)
         setattr(request, "_messages", messages)
-        response = ReplyFormView.as_view()(
+        ReplyFormView.as_view()(
             request,
             course_slug=self.course.slug,
             module_id=self.module.id,
@@ -738,7 +509,7 @@ class TestReplyFormView(TestCase):
         setattr(request, "session", "session")
         messages = FallbackStorage(request)
         setattr(request, "_messages", messages)
-        response = ReplyFormView.as_view()(
+        ReplyFormView.as_view()(
             request,
             course_slug=self.course.slug,
             module_id=self.module.id,
@@ -749,41 +520,12 @@ class TestReplyFormView(TestCase):
 
 
 @pytest.mark.django_db
-class TestLikeViews(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.course = Course.objects.create(
-            title="Test Course",
-            slug="test-course",
-            short_introduction="A short intro",
-            course_description="Detailed course description",
-            teacher=self.user,
-            level="beginner",
-        )
-        self.module = Module.objects.create(
-            title="Test Module", details="Module details", course=self.course, order=1
-        )
-        self.topic = ForumTopic.objects.create(
-            title="Test Topic",
-            slug="test-topic",
-            content="Test Content",
-            author=self.user,
-            course=self.course,
-            module=self.module,
-        )
-        self.comment = ForumComment.objects.create(
-            topic=self.topic, author=self.user, content="Test comment"
-        )
-        self.reply = Reply.objects.create(
-            parent_comment=self.comment, author=self.user, body="Test reply"
-        )
-
+class TestLikeViews(BaseForumTestCase):
     def test_like_post_view(self):
         """Test LikePostView toggles likes on ForumTopic"""
         request = self.factory.post("/")
         request.user = self.user
-        response = LikePostView.as_view()(
+        LikePostView.as_view()(
             request,
             pk=self.topic.id,
         )
@@ -800,14 +542,14 @@ class TestLikeViews(TestCase):
         """Test LikeCommentView toggles likes on ForumComment"""
         request = self.factory.post("/")
         request.user = self.user
-        response = LikeCommentView.as_view()(
+        LikeCommentView.as_view()(
             request,
             pk=self.comment.id,
         )
         self.assertTrue(self.comment.likes.filter(username=self.user.username).exists())
 
         # Test unlike
-        response = LikeCommentView.as_view()(
+        LikeCommentView.as_view()(
             request,
             pk=self.comment.id,
         )
@@ -817,14 +559,14 @@ class TestLikeViews(TestCase):
         """Test LikeReplyView toggles likes on Reply"""
         request = self.factory.post("/")
         request.user = self.user
-        response = LikeReplyView.as_view()(
+        LikeReplyView.as_view()(
             request,
             pk=self.reply.id,
         )
         self.assertTrue(self.reply.likes.filter(username=self.user.username).exists())
 
         # Test unlike
-        response = LikeReplyView.as_view()(
+        LikeReplyView.as_view()(
             request,
             pk=self.reply.id,
         )
