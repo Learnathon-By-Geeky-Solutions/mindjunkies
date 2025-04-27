@@ -24,14 +24,8 @@ This creates a copy under your GitHub account.
 ```bash
 git clone https://github.com/your-username/mindjunkies.git
 cd mindjunkies
-
-
-## Code Style
-- Use `black` and `isort`
-- Follow Django conventions
-- Use PEP 8 for Python code
-- Use meaningful variable and function names
 ```
+
 
 ### 3. Create a Feature Branch
 Always create a new branch for your work:
