@@ -37,4 +37,3 @@ if not config("DB_IGNORE_SSL", default=False, cast=bool):
     DATABASES["default"]["OPTIONS"] = {
         "sslmode": "require",
     }
-
