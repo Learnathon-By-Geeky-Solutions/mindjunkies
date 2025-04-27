@@ -6,15 +6,13 @@ from .models import Profile, User
 
 
 class UserForm(ModelForm):
-    email = forms.EmailField(required=True)
-
     class Meta:
         model = User
-        fields = ("username", "email", "first_name", "last_name")
+        fields = ("first_name", "last_name")
 
 
 class ProfileUpdateForm(ModelForm):
-    avatar = CloudinaryFileField()
+    avatar = CloudinaryFileField(required=False)
 
     class Meta:
         model = Profile
