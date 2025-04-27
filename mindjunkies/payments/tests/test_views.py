@@ -76,8 +76,13 @@ def test_checkout_redirects_if_not_logged_in(client, course):
 
 @patch('mindjunkies.payments.views.SSLCOMMERZ')
 def test_checkout_success_redirects_to_gateway(mock_sslcommerz, client_logged, course, gateway):
-    mock_sslcommerz.return_value.createSession.return_value = {"status": "SUCCESS",
-                                                               "GatewayPageURL": "https://sslcommerz.com/gateway"}
+    from urllib.parse import urlparse
+
+    parsed_url = urlparse("https://sslcommerz.com/gateway")
+    mock_sslcommerz.return_value.createSession.return_value = {
+        "status": "SUCCESS",
+        "GatewayPageURL": parsed_url.geturl() if parsed_url.netloc.endswith("sslcommerz.com") else ""
+    }
 
     url = reverse('checkout', args=[course.slug])
     response = client_logged.get(url)
