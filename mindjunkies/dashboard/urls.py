@@ -1,10 +1,10 @@
 from django.urls import path
 
 from .views import (ContentListView, EnrollmentListView, RemoveEnrollmentView, TeacherVerificationView,
-                    VerificationWaitView, DraftView, ArchiveView, TeacherPermissionView, TeacherHome)
+                    VerificationWaitView, DraftView, ArchiveView, TeacherHome)
 
 urlpatterns = [
-    path("teacher/", TeacherVerificationView.as_view(), name="teacher_permission"),
+    path("verify_teacher/", TeacherVerificationView.as_view(), name="teacher_permission"),
     path("home/", TeacherHome.as_view(), name="dashboard"),
     path("home/<str:status>/", ContentListView.as_view(), name="dashboard-content"),
     path(
