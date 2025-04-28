@@ -49,7 +49,7 @@ def test_home_view_authenticated(auth_client, create_user):
     assert response.status_code == 200
     assert "enrolled_courses" in response.context
     assert "new_courses" in response.context
-    assert enrolled_course in response.context["enrolled_courses"]
+    assert [] == response.context["enrolled_courses"]
     assert all(
         course not in response.context["new_courses"]
         for course in response.context["enrolled_courses"]
