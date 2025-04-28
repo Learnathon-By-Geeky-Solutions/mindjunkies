@@ -33,13 +33,13 @@ class HomeView(View):
 
         new_courses = Course.objects.exclude(
             id__in=[course.id for course in enrolled_courses]
-        ).order_by("-created_at").filter(status="published")[:4]
+        ).order_by("-created_at").filter(status="published", verified=True)[:4]
 
         courses = Course.objects.exclude(
             id__in=new_courses.values_list("id", flat=True)
-        ).exclude(id__in=[course.id for course in enrolled_courses])[:4]
+        ).exclude(id__in=[course.id for course in enrolled_courses]).filter(status="published", verified=True)[:4]
 
-        featured_courses = Course.objects.filter(status="published")
+        featured_courses = Course.objects.filter(status="published", verified=True)
 
         context = {
             "new_courses": new_courses,

@@ -46,7 +46,7 @@ class NewCourseView(BaseCourseView):
 
         new_courses = Course.objects.exclude(
             id__in=[course.id for course in enrolled_courses]
-        ).order_by("-created_at")[:4]
+        ).filter(verified=True).order_by("-created_at")
 
         context["new_courses"] = new_courses
         return context
@@ -67,7 +67,7 @@ class PopularCoursesView(BaseCourseView):
             id__in=new_courses.values_list("id", flat=True)
         ).exclude(id__in=[course.id for course in enrolled_courses])
 
-        popular_courses = courses.order_by("-enrollments")
+        popular_courses = courses.filter(verified=True).order_by("-enrollments")
         context["popular_courses"] = popular_courses
         return context
 
@@ -86,6 +86,8 @@ class MyCoursesView(LoginRequiredMixin, TemplateView):
             .prefetch_related("enrollments")
             .distinct()
         )
+
+        enrolled_courses = enrolled_courses.filter(verified=True)
         context["enrolled_courses"] = enrolled_courses
         return context
 
