@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ main, deployment-digitalocean]
 
+permissions:
+  contents: read
+
 jobs:
   django_test:
     runs-on: ubuntu-latest
@@ -93,6 +96,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: django_test
+    permissions:
+      contents: write
+      packages: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -110,7 +116,7 @@ jobs:
         run: |
           docker build -f Dockerfile \
             -t registry.digitalocean.com/mindjunkies/django-mindjunkies-web:latest \
-            -t registry.digitalocean.com/mindjunkies/django-mindjunkies-web:${GITHUB_SHA::7}-${GITHUB_RUN_ID::7} \
+            -t registry.digitalocean.com/mindjunkies/django-mindjunkies-web:${GITHUB_SHA::7}-${GITHUB_RUN_ID::5} \
             .
 
       - name: Push image
@@ -128,14 +134,14 @@ jobs:
           
           DJANGO_SETTINGS_MODULE=project.settings.production
           SECRET_KEY=${{ secrets.SECRET_KEY }}
-          ALLOWED_HOSTS=209.38.124.215,*.mindjunkies.tech,mindjunkies.tech
+          ALLOWED_HOSTS=209.38.124.215,biddyapeeth.mindjunkies.tech,mindjunkies.tech
           
           AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           
           DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}
           DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
-          DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUERUSER_EMAIL }}
+          DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}
           
           POSTGRES_DB=${{ secrets.POSTGRES_DB }}
           POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
@@ -170,7 +176,7 @@ jobs:
 
       - name: Update Deployment image
         run: |
-          kubectl set image deployment/django-mindjunkies-web-deployment django-mindjunkies-web=registry.digitalocean.com/mindjunkies/django-mindjunkies-web:${GITHUB_SHA::7}-${GITHUB_RUN_ID::7}
+          kubectl set image deployment/django-mindjunkies-web-deployment django-mindjunkies-web=registry.digitalocean.com/mindjunkies/django-mindjunkies-web:${GITHUB_SHA::7}-${GITHUB_RUN_ID::5}
 
       - name: Wait for rollout to finish
         run: |

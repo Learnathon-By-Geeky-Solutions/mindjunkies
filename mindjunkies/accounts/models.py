@@ -61,7 +61,7 @@ class Profile(BaseModel):
         "accounts.User", on_delete=models.CASCADE, related_name="profile"
     )
     birthday = models.DateField(null=True, blank=True)
-    bio = models.TextField()
+    bio = models.TextField(null=True, blank=True)
     avatar = CloudinaryField(
         folder="avatars", overwrite=True, resource_type="image", null=True, blank=True
     )

@@ -29,9 +29,45 @@
     <img src="https://img.shields.io/github/license/Learnathon-By-Geeky-Solutions/mindjunkies.svg" alt="license" />
   </a>
 
-[![python](https://img.shields.io/badge/Python-3.11-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+<p align="center">
+  <a href="https://www.djangoproject.com/">
+    <img src="https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white" alt="Django" />
+  </a>
+  <a href="https://www.postgresql.org/">
+    <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  </a>
+  <a href="https://www.docker.com/">
+    <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+  </a>
+  <a href="https://redis.io/">
+    <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis" />
+  </a>
+  <a href="https://www.elastic.co/elasticsearch/">
+    <img src="https://img.shields.io/badge/Elasticsearch-005571?style=for-the-badge&logo=elasticsearch&logoColor=white" alt="Elasticsearch" />
+  </a>
+  <a href="https://tailwindcss.com/">
+    <img src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+  </a>
+  <a href="https://django-unfold.readthedocs.io/">
+    <img src="https://img.shields.io/badge/Django_Unfold-0B0D0D?style=for-the-badge&logo=django&logoColor=white" alt="Django Unfold" />
+  </a>
+  <a href="https://github.com/jazzband/django-silk">
+    <img src="https://img.shields.io/badge/Django_Silk-4B8BBE?style=for-the-badge&logo=python&logoColor=white" alt="Django Silk" />
+  </a>
+  <a href="https://www.python.org">
+    <img src="https://img.shields.io/badge/Python-3.11-3776AB.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.11" />
+  </a>
+  <a href="https://github.com/pre-commit/pre-commit">
+    <img src="https://img.shields.io/badge/pre--commit-enabled-brightgreen?style=for-the-badge&logo=pre-commit&logoColor=white" alt="Pre-commit" />
+  </a>
+  <a href="https://github.com/psf/black">
+    <img src="https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge" alt="Black code style" />
+  </a>
+  <a href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="MIT License" />
+  </a>
+</p>
+
 </p>
 
 <h4>
@@ -51,18 +87,23 @@
 
 **BiddyaPeeth** is a modern Learning Management System (LMS) built with Django and Tailwind CSS. It offers a seamless platform for managing courses, users, assignments, and learning content efficiently. Designed to empower teachers and students, MindJunkies focuses on scalability, user experience, and modern web standards.
 
-## Table of Contents
+# 📋 Table of Contents
+
+- [Team MindJunkies](#team-mindjunkies)
 - [Team Members](#team-members)
 - [Mentor](#mentor)
 - [Project Description](#project-description)
 - [Features](#features)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Setup Instructions](#setup-instructions)
 - [Development Guidelines](#development-guidelines)
-- [Project Structure](#project-structure)
+- [🏗 System Architecture](#-system-architecture)
+- [📂 Project Structure](#-project-structure)
 - [Resources](#resources)
 - [Tools and Technologies](#tools-and-technologies)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Local Development Setup](#local-development-setup)
+  - [Using Docker](#using-docker)
+- [🤝 Contributing](#-contributing)
 - [License](#license)
 
 
@@ -94,38 +135,6 @@ BiddyaPeeth is a comprehensive Learning Management System (LMS) designed to faci
 
 ---
 
-## Getting Started
-
-Follow these steps to set up the project locally:
-
-### Prerequisites
-
-- Python 3.11+
-- uv
-- PostgreSQL / SQLite
-
-### Setup Instructions
-
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies
-    cd mindjunkies
-    ```
-2. Install dependencies:
-    ```sh
-    pip install uv
-    uv sync
-    ```
-3. Start development:
-    ```sh
-    cp .env.example .env # Modify the environment variables
-    python manage.py migrate
-    python manage.py createsuperuser
-    python manage.py runserver
-    python manage.py tailwind watch
-    ```
-4. Open [http://localhost:8000](http://localhost:8000) in your browser.
-
 ## Development Guidelines
 
 1. Create feature branches:
@@ -149,37 +158,62 @@ Follow these steps to set up the project locally:
     - Mention the issue number (if any) in the description.
     - Assign the PR to the appropriate reviewer.
 
-## Project Structure
+----------
+## 🏗 System Architecture
 
-```plaintext
-mindjunkies/
-├── manage.py
-├── project/
-│   ├── __init__.py
-│   ├── settings.py
-│   ├── urls.py
-│   ├── wsgi.py
-│   └── asgi.py
-├── mindjunkies/
-│   ├── __init__.py
+> BiddyaPeeth follows a modular Django architecture with clear separation of concerns across different apps:
+
+| App Name          | Purpose                                      |
+|-------------------|----------------------------------------------|
+| `accounts`        | User authentication and profile management  |
+| `courses`         | Course creation and enrollment management   |
+| `dashboard`       | Role-based dashboards                       |
+| `forums`          | Discussion forums                           |
+| `lecture`         | Lecture and assignment management           |
+| `live_classes`    | Live video conferencing integration         |
+| `payments`        | Payment and billing system                  |
+| `home`            | Landing and general pages                   |
+
+---
+
+##  📂 Project Structure
+
+```
+├── mindjunkies/             # Django apps (accounts, courses, forums, etc.)
 │   ├── accounts/
 │   ├── courses/
 │   ├── dashboard/
 │   ├── forums/
-│   ├── home/
 │   ├── lecture/
 │   ├── live_classes/
 │   ├── payments/
-│   ├── static/
-│   ├── templates/
-├── tests/
+│   ├── static/              # Static files (CSS, JS, Images)
+│   └── templates/           # HTML templates
+├── project/                 # Django project settings
+│   ├── settings/
+│   └── urls.py
+├── config/                  # JWT and token management
+├── docs/                    # Documentation and guides
+├── k8s/                     # Kubernetes deployment files
+├── scripts/                 # Management scripts (e.g., populate data)
+├── tests/                   # Test cases
+├── Dockerfile
+├── docker-compose.yml
+├── manage.py
+└── README.md
+
 ```
+
+----------
 
 ## Resources
 
+- [Wiki Link](https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/wiki)
 - [Project Documentation](docs/)
 - [Development Setup](docs/guides/getting-started.md)
 - [Contributing Guidelines](docs/CONTRIBUTING.md)
+
+----------
 
 ## Tools and Technologies
 
@@ -189,6 +223,59 @@ mindjunkies/
 - SQLite (Development), PostgreSQL (Production)
 - AWS (Deployment)
 - Git and GitHub
+
+----------
+
+
+## Getting Started
+
+Follow these steps to set up the project locally:
+
+### Prerequisites
+
+- Python 3.11+
+- uv
+- PostgreSQL / SQLite
+
+### Local Development Setup
+
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies
+    cd mindjunkies
+    ```
+2. Install dependencies:
+    ```sh
+    pip install uv
+    uv sync
+    ```
+3. Start development:
+    ```sh
+    cp .env.example .env # Modify the environment variables
+    python manage.py migrate
+    python manage.py createsuperuser
+    python manage.py runserver
+    python manage.py tailwind watch
+    ```
+4. Open [http://localhost:8000](http://localhost:8000) in your browser.
+
+
+### Using Docker
+
+```bash
+# Build and start containers
+docker-compose up --build
+
+```
+----------
+## 🤝 Contributing
+
+We welcome contributions!  
+Please read our [CONTRIBUTING.md](docs/CONTRIBUTING.md) for more information on how to get started.
+
+----------
+
+
 
 ## License
 

@@ -377,7 +377,7 @@ class MarkLectureCompleteView(LoginRequiredMixin, View):
     def get(self, request, course_slug, lecture_id):
         lecture = get_object_or_404(Lecture, id=lecture_id)
         LectureCompletion.objects.get_or_create(user=request.user, lecture=lecture)
-        return redirect(request.META.get('HTTP_REFERER', '/'))
+        return redirect("lecture_home", course_slug=course_slug)
 
 
 class ModuleEditView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin, UpdateView):

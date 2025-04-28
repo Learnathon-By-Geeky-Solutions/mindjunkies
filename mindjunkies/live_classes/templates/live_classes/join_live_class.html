@@ -2,146 +2,154 @@
 {% load static %}
 
 {% block main_content %}
-<div class="min-h-screen bg-gray-50">
-  <!-- Header section -->
-  <header class="bg-white shadow">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <h1 class="text-3xl font-bold text-gray-900">
-        Live Class: {{ live_class.topic }}
-      </h1>
-    </div>
-  </header>
+    <div class="min-h-screen bg-gray-50">
+        <!-- Header section -->
+        <header class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow">
 
-  <!-- Main content -->
-  <main>
-    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-      <!-- Video container with card styling -->
-      <div class="bg-white rounded-lg shadow overflow-hidden">
-        <!-- Status bar -->
-        <div class="bg-indigo-600 px-4 py-3 flex items-center justify-between">
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <span class="h-3 w-3 bg-red-500 rounded-full inline-block animate-pulse"></span>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between">
+                <h1 class="text-3xl font-bold text-white">
+                    Live Class: {{ live_class.topic }}
+                </h1>
+                <a href="{% url 'lecture_home' live_class.course.slug %}"
+                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-indigo-600 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Back to Lecture Home
+                </a>
             </div>
-            <div class="ml-3">
-              <p class="text-sm font-medium text-white">
-                Live Now
-              </p>
-            </div>
-          </div>
-          <div class="text-sm text-white">
-            Participants: <span id="participant-count">--</span>
-          </div>
-        </div>
-        
-        <!-- Video meeting container -->
-        <div id="meet" class="w-full h-96 md:h-[500px] lg:h-[600px]"></div>
-        
-        <!-- Controls and info -->
-        <div class="px-4 py-5 sm:p-6 bg-gray-50">
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-              <h3 class="text-lg leading-6 font-medium text-gray-900">
-                {{ live_class.topic }}
-              </h3>
-              <p class="mt-1 max-w-2xl text-sm text-gray-500">
-                Instructor: {{ live_class.teacher.username }}
-              </p>
-            </div>
-            <div class="flex space-x-3">
-              <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Raise Hand
-              </button>
-              {% if request.user == live_class.teacher %}
-              <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                End Class
-              </button>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Class resources section (optional) -->
-      <div class="mt-8 bg-white shadow rounded-lg">
-        <div class="px-4 py-5 sm:p-6">
-          <h3 class="text-lg leading-6 font-medium text-gray-900">
-            Class Resources
-          </h3>
-          <div class="mt-5 border-t border-gray-200 pt-4">
-            <ul class="divide-y divide-gray-200">
-              <li class="py-4 flex">
-                <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <div class="ml-3 text-sm">
-                  <span class="font-medium text-gray-900">Lecture Notes</span>
-                  <a href="#" class="ml-2 text-indigo-600 hover:text-indigo-500">Download</a>
-                </div>
-              </li>
-              <li class="py-4 flex">
-                <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-                <div class="ml-3 text-sm">
-                  <span class="font-medium text-gray-900">Recording</span>
-                  <span class="ml-2 text-gray-500">(Available after class)</span>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-</div>
+        </header>
 
-<!-- Jitsi Meet scripts -->
-<script src='https://8x8.vc/vpaas-magic-cookie-fb583aeece2040b4805f50d0b267e75b/external_api.js'></script>
-<script>
-  const initIframeAPI = () => {
-    const domain = "8x8.vc";
-    const options = {
-      roomName: "vpaas-magic-cookie-fb583aeece2040b4805f50d0b267e75b/{{ live_class.meeting_id }}",
-      width: "100%",
-      height: "100%",
-      parentNode: document.querySelector("#meet"),
-      {% if request.user == live_class.teacher %}
-        jwt: "{{ live_class.generate_jwt_token }}",  // Secure authentication token
-      {% endif %}
-      userInfo: {
-        displayName: "{{ request.user.username }}"
-      },
-      configOverwrite: {
-        prejoinPageEnabled: false,
-        startWithAudioMuted: true,
-        startWithVideoMuted: false
-      },
-      interfaceConfigOverwrite: {
-        TOOLBAR_BUTTONS: [
-          'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
-          'fodeviceselection', 'hangup', 'profile', 'chat',
-          'recording', 'livestreaming', 'settings', 'raisehand',
-          'videoquality', 'filmstrip', 'feedback', 'stats', 'shortcuts',
-          'tileview', 'select-background', 'download', 'help', 'mute-everyone',
-          'security'
-        ],
-      }
-    };
-      
-    const api = new JitsiMeetExternalAPI(domain, options);
-      
-    // Update participant count
-    api.addEventListener('participantJoined', () => {
-      document.getElementById('participant-count').innerText = api.getNumberOfParticipants();
-    });
-    api.addEventListener('participantLeft', () => {
-      document.getElementById('participant-count').innerText = api.getNumberOfParticipants();
-    });
-  }
-    
-  window.onload = () => {
-    initIframeAPI();
-  }
-</script>
+        <!-- Main content -->
+        <main>
+            <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                <!-- Video container with card styling -->
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <!-- Status bar -->
+                    <div class="bg-indigo-600 px-4 py-3 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <span class="h-3 w-3 bg-red-500 rounded-full inline-block animate-pulse"></span>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-white">
+                                    Live Now
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video meeting container -->
+                    <div id="meet" class="w-full h-96 md:h-[500px] lg:h-[600px]"></div>
+
+                    <!-- Controls and info -->
+                    <div class="px-4 py-5 sm:p-6 bg-gray-50">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div>
+                                <h3 class="text-lg leading-6 font-medium text-gray-900">
+                                    {{ live_class.topic }}
+                                </h3>
+                                <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                                    Instructor: {{ live_class.teacher.username }}
+                                </p>
+                            </div>
+                            <div class="flex space-x-3">
+                                {% if request.user == live_class.teacher %}
+                                    <button type="button"
+                                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                        End Class
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Class resources section (optional) -->
+                <div class="mt-8 bg-white shadow rounded-lg">
+                    <div class="px-4 py-5 sm:p-6">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">
+                            Class Resources
+                        </h3>
+                        <div class="mt-5 border-t border-gray-200 pt-4">
+                            <ul class="divide-y divide-gray-200">
+                                <li class="py-4 flex">
+                                    <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                         viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    <div class="ml-3 text-sm">
+                                        <span class="font-medium text-gray-900">Lecture Notes</span>
+                                        <a href="#" class="ml-2 text-indigo-600 hover:text-indigo-500">Download</a>
+                                    </div>
+                                </li>
+                                <li class="py-4 flex">
+                                    <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                         viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                    </svg>
+                                    <div class="ml-3 text-sm">
+                                        <span class="font-medium text-gray-900">Recording</span>
+                                        <span class="ml-2 text-gray-500">(Available after class)</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Jitsi Meet scripts -->
+    <script
+        src="{% static 'js/external_api.js' %}"
+        integrity="sha384-WlgYeAb7l/DVKK5GwG1VayeGOeYy84ABrPUClyUBOfZvSKfbdkl/CT+Wm+7NrnDR"
+        crossorigin="anonymous"
+    ></script>
+    <script>
+        const initIframeAPI = () => {
+            const domain = "8x8.vc";
+            const options = {
+                roomName: "vpaas-magic-cookie-fb583aeece2040b4805f50d0b267e75b/{{ live_class.meeting_id }}",
+                width: "100%",
+                height: "100%",
+                parentNode: document.querySelector("#meet"),
+                {% if request.user == live_class.teacher %}
+                    jwt: "{{ live_class.generate_jwt_token }}",  // Secure authentication token
+                {% endif %}
+                userInfo: {
+                    displayName: "{{ request.user.username }}"
+                },
+                configOverwrite: {
+                    prejoinPageEnabled: false,
+                    startWithAudioMuted: true,
+                    startWithVideoMuted: false
+                },
+                interfaceConfigOverwrite: {
+                    TOOLBAR_BUTTONS: [
+                        'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+                        'fodeviceselection', 'hangup', 'profile', 'chat',
+                        'recording', 'livestreaming', 'settings', 'raisehand',
+                        'videoquality', 'filmstrip', 'feedback', 'stats', 'shortcuts',
+                        'tileview', 'select-background', 'download', 'help', 'mute-everyone',
+                        'security'
+                    ],
+                }
+            };
+
+            const api = new JitsiMeetExternalAPI(domain, options);
+
+            // Update participant count
+            api.addEventListener('participantJoined', () => {
+                document.getElementById('participant-count').innerText = api.getNumberOfParticipants();
+            });
+            api.addEventListener('participantLeft', () => {
+                document.getElementById('participant-count').innerText = api.getNumberOfParticipants();
+            });
+        }
+
+        window.onload = () => {
+            initIframeAPI();
+        }
+    </script>
 {% endblock %}

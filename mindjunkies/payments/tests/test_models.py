@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 from decouple import config
 from django.db.utils import IntegrityError
@@ -5,7 +7,7 @@ from model_bakery import baker
 
 from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course, Enrollment
-from mindjunkies.payments.models import PaymentGateway, Transaction
+from mindjunkies.payments.models import PaymentGateway, Transaction, Balance, BalanceHistory
 
 
 @pytest.mark.django_db
@@ -89,3 +91,22 @@ def test_payment_gateway_str():
     gateway = baker.make(PaymentGateway, store_id="TEST_STORE")
 
     assert str(gateway) == "TEST_STORE"
+
+
+@pytest.mark.django_db
+def test_balance_str():
+    """Test __str__() method for Balance model."""
+    user = baker.make(User, username="testuser")
+    balance = baker.make(Balance, user=user, amount=100.00)
+
+    assert str(balance) == f"{user.username} - {balance.amount}"
+
+
+@pytest.mark.django_db
+def test_balance_history_str():
+    """Test __str__() method for BalanceHistory model."""
+    user = baker.make(User, username="testuser")
+    time = datetime.datetime.now()
+    balance_history = baker.make(BalanceHistory, user=user, amount=50.00, created_at=time)
+
+    assert str(balance_history) == f"{user.username} - {balance_history.amount} - {time}"

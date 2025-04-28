@@ -1,50 +1,32 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 from django.urls import reverse_lazy
 from django.utils.timezone import now
 from django.views import View
 from django.views.generic.edit import FormView
 from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from mindjunkies.accounts.models import User
 from mindjunkies.courses.models import Course, Enrollment, CourseToken
-from mindjunkies.payments.models import Transaction, Balance, BalanceHistory
-
+from mindjunkies.payments.models import Transaction, Balance
 from mindjunkies.dashboard.forms import TeacherVerificationForm
-from mindjunkies.dashboard.mixins import CustomPermissionRequiredMixin
-from mindjunkies.dashboard.models import Certificate, TeacherVerification
+from mindjunkies.dashboard.mixins import VerifiedTeacherRequiredMixin
+from mindjunkies.dashboard.models import TeacherVerification, Certificate
 
 VIEW_COURSE_PERMISSION = "courses.view_course"
 
 
-class TeacherPermissionView(LoginRequiredMixin, View):
-    def get(self, request: HttpRequest) -> HttpResponse:
-        if request.user.is_teacher:
-            return redirect("dashboard")  # Redirect if already a teacher
+class TeacherHome(VerifiedTeacherRequiredMixin, View):
+    """
+    Dashboard for teachers - shows published courses and pending verifications.
+    """
 
-        elif TeacherVerification.objects.filter(user=request.user).exists():
-            return redirect("verification_wait")
-        return render(request, "apply_teacher.html")
-
-
-class TeacherHome(LoginRequiredMixin, View):
-    permission_required = VIEW_COURSE_PERMISSION
-
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        if not request.user.is_teacher:
-            return redirect("teacher_permission")
-        
-
+    def get(self, request, *args, **kwargs):
         courses = Course.objects.filter(teacher=request.user, status="published")
-        unverified_courses = []
-
-        tokens = CourseToken.objects.filter(teacher=request.user, status="pending")
-        for token in tokens:
-            unverified_courses.append(token.course)
+        unverified_courses = CourseToken.objects.filter(
+            teacher=request.user, status="pending"
+        ).values_list('course', flat=True)
 
         context = {
             "courses": courses,
@@ -54,57 +36,49 @@ class TeacherHome(LoginRequiredMixin, View):
         return render(request, "components/content.html", context)
 
 
-class ContentListView(LoginRequiredMixin, View):
-    permission_required = VIEW_COURSE_PERMISSION
+class ContentListView(VerifiedTeacherRequiredMixin, View):
+    """
+    Displays courses by status: published, draft, archived, balance.
+    """
 
-    def get_queryset(self):
-        import time
-        time.sleep(5)
-        return super().get_queryset()
-
-    def get(self, request: HttpRequest, status: str) -> HttpResponse:
-        if not request.user.is_teacher:
-            return redirect("teacher_permission")
-
+    def get(self, request, status: str):
         courses = Course.objects.filter(teacher=request.user, status="published")
-        context = {
-            "courses": courses,
-            "status": "Published",
-        }
+        context = {"courses": courses, "status": "Published"}
 
         if status == "draft":
             courses = Course.objects.filter(teacher=request.user, status="draft")
-            context["courses"] = courses
-            context["status"] = "Draft"
+            context.update({"courses": courses, "status": "Draft"})
             return render(request, "components/draft.html", context)
-        elif status == "archived":
+
+        if status == "archived":
             courses = Course.objects.filter(teacher=request.user, status="archived")
-            context["courses"] = courses
-            context["status"] = "Archived"
+            context.update({"courses": courses, "status": "Archived"})
             return render(request, "components/archive.html", context)
 
-        elif status == "balance":
-            balance = Balance.objects.filter(user=request.user).first()
-            if not balance:
-                balance = Balance.objects.create(user=request.user, amount=0)
+        if status == "balance":
+            balance = Balance.objects.filter(user=request.user).first() or Balance.objects.create(user=request.user,
+                                                                                                  amount=0)
             transactions = Transaction.objects.filter(user=request.user).order_by('-tran_date')
 
-            page_number = request.GET.get("page", 1)
-            paginator = Paginator(transactions, 10)  # Show 10 transactions per page
-            page_obj = paginator.get_page(page_number)
+            paginator = Paginator(transactions, 10)
+            page_obj = paginator.get_page(request.GET.get("page", 1))
 
-            context["balance"] = balance
-            context["transactions"] = page_obj
-            context["status"] = "Balance"
+            context.update({
+                "balance": balance,
+                "transactions": page_obj,
+                "status": "Balance",
+            })
             return render(request, "components/balance.html", context)
-        else:
-            return redirect("dashboard")
+
+        return redirect("dashboard")
 
 
-class EnrollmentListView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
-    permission_required = VIEW_COURSE_PERMISSION
+class EnrollmentListView(VerifiedTeacherRequiredMixin, View):
+    """
+    Lists students enrolled in a specific course.
+    """
 
-    def get(self, request: HttpRequest, slug: str) -> HttpResponse:
+    def get(self, request, slug: str):
         course = get_object_or_404(Course, slug=slug)
         enrollments = Enrollment.objects.filter(course=course)
         students = [enrollment.student for enrollment in enrollments]
@@ -116,72 +90,61 @@ class EnrollmentListView(LoginRequiredMixin, CustomPermissionRequiredMixin, View
         return render(request, "enrollmentList.html", context)
 
 
-class RemoveEnrollmentView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
-    permission_required = VIEW_COURSE_PERMISSION
+class RemoveEnrollmentView(VerifiedTeacherRequiredMixin, View):
+    """
+    Allows a teacher to remove a student from a course.
+    """
 
-    def get(
-        self, request: HttpRequest, course_slug: str, student_id: str
-    ) -> HttpResponse:
-
+    def get(self, request, course_slug: str, student_id: str):
         course = get_object_or_404(Course, slug=course_slug)
         student = get_object_or_404(User, uuid=student_id)
-        t_enrollment = get_object_or_404(Enrollment, student=student, course=course)
+        enrollment = get_object_or_404(Enrollment, student=student, course=course)
 
-        course.save()  # Unclear why saving is necessary here — can possibly be removed
+        enrollment.delete()
 
-        t_enrollment.delete()
-
-        return redirect("teacher_dashboard_enrollments", course.slug)
+        return redirect('teacher_dashboard_enrollments', course.slug)
 
 
-class TeacherVerificationView(FormView):
+class TeacherVerificationView(LoginRequiredMixin, FormView):
+    """
+    Form for users to submit verification to become a teacher.
+    """
     template_name = "teacher_verification.html"
     form_class = TeacherVerificationForm
-    success_url = reverse_lazy("home")  # Redirect after successful form submission
+    success_url = reverse_lazy("home")
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         if request.user.is_teacher:
-            redirect("dashboard")  # Redirect if already a teacher
-
-        elif TeacherVerification.objects.filter(user=request.user).exists():
-            return redirect("verification_wait")
-        return super().get(request)
+            return redirect('dashboard')
+        if TeacherVerification.objects.filter(user=request.user).exists():
+            return redirect('verification_wait')
+        return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
-        # Save Teacher Verification info
-        teacher_verification = form.save(commit=False)
-        teacher_verification.user = (
-            self.request.user
-        )  # Link the form submission to the current user
-        teacher_verification.verification_date = (
-            now()
-        )  # Store the current time of verification
+        verification = form.save(commit=False)
+        verification.user = self.request.user
+        verification.verification_date = now()
+        verification.save()
 
-        # Handle certificate files and save them
-        certificates = self.request.FILES.getlist("certificates")  # Get multiple files
+        certificates = self.request.FILES.getlist("certificates")
+        for certificate_file in certificates:
+            certificate = Certificate.objects.create(image=certificate_file)
+            verification.certificates.add(certificate)
 
-        teacher_verification.save()
-
-        for certificate in certificates:
-            cert_instance = Certificate.objects.create(image=certificate)
-            # Add the saved certificate instance to the ManyToManyField
-            teacher_verification.certificates.add(cert_instance)
-
-        messages.success(
-            self.request, "Your verification has been submitted successfully!"
-        )
-        return super().form_valid(form)  # Redirects to success_url defined above
+        messages.success(self.request, "Your verification has been submitted successfully!")
+        return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(
-            self.request,
-            "There was an error in your form submission. Please check the form and try again.",
-        )
+        messages.error(self.request, "There was an error. Please try again.")
         return super().form_invalid(form)
 
 
 class VerificationWaitView(LoginRequiredMixin, View):
-    def get(self, request: HttpRequest) -> HttpResponse:
+    """
+    Shows a waiting page after submitting teacher verification.
+    """
+
+    def get(self, request, *args, **kwargs):
         return render(
             request,
             "verification_wait.html",
@@ -189,29 +152,23 @@ class VerificationWaitView(LoginRequiredMixin, View):
         )
 
 
-class DraftView(LoginRequiredMixin, View):
-    permission_required = VIEW_COURSE_PERMISSION
+class DraftView(VerifiedTeacherRequiredMixin, View):
+    """
+    Displays draft courses for the teacher.
+    """
 
-    def get(self, request: HttpRequest) -> HttpResponse:
-        if not request.user.is_teacher:
-            return redirect("teacher_verification_form")
-
+    def get(self, request, *args, **kwargs):
         courses = Course.objects.filter(teacher=request.user, status="draft")
-        context = {
-            "courses": courses,
-        }
+        context = {"courses": courses}
         return render(request, "components/draft.html", context)
 
 
-class ArchiveView(LoginRequiredMixin, View):
-    permission_required = VIEW_COURSE_PERMISSION
+class ArchiveView(VerifiedTeacherRequiredMixin, View):
+    """
+    Displays archived courses for the teacher.
+    """
 
-    def get(self, request: HttpRequest) -> HttpResponse:
-        if not request.user.is_teacher:
-            return redirect("teacher_verification_form")
-
-        courses = Course.objects.filter(teacher=request.user, status="draft")
-        context = {
-            "courses": courses,
-        }
+    def get(self, request, *args, **kwargs):
+        courses = Course.objects.filter(teacher=request.user, status="archived")
+        context = {"courses": courses}
         return render(request, "components/archive.html", context)
