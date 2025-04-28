@@ -1,7 +1,7 @@
 from project.settings.base import *
 from decouple import config, Csv
 
-DEBUG = False
+DEBUG = True
 
 DATABASES = {
     "default": {
@@ -37,3 +37,19 @@ if not config("DB_IGNORE_SSL", default=False, cast=bool):
     DATABASES["default"]["OPTIONS"] = {
         "sslmode": "require",
     }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{config('REDIS_HOST')}:{config('REDIS_PORT', 6379)}/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': config('ELASTICSEARCH_HOST', default='localhost:9200'),
+    },
+}

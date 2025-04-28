@@ -85,6 +85,8 @@ jobs:
           echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> .env
           echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> .env
           echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> .env
+          
+          ELASTICSEARCH_HOST=${{ secrets.ELASTICSEARCH_HOST }}
         shell: bash
 
       - name: Wait for Services to be Ready

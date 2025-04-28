@@ -5,31 +5,35 @@
             <h2 class="text-4xl font-semibold text-center mb-8">Courses</h2>
 
             <div
-                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-[80%] ml-[10%] gap-8"
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-[80%] ml-[10%] gap-8"
             >
                 {% for course in courses %}
                     {% include 'home/card.html' %}
                 {% empty %}
-            </div>
+                    </div>
                     <div class="col-span-full flex flex-col items-center justify-center py-16 px-6">
                         <div class="w-24 h-24 mb-6 text-base-content/30">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-full h-full">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                 stroke="currentColor" class="w-full h-full">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                      d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
                             </svg>
                         </div>
                         <h3 class="text-xl font-semibold text-base-content mb-2">No Courses Available</h3>
                         <p class="text-base-content/60 text-center max-w-md mb-8">
-                            There are currently no courses in this category. Would you like to add a new course?
+                            There are currently no courses. Would you like to add a new course?
                         </p>
-                        <a href="" class="btn btn-primary btn-md gap-2 shadow-sm hover:shadow transition-all">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        <a href="{% url 'dashboard' %}" class="btn btn-primary btn-md gap-2 shadow-sm hover:shadow transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M12 4v16m8-8H4"/>
                             </svg>
-                            Add New Course
+                            Go to Teacher Dashboard
                         </a>
                     </div>
                 {% endfor %}
-            
+
         </div>
     </section>
 

@@ -3,99 +3,217 @@
 {% block head_title %}Search Results{% endblock head_title %}
 
 {% block main_content %}
-{% load static %}
+    {% load static %}
 
-<div class="mb-8 ml-[10%]">
-    <h1 class="text-4xl font-bold text-gray-800">
-        {{ total_results }} result{{ total_results|pluralize }} for "{{ query }}"
-    </h1>
-</div>
+    <!-- Hero Section -->
+    <div class="hero bg-gradient-to-r from-base-200 to-base-300 py-2 relative overflow-hidden">
+        <div class="hero-content flex-col text-center max-w-xl z-10">
+            <div class="badge badge-primary badge-outline px-4 font-medium">Search Results</div>
+            <p class="text-xl">for "<span class="text-secondary font-bold">{{ query }}</span>"</p>
 
-<div class="flex flex-col md:flex-row gap-6">
-    <!-- You can add a filter sidebar here in future -->
-
-    <div class="flex-1 ml-[10%]">
-        <div class="flex justify-between items-center mb-4">
-            <p class="text-gray-700">{{ total_results }} result{{ total_results|pluralize }}</p>
-            <form method="get">
-                <select name="sort" onchange="this.form.submit()" class="border border-gray-300 rounded px-2 py-1 text-sm">
-                    <option value="">Sort by</option>
-                    <option value="rating" {% if request.GET.sort == 'rating' %}selected{% endif %}>Highest Rated</option>
-                    <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
-                    <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
-                </select>
-            </form>
+<div class="container mx-auto px-4 min-h-screen">
+  <div class="flex flex-col lg:flex-row gap-8">
+    <!-- Filter Sidebar -->
+    
+    <!-- Results Section -->
+    <div class="flex-1">
+      <div class="flex justify-between items-center mb-6">
+      
+        <div class="dropdown dropdown-end">
+          <form method="get" class="flex items-center">
+            <select name="sort" onchange="this.form.submit()" class="select select-bordered select-sm">
+              <option value="">Sort by</option>
+              <option value="rating" {% if request.GET.sort == 'rating' %}selected{% endif %}>Highest Rated</option>
+              <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+              <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+            </select>
+          </form>
         </div>
-
-        {% if courses %}
-        <div class="space-y-6 w-[80%]">
-            {% for course in courses %}
-            <div class="flex flex-col md:flex-row border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-md transition mb-12">
-                <div class="md:w-64 flex-shrink-0">
-                    <img src="{{ course.course.course_image.url }}" alt="{{ course.title }}" class="w-full h-full object-cover">
-                </div>
-                <div class="flex-1 p-4">
-                    <h2 class="text-xl font-bold text-gray-900 mb-2">
-                        {{ course.highlighted_title }}
-                    </h2>
-                    <p class="text-gray-700 mb-2">
-                        {{ course.course.short_introduction }}
-                    </p>
-                    <p class="text-sm text-gray-600 mb-1">
-                        {{ course.course.teacher }}
-                    </p>
-                    <div class="flex items-center mb-2">
-                        <span class="text-yellow-500 font-bold mr-1">{{ course.course.rating }}</span>
-                        <div class="flex">
-                            {% for i in "12345"|make_list %}
-                                {% if forloop.counter <= course.rating|floatformat:"0" %}
-                                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="..."/></svg>
-                                {% elif forloop.counter == course.rating|add:"0.5"|floatformat:"0" and course.rating|floatformat:"-1" != course.rating|floatformat:"0" %}
-                                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="..."/></svg>
-                                {% else %}
-                                    <svg class="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path d="..."/></svg>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                        <span class="ml-1 text-sm text-gray-600">({{ course.course.reviews }})</span>
-                    </div>
-                    <p class="text-sm text-gray-600">{{ course.total_hours }} hours • {{ course.course.lectures }} lectures • {{ course.course.level }}</p>
-                    {% if course.bestseller %}
-                    <span class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded mt-2">Bestseller</span>
-                    {% endif %}
-                </div>
-                <div class="p-4 flex items-start justify-center">
-                    <span class="text-2xl font-bold">${{ course.course.price }}</span>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-
-        <!-- Pagination -->
-        {% if page_obj.has_other_pages %}
-        <div class="mt-6 flex justify-center space-x-2">
-            {% if page_obj.has_previous %}
-            <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}" class="px-3 py-1 bg-gray-200 rounded">Previous</a>
-            {% endif %}
-
-            {% for num in page_obj.paginator.page_range %}
-                {% if page_obj.number == num %}
-                    <span class="px-3 py-1 bg-blue-500 text-white rounded">{{ num }}</span>
-                {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
-                    <a href="?q={{ query }}&page={{ num }}" class="px-3 py-1 bg-gray-100 rounded">{{ num }}</a>
-                {% endif %}
-            {% endfor %}
-
-            {% if page_obj.has_next %}
-            <a href="?q={{ query }}&page={{ page_obj.next_page_number }}" class="px-3 py-1 bg-gray-200 rounded">Next</a>
-            {% endif %}
-        </div>
-        {% endif %}
-
-        {% else %}
-        <p class="text-gray-600">No courses found for "{{ query }}". Try adjusting your search.</p>
-        {% endif %}
     </div>
-</div>
 
+    <div class="container mx-auto px-4 py-8 min-h-screen">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Results Section -->
+            <div class="flex-1">
+                {% if courses %}
+                    <div class="space-y-6">
+                        {% for course in courses %}
+                            <div
+                                class="card bg-base-100 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                                <div class="flex flex-col md:flex-row">
+                                    <!-- Course Image -->
+                                    <figure class="md:w-64 h-48 md:h-auto relative">
+                                        <img src="{{ course.course.course_image.url }}" alt="{{ course.title }}"
+                                             class="h-full w-full object-cover"/>
+                                        {% if course.bestseller %}
+                                            <div class="absolute top-2 left-2">
+                                                <div class="badge badge-warning font-medium">Bestseller</div>
+                                            </div>
+                                        {% endif %}
+                                    </figure>
+
+                                    <!-- Course Info -->
+                                    <div class="card-body p-6">
+                                        <div class="flex flex-col md:flex-row justify-between md:items-start gap-4">
+                                            <div class="flex-1">
+                                                <div class="flex items-center gap-2 mb-1">
+                                                    <span
+                                                        class="badge badge-ghost badge-sm">{{ course.course.level }}</span>
+                                                    <span class="badge badge-outline badge-sm">Updated Recently</span>
+                                                </div>
+
+                                                <h2 class="card-title text-xl text-primary font-bold mb-2">
+                                                    {{ course.highlighted_title }}
+                                                </h2>
+
+                                                <p class="text-base-content opacity-90 mb-3 line-clamp-2">
+                                                    {{ course.course.short_introduction }}
+                                                </p>
+
+                                                <div class="flex items-center mb-2">
+                                                    <div class="avatar mr-2">
+                                                        <div
+                                                            class="w-6 rounded-full ring ring-primary ring-offset-base-100 ring-offset-1">
+                                                            <img src="{% static 'images/default-avatar.png' %}"
+                                                                 alt="Teacher"/>
+                                                        </div>
+                                                    </div>
+                                                    <span class="text-sm">{{ course.course.teacher }}</span>
+                                                </div>
+
+                                                <div class="flex flex-wrap items-center gap-3 mb-2">
+                                                    <div class="flex items-center">
+                                                        <span
+                                                            class="font-bold text-warning mr-1">{{ course.course.rating }}</span>
+                                                        <div class="rating rating-sm">
+                                                            {% for i in "12345"|make_list %}
+                                                                {% if forloop.counter <= course.rating|floatformat:"0" %}
+                                                                    <input type="radio"
+                                                                           class="mask mask-star-2 bg-warning"
+                                                                           checked/>
+                                                                {% elif forloop.counter == course.rating|add:"0.5"|floatformat:"0" and course.rating|floatformat:"-1" != course.rating|floatformat:"0" %}
+                                                                    <input type="radio"
+                                                                           class="mask mask-star-2 bg-warning"
+                                                                           checked/>
+                                                                {% else %}
+                                                                    <input type="radio"
+                                                                           class="mask mask-star-2 bg-base-300"
+                                                                           checked/>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </div>
+                                                        <span
+                                                            class="ml-1 text-xs opacity-75">({{ course.course.reviews }})</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="flex flex-col items-end gap-3">
+                                                <div class="text-2xl font-bold text-secondary">
+                                                    ${{ course.course.price }}</div>
+                                                {% if course.course.original_price %}
+                                                    <div class="text-sm line-through opacity-60">
+                                                        ${{ course.course.original_price }}</div>
+                                                {% endif %}
+
+                                                <div class="flex flex-col gap-2 mt-2 w-full sm:w-auto">
+                                                    <button class="btn btn-sm btn-primary">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1"
+                                                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                  stroke-width="2"
+                                                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                  stroke-width="2"
+                                                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                                        </svg>
+                                                        View Course
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if page_obj.has_other_pages %}
+                        <div class="mt-8 flex justify-center">
+                            <div class="join">
+                                {% if page_obj.has_previous %}
+                                    <a href="?q={{ query }}&page=
+
+                                        {{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'q' and key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                                       class="join-item btn">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                             viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M15 19l-7-7 7-7"/>
+                                        </svg>
+                                        Previous
+                                    </a>
+                                {% else %}
+                                    <button class="join-item btn btn-disabled">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                             viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M15 19l-7-7 7-7"/>
+                                        </svg>
+                                        Previous
+                                    </button>
+                                {% endif %}
+
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == num %}
+                                        <button class="join-item btn btn-active">{{ num }}</button>
+                                    {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                                        <a href="?q={{ query }}&page=
+
+
+
+
+
+                                            {{ num }}{% for key, value in request.GET.items %}{% if key != 'q' and key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                                           class="join-item btn">{{ num }}</a>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if page_obj.has_next %}
+                                    <a href="?q={{ query }}&page=
+
+
+
+
+
+                                        {{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'q' and key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                                       class="join-item btn">
+                                        Next
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                             viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                    </a>
+                                {% else %}
+                                    <button class="join-item btn btn-disabled">
+                                        Next
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                             viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                {% else %}
+                    {% include 'search404.html' %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock main_content %}

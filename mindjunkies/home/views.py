@@ -13,8 +13,6 @@ class HomeView(View):
         categories = CourseCategory.objects.filter(parent__isnull=True).prefetch_related("children")
 
         active_category_slug = request.GET.get("category")
-        active_category = None
-
         if active_category_slug:
             active_category = CourseCategory.objects.prefetch_related("children").get(
                 slug=active_category_slug, parent__isnull=True
@@ -28,20 +26,20 @@ class HomeView(View):
         if request.user.is_authenticated:
             enrollments = Enrollment.objects.filter(
                 student=request.user, status="active"
-            ).prefetch_related("course")
+            ).prefetch_related("course").filter(status="published")
 
-            enrolled_courses = [enrollment.course for enrollment in enrollments]
+            enrolled_courses = [enrollment.course for enrollment in enrollments][:4]
             teacher_courses = Course.objects.filter(teacher=request.user)
 
         new_courses = Course.objects.exclude(
             id__in=[course.id for course in enrolled_courses]
-        ).order_by("-created_at").filter(status="published")
+        ).order_by("-created_at").filter(status="published", verified=True)[:4]
 
         courses = Course.objects.exclude(
             id__in=new_courses.values_list("id", flat=True)
-        ).exclude(id__in=[course.id for course in enrolled_courses])
+        ).exclude(id__in=[course.id for course in enrolled_courses]).filter(status="published", verified=True)[:4]
 
-        featured_courses = Course.objects.filter(status="published")
+        featured_courses = Course.objects.filter(status="published", verified=True)
 
         context = {
             "new_courses": new_courses,

@@ -6,7 +6,8 @@
                 <a href="{% url 'category_courses' subcategory.slug %}"
                    class="flex flex-col items-center bg-white rounded-full px-5 py-3 min-w-max hover:bg-gray-100 transition-colors shadow-sm">
                     <span class="text-sm font-medium text-gray-800">{{ subcategory.name }}</span>
-                    <span class="text-xs text-gray-500 mt-0.5">{{ subcategory.learner_count|default:"0" }}+ learners</span>
+                    <span class="text-xs text-gray-500 mt-0.5">{{ subcategory.courses.count|default:"0" }}+ Courses</span>
+                  
                 </a>
             {% endfor %}
 

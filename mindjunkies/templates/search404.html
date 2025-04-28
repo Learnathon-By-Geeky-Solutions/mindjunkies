@@ -1,0 +1,26 @@
+<div class="flex flex-col items-center justify-center py-12 text-center">
+    <div class="w-32 h-32 bg-base-200 rounded-full flex items-center justify-center mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-base-content/50" fill="none" viewBox="0 0 24 24"
+             stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+    </div>
+    <h2 class="text-2xl font-bold mb-2">No results found</h2>
+    <p class="text-base-content/70 mb-6 max-w-md">We couldn't find any courses matching your search criteria. Try
+        adjusting your filters or search terms.</p>
+
+    <div class="space-y-4 max-w-md w-full">
+        <h3 class="font-semibold">Suggestions:</h3>
+        <ul class="list-disc list-inside text-left space-y-2">
+            <li>Check the spelling of your search terms</li>
+            <li>Try using more general keywords</li>
+            <li>Remove some filters to broaden your search</li>
+            <li>Try searching for related topics</li>
+        </ul>
+    </div>
+
+    <div class="mt-8">
+        <a href="{% url 'course_list' %}" class="btn btn-primary">Browse All Courses</a>
+    </div>
+</div>

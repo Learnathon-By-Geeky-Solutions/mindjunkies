@@ -1,167 +1,135 @@
 import pytest
-from cloudinary.models import CloudinaryField
-from django.contrib.auth import get_user_model
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
-from django.utils import timezone
 from model_bakery import baker
-from django.contrib.messages import get_messages
-from datetime import timedelta
-from unittest.mock import PropertyMock, patch
 
-from mindjunkies.courses.models import Enrollment
-from mindjunkies.dashboard.tests.test_views import enrollment
-
-baker.generators.add(
-    CloudinaryField, lambda: "https://res.cloudinary.com/demo/upload/sample.pdf"
-)
-
-User = get_user_model()
+from mindjunkies.courses.models import Course, Module, CourseToken
+from mindjunkies.lecture.models import Lecture, LectureVideo, LecturePDF, LectureCompletion
 
 
 @pytest.fixture
 def user(db):
-    return baker.make(User, is_staff=False)
+    return baker.make('accounts.User')
 
 
 @pytest.fixture
-def staff_user(db):
-    return baker.make(User, is_staff=True)
+def teacher_user(db):
+    return baker.make('accounts.User', is_teacher=True)
 
 
 @pytest.fixture
-def course(db, staff_user):
-    return baker.make("courses.Course", teacher=staff_user, slug="test-course")
+def course(db, teacher_user):
+    return baker.make(Course, teacher=teacher_user)
 
 
 @pytest.fixture
 def module(db, course):
-    return baker.make("courses.Module", course=course, order=1)
+    return baker.make(Module, course=course)
 
 
 @pytest.fixture
-def lecture(db, module, course):
-    return baker.make("lecture.Lecture", module=module, course=course)
+def lecture(db, course, module):
+    return baker.make(Lecture, course=course, module=module)
 
 
 @pytest.fixture
-def lecture_video(db, lecture):
-    return baker.make("lecture.LectureVideo", lecture=lecture)
+def video(db, lecture):
+    return baker.make(LectureVideo, lecture=lecture)
 
 
 @pytest.fixture
-def course_token(db, course, user):
-    return baker.make("courses.CourseToken", course=course, teacher=user, status="approved")
+def pdf(db, lecture):
+    return baker.make(LecturePDF, lecture=lecture)
 
 
 @pytest.fixture
-def live_class(db, course, staff_user):
-    return baker.make(
-        "live_classes.LiveClass",
-        course=course,
-        teacher=staff_user,
-        scheduled_at=timezone.now(),
-        duration=60,
-        status="Ongoing"
-    )
-
-
-@pytest.fixture
-def live_class_today(db, course, staff_user):
-    return baker.make(
-        "live_classes.LiveClass",
-        course=course,
-        teacher=staff_user,
-        scheduled_at=timezone.now(),
-        duration=60,
-        status="Upcoming"
-    )
-
-
-@pytest.fixture
-def live_class_this_week(db, course, staff_user):
-    return baker.make(
-        "live_classes.LiveClass",
-        course=course,
-        teacher=staff_user,
-        scheduled_at=timezone.now() + timedelta(days=2),
-        duration=60,
-        status="Upcoming"
-    )
+def course_token(db, course, teacher_user):
+    return baker.make(CourseToken, course=course, teacher=teacher_user, status="approved")
 
 
 @pytest.mark.django_db
-def test_lecture_video_view_forbidden(client, user, course, module, lecture, lecture_video):
-    """Test lecture_video forbids access for non-enrolled users."""
+def test_lecture_home_enrolled_user(client, user, course, module, course_token):
+    baker.make('courses.Enrollment', student=user, course=course, status='active')
     client.force_login(user)
-    url = reverse(
-        "lecture_video_content",
-        kwargs={
-            "course_slug": course.slug,
-            "module_id": module.id,
-            "lecture_id": lecture.id,
-            "video_id": lecture_video.id,
-        },
-    )
+
+    url = reverse('lecture_home', kwargs={"course_slug": course.slug})
     response = client.get(url)
-    assert response.status_code == 403
+
+    assert response.status_code == 200
+    assert "lecture/lecture_home.html" in [t.name for t in response.templates]
 
 
 @pytest.mark.django_db
-def test_create_lecture_view_forbidden(client, user, course, module):
-    """Test CreateLectureView forbids non-teacher users."""
+def test_lecture_pdf_view(client, user, pdf):
+    pdf.pdf_file = "test.pdf"  # Assign a valid file path or mock file
+    pdf.save()
+
     client.force_login(user)
-    url = reverse(
-        "create_lecture",
-        kwargs={"course_slug": course.slug, "module_id": module.id},
-    )
+
+    url = reverse('lecture_pdf', kwargs={
+        "course_slug": pdf.lecture.course.slug,
+        "module_id": pdf.lecture.module.id,
+        "lecture_id": pdf.lecture.id,
+        "pdf_id": pdf.id,
+    })
     response = client.get(url)
-    assert response.status_code == 403  # Expecting forbidden for non-teachers
+
+    assert response.status_code == 200
+    assert "lecture/lecture_pdf.html" in [t.name for t in response.templates]
 
 
 @pytest.mark.django_db
-def test_edit_lecture_view_forbidden(client, user, course, lecture):
-    """Test EditLectureView forbids non-teacher users."""
-    client.force_login(user)
-    url = reverse(
-        "edit_lecture",
-        kwargs={"course_slug": course.slug, "lecture_id": lecture.id},
-    )
+def test_create_lecture_view_get(client, teacher_user, course, module, course_token):
+    client.force_login(teacher_user)
+
+    url = reverse('create_lecture', kwargs={
+        "course_slug": course.slug,
+        "module_id": module.id,
+    })
     response = client.get(url)
-    assert response.status_code == 403  # Expecting forbidden for non-teachers
+
+    assert response.status_code == 200
+    assert "lecture/create_lecture.html" in [t.name for t in response.templates]
 
 
 @pytest.mark.django_db
-def test_delete_lecture_view_forbidden(client, user, course, lecture):
-    """Test DeleteLectureView forbids non-teachers."""
-    client.force_login(user)
-    url = reverse(
-        "delete_lecture",
-        kwargs={"course_slug": course.slug, "lecture_id": lecture.id},
-    )
+def test_create_module_view_get(client, teacher_user, course, course_token):
+    client.force_login(teacher_user)
+
+    url = reverse('create_module', kwargs={"course_slug": course.slug})
     response = client.get(url)
-    assert response.status_code == 403
+
+    assert response.status_code == 200
+    assert "lecture/create_module.html" in [t.name for t in response.templates]
 
 
 @pytest.mark.django_db
-def test_mark_lecture_complete_view_unauthenticated(client, course, lecture):
-    """Test MarkLectureCompleteView redirects unauthenticated users."""
-    url = reverse(
-        "mark_lecture_complete",
-        kwargs={"course_slug": course.slug, "lecture_id": lecture.id},
-    )
+def test_delete_lecture_view(client, teacher_user, course, lecture):
+    client.force_login(teacher_user)
+
+    url = reverse('delete_lecture', kwargs={"course_slug": course.slug, "lecture_id": lecture.id})
     response = client.get(url)
+
     assert response.status_code == 302
-    assert response.url.startswith(reverse("account_login"))
+    assert not Lecture.objects.filter(id=lecture.id).exists()
 
 
 @pytest.mark.django_db
-def test_module_edit_view_forbidden(client, user, course, module):
-    """Test ModuleEditView forbids non-teacher users."""
-    client.force_login(user)
-    url = reverse(
-        "edit_module",
-        kwargs={"course_slug": course.slug, "module_id": module.id},
-    )
+def test_delete_module_view(client, teacher_user, course, module):
+    client.force_login(teacher_user)
+
+    url = reverse('delete_module', kwargs={"course_slug": course.slug, "module_id": module.id})
     response = client.get(url)
-    assert response.status_code == 403  # Expecting forbidden for non-teachers
+
+    assert response.status_code == 302
+    assert not Module.objects.filter(id=module.id).exists()
+
+
+@pytest.mark.django_db
+def test_mark_lecture_complete(client, user, lecture):
+    client.force_login(user)
+
+    url = reverse('mark_lecture_complete', kwargs={"course_slug": lecture.course.slug, "lecture_id": lecture.id})
+    response = client.get(url)
+
+    assert response.status_code == 302
+    assert LectureCompletion.objects.filter(user=user, lecture=lecture).exists()

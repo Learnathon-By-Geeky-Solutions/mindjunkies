@@ -169,6 +169,8 @@ jobs:
           REDIS_PORT=${{ secrets.REDIS_PORT }}
           REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
           
+          ELASTICSEARCH_HOST=${{ secrets.ELASTICSEARCH_HOST }}
+          
           EOF
           echo "Updating Kubernetes Secret..."
           kubectl delete secret django-mindjunkies-prod-env --ignore-not-found

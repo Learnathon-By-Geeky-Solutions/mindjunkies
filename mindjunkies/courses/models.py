@@ -75,6 +75,8 @@ class Course(BaseModel):
     # Tags for the course
     tags = TaggableManager(blank=True)
 
+    verified = models.BooleanField(default=False)
+
     def __str__(self):
         return self.title
 

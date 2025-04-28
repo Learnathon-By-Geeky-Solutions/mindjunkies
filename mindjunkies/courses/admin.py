@@ -16,6 +16,7 @@ class CourseAdmin(ModelAdmin):
         "published_on",
         "paid_course",
         "course_price",
+        "verified",
         "get_tags",
     )
 
@@ -48,6 +49,25 @@ class CourseTokenAdmin(ModelAdmin):
     model = CourseToken
     list_display = ("teacher", "course", "status")
     list_filter = ("course",)
+    actions = ["approve_course", "disapprove_course"]
+
+    def approve_course(self, request, queryset):
+        for obj in queryset:
+            obj.status = 'approved'
+            obj.save()
+            obj.course.verified = True
+            obj.course.save()
+
+    approve_course.short_description = "Approve selected Course"
+
+    def disapprove_course(self, request, queryset):
+        for obj in queryset:
+            obj.status = 'pending'
+            obj.save()
+            obj.course.verified = False
+            obj.course.save()
+
+    disapprove_course.short_description = "Disapprove selected Course"
 
 
 @admin.register(LastVisitedCourse)
