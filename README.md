@@ -1,33 +1,20 @@
+
 <div align="center">
 
-  <img src="docs/resources/logo.png" alt="logo" width="200" height="auto" />
-  <h1>BiddyaPeeth</h1>
+# 🚀 BiddyaPeeth
 
-  <p>
-    A modern Learning Management System (LMS) built with Django and Tailwind CSS.
-  </p>
+<h3>Modern EdTech Platform built with Django and Tailwind CSS</h3>
 
+<img src="docs/resources/logo.png" alt="BiddyaPeeth Logo" width="200" height="auto">
 
-<!-- Badges -->
-<p>
-  <a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/Learnathon-By-Geeky-Solutions/mindjunkies" alt="contributors" />
-  </a>
-  <a href="">
-    <img src="https://img.shields.io/github/last-commit/Learnathon-By-Geeky-Solutions/mindjunkies" alt="last update" />
-  </a>
-  <a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/network/members">
-    <img src="https://img.shields.io/github/forks/Learnathon-By-Geeky-Solutions/mindjunkies" alt="forks" />
-  </a>
-  <a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/stargazers">
-    <img src="https://img.shields.io/github/stars/Learnathon-By-Geeky-Solutions/mindjunkies" alt="stars" />
-  </a>
-  <a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/issues/">
-    <img src="https://img.shields.io/github/issues/Learnathon-By-Geeky-Solutions/mindjunkies" alt="open issues" />
-  </a>
-  <a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/Learnathon-By-Geeky-Solutions/mindjunkies.svg" alt="license" />
-  </a>
+### Explore Our Documentation, Demo, and Resources!
+
+[![View Demo](https://img.shields.io/badge/View-Demo-22c55e?style=for-the-badge&logo=vercel&logoColor=white)](https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/)
+[![Documentation](https://img.shields.io/badge/View-Docs-3b82f6?style=for-the-badge&logo=readthedocs&logoColor=white)](https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/tree/main/docs)
+[![Contributing](https://img.shields.io/badge/Contribute-Guide-8b5cf6?style=for-the-badge&logo=github&logoColor=white)](docs/CONTRIBUTING.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+
+### Tech Stack
 
 <p align="center">
   <a href="https://www.djangoproject.com/">
@@ -67,140 +54,160 @@
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="MIT License" />
   </a>
 </p>
-
-</p>
-
-<h4>
-    <a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/">View Demo</a>
-  <span> · </span>
-    <a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/blob/main/docs">Documentation</a>
-  <span> · </span>
-    <a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/issues/">Report Bug</a>
-  <span> · </span>
-    <a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/issues/">Request Feature</a>
-  </h4>
 </div>
 
 ---
 
-# Team MindJunkies
+# 🔎 About BiddyaPeeth
 
-**BiddyaPeeth** is a modern Learning Management System (LMS) built with Django and Tailwind CSS. It offers a seamless platform for managing courses, users, assignments, and learning content efficiently. Designed to empower teachers and students, MindJunkies focuses on scalability, user experience, and modern web standards.
+**BiddyaPeeth** is an advanced, next-generation **EdTech platform** built with **Django** and **Tailwind CSS**, designed to revolutionize digital learning experiences.
 
-# 📋 Table of Contents
+It offers a **modern, scalable**, and **student-centric** environment for online education, empowering both learners and instructors with seamless tools for engagement and management.
 
-- [Team MindJunkies](#team-mindjunkies)
-- [Team Members](#team-members)
-- [Mentor](#mentor)
-- [Project Description](#project-description)
-- [Features](#features)
-- [Development Guidelines](#development-guidelines)
-- [🏗 System Architecture](#-system-architecture)
-- [📂 Project Structure](#-project-structure)
-- [Resources](#resources)
-- [Tools and Technologies](#tools-and-technologies)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Local Development Setup](#local-development-setup)
-  - [Using Docker](#using-docker)
-- [🤝 Contributing](#-contributing)
-- [License](#license)
+### 🚀 Key Highlights
 
-
-## Team Members
-
-- [shafayetsadi](https://github.com/Shafayetsadi/)  (Team Leader)
-- [md-tonmoy007](https://github.com/md-tonmoy007)
-- [SaimaLearnathon](https://github.com/SaimaLearnathon)
-
-## Mentor
-
-- [Md. Redwanuzzaman](https://github.com/redwanuzzaman)
-
-## Project Description
-
-BiddyaPeeth is a comprehensive Learning Management System (LMS) designed to facilitate online learning and course management. The platform allows teachers to create, manage, and publish courses while enabling students to enroll, learn, and track their progress. With features like live video conferencing, assignment submission, and role-based dashboards, BiddyaPeeth aims to provide a seamless and engaging learning experience.
-
-
-## Features
-
-- User Authentication (Registration, Login, Social Auth, Email Verification)
-- Role-based Access Control (Teachers, Students, Moderators)
-- Course Management (Create, Join, Edit)
-- Markdown-based Content Writing for Teachers
-- Live Video Conferencing with Chat, Polls, and Screen Sharing
-- Assignment Submission and Evaluation
-- Payment Integration for Premium Features
-- Responsive Design with Tailwind CSS
+- **Role-based dashboards** tailored for students, teachers, and administrators.
+- **Comprehensive course management** — from course creation to enrollment and content delivery.
+- **Live virtual classrooms** with real-time video conferencing, chat, polls, and screen sharing.
+- **Integrated payment solutions** enabling access to premium educational services.
+- **Dynamic community forums** for collaborative learning and peer interactions.
+- **Scalable and mobile-friendly** design for accessibility across devices.
 
 ---
 
-## Development Guidelines
+### 🔥 Why BiddyaPeeth?
 
-1. Create feature branches:
-    ```sh
-    git checkout -b feature/your-feature-name
-    ```
-2. Commit Changes:
-    - Keep commits small and focused.
-    - Use clear and descriptive commit messages.
-    ```sh
-    git add .
-    git commit -m "Add feature: [feature-name]"
-    ```
-3. Push Your Changes:
-    ```sh
-    git push origin feature/your-feature-name
-    ```
-4. Submit a Pull Request:
-    - Open a Pull Request against the `develop` branch.
-    - Add a clear title and description.
-    - Mention the issue number (if any) in the description.
-    - Assign the PR to the appropriate reviewer.
+Traditional education platforms often suffer from:
+❌ Poor user experience.
+❌ Limited real-time interaction capabilities.
+❌ Lack of modern design and scalability.
 
-----------
+**BiddyaPeeth solves these challenges** by offering:
+🔹 Seamless course and user management.
+🔹 A modern Tailwind CSS frontend.
+🔹 Fast deployment with Docker and Kubernetes-ready architecture.
+🔹 Real-time communication tools to foster active learning environments.
+
+### 🌍 Market Opportunity
+
+- The global EdTech market is projected to reach **$404 billion** by 2025.
+- Increasing demand for **virtual education** and **interactive learning tools** worldwide.
+
+---
+## 📋 Table of Contents
+- [Team](#-team)
+- [Project Overview](#-project-overview)
+- [Live Demo](#-live-demo)
+- [Key Features](#-key-features)
+- [System Architecture](#-system-architecture)
+- [Database Design](#-database-design)
+- [Tech Stack](#-tech-stack)
+- [Development Logs](#-development-logs)
+- [Getting Started](#-getting-started)
+- [Development Guidelines](#-development-guidelines)
+- [Testing](#-testing)
+- [Resources](#-resources)
+- [Contributing](#-contributing)
+- [License](#-license)
+
+
+
+<div align="center">
+
+
+# 🖌️ Team MindJunkies
+
+<table style="width: 90%;">
+<tr>
+<td align="center" width="25%">
+<h4>Shafayet Sadi</h4>
+<img src="https://img.shields.io/badge/Team%20Leader-2D9CDB?style=for-the-badge">
+<br><a href="https://github.com/Shafayetsadi"><img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white"></a>
+</td>
+<td align="center" width="25%">
+<h4>Md. Tonmoy</h4>
+<img src="https://img.shields.io/badge/FullStack%20Developer-F2C94C?style=for-the-badge">
+<br><a href="https://github.com/md-tonmoy007"><img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white"></a>
+</td>
+<td align="center" width="25%">
+<h4>Farhana Islam Saima</h4>
+<img src="https://img.shields.io/badge/FullStack%20Developer-F2C94C?style=for-the-badge">
+<br><a href="https://github.com/SaimaLearnathon"><img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white"></a>
+</td>
+<td align="center" width="25%">
+<h4>Md. Redwanuzzaman</h4>
+<img src="https://img.shields.io/badge/Mentor-F2C94C?style=for-the-badge">
+<br><a href="https://github.com/redwanuzzaman"><img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white"></a>
+</td>
+</tr>
+</table>
+
+</div>
+
+---
 ## 🏗 System Architecture
+### Architecture Diagram
+![Architecture Diagram](docs/resources/architecture-diagram.jpg)
 
-> BiddyaPeeth follows a modular Django architecture with clear separation of concerns across different apps:
+### 📌 Modules Overview
 
-| App Name          | Purpose                                      |
-|-------------------|----------------------------------------------|
-| `accounts`        | User authentication and profile management  |
-| `courses`         | Course creation and enrollment management   |
-| `dashboard`       | Role-based dashboards                       |
-| `forums`          | Discussion forums                           |
-| `lecture`         | Lecture and assignment management           |
-| `live_classes`    | Live video conferencing integration         |
-| `payments`        | Payment and billing system                  |
-| `home`            | Landing and general pages                   |
+| Module         | Purpose                                  |
+|----------------|------------------------------------------|
+| Accounts       | User Authentication and Profile          |
+| Courses        | Course Creation, Enrollment              |
+| Dashboard      | Role-Based Dashboards (Student, Teacher) |
+| Forums         | Community Discussions                   |
+| Lecture        | Lecture and Assignment Management       |
+| Live Classes   | Live Video Integration                   |
+| Payments       | Payment and Billing                      |
+### System Flow Diagram
+![System Flow Diagram](docs/resources/flow-diagram.png)
+#### Operational Flow Explained
 
----
+1. **Authentication** 🔑  
+   - User logs in or registers.
+   - Role check (Student / Teacher / Admin).
 
-##  📂 Project Structure
+2. **Student Flow** 🎓  
+   - Browse and view courses.
+   - If not enrolled ➔ Payment ➔ Enrollment.
+   - Access course content (Lectures, Materials, Assignments, Live Classes).
+   - Participate in community forums (Post, Reply).
 
-```
-├── mindjunkies/             # Django apps (accounts, courses, forums, etc.)
-│   ├── accounts/
-│   ├── courses/
-│   ├── dashboard/
-│   ├── forums/
-│   ├── lecture/
-│   ├── live_classes/
-│   ├── payments/
-│   ├── static/              # Static files (CSS, JS, Images)
-│   └── templates/           # HTML templates
-├── project/                 # Django project settings
-│   ├── settings/
-│   └── urls.py
-├── config/                  # JWT and token management
-├── docs/                    # Documentation and guides
-├── k8s/                     # Kubernetes deployment files
-├── scripts/                 # Management scripts (e.g., populate data)
-├── tests/                   # Test cases
-├── Dockerfile
-├── docker-compose.yml
-├── manage.py
-└── README.md
+3. **Teacher Flow** 👩‍🏫  
+   - Manage content (Create/Edit Courses, Upload Lectures, Create Assignments).
+   - Schedule and conduct live classes.
+   - Grade student submissions.
+   - Use live virtual classroom (Video, Chat, Screen Share, Polls).
+
+4. **Admin Flow** 🛠️  
+   - Manage users, approve courses, handle payments, and adjust site settings.
+   - Moderate forum activity.
+
+5. **Live Interaction & Assessment** 📡  
+   - Real-time classes and course completion.
+
+### 📂 Project Structure
+
+```bash
+mindjunkies/
+├── accounts/
+├── courses/
+├── dashboard/
+├── forums/
+├── lecture/
+├── live_classes/
+├── payments/
+├── static/
+├── templates/
+project/
+├── settings/
+└── urls.py
+config/  # JWT and Tokens
+k8s/     # Kubernetes Deployment Files
+docs/    # Documentation
+Dockerfile
+manage.py
 
 ```
 
@@ -213,16 +220,6 @@ BiddyaPeeth is a comprehensive Learning Management System (LMS) designed to faci
 - [Development Setup](docs/guides/getting-started.md)
 - [Contributing Guidelines](docs/CONTRIBUTING.md)
 
-----------
-
-## Tools and Technologies
-
-- Django
-- Tailwind CSS
-- DaisyUI
-- SQLite (Development), PostgreSQL (Production)
-- AWS (Deployment)
-- Git and GitHub
 
 ----------
 
