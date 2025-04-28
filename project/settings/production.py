@@ -50,6 +50,6 @@ CACHES = {
 
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': os.getenv('ELASTICSEARCH_HOST', 'localhost:9200')
+        'hosts': config('ELASTICSEARCH_HOST', default='localhost:9200'),
     },
 }
