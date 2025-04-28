@@ -164,7 +164,7 @@ jobs:
           CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
           CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
 
-          TEST_PASS=${{ secrets.TEST_PASS }}" >> .env
+          TEST_PASS=${{ secrets.TEST_PASS }}
           REDIS_HOST=${{ secrets.REDIS_HOST }}
           REDIS_PORT=${{ secrets.REDIS_PORT }}
           REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}

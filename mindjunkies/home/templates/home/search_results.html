@@ -6,35 +6,46 @@
     {% load static %}
 
     <!-- Hero Section -->
-    <div class="hero bg-gradient-to-r from-base-200 to-base-300 py-2 relative overflow-hidden">
-        <div class="hero-content flex-col text-center max-w-xl z-10">
-            <div class="badge badge-primary badge-outline px-4 font-medium">Search Results</div>
-            <p class="text-xl">for "<span class="text-secondary font-bold">{{ query }}</span>"</p>
-
-<div class="container mx-auto px-4 min-h-screen">
-  <div class="flex flex-col lg:flex-row gap-8">
-    <!-- Filter Sidebar -->
-    
-    <!-- Results Section -->
-    <div class="flex-1">
-      <div class="flex justify-between items-center mb-6">
-      
-        <div class="dropdown dropdown-end">
-          <form method="get" class="flex items-center">
-            <select name="sort" onchange="this.form.submit()" class="select select-bordered select-sm">
-              <option value="">Sort by</option>
-              <option value="rating" {% if request.GET.sort == 'rating' %}selected{% endif %}>Highest Rated</option>
-              <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
-              <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
-            </select>
-          </form>
+    <div class="hero bg-base-200 py-8 mb-8 ">
+        <div class="hero-content text-center">
+            <div class="max-w-md">
+                <h1 class="text-2xl font-bold text-primary">
+                    {{ total_results }} Result{{ total_results|pluralize }} for "<span
+                    class="text-secondary">{{ query }}</span>"
+                </h1>
+                <div class="w-24 bg-primary mt-2 mx-auto"></div>
+            </div>
         </div>
     </div>
 
-    <div class="container mx-auto px-4 py-8 min-h-screen">
+    <div class="container mx-auto px-4 min-h-screen">
         <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Filter Sidebar -->
+
             <!-- Results Section -->
             <div class="flex-1">
+                <div class="flex justify-between items-center mb-6">
+                    <p class="text-base-content font-medium">{{ total_results }}
+                        result{{ total_results|pluralize }}</p>
+                    <div class="dropdown dropdown-end">
+                        <form method="get" class="flex items-center">
+                            <select name="sort" onchange="this.form.submit()" class="select select-bordered select-sm">
+                                <option value="">Sort by</option>
+                                <option value="rating" {% if request.GET.sort == 'rating' %}selected{% endif %}>Highest
+                                    Rated
+                                </option>
+                                <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>
+                                    Price: Low to High
+                                </option>
+                                <option value="price_high"
+                                        {% if request.GET.sort == 'price_high' %}selected{% endif %}>
+                                    Price: High to Low
+                                </option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+
                 {% if courses %}
                     <div class="space-y-6">
                         {% for course in courses %}
@@ -43,7 +54,8 @@
                                 <div class="flex flex-col md:flex-row">
                                     <!-- Course Image -->
                                     <figure class="md:w-64 h-48 md:h-auto relative">
-                                        <img src="{{ course.course.course_image.url }}" alt="{{ course.title }}"
+                                        <img src="{{ course.course.course_image.url }}"
+                                             alt="{{ course.title }}"
                                              class="h-full w-full object-cover"/>
                                         {% if course.bestseller %}
                                             <div class="absolute top-2 left-2">
@@ -54,12 +66,14 @@
 
                                     <!-- Course Info -->
                                     <div class="card-body p-6">
-                                        <div class="flex flex-col md:flex-row justify-between md:items-start gap-4">
+                                        <div
+                                            class="flex flex-col md:flex-row justify-between md:items-start gap-4">
                                             <div class="flex-1">
                                                 <div class="flex items-center gap-2 mb-1">
+                                                <span
+                                                    class="badge badge-ghost badge-sm">{{ course.course.level }}</span>
                                                     <span
-                                                        class="badge badge-ghost badge-sm">{{ course.course.level }}</span>
-                                                    <span class="badge badge-outline badge-sm">Updated Recently</span>
+                                                        class="badge badge-outline badge-sm">Updated Recently</span>
                                                 </div>
 
                                                 <h2 class="card-title text-xl text-primary font-bold mb-2">
@@ -83,8 +97,8 @@
 
                                                 <div class="flex flex-wrap items-center gap-3 mb-2">
                                                     <div class="flex items-center">
-                                                        <span
-                                                            class="font-bold text-warning mr-1">{{ course.course.rating }}</span>
+                                                    <span
+                                                        class="font-bold text-warning mr-1">{{ course.course.rating }}</span>
                                                         <div class="rating rating-sm">
                                                             {% for i in "12345"|make_list %}
                                                                 {% if forloop.counter <= course.rating|floatformat:"0" %}
@@ -118,12 +132,16 @@
 
                                                 <div class="flex flex-col gap-2 mt-2 w-full sm:w-auto">
                                                     <button class="btn btn-sm btn-primary">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1"
-                                                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                             class="h-4 w-4 mr-1"
+                                                             fill="none" viewBox="0 0 24 24"
+                                                             stroke="currentColor">
+                                                            <path stroke-linecap="round"
+                                                                  stroke-linejoin="round"
                                                                   stroke-width="2"
                                                                   d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                            <path stroke-linecap="round"
+                                                                  stroke-linejoin="round"
                                                                   stroke-width="2"
                                                                   d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                                         </svg>
@@ -144,12 +162,12 @@
                             <div class="join">
                                 {% if page_obj.has_previous %}
                                     <a href="?q={{ query }}&page=
-
                                         {{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'q' and key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
                                        class="join-item btn">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                              viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  stroke-width="2"
                                                   d="M15 19l-7-7 7-7"/>
                                         </svg>
                                         Previous
@@ -158,7 +176,8 @@
                                     <button class="join-item btn btn-disabled">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                              viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  stroke-width="2"
                                                   d="M15 19l-7-7 7-7"/>
                                         </svg>
                                         Previous
@@ -170,11 +189,6 @@
                                         <button class="join-item btn btn-active">{{ num }}</button>
                                     {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
                                         <a href="?q={{ query }}&page=
-
-
-
-
-
                                             {{ num }}{% for key, value in request.GET.items %}{% if key != 'q' and key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
                                            class="join-item btn">{{ num }}</a>
                                     {% endif %}
@@ -182,17 +196,13 @@
 
                                 {% if page_obj.has_next %}
                                     <a href="?q={{ query }}&page=
-
-
-
-
-
                                         {{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'q' and key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
                                        class="join-item btn">
                                         Next
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                              viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  stroke-width="2"
                                                   d="M9 5l7 7-7 7"/>
                                         </svg>
                                     </a>
@@ -201,7 +211,8 @@
                                         Next
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                              viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  stroke-width="2"
                                                   d="M9 5l7 7-7 7"/>
                                         </svg>
                                     </button>
@@ -209,11 +220,10 @@
                             </div>
                         </div>
                     {% endif %}
-
                 {% else %}
                     {% include 'search404.html' %}
                 {% endif %}
             </div>
         </div>
     </div>
-{% endblock main_content %}
+{% endblock %}

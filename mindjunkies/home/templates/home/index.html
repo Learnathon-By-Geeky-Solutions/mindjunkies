@@ -211,11 +211,7 @@
             <h2 class="font-serif text-2xl font-semibold mb-6 m-4">Recently Introduced</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {% for course in new_courses %}
-                    {% for token in course.tokens.all %}
-                        {% if token.status == "approved" %}
-                            {% include 'home/card.html' %}
-                        {% endif %}
-                    {% endfor %}
+                        {% include 'home/card.html' %}
                 {% endfor %}
             </div>
         </div>

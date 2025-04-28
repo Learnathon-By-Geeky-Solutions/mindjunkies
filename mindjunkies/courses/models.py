@@ -1,5 +1,6 @@
 import cloudinary
 import cloudinary.uploader
+import uuid
 from categories.models import CategoryBase
 from cloudinary.models import CloudinaryField
 from django.db import models
@@ -72,19 +73,28 @@ class Course(BaseModel):
     total_rating = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     number_of_ratings = models.PositiveIntegerField(default=0)
 
+    verified = models.BooleanField(default=False)
+
     # Tags for the course
     tags = TaggableManager(blank=True)
-
-    verified = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            base_slug = slugify(self.title)
+            slug = base_slug
+            # Check if slug already exists
+            ModelClass = self.__class__
+            counter = 1
+            if not ModelClass.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{str(uuid.uuid4())[:8]}"  # Add random 8 chars
+            self.slug = slug
+
         if not self.teacher:
             raise ValueError("Teacher is required.")
+
         super().save(*args, **kwargs)
 
     def update_rating(self):

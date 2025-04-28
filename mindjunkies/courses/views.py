@@ -280,8 +280,12 @@ class DeleteCourseView(LoginRequiredMixin, TemplateView):
         context["course"] = course
         return context
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        if request.user != course.teacher:
+            messages.error(request, "You are not authorized to delete this course.")
+            return redirect(reverse("course_details", kwargs={"slug": course.slug}))
         course.delete()
         messages.success(request, "Course deleted successfully!")
         return redirect(self.success_url)
+

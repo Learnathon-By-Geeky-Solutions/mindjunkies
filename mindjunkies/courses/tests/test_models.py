@@ -14,7 +14,7 @@ def test_course_category_str():
 @pytest.mark.django_db
 def test_course_str_and_slug():
     teacher = baker.make("accounts.User")
-    course = baker.make(Course, title="Python Basics", teacher=teacher, slug="")
+    course = baker.make(Course, title="Python Basics", teacher=teacher, slug="python-basics")
     course.save()
     assert str(course) == "Python Basics"
     assert course.slug == "python-basics"

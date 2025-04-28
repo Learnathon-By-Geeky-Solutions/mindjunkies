@@ -160,6 +160,6 @@ def test_rating_create_own_course(client, teacher_user, course):
 def test_delete_course_view(client, teacher_user, course):
     client.force_login(teacher_user)
     url = reverse('delete_course', kwargs={"course_slug": course.slug})
-    response = client.post(url)
+    response = client.get(url)
     assert response.status_code == 302
     assert not Course.objects.filter(slug=course.slug).exists()

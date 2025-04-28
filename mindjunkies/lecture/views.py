@@ -22,7 +22,6 @@ from mindjunkies.courses.models import Course, Module, CourseToken
 
 from .forms import LectureForm, LecturePDFForm, LectureVideoForm, ModuleForm
 from .models import Lecture, LectureCompletion, LecturePDF, LectureVideo, LastVisitedModule
-from .tests.test_views import course_token
 
 
 # Utility functions to reduce complexity
