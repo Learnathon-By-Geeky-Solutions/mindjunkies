@@ -13,8 +13,6 @@ class HomeView(View):
         categories = CourseCategory.objects.filter(parent__isnull=True).prefetch_related("children")
 
         active_category_slug = request.GET.get("category")
-        active_category = None
-
         if active_category_slug:
             active_category = CourseCategory.objects.prefetch_related("children").get(
                 slug=active_category_slug, parent__isnull=True

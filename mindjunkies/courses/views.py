@@ -9,9 +9,10 @@ from django.urls import reverse, reverse_lazy
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic import TemplateView
 
 from mindjunkies.courses.models import Course, CourseCategory, Enrollment
-
+from .models import Course, Enrollment
 from .forms import CourseForm, RatingForm
 from .models import CourseToken, LastVisitedCourse, Rating
 
@@ -20,24 +21,10 @@ from .models import CourseToken, LastVisitedCourse, Rating
 def course_list(request: HttpRequest) -> HttpResponse:
     """View to show all courses."""
     courses = Course.objects.all()
-    enrolled_classes = []
-    teacher_classes = []
-    role = None
-    if request.user.is_authenticated:
-        enrolled = Enrollment.objects.filter(student=request.user)
-        enrolled_classes = [ec.course for ec in enrolled]
-
     context = {
         "courses": courses,
-        "enrolled_classes": enrolled_classes,
-        "teacher_classes": teacher_classes,
-        "role": role,
     }
     return render(request, "courses/course_list.html", context)
-
-
-from django.views.generic import TemplateView
-from .models import Course, Enrollment
 
 
 class BaseCourseView(TemplateView):
@@ -108,15 +95,15 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
     form_class = CourseForm
     template_name = "courses/create_course.html"
     success_url = reverse_lazy("dashboard")
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        status = False
-        if CourseToken.objects.filter(teacher=self.request.user, status="pending").exists():
-            status = True
-        context["verification"] = status
+        context["verification"] = CourseToken.objects.filter(
+            teacher=self.request.user, status="pending"
+        ).exists()
         return context
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         if CourseToken.objects.filter(teacher=request.user, status="pending").exists():
             messages.error(
                 request,
@@ -131,16 +118,17 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
         course.teacher = self.request.user
         course.save()
         form.save_m2m()
+
         CourseToken.objects.create(
             course=course, teacher=self.request.user, status="pending"
         )
 
-        messages.success(self.request, "Course saved successfully!")
+        messages.success(self.request, "Course created successfully and is pending approval!")
         return super().form_valid(form)
 
     def form_invalid(self, form):
         messages.error(
-            self.request, f"There was an error processing the form: {form.errors}"
+            self.request, "There was an error processing the form. Please correct the errors below."
         )
         return self.render_to_response(self.get_context_data(form=form))
 
@@ -175,12 +163,12 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
     ratings = course.get_individual_ratings()
     enrolled = False
     num_lectures = course.modules.aggregate(models.Count("lectures"))["lectures__count"]
-   
+
     if request.user.is_authenticated:
         enrolled = course.enrollments.filter(
             student=request.user, status="active"
         ).exists()
-    
+
     paginator = Paginator(ratings, 5)
     page = request.GET.get("page", 1)
     try:
@@ -240,7 +228,7 @@ class RatingCreateView(CreateView):
             messages.error(request, "You cannot rate your own course.")
             return redirect(reverse("lecture_home", kwargs={"course_slug": course.slug}))
         return super().dispatch(request, *args, **kwargs)
-    
+
     def get_initial(self):
         initial = super().get_initial()
         course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
@@ -277,20 +265,21 @@ class RatingCreateView(CreateView):
         course.update_rating()
 
         return redirect(reverse("course_details", kwargs={"slug": course.slug}))
-    
+
+
 class DeleteCourseView(LoginRequiredMixin, TemplateView):
-        model = Course
-        template_name = "components/content.html"
-        success_url = reverse_lazy("dashboard")
+    model = Course
+    template_name = "components/content.html"
+    success_url = reverse_lazy("dashboard")
 
-        def get_context_data(self, **kwargs):
-            context = super().get_context_data(**kwargs)
-            course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
-            context["course"] = course
-            return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        context["course"] = course
+        return context
 
-        def post(self, request, *args, **kwargs):
-            course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
-            course.delete()
-            messages.success(request, "Course deleted successfully!")
-            return redirect(self.success_url)
+    def post(self, request, *args, **kwargs):
+        course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
+        course.delete()
+        messages.success(request, "Course deleted successfully!")
+        return redirect(self.success_url)

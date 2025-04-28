@@ -43,13 +43,13 @@ def get_this_week_range() -> Tuple[timezone.datetime, timezone.datetime]:
     return start, end
 
 
-# When querying your database or filtering data:
-# Filter out records where date == today
-
-
 def check_course_enrollment(user, course):
     """Check if a user is enrolled in a course or is staff."""
-    return course.teacher == user or course.enrollments.filter(student=user, status="active").exists()
+    try:
+        course_token = CourseToken.objects.get(course=course)
+        return course_token.status == "approved"
+    except CourseToken.DoesNotExist:
+        return False
 
 
 def is_teacher_for_course(user, course):
@@ -86,7 +86,8 @@ class LectureHomeView(LoginRequiredMixin, TemplateView):
             if course_token.status == "approved":
                 return True
             return False
-        return self.request.user.is_staff or course.enrollments.filter(student=self.request.user, status='active').exists()
+        return self.request.user.is_staff or course.enrollments.filter(student=self.request.user,
+                                                                       status='active').exists()
 
     def dispatch(self, request, *args, **kwargs):
         course = self.get_course()
@@ -165,6 +166,9 @@ def lecture_video(request: HttpRequest, course_slug: str, module_id: str, lectur
 def lecture_pdf(request: HttpRequest, course_slug: str, module_id: int, lecture_id: int, pdf_id: int) -> HttpResponse:
     """View to display a lecture PDF."""
     pdf = get_object_or_404(LecturePDF, id=pdf_id)
+    if not pdf.pdf_file:
+        messages.error(request, "The requested PDF file is not available.")
+        return redirect("lecture_home", course_slug=course_slug)
     lecture = get_object_or_404(Lecture, id=lecture_id)
     course = get_object_or_404(Course, slug=course_slug)
     module = get_object_or_404(Module, id=module_id)
