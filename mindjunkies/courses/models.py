@@ -88,7 +88,7 @@ class Course(BaseModel):
             # Check if slug already exists
             ModelClass = self.__class__
             counter = 1
-            while ModelClass.objects.filter(slug=slug).exists():
+            if not ModelClass.objects.filter(slug=slug).exists():
                 slug = f"{base_slug}-{str(uuid.uuid4())[:8]}"  # Add random 8 chars
             self.slug = slug
 
