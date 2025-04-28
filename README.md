@@ -115,6 +115,22 @@ Traditional education platforms often suffer from:
 - [Contributing](#-contributing)
 - [License](#-license)
 
+## 📋 Table of Contents
+- [Team](#-team)
+- [Project Overview](#-project-overview)
+- [Live Demo](#-live-demo)
+- [Key Features](#-key-features)
+- [System Architecture](#-system-architecture)
+- [Database Design](#-database-design)
+- [Tech Stack](#-tech-stack)
+- [Development Logs](#-development-logs)
+- [Getting Started](#-getting-started)
+- [Development Guidelines](#-development-guidelines)
+- [Testing](#-testing)
+- [Resources](#-resources)
+- [Contributing](#-contributing)
+- [License](#-license)
+
 <div align="center">
 
 
@@ -150,6 +166,8 @@ Traditional education platforms often suffer from:
 ---
 
 ## 🏗 System Architecture
+### Architecture Diagram
+![Architecture Diagram](docs/resources/architecture-diagram.png)
 
 ### 📌 Modules Overview
 
