@@ -78,8 +78,6 @@ class Course(BaseModel):
     # Tags for the course
     tags = TaggableManager(blank=True)
 
-    verified = models.BooleanField(default=False)
-
     def __str__(self):
         return self.title
 
@@ -96,7 +94,7 @@ class Course(BaseModel):
 
         if not self.teacher:
             raise ValueError("Teacher is required.")
-    
+
         super().save(*args, **kwargs)
 
     def update_rating(self):
