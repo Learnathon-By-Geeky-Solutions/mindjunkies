@@ -11,25 +11,23 @@
             <div class="badge badge-primary badge-outline px-4 font-medium">Search Results</div>
             <p class="text-xl">for "<span class="text-secondary font-bold">{{ query }}</span>"</p>
 
-            <!-- Search bar with enhanced styling -->
-            <form action="{% url 'search_view' %}" method="get" class="form-control w-full max-w-lg mx-auto">
-                <div class="relative">
-                    <input type="text" name="q" value="{{ query }}" placeholder="Refine your search..."
-                           class="input input-bordered w-full pl-12 pr-20 focus:outline-primary focus:ring-2 focus:ring-primary focus:ring-opacity-50 shadow-md"/>
-
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-base-content opacity-60"
-                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                    </div>
-
-                    <button type="submit" class="absolute inset-y-0 right-0 btn btn-primary rounded-l-none">
-                        Search
-                    </button>
-                </div>
-            </form>
+<div class="container mx-auto px-4 min-h-screen">
+  <div class="flex flex-col lg:flex-row gap-8">
+    <!-- Filter Sidebar -->
+    
+    <!-- Results Section -->
+    <div class="flex-1">
+      <div class="flex justify-between items-center mb-6">
+      
+        <div class="dropdown dropdown-end">
+          <form method="get" class="flex items-center">
+            <select name="sort" onchange="this.form.submit()" class="select select-bordered select-sm">
+              <option value="">Sort by</option>
+              <option value="rating" {% if request.GET.sort == 'rating' %}selected{% endif %}>Highest Rated</option>
+              <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+              <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+            </select>
+          </form>
         </div>
     </div>
 
