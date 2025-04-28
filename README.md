@@ -94,10 +94,6 @@ Traditional education platforms often suffer from:
 - Increasing demand for **virtual education** and **interactive learning tools** worldwide.
 
 ---
-## 🏗 System Architecture
-
-### Architecture Diagram
-![Architecture Diagram](docs/resources/architecture-diagram.png)
 
 ## 📋 Table of Contents
 - [Team](#-team)
@@ -150,6 +146,8 @@ Traditional education platforms often suffer from:
 ---
 
 ## 🏗 System Architecture
+### Architecture Diagram
+![Architecture Diagram](docs/resources/architecture-diagram.png)
 
 ### 📌 Modules Overview
 
