@@ -94,7 +94,6 @@ Traditional education platforms often suffer from:
 - Increasing demand for **virtual education** and **interactive learning tools** worldwide.
 
 ---
-
 ## 📋 Table of Contents
 - [Team](#-team)
 - [Project Overview](#-project-overview)
@@ -110,6 +109,8 @@ Traditional education platforms often suffer from:
 - [Resources](#-resources)
 - [Contributing](#-contributing)
 - [License](#-license)
+
+
 
 <div align="center">
 
@@ -144,10 +145,9 @@ Traditional education platforms often suffer from:
 </div>
 
 ---
-
 ## 🏗 System Architecture
 ### Architecture Diagram
-![Architecture Diagram](docs/resources/architecture-diagram.png)
+![Architecture Diagram](docs/resources/architecture-diagram.jpg)
 
 ### 📌 Modules Overview
 
@@ -160,6 +160,32 @@ Traditional education platforms often suffer from:
 | Lecture        | Lecture and Assignment Management       |
 | Live Classes   | Live Video Integration                   |
 | Payments       | Payment and Billing                      |
+### System Flow Diagram
+![System Flow Diagram](docs/resources/flow-diagram.png)
+#### Operational Flow Explained
+
+1. **Authentication** 🔑  
+   - User logs in or registers.
+   - Role check (Student / Teacher / Admin).
+
+2. **Student Flow** 🎓  
+   - Browse and view courses.
+   - If not enrolled ➔ Payment ➔ Enrollment.
+   - Access course content (Lectures, Materials, Assignments, Live Classes).
+   - Participate in community forums (Post, Reply).
+
+3. **Teacher Flow** 👩‍🏫  
+   - Manage content (Create/Edit Courses, Upload Lectures, Create Assignments).
+   - Schedule and conduct live classes.
+   - Grade student submissions.
+   - Use live virtual classroom (Video, Chat, Screen Share, Polls).
+
+4. **Admin Flow** 🛠️  
+   - Manage users, approve courses, handle payments, and adjust site settings.
+   - Moderate forum activity.
+
+5. **Live Interaction & Assessment** 📡  
+   - Real-time classes and course completion.
 
 ### 📂 Project Structure
 
