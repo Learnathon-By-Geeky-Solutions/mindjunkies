@@ -5,97 +5,148 @@
 {% block main_content %}
 {% load static %}
 
-<div class="mb-8 ml-[10%]">
-    <h1 class="text-4xl font-bold text-gray-800">
-        {{ total_results }} result{{ total_results|pluralize }} for "{{ query }}"
-    </h1>
+<!-- Hero Section -->
+<div class="hero bg-base-200 py-8 mb-8 ">
+  <div class="hero-content text-center">
+    <div class="max-w-md">
+      <h1 class="text-2xl font-bold text-primary">
+        {{ total_results }} Result{{ total_results|pluralize }} for "<span class="text-secondary">{{ query }}</span>"
+      </h1>
+      <div class=" w-24 bg-primary mt-2 mx-auto"></div>
+    </div>
+  </div>
 </div>
 
-<div class="flex flex-col md:flex-row gap-6">
-    <!-- You can add a filter sidebar here in future -->
-
-    <div class="flex-1 ml-[10%]">
-        <div class="flex justify-between items-center mb-4">
-            <p class="text-gray-700">{{ total_results }} result{{ total_results|pluralize }}</p>
-            <form method="get">
-                <select name="sort" onchange="this.form.submit()" class="border border-gray-300 rounded px-2 py-1 text-sm">
-                    <option value="">Sort by</option>
-                    <option value="rating" {% if request.GET.sort == 'rating' %}selected{% endif %}>Highest Rated</option>
-                    <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
-                    <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
-                </select>
-            </form>
+<div class="container mx-auto px-4 min-h-screen">
+  <div class="flex flex-col lg:flex-row gap-8">
+    <!-- Filter Sidebar -->
+    
+    <!-- Results Section -->
+    <div class="flex-1">
+      <div class="flex justify-between items-center mb-6">
+        <p class="text-base-content font-medium">{{ total_results }} result{{ total_results|pluralize }}</p>
+        <div class="dropdown dropdown-end">
+          <form method="get" class="flex items-center">
+            <select name="sort" onchange="this.form.submit()" class="select select-bordered select-sm">
+              <option value="">Sort by</option>
+              <option value="rating" {% if request.GET.sort == 'rating' %}selected{% endif %}>Highest Rated</option>
+              <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+              <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+            </select>
+          </form>
         </div>
+      </div>
 
-        {% if courses %}
-        <div class="space-y-6 w-[80%]">
-            {% for course in courses %}
-            <div class="flex flex-col md:flex-row border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-md transition mb-12">
-                <div class="md:w-64 flex-shrink-0">
-                    <img src="{{ course.course.course_image.url }}" alt="{{ course.title }}" class="w-full h-full object-cover">
+      {% if courses %}
+      <div class="space-y-6">
+        {% for course in courses %}
+        <div class="card card-side bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <figure class="md:w-64 h-full hidden md:block">
+            <img src="{{ course.course.course_image.url }}" alt="{{ course.title }}" class="h-full object-cover" />
+          </figure>
+          <div class="card-body p-6">
+            <div class="flex justify-between items-start">
+              <div class="flex-1">
+                <h2 class="card-title text-xl text-primary font-bold mb-2">
+                  {{ course.highlighted_title|safe }}
+                </h2>
+                <p class="text-base-content opacity-90 mb-3">
+                  {{ course.course.short_introduction }}
+                </p>
+                <p class="text-base-content opacity-70 mb-1">
+                  <span class="flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    {{ course.course.teacher }}
+                  </span>
+                </p>
+                
+                <div class="flex items-center mb-2">
+                  <span class="font-bold text-warning mr-1">{{ course.course.rating }}</span>
+                  <div class="rating rating-sm">
+                    {% for i in "12345"|make_list %}
+                      {% if forloop.counter <= course.rating|floatformat:"0" %}
+                        <input type="radio" class="mask mask-star-2 bg-warning" checked />
+                      {% elif forloop.counter == course.rating|add:"0.5"|floatformat:"0" and course.rating|floatformat:"-1" != course.rating|floatformat:"0" %}
+                        <input type="radio" class="mask mask-star-2 bg-warning" checked />
+                      {% else %}
+                        <input type="radio" class="mask mask-star-2 bg-base-300" checked />
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                  <span class="ml-1 text-xs opacity-75">({{ course.course.reviews }})</span>
                 </div>
-                <div class="flex-1 p-4">
-                    <h2 class="text-xl font-bold text-gray-900 mb-2">
-                        {{ course.highlighted_title }}
-                    </h2>
-                    <p class="text-gray-700 mb-2">
-                        {{ course.course.short_introduction }}
-                    </p>
-                    <p class="text-sm text-gray-600 mb-1">
-                        {{ course.course.teacher }}
-                    </p>
-                    <div class="flex items-center mb-2">
-                        <span class="text-yellow-500 font-bold mr-1">{{ course.course.rating }}</span>
-                        <div class="flex">
-                            {% for i in "12345"|make_list %}
-                                {% if forloop.counter <= course.rating|floatformat:"0" %}
-                                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="..."/></svg>
-                                {% elif forloop.counter == course.rating|add:"0.5"|floatformat:"0" and course.rating|floatformat:"-1" != course.rating|floatformat:"0" %}
-                                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="..."/></svg>
-                                {% else %}
-                                    <svg class="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path d="..."/></svg>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                        <span class="ml-1 text-sm text-gray-600">({{ course.course.reviews }})</span>
-                    </div>
-                    <p class="text-sm text-gray-600">{{ course.total_hours }} hours • {{ course.course.lectures }} lectures • {{ course.course.level }}</p>
-                    {% if course.bestseller %}
-                    <span class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded mt-2">Bestseller</span>
-                    {% endif %}
+                
+                <div class="flex items-center gap-3 text-xs opacity-75">
+                  <span class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {{ course.total_hours }} hours
+                  </span>
+                  <span class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    {{ course.course.lectures }} lectures
+                  </span>
+                  <span class="badge badge-ghost badge-sm">{{ course.course.level }}</span>
                 </div>
-                <div class="p-4 flex items-start justify-center">
-                    <span class="text-2xl font-bold">${{ course.course.price }}</span>
+                
+                {% if course.bestseller %}
+                <div class="mt-2">
+                  <div class="badge badge-warning">Bestseller</div>
                 </div>
-            </div>
-            {% endfor %}
-        </div>
-
-        <!-- Pagination -->
-        {% if page_obj.has_other_pages %}
-        <div class="mt-6 flex justify-center space-x-2">
-            {% if page_obj.has_previous %}
-            <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}" class="px-3 py-1 bg-gray-200 rounded">Previous</a>
-            {% endif %}
-
-            {% for num in page_obj.paginator.page_range %}
-                {% if page_obj.number == num %}
-                    <span class="px-3 py-1 bg-blue-500 text-white rounded">{{ num }}</span>
-                {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
-                    <a href="?q={{ query }}&page={{ num }}" class="px-3 py-1 bg-gray-100 rounded">{{ num }}</a>
                 {% endif %}
-            {% endfor %}
-
-            {% if page_obj.has_next %}
-            <a href="?q={{ query }}&page={{ page_obj.next_page_number }}" class="px-3 py-1 bg-gray-200 rounded">Next</a>
-            {% endif %}
+              </div>
+              
+              <div class="text-right ml-4">
+                <div class="text-2xl font-bold text-secondary">${{ course.course.price }}</div>
+              </div>
+            </div>
+            
+            <div class="card-actions justify-end mt-4">
+              <button class="btn btn-sm btn-outline btn-primary">Add to Cart</button>
+              <button class="btn btn-sm btn-primary">View Course</button>
+            </div>
+          </div>
         </div>
-        {% endif %}
+        {% endfor %}
+      </div>
 
-        {% else %}
-        <p class="text-gray-600">No courses found for "{{ query }}". Try adjusting your search.</p>
-        {% endif %}
+      <!-- Pagination -->
+      {% if page_obj.has_other_pages %}
+      <div class="mt-8 flex justify-center">
+        <div class="btn-group">
+          {% if page_obj.has_previous %}
+          <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}" class="btn btn-sm">Previous</a>
+          {% else %}
+          <button class="btn btn-sm btn-disabled">Previous</button>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <button class="btn btn-sm btn-active">{{ num }}</button>
+            {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+              <a href="?q={{ query }}&page={{ num }}" class="btn btn-sm">{{ num }}</a>
+            {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+          <a href="?q={{ query }}&page={{ page_obj.next_page_number }}" class="btn btn-sm">Next</a>
+          {% else %}
+          <button class="btn btn-sm btn-disabled">Next</button>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+      {% else %}
+      {% include 'search404.html'%}
+      {% endif %}
     </div>
+  </div>
 </div>
 
 {% endblock main_content %}

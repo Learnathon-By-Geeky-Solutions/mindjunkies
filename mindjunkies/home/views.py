@@ -34,7 +34,7 @@ class HomeView(View):
                 student=request.user, status="active"
             ).prefetch_related("course")
 
-            enrolled_courses = [enrollment.course for enrollment in enrollments]
+            enrolled_courses = [enrollment.course for enrollment in enrollments][:4]
             teacher_courses = Course.objects.filter(teacher=request.user)
 
         new_courses = Course.objects.exclude(
