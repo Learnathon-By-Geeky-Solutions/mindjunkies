@@ -280,7 +280,7 @@ class DeleteCourseView(LoginRequiredMixin, TemplateView):
         context["course"] = course
         return context
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
         course.delete()
         messages.success(request, "Course deleted successfully!")

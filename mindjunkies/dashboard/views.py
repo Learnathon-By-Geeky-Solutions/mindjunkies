@@ -24,9 +24,7 @@ class TeacherHome(VerifiedTeacherRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         courses = Course.objects.filter(teacher=request.user, status="published")
-        unverified_courses = CourseToken.objects.filter(
-            teacher=request.user, status="pending"
-        ).values_list('course', flat=True)
+        unverified_courses = Course.objects.filter(teacher=request.user, verified=False)
 
         context = {
             "courses": courses,
@@ -43,7 +41,8 @@ class ContentListView(VerifiedTeacherRequiredMixin, View):
 
     def get(self, request, status: str):
         courses = Course.objects.filter(teacher=request.user, status="published")
-        context = {"courses": courses, "status": "Published"}
+        unverified_courses = Course.objects.filter(teacher=request.user, verified=False)
+        context = {"courses": courses, "status": "Published", "unverified_courses": unverified_courses}
 
         if status == "draft":
             courses = Course.objects.filter(teacher=request.user, status="draft")
