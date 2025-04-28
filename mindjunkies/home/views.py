@@ -28,18 +28,18 @@ class HomeView(View):
         if request.user.is_authenticated:
             enrollments = Enrollment.objects.filter(
                 student=request.user, status="active"
-            ).prefetch_related("course")
+            ).prefetch_related("course").filter(status="published")
 
             enrolled_courses = [enrollment.course for enrollment in enrollments][:4]
             teacher_courses = Course.objects.filter(teacher=request.user)
 
         new_courses = Course.objects.exclude(
             id__in=[course.id for course in enrolled_courses]
-        ).order_by("-created_at").filter(status="published")
+        ).order_by("-created_at").filter(status="published")[:4]
 
         courses = Course.objects.exclude(
             id__in=new_courses.values_list("id", flat=True)
-        ).exclude(id__in=[course.id for course in enrolled_courses])
+        ).exclude(id__in=[course.id for course in enrolled_courses])[:4]
 
         featured_courses = Course.objects.filter(status="published")
 

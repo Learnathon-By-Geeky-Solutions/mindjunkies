@@ -2,7 +2,7 @@
 {% load cloudinary %}
 
 <a href="{% url 'course_details' course.slug %}" class="block group">
-  <div class="card h-[400px] flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-xl transition-all duration-500 ease-out transform hover:-translate-y-1 group-hover:border-blue-100">
+  <div class="card h-[500px] flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-xl transition-all duration-500 ease-out transform hover:-translate-y-1 group-hover:border-blue-100">
 
     <!-- Image Section with Animation -->
     <figure class="relative w-full overflow-hidden">
@@ -18,40 +18,47 @@
           </svg>
         </div>
       {% endif %}
-    
 
       <!-- Animated Gradient Overlay -->
       <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
     </figure>
+    <div class="flex gap-1">
+      <div class="mt-auto mx-2 pt-4 flex justify-between items-center text-sm">
+        <span class="px-2 py-0.5 rounded-full bg-red-200 text-blue-700 font-medium border border-blue-100 shadow-sm transition-all duration-300 ease-out group-hover:bg-blue-100 group-hover:shadow">
+          
+          {{course.category.name|default:"General"}}
+        
+        </span>
+        </div>
+    {% if course.teacher == request.user %}
+    <div class="mt-auto mx-2 pt-4 flex justify-between items-center text-sm">
+      <span class="px-2 py-0.5 rounded-full bg-red-200 text-blue-700 font-medium border border-blue-100 shadow-sm transition-all duration-300 ease-out group-hover:bg-blue-100 group-hover:shadow">
+        
+        Owner
+      
+      </span>
+      </div>
+      {% endif %}
+    </div>
 
     <!-- Content Section -->
     <div class="card-body p-6 flex flex-col flex-grow space-y-3 relative">
       <!-- Title with Animation -->
       {% if not course.display_title_on_image %}
-        <h3 class="text-xl font-bold text-gray-800 line-clamp-2 tracking-tight transition-colors duration-300 group-hover:text-blue-700">{{ course.title }}</h3>
+        <h3 class="text-lg font-semibold text-gray-800 line-clamp-2 tracking-tight transition-colors duration-300 group-hover:text-blue-700">{{ course.title }}</h3>
       {% endif %}
 
       <!-- Enrollment Count with Animation -->
 
 
       <!-- Course Description -->
-    
-  
-      <p class="text-sm text-gray-600 line-clamp-3 leading-relaxed transition-opacity duration-500 group-hover:text-gray-700">{{ course.short_introduction }}</p>
+      <p class="text-sm text-gray-600 line-clamp-3 leading-relaxed transition-opacity duration-500 group-hover:text-gray-700">{{ course.short_introduction|truncatewords:10 }}</p>
       <div class="flex items-center gap-1 text-sm text-gray-600 transition-transform duration-500 ease-out transform group-hover:translate-x-1">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-colors duration-300 group-hover:text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
         <span class="font-medium">{{ course.get_total_enrollments|default:"0" }} students enrolled</span>
-        
       </div>
-      <div class="mt-auto pt-4 flex justify-between items-center text-sm">
-        <span class="px-2 py-1.5 rounded-full bg-blue-200 text-blue-700 font-medium border border-blue-100 shadow-sm transition-all duration-300 ease-out group-hover:bg-blue-100 group-hover:shadow">
-          {% if course.teacher == request.user %}
-          Owner
-         {% endif %}
-        </span>
-        </div>
       <!-- Footer Info with Animated Badges -->
       <div class="mt-auto pt-4 flex justify-between items-center text-sm">
         <span class="px-4 py-1.5 rounded-full bg-blue-50 text-blue-700 font-medium border border-blue-100 shadow-sm transition-all duration-300 ease-out group-hover:bg-blue-100 group-hover:shadow">
