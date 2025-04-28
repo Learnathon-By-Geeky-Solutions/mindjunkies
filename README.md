@@ -1,8 +1,9 @@
+
 <div align="center">
 
 # 🚀 BiddyaPeeth
 
-<h3>Modern Learning Management System (LMS) built with Django and Tailwind CSS</h3>
+<h3>Modern EdTech Platform built with Django and Tailwind CSS</h3>
 
 <img src="docs/resources/logo.png" alt="BiddyaPeeth Logo" width="200" height="auto">
 
@@ -28,7 +29,7 @@
 
 # 🔎 About BiddyaPeeth
 
-**BiddyaPeeth** is an advanced, next-generation **EdTech platform** built with **Django** and **Tailwind CSS**, designed to revolutionize digital learning experiences. 
+**BiddyaPeeth** is an advanced, next-generation **EdTech platform** built with **Django** and **Tailwind CSS**, designed to revolutionize digital learning experiences.
 
 It offers a **modern, scalable**, and **student-centric** environment for online education, empowering both learners and instructors with seamless tools for engagement and management.
 
@@ -45,23 +46,39 @@ It offers a **modern, scalable**, and **student-centric** environment for online
 
 ### 🔥 Why BiddyaPeeth?
 
-Traditional LMS platforms often suffer from:
+Traditional education platforms often suffer from:
 - ❌ Poor user experience.
-- ❌ Difficult management of live classes and assignments.
-- ❌ Lack of modern UI and scalability.
+- ❌ Limited real-time interaction capabilities.
+- ❌ Lack of modern design and scalability.
 
-**BiddyaPeeth solves these problems** by offering:
+**BiddyaPeeth solves these challenges** by offering:
 - 🔹 Seamless course and user management.
-- 🔹 Modern Tailwind CSS frontend.
+- 🔹 A modern Tailwind CSS frontend.
 - 🔹 Fast deployment with Docker and Kubernetes-ready architecture.
-- 🔹 Real-time communication tools for better engagement.
+- 🔹 Real-time communication tools to foster active learning environments.
 
 ### 🌍 Market Opportunity
 
-- The global LMS market is projected to reach **$29 billion** by 2026.
-- Demand for **virtual learning platforms** and **interactive education tools** is growing rapidly.
+- The global EdTech market is projected to reach **$404 billion** by 2025.
+- Increasing demand for **virtual education** and **interactive learning tools** worldwide.
 
 ---
+
+## 📋 Table of Contents
+- [Team](#-team)
+- [Project Overview](#-project-overview)
+- [Live Demo](#-live-demo)
+- [Key Features](#-key-features)
+- [System Architecture](#-system-architecture)
+- [Database Design](#-database-design)
+- [Tech Stack](#-tech-stack)
+- [Development Logs](#-development-logs)
+- [Getting Started](#-getting-started)
+- [Development Guidelines](#-development-guidelines)
+- [Testing](#-testing)
+- [Resources](#-resources)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 <div align="center">
 
@@ -69,20 +86,25 @@ Traditional LMS platforms often suffer from:
 
 <table style="width: 90%;">
 <tr>
-<td align="center" width="33%">
+<td align="center" width="25%">
 <h4>Shafayet Sadi</h4>
 <img src="https://img.shields.io/badge/Team%20Leader-2D9CDB?style=for-the-badge">
 <br><a href="https://github.com/Shafayetsadi"><img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white"></a>
 </td>
-<td align="center" width="33%">
+<td align="center" width="25%">
 <h4>Md. Tonmoy</h4>
 <img src="https://img.shields.io/badge/FullStack%20Developer-F2C94C?style=for-the-badge">
 <br><a href="https://github.com/md-tonmoy007"><img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white"></a>
 </td>
-<td align="center" width="33%">
+<td align="center" width="25%">
 <h4>Farhana Islam Saima</h4>
 <img src="https://img.shields.io/badge/FullStack%20Developer-F2C94C?style=for-the-badge">
 <br><a href="https://github.com/SaimaLearnathon"><img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white"></a>
+</td>
+<td align="center" width="25%">
+<h4>Md. Redwanuzzaman</h4>
+<img src="https://img.shields.io/badge/Mentor-F2C94C?style=for-the-badge">
+<br><a href="https://github.com/redwanuzzaman"><img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white"></a>
 </td>
 </tr>
 </table>
