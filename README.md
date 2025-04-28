@@ -1,8 +1,9 @@
+
 <div align="center">
 
 # 🚀 BiddyaPeeth
 
-<h3>Modern Learning Management System (LMS) built with Django and Tailwind CSS</h3>
+<h3>Modern EdTech Platform built with Django and Tailwind CSS</h3>
 
 <img src="docs/resources/logo.png" alt="BiddyaPeeth Logo" width="200" height="auto">
 
@@ -15,20 +16,51 @@
 
 ### Tech Stack
 
-[![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
-[![Python 3.11](https://img.shields.io/badge/Python-3.11-3776AB.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)
-
+<p align="center">
+  <a href="https://www.djangoproject.com/">
+    <img src="https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white" alt="Django" />
+  </a>
+  <a href="https://www.postgresql.org/">
+    <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  </a>
+  <a href="https://www.docker.com/">
+    <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+  </a>
+  <a href="https://redis.io/">
+    <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis" />
+  </a>
+  <a href="https://www.elastic.co/elasticsearch/">
+    <img src="https://img.shields.io/badge/Elasticsearch-005571?style=for-the-badge&logo=elasticsearch&logoColor=white" alt="Elasticsearch" />
+  </a>
+  <a href="https://tailwindcss.com/">
+    <img src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+  </a>
+  <a href="https://django-unfold.readthedocs.io/">
+    <img src="https://img.shields.io/badge/Django_Unfold-0B0D0D?style=for-the-badge&logo=django&logoColor=white" alt="Django Unfold" />
+  </a>
+  <a href="https://github.com/jazzband/django-silk">
+    <img src="https://img.shields.io/badge/Django_Silk-4B8BBE?style=for-the-badge&logo=python&logoColor=white" alt="Django Silk" />
+  </a>
+  <a href="https://www.python.org">
+    <img src="https://img.shields.io/badge/Python-3.11-3776AB.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.11" />
+  </a>
+  <a href="https://github.com/pre-commit/pre-commit">
+    <img src="https://img.shields.io/badge/pre--commit-enabled-brightgreen?style=for-the-badge&logo=pre-commit&logoColor=white" alt="Pre-commit" />
+  </a>
+  <a href="https://github.com/psf/black">
+    <img src="https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge" alt="Black code style" />
+  </a>
+  <a href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="MIT License" />
+  </a>
+</p>
 </div>
 
 ---
 
 # 🔎 About BiddyaPeeth
 
-**BiddyaPeeth** is an advanced, next-generation **EdTech platform** built with **Django** and **Tailwind CSS**, designed to revolutionize digital learning experiences. 
+**BiddyaPeeth** is an advanced, next-generation **EdTech platform** built with **Django** and **Tailwind CSS**, designed to revolutionize digital learning experiences.
 
 It offers a **modern, scalable**, and **student-centric** environment for online education, empowering both learners and instructors with seamless tools for engagement and management.
 
@@ -45,44 +77,70 @@ It offers a **modern, scalable**, and **student-centric** environment for online
 
 ### 🔥 Why BiddyaPeeth?
 
-Traditional LMS platforms often suffer from:
-- ❌ Poor user experience.
-- ❌ Difficult management of live classes and assignments.
-- ❌ Lack of modern UI and scalability.
+Traditional education platforms often suffer from:
+❌ Poor user experience.
+❌ Limited real-time interaction capabilities.
+❌ Lack of modern design and scalability.
 
-**BiddyaPeeth solves these problems** by offering:
-- 🔹 Seamless course and user management.
-- 🔹 Modern Tailwind CSS frontend.
-- 🔹 Fast deployment with Docker and Kubernetes-ready architecture.
-- 🔹 Real-time communication tools for better engagement.
+**BiddyaPeeth solves these challenges** by offering:
+🔹 Seamless course and user management.
+🔹 A modern Tailwind CSS frontend.
+🔹 Fast deployment with Docker and Kubernetes-ready architecture.
+🔹 Real-time communication tools to foster active learning environments.
 
 ### 🌍 Market Opportunity
 
-- The global LMS market is projected to reach **$29 billion** by 2026.
-- Demand for **virtual learning platforms** and **interactive education tools** is growing rapidly.
+- The global EdTech market is projected to reach **$404 billion** by 2025.
+- Increasing demand for **virtual education** and **interactive learning tools** worldwide.
 
 ---
+## 🏗 System Architecture
+
+### Architecture Diagram
+![Architecture Diagram](docs/resources/architecture-diagram.png)
+
+## 📋 Table of Contents
+- [Team](#-team)
+- [Project Overview](#-project-overview)
+- [Live Demo](#-live-demo)
+- [Key Features](#-key-features)
+- [System Architecture](#-system-architecture)
+- [Database Design](#-database-design)
+- [Tech Stack](#-tech-stack)
+- [Development Logs](#-development-logs)
+- [Getting Started](#-getting-started)
+- [Development Guidelines](#-development-guidelines)
+- [Testing](#-testing)
+- [Resources](#-resources)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 <div align="center">
+
 
 # 🖌️ Team MindJunkies
 
 <table style="width: 90%;">
 <tr>
-<td align="center" width="33%">
+<td align="center" width="25%">
 <h4>Shafayet Sadi</h4>
 <img src="https://img.shields.io/badge/Team%20Leader-2D9CDB?style=for-the-badge">
 <br><a href="https://github.com/Shafayetsadi"><img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white"></a>
 </td>
-<td align="center" width="33%">
+<td align="center" width="25%">
 <h4>Md. Tonmoy</h4>
 <img src="https://img.shields.io/badge/FullStack%20Developer-F2C94C?style=for-the-badge">
 <br><a href="https://github.com/md-tonmoy007"><img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white"></a>
 </td>
-<td align="center" width="33%">
+<td align="center" width="25%">
 <h4>Farhana Islam Saima</h4>
 <img src="https://img.shields.io/badge/FullStack%20Developer-F2C94C?style=for-the-badge">
 <br><a href="https://github.com/SaimaLearnathon"><img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white"></a>
+</td>
+<td align="center" width="25%">
+<h4>Md. Redwanuzzaman</h4>
+<img src="https://img.shields.io/badge/Mentor-F2C94C?style=for-the-badge">
+<br><a href="https://github.com/redwanuzzaman"><img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white"></a>
 </td>
 </tr>
 </table>
