@@ -1,4 +1,4 @@
-FROM python:3.13-slim
+FROM python:3.13-slim AS builder
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -8,32 +8,39 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential libpq-dev curl \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential libpq-dev curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# The installer requires curl (and certificates) to download the release archive
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
-
-# Download the latest installer
+# Install uv
 ADD https://astral.sh/uv/install.sh /uv-installer.sh
-
-# Run the installer then remove it
 RUN sh /uv-installer.sh && rm /uv-installer.sh
-
-# Ensure the installed binary is on the `PATH`
 ENV PATH="/root/.local/bin/:$PATH"
 
-# Copy project files
-ADD . /app
-
+COPY pyproject.toml uv.lock ./
 
 # Sync dependencies
 RUN uv sync --frozen && uv sync --group prod --frozen
 
-# Collect static files
+# Copy project files
+COPY . .
+
+# Precollect static files
 RUN mkdir -p /app/staticfiles
 
+
+FROM python:3.13-slim
+
+WORKDIR /app
+
+# Copy installed Python packages from builder
+COPY --from=builder /usr/local/lib/python3.13 /usr/local/lib/python3.13
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# Copy project files
+COPY --from=builder /app /app
+
+# Make entrypoint executable
 RUN chmod +x /app/entrypoint.sh
 
 CMD ["sh", "/app/entrypoint.sh"]
