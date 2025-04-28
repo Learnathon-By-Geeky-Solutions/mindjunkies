@@ -41,7 +41,7 @@ if not config("DB_IGNORE_SSL", default=False, cast=bool):
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT', 6379)}/1",
+        "LOCATION": f"redis://{config('REDIS_HOST')}:{config('REDIS_PORT', 6379)}/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
@@ -50,6 +50,6 @@ CACHES = {
 
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': os.getenv('ELASTICSEARCH_HOST', 'localhost:9200')
+        'hosts': config('ELASTICSEARCH_HOST', default='localhost:9200'),
     },
 }
