@@ -133,6 +133,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_API_TOKEN_KEY }}
+
       - name: Save Kubeconfig
         run: |
           doctl kubernetes cluster kubeconfig save --expiry-seconds 600 django-mindjunkies
@@ -204,6 +209,11 @@ jobs:
     needs: deploy
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_API_TOKEN_KEY }}
 
       - name: Save Kubeconfig
         run: |
