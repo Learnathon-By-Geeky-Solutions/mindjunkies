@@ -62,14 +62,17 @@ class HomeView(View):
 def search_view(request):
     query = request.GET.get("search", "").strip()
     highlighted_courses = []
+    print(query)
 
     if query:
         courses = Course.objects.filter(title__icontains=query)
+        print(courses)
         for course in courses:
             highlighted_title = course.title.replace(query, f"<mark>{query}</mark>")
             highlighted_courses.append(
                 {"course": course, "highlighted_title": mark_safe(highlighted_title)}
             )
+            
 
     return render(
         request,
