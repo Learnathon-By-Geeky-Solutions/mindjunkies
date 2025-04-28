@@ -19,14 +19,11 @@ CLOUDINARY_STORAGE = {
     "API_SECRET": config("CLOUDINARY_API_SECRET"),
 }
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = config("SECRET_KEY")
 
-
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost", cast=Csv())
-
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -120,21 +117,6 @@ WSGI_APPLICATION = "project.wsgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",         # <host>:<port>/<db>
-        "OPTIONS": {
-            "PASSWORD": config('REDIS_PASSWORD'),               # match your requirepass
-            # optionally: "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        },
-    }
-}
-
-
-ELASTICSEARCH_DSL = {"default": {"hosts": "http://localhost:9200"}}
-
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -165,7 +147,6 @@ TIME_ZONE = "Asia/Dhaka"
 USE_I18N = True
 
 USE_TZ = True
-
 
 STATICFILES_DIRS = [
     BASE_DIR / "mindjunkies/static",
