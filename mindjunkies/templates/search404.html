@@ -1,39 +1,26 @@
-<div class="min-h-[50vh] flex items-center justify-center px-4">
-    <div class="card w-full max-w-md bg-base-100 shadow-xl">
-      <div class="card-body items-center text-center">
-        <div class="mb-6">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-warning" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
-        
-        <h2 class="card-title text-2xl font-bold mb-2">No Results Found</h2>
-        
-        {% if exception %}
-          <div class="alert alert-error shadow-lg mb-4">
-            <div>
-              <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>{{ exception }}</span>
-            </div>
-          </div>
-        {% else %}
-          <p class="text-base-content opacity-80 mb-6">
-            Your search did not return any results. Please try again with different keywords.
-          </p>
-        {% endif %}
-        
-        
-        
-       
-        
-        <div class="card-actions">
-          <a href="{% url 'home' %}" class="btn btn-outline">
-            Return to Homepage
-          </a>
-        
-        </div>
-      </div>
+<div class="flex flex-col items-center justify-center py-12 text-center">
+    <div class="w-32 h-32 bg-base-200 rounded-full flex items-center justify-center mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-base-content/50" fill="none" viewBox="0 0 24 24"
+             stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
     </div>
-  </div>
+    <h2 class="text-2xl font-bold mb-2">No results found</h2>
+    <p class="text-base-content/70 mb-6 max-w-md">We couldn't find any courses matching your search criteria. Try
+        adjusting your filters or search terms.</p>
+
+    <div class="space-y-4 max-w-md w-full">
+        <h3 class="font-semibold">Suggestions:</h3>
+        <ul class="list-disc list-inside text-left space-y-2">
+            <li>Check the spelling of your search terms</li>
+            <li>Try using more general keywords</li>
+            <li>Remove some filters to broaden your search</li>
+            <li>Try searching for related topics</li>
+        </ul>
+    </div>
+
+    <div class="mt-8">
+        <a href="{% url 'course_list' %}" class="btn btn-primary">Browse All Courses</a>
+    </div>
+</div>
