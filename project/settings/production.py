@@ -1,7 +1,7 @@
 from project.settings.base import *
 from decouple import config, Csv
 
-DEBUG = False
+DEBUG = True
 
 DATABASES = {
     "default": {
