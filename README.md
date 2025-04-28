@@ -28,13 +28,20 @@
 
 # 🔎 About BiddyaPeeth
 
-BiddyaPeeth is a comprehensive, next-generation **Learning Management System (LMS)** built with Django and Tailwind CSS.
-It provides a modern platform for online learning with:
+**BiddyaPeeth** is an advanced, next-generation **EdTech platform** built with **Django** and **Tailwind CSS**, designed to revolutionize digital learning experiences. 
 
-- **Role-based dashboards** for students, teachers, and admins.
-- **Course management**, **live classes**, and **assignment evaluation**.
-- **Integrated payment system** for premium features.
-- **Real-time communication** and **live conferencing**.
+It offers a **modern, scalable**, and **student-centric** environment for online education, empowering both learners and instructors with seamless tools for engagement and management.
+
+### 🚀 Key Highlights
+
+- **Role-based dashboards** tailored for students, teachers, and administrators.
+- **Comprehensive course management** — from course creation to enrollment and content delivery.
+- **Live virtual classrooms** with real-time video conferencing, chat, polls, and screen sharing.
+- **Integrated payment solutions** enabling access to premium educational services.
+- **Dynamic community forums** for collaborative learning and peer interactions.
+- **Scalable and mobile-friendly** design for accessibility across devices.
+
+---
 
 ### 🔥 Why BiddyaPeeth?
 
@@ -119,3 +126,72 @@ k8s/     # Kubernetes Deployment Files
 docs/    # Documentation
 Dockerfile
 manage.py
+
+```
+
+----------
+
+## Resources
+
+- [Wiki Link](https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/wiki)
+- [Project Documentation](docs/)
+- [Development Setup](docs/guides/getting-started.md)
+- [Contributing Guidelines](docs/CONTRIBUTING.md)
+
+
+----------
+
+
+## Getting Started
+
+Follow these steps to set up the project locally:
+
+### Prerequisites
+
+- Python 3.11+
+- uv
+- PostgreSQL / SQLite
+
+### Local Development Setup
+
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies
+    cd mindjunkies
+    ```
+2. Install dependencies:
+    ```sh
+    pip install uv
+    uv sync
+    ```
+3. Start development:
+    ```sh
+    cp .env.example .env # Modify the environment variables
+    python manage.py migrate
+    python manage.py createsuperuser
+    python manage.py runserver
+    python manage.py tailwind watch
+    ```
+4. Open [http://localhost:8000](http://localhost:8000) in your browser.
+
+
+### Using Docker
+
+```bash
+# Build and start containers
+docker-compose up --build
+
+```
+----------
+## 🤝 Contributing
+
+We welcome contributions!  
+Please read our [CONTRIBUTING.md](docs/CONTRIBUTING.md) for more information on how to get started.
+
+----------
+
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
