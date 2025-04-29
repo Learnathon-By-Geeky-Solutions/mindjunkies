@@ -20,7 +20,7 @@ ENV PATH="/root/.local/bin/:$PATH"
 COPY pyproject.toml uv.lock ./
 
 # Sync dependencies
-RUN uv sync --frozen && uv sync --group prod --frozen
+RUN uv sync --all-groups --frozen
 
 # Copy project files
 COPY . .
