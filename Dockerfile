@@ -29,6 +29,7 @@ ADD . /app
 
 
 # Sync dependencies
+RUN uv sync --all-groups
 RUN uv sync --frozen && uv sync --group prod --frozen
 
 # Collect static files
