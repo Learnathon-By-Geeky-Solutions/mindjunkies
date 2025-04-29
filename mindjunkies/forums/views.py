@@ -45,8 +45,7 @@ class ForumHomeView(LoginRequiredMixin, CourseContextMixin, TemplateView):
         print("hello")
 
         return super().dispatch(request, *args, **kwargs)
-
-    
+                                                                                      
 
 
 class ForumThreadView(LoginRequiredMixin, CourseContextMixin, TemplateView):
