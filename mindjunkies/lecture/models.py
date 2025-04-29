@@ -1,4 +1,5 @@
 import cloudinary
+import uuid
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.text import slugify
@@ -37,7 +38,13 @@ class Lecture(BaseModel):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            base_slug = slugify(self.title)
+            slug = base_slug
+            # Check if slug already exists
+            model_class = self.__class__
+            if not model_class.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{str(uuid.uuid4())[:8]}"  # Add random 8 chars
+            self.slug = slug
         self.full_clean()
         super().save(*args, **kwargs)
 

@@ -86,9 +86,8 @@ class Course(BaseModel):
             base_slug = slugify(self.title)
             slug = base_slug
             # Check if slug already exists
-            ModelClass = self.__class__
-            counter = 1
-            if not ModelClass.objects.filter(slug=slug).exists():
+            model_class = self.__class__
+            if not model_class.objects.filter(slug=slug).exists():
                 slug = f"{base_slug}-{str(uuid.uuid4())[:8]}"  # Add random 8 chars
             self.slug = slug
 
