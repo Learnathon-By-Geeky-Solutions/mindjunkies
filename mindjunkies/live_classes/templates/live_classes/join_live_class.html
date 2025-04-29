@@ -7,7 +7,7 @@
   <header class="bg-white shadow">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <h1 class="text-3xl font-bold text-gray-900">
-        Live Class: {{ live_class.topic }}
+        Live Class: {{ live_class.topic }}  
       </h1>
     </div>
   </header>
@@ -102,7 +102,7 @@
   const initIframeAPI = () => {
     const domain = "8x8.vc";
     const options = {
-      roomName: "vpaas-magic-cookie-fb583aeece2040b4805f50d0b267e75b/{{ live_class.meeting_id }}",
+      roomName: "{{ room_name }}",
       width: "100%",
       height: "100%",
       parentNode: document.querySelector("#meet"),

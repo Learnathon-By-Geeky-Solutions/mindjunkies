@@ -160,6 +160,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_REDIRECT_URL = "/"
 AUTH_USER_MODEL = "accounts.User"
 
+
+JITSI_APP_ID = config("JITSI_APP_ID")
+
 # allauth settings
 SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
