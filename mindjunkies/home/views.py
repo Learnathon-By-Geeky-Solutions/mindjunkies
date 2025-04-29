@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Count
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
 from django.views.decorators.http import require_http_methods
@@ -30,7 +31,14 @@ class HomeView(View):
 
             enrolled_courses = [enrollment.course for enrollment in enrollments][:4]
             teacher_courses = Course.objects.filter(teacher=request.user)
-        
+
+        popular_courses = Course.objects.annotate(
+            active_enrollments=Count('enrollments', filter=models.Q(enrollments__status='active'))
+        ).filter(status="published", verified=True).order_by('-active_enrollments', '-total_rating')
+
+
+        print("popular_courses:", popular_courses)
+
         new_courses = Course.objects.exclude(
             id__in=[course.id for course in enrolled_courses]
         ).order_by("-created_at").filter(status="published", verified=True)[:4]
@@ -43,7 +51,7 @@ class HomeView(View):
 
         context = {
             "new_courses": new_courses,
-            "courses": courses,
+            "popular_courses": popular_courses,
             "categories": categories,
             "enrolled_courses": enrolled_courses,
             "enrolled_classes": enrolled_courses,
