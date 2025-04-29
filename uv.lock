@@ -291,6 +291,20 @@ socialaccount = [
 ]
 
 [[package]]
+name = "django-anymail"
+version = "13.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "requests" },
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e3/8f/c5c8e0c952797247c763edfd02346a9f989489d54a3debd717ecb0abb55a/django_anymail-13.0.tar.gz", hash = "sha256:87f42d9ff12a9a029d5e88edaaf62a4b880aa9a6a7ef937042b7e96579e6db07", size = 94298 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c5/32/c9691a478ca0460131c2f0bfadbb0e20cd316588aa24f809aebdaa7a79b2/django_anymail-13.0-py3-none-any.whl", hash = "sha256:6da4465eff18f679955f74332501a3a4299e34079015d91e1fce9c049d784d6c", size = 130285 },
+]
+
+[[package]]
 name = "django-browser-reload"
 version = "1.18.0"
 source = { registry = "https://pypi.org/simple" }
@@ -713,6 +727,7 @@ dependencies = [
     { name = "dj-database-url" },
     { name = "django" },
     { name = "django-allauth", extra = ["socialaccount"] },
+    { name = "django-anymail" },
     { name = "django-categories" },
     { name = "django-cloudinary-storage" },
     { name = "django-crispy-forms" },
@@ -764,6 +779,7 @@ requires-dist = [
     { name = "dj-database-url", specifier = ">=2.3.0" },
     { name = "django", specifier = ">=5.1.7" },
     { name = "django-allauth", extras = ["socialaccount"], specifier = ">=65.4.1" },
+    { name = "django-anymail", extras = ["postmark"], specifier = ">=13.0" },
     { name = "django-categories", specifier = ">=2.0.0" },
     { name = "django-cloudinary-storage", specifier = ">=0.3.0" },
     { name = "django-crispy-forms", specifier = ">=2.3" },

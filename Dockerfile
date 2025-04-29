@@ -29,12 +29,13 @@ ADD . /app
 
 
 # Sync dependencies
-RUN uv sync --all-groups
-RUN uv sync --frozen && uv sync --group prod --frozen
+RUN uv sync --all-groups --frozen
 
 # Collect static files
 RUN mkdir -p /app/staticfiles
 
 RUN chmod +x /app/entrypoint.sh
+RUN chmod +x /app/collectstatic.sh
+RUN chmod +x /app/migrate.sh
 
 CMD ["sh", "/app/entrypoint.sh"]
