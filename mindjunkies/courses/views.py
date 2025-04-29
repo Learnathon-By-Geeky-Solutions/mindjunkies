@@ -15,6 +15,8 @@ from mindjunkies.courses.models import Course, CourseCategory, Enrollment
 from .models import Course, Enrollment
 from .forms import CourseForm, RatingForm
 from .models import CourseToken, LastVisitedCourse, Rating
+from django.dispatch import Signal
+from mindjunkies.courses.signals import course_updated
 
 
 @require_http_methods(["GET"])
@@ -125,6 +127,8 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
             course=course, teacher=self.request.user, status="pending"
         )
 
+
+        course_updated.send(sender=Course, instance=course, user=self.request.user)
         messages.success(self.request, "Course created successfully and is pending approval!")
         return super().form_valid(form)
 
@@ -211,7 +215,7 @@ def user_course_list(request: HttpRequest) -> HttpResponse:
 def category_courses(request, slug):
     category = get_object_or_404(CourseCategory, slug=slug)
     sub_categories = category.get_descendants(include_self=True)
-    courses = Course.objects.filter(category__in=sub_categories)
+    courses = Course.objects.filter(category__in=sub_categories, verified=True)
     return render(
         request,
         "courses/category_courses.html",
