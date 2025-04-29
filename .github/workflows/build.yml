@@ -211,48 +211,10 @@ jobs:
       - name: Deploy Elasticsearch
         run: |
           kubectl apply -f k8s/apps/elasticsearch.yml
-  
-  deploy-https-ingress:
-    name: Deploy Ingress + Cert Manager (HTTPS)
-    runs-on: ubuntu-latest
-    needs: deploy
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install doctl
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DO_API_TOKEN_KEY }}
-
-      - name: Save Kubeconfig
-        run: |
-          doctl kubernetes cluster kubeconfig save --expiry-seconds 600 django-mindjunkies
-
-      - name: Install cert-manager
-        run: |
-          kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.2/cert-manager.yaml
-          kubectl rollout status deployment cert-manager -n cert-manager --timeout=120s
-
-      - name: Install Nginx Ingress Controller
-        run: |
-          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/do/deploy.yaml
-          kubectl rollout status deployment ingress-nginx-controller -n ingress-nginx --timeout=120s
-
-      - name: Apply Cert Issuer
-        run: |
-          kubectl apply -f k8s/cert-issuer.yml
-
-      - name: Apply Django Ingress (HTTPS)
-        run: |
-          kubectl apply -f k8s/ingress.yml
-
-      - name: Wait for Ingress to be ready
-        run: |
-          kubectl rollout status deployment ingress-nginx-controller -n ingress-nginx --timeout=120s
 
   run-postdeploy-jobs:
     runs-on: ubuntu-latest
-    needs: deploy-https-ingress
+    needs: deploy
     steps:
       - uses: actions/checkout@v4
 
