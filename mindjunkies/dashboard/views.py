@@ -144,6 +144,10 @@ class VerificationWaitView(LoginRequiredMixin, View):
     """
 
     def get(self, request, *args, **kwargs):
+        if request.user.is_teacher:
+            messages.info(request, "You are already a verified teacher.")
+            return redirect('dashboard')
+
         return render(
             request,
             "verification_wait.html",

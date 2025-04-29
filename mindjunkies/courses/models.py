@@ -11,6 +11,8 @@ from django.core.exceptions import ValidationError
 from config.models import BaseModel
 from taggit.managers import TaggableManager
 
+from mindjunkies.courses.tests.test_views import course
+
 user = "accounts.User"
 
 
@@ -90,6 +92,9 @@ class Course(BaseModel):
             if not model_class.objects.filter(slug=slug).exists():
                 slug = f"{base_slug}-{str(uuid.uuid4())[:8]}"  # Add random 8 chars
             self.slug = slug
+
+        if self.course_price > 0:
+            self.paid_course = True
 
         if not self.teacher:
             raise ValueError("Teacher is required.")

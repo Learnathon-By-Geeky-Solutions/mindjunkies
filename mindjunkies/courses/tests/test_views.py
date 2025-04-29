@@ -3,7 +3,6 @@ from django.urls import reverse
 from model_bakery import baker
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from mindjunkies.courses.models import Course, Enrollment, CourseCategory, Rating, CourseToken
 
 
 @pytest.fixture
@@ -18,22 +17,22 @@ def teacher_user(db):
 
 @pytest.fixture
 def course(db, teacher_user):
-    return baker.make(Course, teacher=teacher_user)
+    return baker.make('courses.Course', teacher=teacher_user)
 
 
 @pytest.fixture
 def enrollment(db, user, course):
-    return baker.make(Enrollment, student=user, course=course, status="active")
+    return baker.make('courses.Enrollment', student=user, course=course, status="active")
 
 
 @pytest.fixture
 def category(db):
-    return baker.make(CourseCategory)
+    return baker.make('courses.CourseCategory')
 
 
 @pytest.fixture
 def rating(db, user, course):
-    return baker.make(Rating, student=user, course=course)
+    return baker.make('courses.Rating', student=user, course=course)
 
 
 @pytest.mark.django_db
@@ -83,7 +82,7 @@ def test_create_course_get(client, teacher_user):
 @pytest.mark.django_db
 def test_create_course_get_pending_token(client, teacher_user):
     client.force_login(teacher_user)
-    baker.make(CourseToken, teacher=teacher_user, status="pending")
+    baker.make('courses.CourseToken', teacher=teacher_user, status="pending")
     url = reverse('create_course')
     response = client.get(url)
     assert response.status_code == 302

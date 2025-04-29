@@ -197,7 +197,7 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
 @require_http_methods(["GET"])
 def user_course_list(request: HttpRequest) -> HttpResponse:
     courses = (
-        Course.objects.filter(enrollments__student=request.user)
+        Course.objects.filter(enrollments__student=request.user, status="active")
         .annotate(
             last_visited_at=models.Subquery(
                 LastVisitedCourse.objects.filter(
