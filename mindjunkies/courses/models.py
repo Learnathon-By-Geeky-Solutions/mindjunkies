@@ -11,8 +11,6 @@ from django.core.exceptions import ValidationError
 from config.models import BaseModel
 from taggit.managers import TaggableManager
 
-from mindjunkies.courses.tests.test_views import course
-
 user = "accounts.User"
 
 

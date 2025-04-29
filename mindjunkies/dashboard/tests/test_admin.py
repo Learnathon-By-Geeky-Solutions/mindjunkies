@@ -60,7 +60,7 @@ class TestTeacherVerificationAdmin:
         user.refresh_from_db()
         
         # Check that the action had the expected effects
-        assert verification.verified is False
+        assert verification.verified is True
         assert user.is_teacher is True
         assert teacher_group in user.groups.all()
     
@@ -83,7 +83,7 @@ class TestTeacherVerificationAdmin:
         user.refresh_from_db()
         
         # Check that the action had the expected effects
-        assert verification.verified is True
+        assert verification.verified is False
         assert user.is_teacher is False
         assert teacher_group not in user.groups.all()
 
