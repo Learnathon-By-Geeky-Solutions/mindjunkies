@@ -192,8 +192,9 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
 @require_http_methods(["GET"])
 def user_course_list(request: HttpRequest) -> HttpResponse:
     courses = Course.objects.filter(
-        enrollments__student=request.user, enrollments__status="active"
-    ).select_related("category", "teacher").distinct()
+        enrollments__student=request.user,
+        enrollments__status="active"
+    ).exclude(teacher=request.user).select_related("category", "teacher").distinct()
 
     return render(request, "courses/course_list.html", {"courses": courses})
 
