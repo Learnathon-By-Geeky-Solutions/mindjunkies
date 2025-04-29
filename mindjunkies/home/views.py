@@ -30,7 +30,7 @@ class HomeView(View):
 
             enrolled_courses = [enrollment.course for enrollment in enrollments][:4]
             teacher_courses = Course.objects.filter(teacher=request.user)
-
+        
         new_courses = Course.objects.exclude(
             id__in=[course.id for course in enrolled_courses]
         ).order_by("-created_at").filter(status="published", verified=True)[:4]

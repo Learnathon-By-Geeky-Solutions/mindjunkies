@@ -11,6 +11,7 @@ class Command(BaseCommand):
         teacher_verifications = TeacherVerification.objects.all()
 
         teacher_verifications.delete()
+        users = list(users)
         selected_users = random.sample(users, 5)  # pick 5 users randomly
 
         for user in selected_users:
