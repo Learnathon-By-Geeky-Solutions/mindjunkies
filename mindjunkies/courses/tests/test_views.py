@@ -3,6 +3,7 @@ from django.urls import reverse
 from model_bakery import baker
 from django.core.files.uploadedfile import SimpleUploadedFile
 
+from mindjunkies.courses.models import Course
 
 
 @pytest.fixture
@@ -91,6 +92,7 @@ def test_create_course_get_pending_token(client, teacher_user):
 
 @pytest.mark.django_db
 def test_create_course_post_success(client, teacher_user, category):
+    course = "courses.Course"
     client.force_login(teacher_user)
     url = reverse('create_course')
 
