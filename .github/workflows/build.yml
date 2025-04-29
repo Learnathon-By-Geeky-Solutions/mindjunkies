@@ -224,8 +224,6 @@ jobs:
           kubectl delete job django-migrate-job --ignore-not-found
           kubectl apply -f k8s/jobs/django-migrate-job.yml
 
-          echo "Describing job status..."
-          kubectl describe job django-migrate-job
           echo "Showing last 50 lines of job logs..."
           kubectl logs job/django-migrate-job --tail=50
           echo "Waiting for job to complete..."
@@ -234,8 +232,6 @@ jobs:
           kubectl delete job django-collectstatic-job --ignore-not-found
           kubectl apply -f k8s/jobs/django-collectstatic-job.yml
 
-          echo "Describing job status..."
-          kubectl describe job django-collectstatic-job
           echo "Showing last 50 lines of job logs..."
           kubectl logs django-collectstatic-job --tail=50
           echo "Waiting for job to complete..."
