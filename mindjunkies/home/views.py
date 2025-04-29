@@ -1,12 +1,49 @@
 from django.db import models
 from django.db.models import Count
+from django.core.cache import cache
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
 from django.views.decorators.http import require_http_methods
 from django.views import View
+import uuid
 
 from mindjunkies.courses.models import Course, CourseCategory, Enrollment, LastVisitedCourse
 from mindjunkies.lecture.models import LastVisitedModule, Lecture
+
+
+
+def get_popular_courses(user_uuid):
+    cache_key = f"popular_courses_{user_uuid}"
+    popular_courses = cache.get(cache_key)
+
+
+
+    if popular_courses is None:
+        print("Cache miss for popular courses")
+        popular_courses = Course.objects.annotate(
+            active_enrollments=Count('enrollments', filter=models.Q(enrollments__status='active'))
+        ).filter(status="published", verified=True).order_by('-active_enrollments', '-total_rating')
+
+        popular_courses = list(popular_courses)
+        cache.set(cache_key, popular_courses, timeout=60 * 5)
+
+    return popular_courses
+
+
+def get_new_courses(user_uuid):
+    cache_key = f"new_courses_{user_uuid}"
+    new_courses = cache.get(cache_key)
+
+    if new_courses is None:
+        print("Cache miss for new courses")
+        new_courses = Course.objects.filter(status="published", verified=True).order_by("-created_at")[:4]
+        new_courses = list(new_courses)
+        cache.set(cache_key, new_courses, timeout=60 * 5)
+    return new_courses
+
+
+    
+
 
 
 class HomeView(View):
@@ -24,6 +61,14 @@ class HomeView(View):
         enrolled_courses = []
         teacher_courses = []
 
+        user = request.user
+
+        if not user.is_authenticated:
+            user_uuid = str(uuid.uuid4())
+
+        else:
+            user_uuid = str(user.uuid)
+
         if request.user.is_authenticated:
             enrollments = Enrollment.objects.filter(
                 student=request.user, status="active"
@@ -32,20 +77,11 @@ class HomeView(View):
             enrolled_courses = [enrollment.course for enrollment in enrollments][:4]
             teacher_courses = Course.objects.filter(teacher=request.user)
 
-        popular_courses = Course.objects.annotate(
-            active_enrollments=Count('enrollments', filter=models.Q(enrollments__status='active'))
-        ).filter(status="published", verified=True).order_by('-active_enrollments', '-total_rating')
-
-
+        popular_courses = get_popular_courses(user_uuid)
         print("popular_courses:", popular_courses)
 
-        new_courses = Course.objects.exclude(
-            id__in=[course.id for course in enrolled_courses]
-        ).order_by("-created_at").filter(status="published", verified=True)[:4]
+        new_courses = get_new_courses(user_uuid)
 
-        courses = Course.objects.exclude(
-            id__in=new_courses.values_list("id", flat=True)
-        ).exclude(id__in=[course.id for course in enrolled_courses]).filter(status="published", verified=True)[:4]
 
         featured_courses = Course.objects.filter(status="published", verified=True)
 
