@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mindjunkies-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mindjunkies-redis
+  template:
+    metadata:
+      labels:
+        app: mindjunkies-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7.2-alpine
+          ports:
+            - containerPort: 6379
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mindjunkies-redis-master
+  labels:
+    app: mindjunkies-redis
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    app: mindjunkies-redis
+  type: ClusterIP

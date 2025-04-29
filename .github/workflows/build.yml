@@ -204,6 +204,14 @@ jobs:
           kubectl apply -f k8s/apps/django-mindjunkies-web.yml
           kubectl rollout status deployment/django-mindjunkies-web-deployment
 
+      - name: Deploy Redis
+        run: |
+          kubectl apply -f k8s/apps/redis.yml
+
+      - name: Deploy Elasticsearch
+        run: |
+          kubectl apply -f k8s/apps/elasticsearch.yml
+
   run-postdeploy-jobs:
     runs-on: ubuntu-latest
     needs: deploy
@@ -232,3 +240,13 @@ jobs:
 
           echo "Waiting for job to complete..."
           kubectl wait --for=condition=complete job/django-collectstatic-job --timeout=120s
+          
+
+      - name: Rebuild Search Index
+        run: |
+          sleep 30
+          echo "Rebuilding Search Index..."
+          kubectl delete job django-rebuild-search-job --ignore-not-found
+          kubectl apply -f k8s/jobs/django-rebuild-search-job.yml
+          kubectl wait --for=condition=complete job/django-rebuild-search-job --timeout=120s
+

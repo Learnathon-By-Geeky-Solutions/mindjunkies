@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: django-migrate-job
+  name: django-rebuild-search-job
   namespace: default
 spec:
   backoffLimit: 1
@@ -9,9 +9,10 @@ spec:
     spec:
       restartPolicy: Never
       containers:
-        - name: django-migrate
+        - name: django-rebuild-search
           image: registry.digitalocean.com/mindjunkies/django-mindjunkies-web:latest
-          command: [ "/bin/bash", "-c", "/app/migrate.sh" ]
+          imagePullPolicy: Always
+          command: [ "uv", "run", "python", "manage.py", "search_index", "--rebuild"]
           envFrom:
             - secretRef:
                 name: django-mindjunkies-prod-env
