@@ -12,7 +12,7 @@ spec:
         - name: django-rebuild-search
           image: registry.digitalocean.com/mindjunkies/django-mindjunkies-web:latest
           imagePullPolicy: Always
-          command: [ "uv", "run", "python", "manage.py", "search_index", "--rebuild", "--noinput" ]
+          command: [ "uv", "run", "python", "manage.py", "search_index", "--rebuild"]
           envFrom:
             - secretRef:
                 name: django-mindjunkies-prod-env
