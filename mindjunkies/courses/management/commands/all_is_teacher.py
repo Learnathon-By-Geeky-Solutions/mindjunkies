@@ -1,3 +1,4 @@
+import random
 from django.core.management.base import BaseCommand
 from mindjunkies.accounts.models import User
 from mindjunkies.dashboard.models import TeacherVerification  # Replace 'your_app' with your app name
@@ -10,8 +11,9 @@ class Command(BaseCommand):
         teacher_verifications = TeacherVerification.objects.all()
 
         teacher_verifications.delete()
+        selected_users = random.sample(users, 5)  # pick 5 users randomly
 
-        for user in users:
+        for user in selected_users:
             tv, created = TeacherVerification.objects.get_or_create(
                 user=user,
                 defaults={
