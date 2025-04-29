@@ -1,18 +1,15 @@
 
 <div align="center">
 
-# 🚀 BiddyaPeeth
 
-<h3>Modern EdTech Platform built with Django and Tailwind CSS</h3>
+
+
+
 
 <img src="docs/resources/logo.png" alt="BiddyaPeeth Logo" width="200" height="auto">
+<h3>Empowering Learning, Anywhere, Anytime</h3>
+<h4> From foundational knowledge to advanced mastery,Biddyapeeth helps you learn, grow, and succeed at your own pace.<h4>
 
-### Explore Our Documentation, Demo, and Resources!
-
-[![View Demo](https://img.shields.io/badge/View-Demo-22c55e?style=for-the-badge&logo=vercel&logoColor=white)](https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/)
-[![Documentation](https://img.shields.io/badge/View-Docs-3b82f6?style=for-the-badge&logo=readthedocs&logoColor=white)](https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/tree/main/docs)
-[![Contributing](https://img.shields.io/badge/Contribute-Guide-8b5cf6?style=for-the-badge&logo=github&logoColor=white)](docs/CONTRIBUTING.md)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
 ### Tech Stack
 
@@ -54,6 +51,25 @@
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="MIT License" />
   </a>
 </p>
+</div>
+
+---
+
+<div align="center">
+
+
+
+### SonarCloud Analysis
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_mindjunkies&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_mindjunkies)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_mindjunkies&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_mindjunkies)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_mindjunkies&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_mindjunkies)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_mindjunkies&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_mindjunkies)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_mindjunkies&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_mindjunkies)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_mindjunkies&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_mindjunkies)
+
+
+
 </div>
 
 ---
