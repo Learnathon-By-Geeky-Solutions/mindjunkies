@@ -57,7 +57,47 @@
 </div>
 
 ---
+## 📚 Explore Project Resources
 
+Stay updated and dive deeper into the project!
+
+- 📖 [**Wiki**](https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/wiki) – Project overview, documentation, and important guides.
+- 🛠️ [**Development Setup**](docs/guides/getting-started.md) – Get started with setting up your development environment.
+- 🤝 [**Contributing Guidelines**](docs/CONTRIBUTING.md) – Learn how to contribute and collaborate with us.
+- 📓 [**Dev Log**](docs/DevLog) – Track our development journey and major updates.
+<div align="center">
+  <a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/wiki">
+    <img src="https://img.shields.io/badge/MindJunkies-Wiki-007ACC?logo=github&logoColor=white&style=for-the-badge" alt="MindJunkies Wiki" />
+  </a>
+  <a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/tree/main/docs/DevLog">
+    <img src="https://img.shields.io/badge/DevLog-Updates-FFD700?logo=github&logoColor=white&style=for-the-badge" alt="Development Logs" />
+  </a>
+  <a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/blob/main/docs/guides/getting-started.md">
+    <img src="https://img.shields.io/badge/Getting%20Started-Guide-4CAF50?logo=github&logoColor=white&style=for-the-badge" alt="Getting Started Guide" />
+  </a>
+  <a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/blob/main/docs/CONTRIBUTING.md">
+    <img src="https://img.shields.io/badge/Contributing-Guidelines-FF69B4?logo=github&logoColor=white&style=for-the-badge" alt="Contributing Guidelines" />
+  </a>
+</div>
+
+---
+## 📋 Table of Contents
+- [Team](#-team)
+- [Project Overview](#-project-overview)
+- [Live Demo](#-live-demo)
+- [Key Features](#-key-features)
+- [System Architecture](#-system-architecture)
+- [Database Design](#-database-design)
+- [Tech Stack](#-tech-stack)
+- [Development Logs](#-development-logs)
+- [Getting Started](#-getting-started)
+- [Development Guidelines](#-development-guidelines)
+- [Testing](#-testing)
+- [Resources](#-resources)
+- [Contributing](#-contributing)
+- [License](#-license)
+
+---
 # 🔎 About BiddyaPeeth
 
 **BiddyaPeeth** is an advanced, next-generation **EdTech platform** built with **Django** and **Tailwind CSS**, designed to revolutionize digital learning experiences.
@@ -78,15 +118,15 @@ It offers a **modern, scalable**, and **student-centric** environment for online
 ### 🔥 Why BiddyaPeeth?
 
 Traditional education platforms often suffer from:
-❌ Poor user experience.
-❌ Limited real-time interaction capabilities.
-❌ Lack of modern design and scalability.
+- ❌ Poor user experience.
+- ❌ Limited real-time interaction capabilities.
+- ❌ Lack of modern design and scalability.
 
 **BiddyaPeeth solves these challenges** by offering:
-🔹 Seamless course and user management.
-🔹 A modern Tailwind CSS frontend.
-🔹 Fast deployment with Docker and Kubernetes-ready architecture.
-🔹 Real-time communication tools to foster active learning environments.
+- Seamless course and user management.
+- A modern Tailwind CSS frontend.
+- Fast deployment with Docker and Kubernetes-ready architecture.
+- Real-time communication tools to foster active learning environments.
 
 ### 🌍 Market Opportunity
 
@@ -94,22 +134,13 @@ Traditional education platforms often suffer from:
 - Increasing demand for **virtual education** and **interactive learning tools** worldwide.
 
 ---
-## 📋 Table of Contents
-- [Team](#-team)
-- [Project Overview](#-project-overview)
-- [Live Demo](#-live-demo)
-- [Key Features](#-key-features)
-- [System Architecture](#-system-architecture)
-- [Database Design](#-database-design)
-- [Tech Stack](#-tech-stack)
-- [Development Logs](#-development-logs)
-- [Getting Started](#-getting-started)
-- [Development Guidelines](#-development-guidelines)
-- [Testing](#-testing)
-- [Resources](#-resources)
-- [Contributing](#-contributing)
-- [License](#-license)
+## 🌐 Live Demo
 
+Experience Biddyapeeth in action by visiting our live demo:
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Now-blue?style=for-the-badge)](http://mindjunkies.tech/)
+
+Explore the platform's features and see how it transforms real-time learning into an interactive, seamless experience.
 
 
 <div align="center">
@@ -210,16 +241,6 @@ Dockerfile
 manage.py
 
 ```
-
-----------
-
-## Resources
-
-- [Wiki Link](https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/wiki)
-- [Project Documentation](docs/)
-- [Development Setup](docs/guides/getting-started.md)
-- [Contributing Guidelines](docs/CONTRIBUTING.md)
-
 
 ----------
 
