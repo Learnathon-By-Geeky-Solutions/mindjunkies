@@ -11,7 +11,6 @@ from mindjunkies.courses.models import Course, CourseCategory, Enrollment, LastV
 from mindjunkies.lecture.models import LastVisitedModule, Lecture
 
 
-
 # def get_popular_courses(user_uuid):
 #     cache_key = f"popular_courses_{user_uuid}"
 #     popular_courses = cache.get(cache_key)
@@ -41,10 +40,6 @@ from mindjunkies.lecture.models import LastVisitedModule, Lecture
 #         new_courses = list(new_courses)
 #         cache.set(cache_key, new_courses, timeout=60 * 5)
 #     return new_courses
-
-
-    
-
 
 
 class HomeView(View):
@@ -83,9 +78,8 @@ class HomeView(View):
         ).filter(status="published", verified=True).order_by('-active_enrollments', '-total_rating')
         print("popular_courses:", popular_courses)
 
-        new_courses = new_courses = Course.objects.filter(status="published", verified=True).order_by("-created_at")[:4]
-
-
+        new_courses = new_courses = Course.objects.filter(status="published", verified=True).order_by("-created_at")[
+                                    :4]
 
         featured_courses = Course.objects.filter(status="published", verified=True)
 
@@ -120,7 +114,6 @@ def search_view(request):
             highlighted_courses.append(
                 {"course": course, "highlighted_title": mark_safe(highlighted_title)}
             )
-            
 
     return render(
         request,
