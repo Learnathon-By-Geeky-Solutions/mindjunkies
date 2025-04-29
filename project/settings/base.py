@@ -161,8 +161,6 @@ LOGIN_REDIRECT_URL = "/"
 AUTH_USER_MODEL = "accounts.User"
 
 
-JITSI_APP_ID = config("JITSI_APP_ID")
-
 # allauth settings
 SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
@@ -266,14 +264,6 @@ UNFOLD = {
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
-
-# Email server configuration
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = config("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 
 JITSI_APP_ID = config("JITSI_APP_ID")
 JITSI_SECRET = config("JITSI_SECRET")

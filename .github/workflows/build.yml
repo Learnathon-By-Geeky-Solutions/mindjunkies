@@ -230,7 +230,7 @@ jobs:
       - name: Run Django Migrations and Collectstatic Jobs
         run: |
           kubectl delete job django-migrate-job --ignore-not-found
-          kubectl apply -f k8s/jobs/django-migrate-job.yml
+          kubectl apply -f k8s/jobs/django-migratese-job.yml
 
           echo "Waiting for job to complete..."
           kubectl wait --for=condition=complete job/django-migrate-job --timeout=120s
