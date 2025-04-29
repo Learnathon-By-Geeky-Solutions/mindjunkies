@@ -52,18 +52,23 @@
                         </ul>
                     </div>
                     <div class="flex gap-2">
-                        <button id="mark-completed-btn" class="btn btn-outline btn-success btn-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none"
-                                 viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M5 13l4 4L19 7"/>
-                            </svg>
-                            Mark as Completed
-                        </button>
+                        <a href="{% url 'mark_lecture_complete' course_slug=course.slug lecture_id=lecture.id %}">
+                            <button id="mark-completed-btn" class="btn btn-outline btn-success btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none"
+                                     viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M5 13l4 4L19 7"/>
+                                </svg>
+                                Mark as Completed
+                            </button>
+                        </a>
                         <a href="#" class="btn btn-primary btn-sm">Next</a>
                     </div>
-                </div
-                    <!-- Video Content -->
+                </div>
+            
+
+                <!-- Video content -->
+
                 <div class="p-6 max-w-6xl mx-auto">
                     <div class="rounded-xl bg-base-200 shadow-md overflow-hidden">
                         <div class="video-container w-full">

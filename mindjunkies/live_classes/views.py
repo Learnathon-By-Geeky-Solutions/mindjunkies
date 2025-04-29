@@ -4,9 +4,11 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import CreateView, ListView, View
 
+
 from mindjunkies.courses.models import Course, CourseToken
 
 from .models import LiveClass
+from django.conf import settings
 
 
 class LiveClassListView(LoginRequiredMixin, ListView):
@@ -80,6 +82,8 @@ class JoinLiveClassView(LoginRequiredMixin, View):
 
     def get(self, request, meeting_id):
         live_class = get_object_or_404(LiveClass, meeting_id=meeting_id)
+        room_name = settings.JITSI_APP_ID + "/" + live_class.meeting_id
+        print("room_name:", room_name)
         return render(
-            request, "live_classes/join_live_class.html", {"live_class": live_class}
+            request, "live_classes/join_live_class.html", {"room_name": room_name, "live_class": live_class}
         )
