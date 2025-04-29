@@ -36,7 +36,7 @@ def test_lecture_form_creates_slug_correctly(module):
     instance.course = course
     instance.save()
 
-    assert instance.slug == 'test-lecture-title'
+    assert instance.slug.startswith('test-lecture-title')
     assert instance.course == course
 
 

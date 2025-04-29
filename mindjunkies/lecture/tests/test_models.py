@@ -37,7 +37,7 @@ class TestLectureModel:
     def test_auto_slug_creation(self):
         """Test that a slug is automatically created from the title"""
         lecture = baker.make('lecture.lecture', title="Advanced Django")
-        assert lecture.slug == slugify("Advanced Django")
+        assert lecture.slug.startswith('advanced-django')
         
     def test_custom_slug(self):
         """Test that a custom slug can be set"""

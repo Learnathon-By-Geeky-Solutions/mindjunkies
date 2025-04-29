@@ -11,7 +11,7 @@ spec:
       containers:
         - name: django-collectstatic
           image: registry.digitalocean.com/mindjunkies/django-mindjunkies-web:latest
-          command: [ "/bin/bash", "-c", "python manage.py collectstatic --noinput" ]
+          command: [ "/bin/bash", "-c", "/app/collectstatic.sh" ]
           envFrom:
             - secretRef:
                 name: django-mindjunkies-prod-env

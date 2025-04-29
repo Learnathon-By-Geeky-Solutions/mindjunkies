@@ -33,7 +33,7 @@ def test_home_view_unauthenticated(client):
 
     assert response.status_code == 200
     assert "new_courses" in response.context
-    assert "courses" in response.context
+    assert "popular_courses" in response.context
 
 
 def test_home_view_authenticated(auth_client, create_user):

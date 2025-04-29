@@ -133,6 +133,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_API_TOKEN_KEY }}
+
       - name: Save Kubeconfig
         run: |
           doctl kubernetes cluster kubeconfig save --expiry-seconds 600 django-mindjunkies
@@ -205,6 +210,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_API_TOKEN_KEY }}
+
       - name: Save Kubeconfig
         run: |
           doctl kubernetes cluster kubeconfig save --expiry-seconds 600 django-mindjunkies
@@ -213,8 +223,12 @@ jobs:
         run: |
           kubectl delete job django-migrate-job --ignore-not-found
           kubectl apply -f k8s/jobs/django-migrate-job.yml
+
+          echo "Waiting for job to complete..."
           kubectl wait --for=condition=complete job/django-migrate-job --timeout=120s
           
           kubectl delete job django-collectstatic-job --ignore-not-found
           kubectl apply -f k8s/jobs/django-collectstatic-job.yml
+
+          echo "Waiting for job to complete..."
           kubectl wait --for=condition=complete job/django-collectstatic-job --timeout=120s
