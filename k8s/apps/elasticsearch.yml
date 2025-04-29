@@ -15,20 +15,24 @@ spec:
         app: mindjunkies-elasticsearch
     spec:
       containers:
-      - name: elasticsearch
-        image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
-        ports:
-        - containerPort: 9200
-        env:
-        - name: discovery.type
-          value: single-node
-        resources:
-          requests:
-            memory: "1Gi"
-            cpu: "500m"
-          limits:
-            memory: "2Gi"
-            cpu: "1"
+        - name: elasticsearch
+          image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+          ports:
+            - containerPort: 9200
+          env:
+            - name: discovery.type
+              value: single-node
+            - name: xpack.security.enabled
+              value: "false"
+            - name: xpack.security.http.ssl.enabled
+              value: "false"
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1"
 
 ---
 
@@ -41,7 +45,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 9200
-    targetPort: 9200
+    - port: 9200
+      targetPort: 9200
   selector:
     app: mindjunkies-elasticsearch

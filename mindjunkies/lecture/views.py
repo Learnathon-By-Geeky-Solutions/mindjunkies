@@ -248,6 +248,27 @@ class CreateContentView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin,
         self.lecture = get_object_or_404(Lecture, id=kwargs["lecture_id"])
         self.course = self.get_course()
 
+        
+        try:
+            token = CourseToken.objects.get(course=self.course, teacher=request.user)
+            print(token)
+            if token.status == "pending":
+                messages.error(
+                    request,
+                    "This course is not approved yet. Please wait for it to be approved.",
+                )
+                return redirect(
+                    reverse("lecture_home", kwargs={"course_slug": self.course.slug})
+                )
+        except CourseToken.DoesNotExist:
+            print("Hello")
+            messages.error(request, "You do not have permission for this course.")
+            return redirect(
+                reverse("lecture_home", kwargs={"course_slug": self.course.slug})
+            )
+
+        return super().dispatch(request, *args, **kwargs)
+
 
     def get_form_class(self):
         content_type = self.kwargs.get("format")
