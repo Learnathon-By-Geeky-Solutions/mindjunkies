@@ -2,9 +2,9 @@ name: Build Docker Container & Push to DO Registry
 
 on:
   push:
-    branches: [ main, deployment-digitalocean]
+    branches: [ main, deployment-digitalocean ]
   pull_request:
-    branches: [ main, deployment-digitalocean]
+    branches: [ main, deployment-digitalocean ]
 
 permissions:
   contents: read
@@ -65,10 +65,11 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.13]
+        python-version: [ 3.13 ]
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
@@ -87,7 +88,7 @@ jobs:
           echo "Waiting for Elasticsearch and Redis to be healthy..."
           sleep 20  # Optional, just to make sure services are ready
 
-      - name: Run Tests and Generate Coverage Report
+      - name: Run Tests
         env:
           DJANGO_SETTINGS_MODULE: project.settings.test
         run: |
@@ -100,8 +101,7 @@ jobs:
       contents: write
       packages: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -127,6 +127,16 @@ jobs:
         run: |
           doctl kubernetes cluster kubeconfig save --expiry-seconds 600 django-mindjunkies
 
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Save Kubeconfig
+        run: |
+          doctl kubernetes cluster kubeconfig save --expiry-seconds 600 django-mindjunkies
+
       - name: Update deployment secrets
         run: |
           echo "Creating .env.prod file from GitHub Secrets..."
@@ -134,7 +144,7 @@ jobs:
           
           DJANGO_SETTINGS_MODULE=project.settings.production
           SECRET_KEY=${{ secrets.SECRET_KEY }}
-          ALLOWED_HOSTS=209.38.124.215,biddyapeeth.mindjunkies.tech,mindjunkies.tech
+          ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}
           
           AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -184,10 +194,27 @@ jobs:
         run: |
           kubectl rollout status deployment/django-mindjunkies-web-deployment
 
-      - name: Post-build Django Commands - migrate, collectstatic
+      - name: Deploy Django App
         run: |
-          export SINGLE_POD_NAME=$(kubectl get pod -l app=django-mindjunkies-web-deployment -o jsonpath="{.items[0].metadata.name}")
-          echo "Running migrations on pod: $SINGLE_POD_NAME"
-          kubectl exec -i $SINGLE_POD_NAME -- bash /app/migrate.sh
-          echo "Collecting static files on pod: $SINGLE_POD_NAME"
-          kubectl exec -i $SINGLE_POD_NAME -- bash /app/collectstatic.sh
+          kubectl apply -f k8s/apps/django-mindjunkies-web.yml
+          kubectl rollout status deployment/django-mindjunkies-web-deployment
+
+  run-postdeploy-jobs:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Save Kubeconfig
+        run: |
+          doctl kubernetes cluster kubeconfig save --expiry-seconds 600 django-mindjunkies
+
+      - name: Run Django Migrations and Collectstatic Jobs
+        run: |
+          kubectl delete job django-migrate-job --ignore-not-found
+          kubectl apply -f k8s/jobs/django-migrate-job.yml
+          kubectl wait --for=condition=complete job/django-migrate-job --timeout=120s
+          
+          kubectl delete job django-collectstatic-job --ignore-not-found
+          kubectl apply -f k8s/jobs/django-collectstatic-job.yml
+          kubectl wait --for=condition=complete job/django-collectstatic-job --timeout=120s

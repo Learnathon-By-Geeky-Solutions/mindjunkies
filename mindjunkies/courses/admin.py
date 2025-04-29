@@ -18,10 +18,24 @@ class CourseAdmin(ModelAdmin):
         "course_price",
         "verified",
         "get_tags",
+        "average_rating",
+        "total_enrollments",
     )
 
     def get_tags(self, obj):
         return ", ".join(o.name for o in obj.tags.all())
+    
+    def average_rating(self, obj):
+        """Show the average rating rounded to 2 decimal places."""
+        return round(obj.total_rating, 2)
+
+    average_rating.short_description = "Avg. Rating"
+
+    def total_enrollments(self, obj):
+        """Show total number of enrollments."""
+        return obj.get_total_enrollments()
+
+    total_enrollments.short_description = "Enrollments"
 
 
 @admin.register(Enrollment)
