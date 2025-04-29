@@ -73,10 +73,10 @@ class Course(BaseModel):
     total_rating = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     number_of_ratings = models.PositiveIntegerField(default=0)
 
+    verified = models.BooleanField(default=False)
+
     # Tags for the course
     tags = TaggableManager(blank=True)
-
-    verified = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
@@ -93,7 +93,7 @@ class Course(BaseModel):
 
         if not self.teacher:
             raise ValueError("Teacher is required.")
-    
+
         super().save(*args, **kwargs)
 
     def update_rating(self):

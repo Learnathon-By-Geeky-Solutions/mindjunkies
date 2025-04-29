@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: django-migrate-job
+  namespace: default
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: django-migrate
+          image: registry.digitalocean.com/mindjunkies/django-mindjunkies-web:latest
+          command: [ "/bin/bash", "-c", "python manage.py migrate --noinput" ]
+          envFrom:
+            - secretRef:
+                name: django-mindjunkies-prod-env

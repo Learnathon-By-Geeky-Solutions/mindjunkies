@@ -3,10 +3,12 @@ from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 from faker import Faker
 from mindjunkies.accounts.models import User
-from mindjunkies.courses.models import Course, CourseCategory, CourseInfo, Module, Enrollment, Rating, CourseToken, LastVisitedCourse
+from mindjunkies.courses.models import Course, CourseCategory, CourseInfo, Module, Enrollment, Rating, CourseToken, \
+    LastVisitedCourse
 from datetime import datetime, timedelta
 
 fake = Faker()
+
 
 class Command(BaseCommand):
     help = 'Populate the database with sample [Course, CourseCategory, CourseInfo, Module, Enrollment, Rating, CourseToken, LastVisitedCourse]'
@@ -65,7 +67,8 @@ class Command(BaseCommand):
                 teacher=teacher,
                 course_image=None,  # Cloudinary requires API setup
                 status=random.choice(["draft", "published", "archived"]),
-                published_on=datetime.now() - timedelta(days=random.randint(0, 365)) if random.choice([True, False]) else None,
+                published_on=datetime.now() - timedelta(days=random.randint(0, 365)) if random.choice(
+                    [True, False]) else None,
                 paid_course=is_paid_course,
                 course_price=random.uniform(10.0, 100.0) if is_paid_course else 0.0,
                 upcoming=random.choice([True, False]),
@@ -85,7 +88,7 @@ class Command(BaseCommand):
             for i in range(random.randint(3, 7)):
                 Module.objects.create(
                     course=course,
-                    title=f"Module {i+1}: {fake.sentence(nb_words=4)}",
+                    title=f"Module {i + 1}: {fake.sentence(nb_words=4)}",
                     order=i
                 )
 
@@ -124,6 +127,7 @@ class Command(BaseCommand):
                     course=course
                 )
 
-            self.stdout.write(f"Created course: {course.title} with {num_enrollments if students.exists() else 0} enrollments")
+            self.stdout.write(
+                f"Created course: {course.title} with {num_enrollments if students.exists() else 0} enrollments")
 
         self.stdout.write(self.style.SUCCESS("Course data population completed successfully!"))
