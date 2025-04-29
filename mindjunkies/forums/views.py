@@ -41,22 +41,7 @@ class ForumHomeView(LoginRequiredMixin, CourseContextMixin, TemplateView):
     def dispatch(self, request, *args, **kwargs):
         self.course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
 
-        # Check if a CourseToken exists for the current teacher and if it's pending.
-        try:
-            token = CourseToken.objects.get(course=self.course, teacher=request.user)
-            if token.status == "pending":
-                messages.error(
-                    request,
-                    "The course still unverified.\nPlease wait for it to be approved.",
-                )
-                return redirect(
-                    reverse("lecture_home", kwargs={"course_slug": self.course.slug})
-                )
-        except CourseToken.DoesNotExist:
-            messages.error(request, "You do not have permission for this course.")
-            return redirect(
-                reverse("lecture_home", kwargs={"course_slug": self.course.slug})
-            )
+        # Check if a CourseToken exists for the current teacher and 
 
         return super().dispatch(request, *args, **kwargs)
 
