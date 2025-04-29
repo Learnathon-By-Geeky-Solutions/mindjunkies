@@ -38,7 +38,7 @@ class Lecture(BaseModel):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            base_slug = slugify(self.title)
+            base_slug = slugify(self.title)[:200]
             slug = base_slug
             # Check if slug already exists
             model_class = self.__class__
