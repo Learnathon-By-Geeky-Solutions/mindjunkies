@@ -28,7 +28,6 @@ class TeacherHome(VerifiedTeacherRequiredMixin, View):
 
         context = {
             "courses": courses,
-            "status": "Published",
             "unverified_courses": unverified_courses,
         }
         return render(request, "components/content.html", context)

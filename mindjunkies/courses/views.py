@@ -61,13 +61,9 @@ class PopularCoursesView(BaseCourseView):
         context = super().get_context_data(**kwargs)
         enrolled_courses = self.get_enrolled_courses()
 
-        new_courses = Course.objects.exclude(
-            id__in=[course.id for course in enrolled_courses]
-        ).order_by("-created_at")
-
         courses = Course.objects.exclude(
-            id__in=new_courses.values_list("id", flat=True)
-        ).exclude(id__in=[course.id for course in enrolled_courses])
+            id__in=[course.id for course in enrolled_courses]
+        )
 
         popular_courses = courses.filter(verified=True).order_by("-enrollments")
         context["popular_courses"] = popular_courses
@@ -126,7 +122,6 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
         CourseToken.objects.create(
             course=course, teacher=self.request.user, status="pending"
         )
-
 
         course_updated.send(sender=Course, instance=course, user=self.request.user)
         messages.success(self.request, "Course created successfully and is pending approval!")
@@ -196,17 +191,9 @@ def course_details(request: HttpRequest, slug: str) -> HttpResponse:
 @login_required
 @require_http_methods(["GET"])
 def user_course_list(request: HttpRequest) -> HttpResponse:
-    courses = (
-        Course.objects.filter(enrollments__student=request.user, status="active")
-        .annotate(
-            last_visited_at=models.Subquery(
-                LastVisitedCourse.objects.filter(
-                    user=request.user, course=models.OuterRef("pk")
-                ).values("last_visited")[:1]
-            )
-        )
-        .order_by("-last_visited_at", "title")
-    )  # Order by last visited time, then alphabetically
+    courses = Course.objects.filter(
+        enrollments__student=request.user, enrollments__status="active"
+    ).select_related("category", "teacher").distinct()
 
     return render(request, "courses/course_list.html", {"courses": courses})
 
