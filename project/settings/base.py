@@ -163,7 +163,6 @@ AUTH_USER_MODEL = "accounts.User"
 
 # allauth settings
 SITE_ID = 1
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_LOGIN_METHODS = {"username", "email"}

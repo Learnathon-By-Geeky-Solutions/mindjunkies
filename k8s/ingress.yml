@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: django-mindjunkies-web-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: mindjunkies.tech
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: django-mindjunkies-web-service
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - mindjunkies.tech
+    secretName: mindjunkies-tech-tls
