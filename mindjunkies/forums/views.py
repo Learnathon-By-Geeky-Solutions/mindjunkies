@@ -42,6 +42,7 @@ class ForumHomeView(LoginRequiredMixin, CourseContextMixin, TemplateView):
         self.course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
 
         # Check if a CourseToken exists for the current teacher and 
+        print("hello")
 
         return super().dispatch(request, *args, **kwargs)
 
