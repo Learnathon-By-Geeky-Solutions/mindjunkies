@@ -32,7 +32,6 @@ class CourseContextMixin:
 class ForumHomeView(LoginRequiredMixin, CourseContextMixin, TemplateView):
     template_name = "forums/forum_home.html"
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -40,13 +39,7 @@ class ForumHomeView(LoginRequiredMixin, CourseContextMixin, TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         self.course = get_object_or_404(Course, slug=self.kwargs["course_slug"])
-
-        # Check if a CourseToken exists for the current teacher and 
-        print("hello")
-
         return super().dispatch(request, *args, **kwargs)
-
-    
 
 
 class ForumThreadView(LoginRequiredMixin, CourseContextMixin, TemplateView):
@@ -289,28 +282,26 @@ class ReplySubmissionView(LoginRequiredMixin, View):
 
 
 class ReplyDeletionView(LoginRequiredMixin, View):
-   def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         reply_id = self.kwargs.get("reply_id")
         reply = get_object_or_404(Reply, id=reply_id)
-        
+
         # Check if the user is authorized to delete the reply
         if request.user != reply.author:
             messages.error(request, "You are not authorized to delete this reply.")
             return render(request, "forums/partials/empty.html", status=403)
-        
+
         reply.delete()
         messages.success(request, "Reply deleted successfully.")
-        
+
         # Return an empty response for HTMX to remove the element
         return render(request, "forums/partials/empty.html", {})
-
-    
 
 
 class ReplyFormView(LoginRequiredMixin, CourseContextMixin, View):
     def get(self, request, *args, **kwargs):
         reply_id = self.kwargs.get("reply_id")
-       
+
         reply = get_object_or_404(Reply, id=reply_id)
         if not reply:
             reply = get_object_or_404(ForumComment, id=reply_id)

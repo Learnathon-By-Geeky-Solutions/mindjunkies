@@ -33,6 +33,21 @@ class CheckoutView(View, LoginRequiredMixin):
             return redirect("account_login")
         user = request.user
         course = get_object_or_404(Course, slug=course_slug)
+        if int(course.course_price) == 0:
+            # If the course is free, enroll the user directly
+            enrollment, _ = Enrollment.objects.get_or_create(
+                student=user,
+                course=course,
+                defaults={"status": "active"},
+            )
+            if enrollment.status == "active":
+                messages.success(request, "You have already enrolled in this course")
+                return redirect("home")
+            else:
+                enrollment.status = "active"
+                enrollment.save()
+                messages.success(request, "You have successfully enrolled in the course")
+                return redirect("my_course_list")
 
         Balance.objects.get_or_create(user=course.teacher, defaults={"amount": 0})
 
