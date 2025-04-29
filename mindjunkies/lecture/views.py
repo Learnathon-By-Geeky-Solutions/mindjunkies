@@ -251,6 +251,7 @@ class CreateContentView(LoginRequiredMixin, CourseObjectMixin, LectureFormMixin,
         
         try:
             token = CourseToken.objects.get(course=self.course, teacher=request.user)
+            print(token)
             if token.status == "pending":
                 messages.error(
                     request,
