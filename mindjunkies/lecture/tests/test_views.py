@@ -233,6 +233,16 @@ def test_delete_module_view(client, teacher_user, course, module):
     assert response.status_code == 302
     assert not Module.objects.filter(id=module.id).exists()
 
+@pytest.mark.django_db
+def test_delete_module_forbidden_view(client, user, course, module):
+    client.force_login(user)
+
+    url = reverse('delete_module', kwargs={"course_slug": course.slug, "module_id": module.id})
+    response = client.get(url)
+
+    assert response.status_code == 403
+    assert b"You are not allowed to delete this module." in response.content
+
 
 @pytest.mark.django_db
 def test_mark_lecture_complete(client, user, lecture):
