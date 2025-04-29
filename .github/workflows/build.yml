@@ -227,6 +227,12 @@ jobs:
         run: |
           doctl kubernetes cluster kubeconfig save --expiry-seconds 600 django-mindjunkies
 
+      - name: Rebuild Search Index
+        run: |
+          kubectl delete job django-rebuild-search-job --ignore-not-found
+          kubectl apply -f k8s/jobs/django-rebuild-search-job.yml
+          kubectl wait --for=condition=complete job/django-rebuild-search-job --timeout=120s
+
       - name: Run Django Migrations and Collectstatic Jobs
         run: |
           kubectl delete job django-migrate-job --ignore-not-found
