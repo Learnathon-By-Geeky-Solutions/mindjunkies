@@ -28,11 +28,10 @@
 
 
 
-
                             {% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}"
                              alt="{{ course_detail.teacher.username }}" class="w-12 h-12 rounded-full mr-4">
                         <div>
-                            <p>Created by </p>
+                            <p>Created by  </p>
                             <p class="font-semibold">{{ course_detail.teacher.name }}</p>
                         </div>
                     </div>
@@ -76,143 +75,91 @@
             <div class="lg:col-span-2">
 
                 <!-- What you'll learn -->
-                <div class="card bg-base-100 shadow-xl mb-8">
-                    <div class="card-body">
-                        <h2 class="card-title text-2xl mb-4">What you'll learn</h2>
-                        <ul class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                            {% for objective in course_detail.objectives.all %}
-                                <li class="flex items-start">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                         class="h-6 w-6 mr-2 flex-shrink-0 text-success" fill="none"
-                                         viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M5 13l4 4L19 7"/>
-                                    </svg>
-                                    {{ objective }}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
+                
 
                 <!-- Course content -->
                 <body class="bg-slate-50 min-h-screen py-8 px-4 my-8">
-                <div class="max-w-4xl mx-auto">
-                    <div class="card bg-base-100 shadow-lg border border-base-200">
+                    <div class="max-w-4xl mx-auto">
+                      <div class="card bg-base-100 shadow-lg border border-base-200">
                         <div class="card-body p-6">
-                            <!-- Title Area -->
-                            <div class="border-b border-base-200 pb-4 mb-6">
-                                <h2 class="text-2xl font-bold  mb-4">Course content</h2>
-                                <div class="flex flex-wrap gap-6 text-sm">
-                                    <div class="badge badge-lg badge-outline badge-primary gap-2 p-3">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                             viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                                        </svg>
-                                        {{ course_detail.modules.count }} Modules
-                                    </div>
-                                    <div class="badge badge-lg badge-outline badge-primary gap-2 p-3">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                             viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                  d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/>
-                                        </svg>
-                                        {{ num_lectures }} Lectures
-                                    </div>
-
-
+                          <!-- Title Area -->
+                          <div class="border-b border-base-200 pb-4 mb-6">
+                            <h2 class="text-2xl font-bold  mb-4">Course content</h2>
+                            <div class="flex flex-wrap gap-6 text-sm">
+                              <div class="badge badge-lg badge-outline badge-primary gap-2 p-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                </svg>
+                                {{ course_detail.modules.count }} Modules
+                              </div>
+                              <div class="badge badge-lg badge-outline badge-primary gap-2 p-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                                </svg>
+                                {{ num_lectures }} Lectures
+                              </div>
+                              
+                            
+                            </div>
+                          </div>
+                          
+                          <!-- Sections Accordion -->
+                          <div class="space-y-4">
+                            {% for section in course_detail.modules.all %}
+                              <div x-data="{ open: false }" class="collapse collapse-arrow bg-base-100 border border-base-200 ">
+                                <input type="checkbox" @click="open = !open" class="peer" /> 
+                                <div class="collapse-title bg-base-100 flex items-center text-lg font-medium">
+                                  <span class="">{{ section.title }}</span>
                                 </div>
-                            </div>
-
-                            <!-- Sections Accordion -->
-                            <div class="space-y-4">
-                                {% for section in course_detail.modules.all %}
-                                    <div x-data="{ open: false }"
-                                         class="collapse collapse-arrow bg-base-100 border border-base-200 ">
-                                        <input type="checkbox" @click="open = !open" class="peer"/>
-                                        <div class="collapse-title bg-base-100 flex items-center text-lg font-medium">
-                                            <span class="">{{ section.title }}</span>
+                                <div class="collapse-content bg-base-100">
+                                  <ul class="menu bg-base-100 w-full ">
+                                    {% for lecture in section.lectures.all %}
+                                      <li class="border-b border-base-200 last:border-b-0">
+                                        <div class="flex justify-between items-center py-2 hover:bg-base-200 transition-all duration-200 rounded-lg px-3">
+                                          <div class="flex items-center gap-3">
+                                            <div class="avatar placeholder">
+                                              <div class="bg-primary text-primary-content flex items-center rounded-full">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                              </div>
+                                            </div>
+                                            <span class="font-medium">{{ lecture.title }}</span> 
+                                          </div>
+                                          <div class="flex gap-3">
+                                           
+                                              <div class="badge badge-ghost gap-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                                </svg>
+                                                {{ lecture.videos.count }} video{% if lecture.videos.count != 1 %}s{% endif %}
+                                              </div>
+                                            
+                                            
+                                              <div class="badge badge-ghost gap-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                </svg>
+                                                {{ lecture.pdf_files.count|default:"0" }} attachment{% if lecture.pdf_files.count != 1 %}s{% endif %}
+                                              </div>
+                                           
+                                          </div>
                                         </div>
-                                        <div class="collapse-content bg-base-100">
-                                            <ul class="menu bg-base-100 w-full ">
-                                                {% for lecture in section.lectures.all %}
-                                                    <li class="border-b border-base-200 last:border-b-0">
-                                                        <div
-                                                            class="flex justify-between items-center py-2 hover:bg-base-200 transition-all duration-200 rounded-lg px-3">
-                                                            <div class="flex items-center gap-3">
-                                                                <div class="avatar placeholder">
-                                                                    <div
-                                                                        class="bg-primary text-primary-content flex items-center rounded-full">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                                             class="h-5 w-5" fill="none"
-                                                                             viewBox="0 0 24 24" stroke="currentColor">
-                                                                            <path stroke-linecap="round"
-                                                                                  stroke-linejoin="round"
-                                                                                  stroke-width="2"
-                                                                                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
-                                                                            <path stroke-linecap="round"
-                                                                                  stroke-linejoin="round"
-                                                                                  stroke-width="2"
-                                                                                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                                                        </svg>
-                                                                    </div>
-                                                                </div>
-                                                                <span class="font-medium">{{ lecture.title }}</span>
-                                                            </div>
-                                                            <div class="flex gap-3">
-
-                                                                <div class="badge badge-ghost gap-1">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                                         class="h-4 w-4" fill="none"
-                                                                         viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path stroke-linecap="round"
-                                                                              stroke-linejoin="round" stroke-width="2"
-                                                                              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                                                                    </svg>
-                                                                    {{ lecture.videos.count }} video
-                                                                    {% if lecture.videos.count != 1 %}s{% endif %}
-                                                                </div>
-
-
-                                                                <div class="badge badge-ghost gap-1">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                                         class="h-4 w-4" fill="none"
-                                                                         viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path stroke-linecap="round"
-                                                                              stroke-linejoin="round" stroke-width="2"
-                                                                              d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                                                                    </svg>
-                                                                    {{ lecture.pdf_files.count|default:"0" }}
-                                                                    attachment{% if lecture.pdf_files.count != 1 %}
-                                                                    s{% endif %}
-                                                                </div>
-
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
+                                      </li>
+                                    {% endfor %}
+                                  </ul>
+                                </div>
+                              </div>
+                            {% endfor %}
+                          </div>
                         </div>
+                      </div>
                     </div>
-                </div>
-                </body>
+                  </body>
 
                 <!-- Requirements -->
-                <div class="card bg-base-100 shadow-xl mb-8 mt-10">
-                    <div class="card-body">
-                        <h2 class="card-title text-2xl mb-4">Requirements</h2>
-                        <ul class="list-disc list-inside">
-                            {% for line in course_detail.requirements.all %}
-                                <li>{{ line }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
+               
 
                 <!-- Description -->
                 <div class="card bg-base-100 shadow-xl mb-8">
@@ -230,7 +177,6 @@
                         <h2 class="card-title text-2xl mb-4">Instructor</h2>
                         <div class="flex items-center mb-4">
                             <img src="
-
 
 
 
@@ -425,17 +371,16 @@
                                             allowfullscreen></iframe>
                                 </div>
                             {% else %}
-                                <div
-                                    class="w-full h-[200px] flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
+                                <div class="w-full h-[200px] flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
                                     {% cloudinary course_detail.course_image fetch_format="auto" quality="auto" width=300 height=200 crop="pad" background="auto" class="rounded-t-2xl object-contain transition-all duration-700 ease-in-out transform group-hover:scale-110" %}
                                 </div>
                             {% endif %}
-                            <div class="text-3xl font-bold mb-4">৳{{ course_detail.course_price }}</div>
+                            <div class="text-3xl font-bold mb-4">${{ course_detail.course_price }}</div>
 
                             {% if student %}
                                 <a href="{% url 'lecture_home' course_detail.slug %}
                              " class="btn btn-primary btn-block mb-4">View</a>
-                            {% elif course_detail.teacher == request.user %}
+                             {% elif course_detail.teacher == request.user %}
                                 <a href="{% url 'lecture_home' course_detail.slug %}"
                                    class="btn btn-primary btn-block mb-4">Manage Course</a>
                             {% else %}

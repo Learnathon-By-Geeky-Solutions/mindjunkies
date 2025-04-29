@@ -292,4 +292,3 @@ class DeleteCourseView(LoginRequiredMixin, TemplateView):
         course.delete()
         messages.success(request, "Course deleted successfully!")
         return redirect(self.success_url)
-

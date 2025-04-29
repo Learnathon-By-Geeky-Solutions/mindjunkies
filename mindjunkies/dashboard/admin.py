@@ -13,8 +13,9 @@ class TeacherVerificationAdmin(ModelAdmin):
 
     def approve_teacher(self, request, queryset):
         for obj in queryset:
-            obj.is_verified = True
+            obj.verified = True
             obj.save()
+            print(obj.verified)
             obj.user.is_teacher = True  # Grant teacher permission
             obj.user.groups.add(
                 Group.objects.get(name="Teacher")
@@ -26,7 +27,7 @@ class TeacherVerificationAdmin(ModelAdmin):
 
     def disapprove_teacher(self, request, queryset):
         for obj in queryset:
-            obj.is_verified = False
+            obj.verified = False
             obj.save()
             obj.user.is_teacher = False  # Revoke teacher permission
             obj.user.groups.remove(
