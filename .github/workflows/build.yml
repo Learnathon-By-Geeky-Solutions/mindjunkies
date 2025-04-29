@@ -203,10 +203,14 @@ jobs:
         run: |
           kubectl apply -f k8s/apps/django-mindjunkies-web.yml
           kubectl rollout status deployment/django-mindjunkies-web-deployment
+
       - name: Deploy Redis
         run: |
-          kubectl apply -f k8s/redis.yml
+          kubectl apply -f k8s/apps/redis.yml
 
+      - name: Deploy Elasticsearch
+        run: |
+          kubectl apply -f k8s/apps/elasticsearch.yml
 
   run-postdeploy-jobs:
     runs-on: ubuntu-latest
