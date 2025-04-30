@@ -108,6 +108,7 @@ Stay updated and dive deeper into the project!
 - [Testing](#-testing)
 - [CI Integration](#-ci-integration)
 - [Contributing](#-contributing)
+- [Git Workflow](#-git-workflow)
 - [License](#license)
 
 ---
@@ -351,6 +352,9 @@ To maintain consistency and quality across the codebase, we follow these develop
   - Clear descriptions
   - Screenshots (if UI-related)
   - Linked issues (if applicable)
+
+<img src="docs/resources/git-workflow.png" alt="Git Workflow" width="500"/>
+
 
 ---
 
