@@ -92,7 +92,6 @@ def test_create_course_get_pending_token(client, teacher_user):
 
 @pytest.mark.django_db
 def test_create_course_post_success(client, teacher_user, category):
-    course = "courses.Course"
     client.force_login(teacher_user)
     url = reverse('create_course')
 
