@@ -230,12 +230,14 @@ jobs:
       - name: Run Django Migrations and Collectstatic Jobs
         run: |
           kubectl delete job django-migrate-job --ignore-not-found
+          kubectl wait --for=delete job/django-migrate-job --timeout=60s
           kubectl apply -f k8s/jobs/django-migrate-job.yml
 
           echo "Waiting for job to complete..."
           kubectl wait --for=condition=complete job/django-migrate-job --timeout=120s
           
           kubectl delete job django-collectstatic-job --ignore-not-found
+          kubectl wait --for=delete job/django-collectstatic-job --timeout=60s
           kubectl apply -f k8s/jobs/django-collectstatic-job.yml
 
           echo "Waiting for job to complete..."
@@ -247,6 +249,8 @@ jobs:
           sleep 10
           echo "Rebuilding Search Index..."
           kubectl delete job django-rebuild-search-job --ignore-not-found
+          kubectl wait --for=delete job/django-rebuild-search-job --timeout=60s
+
           kubectl apply -f k8s/jobs/django-rebuild-search-job.yml
           kubectl wait --for=condition=complete job/django-rebuild-search-job --timeout=240s
 
