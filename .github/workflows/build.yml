@@ -189,8 +189,8 @@ jobs:
           
           ELASTICSEARCH_HOST=${{ secrets.ELASTICSEARCH_HOST }}
           
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+          RESEND_API_KEY=secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL=${{ secrets.RESEND_FROM_EMAIL }}
           
           EOF
           echo "Updating Kubernetes Secret..."
