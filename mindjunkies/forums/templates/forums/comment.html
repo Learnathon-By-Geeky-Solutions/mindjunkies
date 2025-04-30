@@ -37,6 +37,7 @@
       </svg>
       Reply
     </button>
+    {% if request.user == comment.author %}
     <form method="post" action="{% url 'delete_comment' course.slug module.id topic.id comment.id %}" class="flex items-center text-gray-700 hover:text-red-600 {% if depth > 0 %}text-xs{% endif %}">
       {% csrf_token %}
       <button type="submit" class="flex cursor-pointer items-center text-red-600 text-red-800">
@@ -45,6 +46,7 @@
         </svg>
         Delete
     </form>
+    {% endif %}
     
    
   </div>

@@ -98,14 +98,13 @@ Stay updated and dive deeper into the project!
 
 ---
 ## 📋 Table of Contents
-- [Team](#-team)
-- [Project Overview](#-project-overview)
+- [Team](#-team-mindjunkies)
+- [Project Overview](#-about-biddyapith)
 - [Live Demo](#-live-demo)
-- [Key Features](#-key-features)
+- [Key Features](#-key-highlights)
 - [System Architecture](#-system-architecture)
 - [Database Design](#-database-design)
 - [Tech Stack](#-tech-stack)
-- [Development Logs](#-development-logs)
 - [Getting Started](#-getting-started)
 - [Development Guidelines](#-development-guidelines)
 - [Testing](#-testing)
@@ -154,7 +153,7 @@ Traditional education platforms often suffer from:
 
 Experience Biddyapeeth in action by visiting our live demo:
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Now-blue?style=for-the-badge)](http://mindjunkies.tech/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Now-blue?style=for-the-badge)](http://biddyapeeth.mindjunkies.tech/)
 
 Explore the platform's features and see how it transforms real-time learning into an interactive, seamless experience.
 

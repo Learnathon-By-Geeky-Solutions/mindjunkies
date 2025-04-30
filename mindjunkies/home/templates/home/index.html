@@ -188,6 +188,38 @@
         <!-- Subcategories Bar -->
         <div id="subcategories-container">{% include "home/subcategory.html" %}</div>
     </div>
+<<<<<<< HEAD
+
+    <!-- Subcategories Bar -->
+    <div id="subcategories-container">{% include "home/subcategory.html" %}</div>
+</div>
+<div id="courses" class="">
+    <h1 class="font-serif text-4xl md:text-5xl font-medium text-center my-8 py-2">Explore Our Courses</h1>
+    {% if enrolled_courses %}
+    <section id="enrolled-courses" class="p-10">
+        <div class="container mx-auto px-4">
+            <h2 class="font-serif text-2xl font-bold text-gray-900 mb-6 m-4">My Courses</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                {% for course in enrolled_courses %}
+                    {% include 'home/card.html' %}
+                {% endfor %}
+            </div>
+        </div>
+        <a href="{% url 'my_course_list'%}">
+            <button
+                class="px-6 py-2 m-4 cursor-pointer font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 transition-colors duration-200"
+            >
+                Show all my courses
+            </button></a
+        >
+    </section>
+    {% endif %} {% if new_courses%}
+    <section id="new-courses" class="p-10">
+        <div class="consultant mx-auto my-2 px-4">
+            <h2 class="font-serif text-2xl font-semibold mb-6 m-4">Recently Introduced</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                {% for course in new_courses %}
+=======
     <div id="courses" class="">
         <h1 class="font-serif text-4xl md:text-5xl font-medium text-center my-8 py-2">Explore Our Courses</h1>
         {% if enrolled_courses %}
@@ -215,6 +247,7 @@
                 <h2 class="font-serif text-2xl font-semibold mb-6 m-4">Recently Introduced</h2>
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                     {% for course in new_courses %}
+>>>>>>> 5119d9129ecd9e6df61e2182345dd259a476c559
                         {% include 'home/card.html' %}
                     {% endfor %}
                 </div>
