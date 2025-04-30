@@ -194,7 +194,7 @@
             <section id="enrolled-courses" class="p-10">
                 <div class="container mx-auto px-4">
                     <h2 class="font-serif text-2xl font-bold text-gray-900 mb-6 m-4">My Courses</h2>
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2">
                         {% for course in enrolled_courses %}
                             {% include 'home/card.html' %}
                         {% endfor %}
@@ -213,7 +213,7 @@
         <section id="new-courses" class="p-10">
             <div class="consultant mx-auto my-2 px-4">
                 <h2 class="font-serif text-2xl font-semibold mb-6 m-4">Recently Introduced</h2>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2">
                     {% for course in new_courses %}
                         {% include 'home/card.html' %}
                     {% endfor %}
@@ -235,7 +235,7 @@
             <section id="popular-courses" class="p-10">
                 <div class="consultant mx-auto my-2 px-4">
                     <h2 class="font-serif text-2xl font-semibold mb-6 m-4">Popular Courses</h2>
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2">
                         {% for course in popular_courses %}
                             {% include 'home/card.html' %}
                         {% endfor %}
