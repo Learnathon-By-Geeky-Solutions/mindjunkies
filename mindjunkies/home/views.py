@@ -17,7 +17,6 @@ def get_popular_courses():
     cache_key = f"popular_courses"
     popular_courses = cache.get(cache_key)
 
-
     print("Cache key:", popular_courses)
     if popular_courses is None:
         print("Cache miss for popular courses")
@@ -29,12 +28,6 @@ def get_popular_courses():
         cache.set(cache_key, popular_courses, timeout=60 * 5)
 
     return popular_courses
-
-
-def proxy_pdf(request):
-    pdf_url = "https://blr1.digitaloceanspaces.com/mindjunkies/media/lecture_pdfs/Project_Proposal_for_swe_2.pdf"
-    response = requests.get(pdf_url)
-    return HttpResponse(response.content, content_type='application/pdf')
 
 
 def get_new_courses():
