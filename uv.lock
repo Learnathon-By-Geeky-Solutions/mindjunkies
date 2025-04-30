@@ -729,6 +729,7 @@ dependencies = [
     { name = "pytest-factoryboy" },
     { name = "python-decouple" },
     { name = "redis", extra = ["hiredis"] },
+    { name = "resend" },
     { name = "sslcommerz-lib" },
 ]
 
@@ -780,6 +781,7 @@ requires-dist = [
     { name = "pytest-factoryboy", specifier = ">=2.7.0" },
     { name = "python-decouple", specifier = ">=3.8" },
     { name = "redis", extras = ["hiredis"], specifier = ">=5.2.1" },
+    { name = "resend", specifier = ">=2.8.0" },
     { name = "sslcommerz-lib", specifier = ">=1.0" },
 ]
 
@@ -1129,6 +1131,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/42/f2/05f29bc3913aea15eb670be136045bf5c5bbf4b99ecb839da9b422bb2c85/requests-oauthlib-2.0.0.tar.gz", hash = "sha256:b3dffaebd884d8cd778494369603a9e7b58d29111bf6b41bdc2dcd87203af4e9", size = 55650 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/3b/5d/63d4ae3b9daea098d5d6f5da83984853c1bbacd5dc826764b249fe119d24/requests_oauthlib-2.0.0-py2.py3-none-any.whl", hash = "sha256:7dd8a5c40426b779b0868c404bdef9768deccf22749cde15852df527e6269b36", size = 24179 },
+]
+
+[[package]]
+name = "resend"
+version = "2.8.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/cb/431fe0fe754f13484fe69381801b6c0e2096d5ca2b72667aa6cf12ae5d33/resend-2.8.0.tar.gz", hash = "sha256:2e31ba79a11e5ae6bccce98f1e552b669c0ca69f21032e1e10aeb969e3e43a30", size = 13585 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/09/17/82b597821e1691bbe634d0ed67e6cb525b52a053d2db8da1af163b67c6ed/resend-2.8.0-py2.py3-none-any.whl", hash = "sha256:f7340e2d1991c2ea8bc2faa26904505ee17dc54fe82ac23faa577f4a21797b0e", size = 20154 },
 ]
 
 [[package]]

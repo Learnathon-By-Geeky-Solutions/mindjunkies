@@ -27,6 +27,7 @@ dependencies = [
     "pytest-factoryboy>=2.7.0",
     "python-decouple>=3.8",
     "redis[hiredis]>=5.2.1",
+    "resend>=2.8.0",
     "sslcommerz-lib>=1.0",
 ]
 
