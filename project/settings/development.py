@@ -1,6 +1,6 @@
 from project.settings.base import * # noqa
 
-DEBUG = False
+DEBUG = True
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
