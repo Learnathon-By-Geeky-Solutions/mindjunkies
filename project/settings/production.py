@@ -64,4 +64,8 @@ ELASTICSEARCH_DSL = {
     },
 }
 
-ACCOUNT_EMAIL_VERIFICATION = "none"
+RESEND_API_KEY = config("RESEND_API_KEY")
+EMAIL_BACKEND = 'utils.email_backends.ResendEmailBackend'
+DEFAULT_FROM_EMAIL = config("RESEND_FROM_EMAIL")
+
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"

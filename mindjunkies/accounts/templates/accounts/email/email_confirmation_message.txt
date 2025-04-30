@@ -1,0 +1,9 @@
+Hi {{ user.username }},
+
+Welcome to Mindjunkies! Please confirm your email by clicking the link below:
+
+{{ activate_url }}
+
+Thank you,
+The Mindjunkies Team
+https://mindjunkies.tech

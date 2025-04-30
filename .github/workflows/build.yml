@@ -62,6 +62,9 @@ jobs:
       REDIS_PORT: ${{ secrets.REDIS_PORT }}
       REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
 
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+
     strategy:
       max-parallel: 4
       matrix:
@@ -185,6 +188,9 @@ jobs:
           REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
           
           ELASTICSEARCH_HOST=${{ secrets.ELASTICSEARCH_HOST }}
+          
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
           
           EOF
           echo "Updating Kubernetes Secret..."
