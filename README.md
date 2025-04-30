@@ -275,7 +275,7 @@ manage.py
 
 ## Database Design
 
-![Database Design](docs/resources/database-design.png)
+![Database Design](docs/resources/erd-diagram.png)
 
 ---
 
