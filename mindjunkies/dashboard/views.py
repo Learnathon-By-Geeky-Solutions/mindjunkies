@@ -114,8 +114,10 @@ class TeacherVerificationView(LoginRequiredMixin, FormView):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_teacher:
+            print("teacher is true")
             return redirect('dashboard')
         if TeacherVerification.objects.filter(user=request.user).exists():
+            print("verification exists")
             return redirect('verification_wait')
         return super().get(request, *args, **kwargs)
 
