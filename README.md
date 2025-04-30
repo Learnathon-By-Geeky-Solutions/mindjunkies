@@ -1,15 +1,9 @@
-
 <div align="center">
-
-
-
-
 
 
 <img src="docs/resources/logo.png" alt="BiddyaPeeth Logo" width="200" height="auto">
 <h3>Empowering Learning, Anywhere, Anytime</h3>
-<h4> From foundational knowledge to advanced mastery,Biddyapeeth helps you learn, grow, and succeed at your own pace.<h4>
-
+<h4> From foundational knowledge to advanced mastery, BiddyaPeeth helps you learn, grow, and succeed at your own pace.<h4>
 
 ### Tech Stack
 
@@ -53,11 +47,8 @@
 </p>
 </div>
 
----
 
 <div align="center">
-
-
 
 ### SonarCloud Analysis
 
@@ -72,21 +63,9 @@
 
 </div>
 
----
-## 📚 Explore Project Resources
-
-Stay updated and dive deeper into the project!
-
-- 📖 [**Wiki**](https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/wiki) – Project overview, documentation, and important guides.
-- 🛠️ [**Development Setup**](docs/guides/getting-started.md) – Get started with setting up your development environment.
-- 🤝 [**Contributing Guidelines**](docs/CONTRIBUTING.md) – Learn how to contribute and collaborate with us.
-- 📓 [**Dev Log**](docs/DevLog) – Track our development journey and major updates.
 <div align="center">
   <a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/wiki">
     <img src="https://img.shields.io/badge/MindJunkies-Wiki-007ACC?logo=github&logoColor=white&style=for-the-badge" alt="MindJunkies Wiki" />
-  </a>
-  <a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/tree/main/docs/DevLog">
-    <img src="https://img.shields.io/badge/DevLog-Updates-FFD700?logo=github&logoColor=white&style=for-the-badge" alt="Development Logs" />
   </a>
   <a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/blob/main/docs/guides/getting-started.md">
     <img src="https://img.shields.io/badge/Getting%20Started-Guide-4CAF50?logo=github&logoColor=white&style=for-the-badge" alt="Getting Started Guide" />
@@ -94,30 +73,53 @@ Stay updated and dive deeper into the project!
   <a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/blob/main/docs/CONTRIBUTING.md">
     <img src="https://img.shields.io/badge/Contributing-Guidelines-FF69B4?logo=github&logoColor=white&style=for-the-badge" alt="Contributing Guidelines" />
   </a>
+<a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/tree/main/docs/DevLog">
+    <img src="https://img.shields.io/badge/Docs-Available-007ACC?logo=readthedocs&logoColor=white&style=for-the-badge" alt="Docs Badge" />  <a href="https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/tree/main/docs/DevLog">
+    <img src="https://img.shields.io/badge/DevLog-Updates-FFD700?logo=github&logoColor=white&style=for-the-badge" alt="Development Logs" />
+  </a>
 </div>
 
 ---
-## 📋 Table of Contents
-- [Team](#-team-mindjunkies)
-- [Project Overview](#-about-biddyapith)
-- [Live Demo](#-live-demo)
-- [Key Features](#-key-highlights)
-- [System Architecture](#-system-architecture)
-- [Database Design](#-database-design)
-- [Tech Stack](#-tech-stack)
-- [Getting Started](#-getting-started)
-- [Development Guidelines](#-development-guidelines)
-- [Testing](#-testing)
-- [Resources](#-resources)
-- [Contributing](#-contributing)
-- [License](#-license)
+
+## 📚 Explore Project Resources
+
+Stay updated and dive deeper into the project!
+
+- 📖 [**Wiki Page**](https://github.com/Learnathon-By-Geeky-Solutions/mindjunkies/wiki) – Project overview,
+  documentation, and important guides.
+- 🛠️ [**Development Setup**](docs/guides/getting-started.md) – Get started with setting up your development environment.
+- 🤝 [**Contributing Guidelines**](docs/CONTRIBUTING.md) – Learn how to contribute and collaborate with us.
+- 📄 [**Docs**](docs/README.md) – Comprehensive documentation for developers and users.
+- 📓 [**Dev Log**](docs/dev-log.md) – Track our development journey and major updates.
 
 ---
-# 🔎 About BiddyaPeeth
 
-**BiddyaPeeth** is an advanced, next-generation **EdTech platform** built with **Django** and **Tailwind CSS**, designed to revolutionize digital learning experiences.
+## 📋 Table of Contents
 
-It offers a **modern, scalable**, and **student-centric** environment for online education, empowering both learners and instructors with seamless tools for engagement and management.
+- [Project Overview](#-about-biddyapeeth)
+- [Live Demo](#-live-demo)
+- [Team](#-team-mindjunkies)
+- [Key Features](#-key-highlights)
+- [System Architecture](#-system-architecture)
+- [Database Design](#database-design)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Development Guidelines](#-development-guidelines)
+- [Testing](#-testing)
+- [CI Integration](#-ci-integration)
+- [Contributing](#-contributing)
+- [Git Workflow](#-git-workflow)
+- [License](#license)
+
+---
+
+## 🔎 About BiddyaPeeth
+
+**BiddyaPeeth** is an advanced, next-generation **EdTech platform** built with **Django** and **Tailwind CSS**, designed
+to revolutionize digital learning experiences.
+
+It offers a **modern, scalable**, and **student-centric** environment for online education, empowering both learners and
+instructors with seamless tools for engagement and management.
 
 ### 🚀 Key Highlights
 
@@ -126,18 +128,20 @@ It offers a **modern, scalable**, and **student-centric** environment for online
 - **Live virtual classrooms** with real-time video conferencing, chat, polls, and screen sharing.
 - **Integrated payment solutions** enabling access to premium educational services.
 - **Dynamic community forums** for collaborative learning and peer interactions.
-- **Scalable and mobile-friendly** design for accessibility across devices.
+- **Scalable and device-friendly** design for accessibility across devices.
 
 ---
 
 ### 🔥 Why BiddyaPeeth?
 
 Traditional education platforms often suffer from:
+
 - ❌ Poor user experience.
 - ❌ Limited real-time interaction capabilities.
 - ❌ Lack of modern design and scalability.
 
 **BiddyaPeeth solves these challenges** by offering:
+
 - Seamless course and user management.
 - A modern Tailwind CSS frontend.
 - Fast deployment with Docker and Kubernetes-ready architecture.
@@ -149,6 +153,7 @@ Traditional education platforms often suffer from:
 - Increasing demand for **virtual education** and **interactive learning tools** worldwide.
 
 ---
+
 ## 🌐 Live Demo
 
 Experience Biddyapeeth in action by visiting our live demo:
@@ -160,18 +165,17 @@ Explore the platform's features and see how it transforms real-time learning int
 
 <div align="center">
 
-
-# 🖌️ Team MindJunkies
+## 🖌️ Team MindJunkies
 
 <table style="width: 90%;">
 <tr>
 <td align="center" width="25%">
-<h4>Shafayet Sadi</h4>
+<h4>Shafayetul Huda Sadi</h4>
 <img src="https://img.shields.io/badge/Team%20Leader-2D9CDB?style=for-the-badge">
 <br><a href="https://github.com/Shafayetsadi"><img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white"></a>
 </td>
 <td align="center" width="25%">
-<h4>Md. Tonmoy</h4>
+<h4>Md. Tonmoy Hossain Jifat</h4>
 <img src="https://img.shields.io/badge/FullStack%20Developer-F2C94C?style=for-the-badge">
 <br><a href="https://github.com/md-tonmoy007"><img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white"></a>
 </td>
@@ -191,47 +195,53 @@ Explore the platform's features and see how it transforms real-time learning int
 </div>
 
 ---
+
 ## 🏗 System Architecture
+
 ### Architecture Diagram
+
 ![Architecture Diagram](docs/resources/architecture-diagram.jpg)
 
 ### 📌 Modules Overview
 
-| Module         | Purpose                                  |
-|----------------|------------------------------------------|
-| Accounts       | User Authentication and Profile          |
-| Courses        | Course Creation, Enrollment              |
-| Dashboard      | Role-Based Dashboards (Student, Teacher) |
-| Forums         | Community Discussions                   |
-| Lecture        | Lecture and Assignment Management       |
-| Live Classes   | Live Video Integration                   |
-| Payments       | Payment and Billing                      |
+| Module       | Purpose                                  |
+|--------------|------------------------------------------|
+| Accounts     | User Authentication and Profile          |
+| Courses      | Course Creation, Enrollment              |
+| Dashboard    | Role-Based Dashboards (Student, Teacher) |
+| Forums       | Community Discussions                    |
+| Lecture      | Lecture and Assignment Management        |
+| Live Classes | Live Video Integration                   |
+| Payments     | Payment and Billing                      |
+
 ### System Flow Diagram
+
 ![System Flow Diagram](docs/resources/flow-diagram.png)
+
 #### Operational Flow Explained
 
-1. **Authentication** 🔑  
-   - User logs in or registers.
-   - Role check (Student / Teacher / Admin).
+1. **Authentication** 🔑
+    - User logs in or registers.
+    - Role check (Student / Teacher / Admin).
 
-2. **Student Flow** 🎓  
-   - Browse and view courses.
-   - If not enrolled ➔ Payment ➔ Enrollment.
-   - Access course content (Lectures, Materials, Assignments, Live Classes).
-   - Participate in community forums (Post, Reply).
+2. **Student Flow** 🎓
+    - Browse and view courses.
+    - If not enrolled ➔ Payment ➔ Enrollment.
+    - Access course content (Lectures, Materials, Assignments, Live Classes).
+    - Participate in community forums (Post, Reply).
 
-3. **Teacher Flow** 👩‍🏫  
-   - Manage content (Create/Edit Courses, Upload Lectures, Create Assignments).
-   - Schedule and conduct live classes.
-   - Grade student submissions.
-   - Use live virtual classroom (Video, Chat, Screen Share, Polls).
+3. **Teacher Flow** 👩‍🏫
+    - Manage content (Create/Edit Courses, Upload Lectures, Create Assignments).
+    - Schedule and conduct live classes.
+    - Grade student submissions.
+    - Use live virtual classroom (Video, Chat, Screen Share, Polls).
 
-4. **Admin Flow** 🛠️  
-   - Manage users, approve courses, handle payments, and adjust site settings.
-   - Moderate forum activity.
+4. **Admin Flow** 🛠️
+    - Manage users, approve courses, handle payments, and adjust site settings.
+    - Moderate forum activity.
 
-5. **Live Interaction & Assessment** 📡  
-   - Real-time classes and course completion.
+5. **Live Interaction & Assessment** 📡
+    - Real-time classes and course completion.
 
 ### 📂 Project Structure
 
@@ -241,6 +251,7 @@ mindjunkies/
 ├── courses/
 ├── dashboard/
 ├── forums/
+├── home/
 ├── lecture/
 ├── live_classes/
 ├── payments/
@@ -248,17 +259,26 @@ mindjunkies/
 ├── templates/
 project/
 ├── settings/
+|    ├── base.py
+|    ├── development.py
+|    ├── production.py
+├── logging.py
 └── urls.py
 config/  # JWT and Tokens
 k8s/     # Kubernetes Deployment Files
 docs/    # Documentation
 Dockerfile
 manage.py
-
+.. # Other files
 ```
 
 ----------
 
+## Database Design
+
+![Database Design](docs/resources/erd-diagram.png)
+
+---
 
 ## Getting Started
 
@@ -292,23 +312,89 @@ Follow these steps to set up the project locally:
     ```
 4. Open [http://localhost:8000](http://localhost:8000) in your browser.
 
-
 ### Using Docker
 
 ```bash
 # Build and start containers
 docker-compose up --build
-
 ```
+
 ----------
+
+## 🛠️ Development Guidelines
+
+To maintain consistency and quality across the codebase, we follow these development best practices:
+
+### 🔹 Code Style
+- Follow **PEP8** standards.
+- Use **Black** for code formatting:
+  ```bash
+  black .
+  ```
+- Use **Pre-commit hooks**:
+  ```bash
+  pre-commit install
+  pre-commit run --all-files
+  ```
+
+### 🔹 Linting & Quality
+- Use `flake8`, `isort`, and `black` as part of your local pre-commit workflow.
+- Monitor **code quality via SonarCloud** for:
+  - Maintainability
+  - Code smells
+  - Security vulnerabilities
+
+### 🔹 Git Workflow
+- Use feature branches: `feature/your-feature-name`
+- Follow conventional commit messages:  
+  e.g., `feat: add live class scheduling UI`
+- Always submit Pull Requests (PRs) with:
+  - Clear descriptions
+  - Screenshots (if UI-related)
+  - Linked issues (if applicable)
+
+<img src="docs/resources/git-workflow.png" alt="Git Workflow" width="500"/>
+
+
+---
+
+## 🧪 Testing
+
+Testing is critical for ensuring stability and quality across deployments.
+
+### 🔸 Tools Used
+- **pytest** for unit testing
+- **coverage** for tracking test coverage
+- **Model-Bakery** for creating test data
+
+### 🔸 Running Tests
+```bash
+uv run pytest
+```
+
+### 🔸 Checking Coverage
+```bash
+uv run coverage run -m pytest
+uv run coverage report -m
+```
+
+### 🔸 CI Integration
+- All tests are run automatically on each push via GitHub Actions.
+- **SonarCloud** also performs static analysis for test coverage and reliability metrics.
+- **Kubernetes** deployment is triggered after successful tests.
+
+---
+
+Let me know if you'd like these turned into markdown or `.md` files for your `docs/` directory.
+
+----------
+
 ## 🤝 Contributing
 
 We welcome contributions!  
 Please read our [CONTRIBUTING.md](docs/CONTRIBUTING.md) for more information on how to get started.
 
 ----------
-
-
 
 ## License
 
