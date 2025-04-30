@@ -47,6 +47,17 @@
 </p>
 </div>
 
+---
+
+<div align="center">
+
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Learnathon-By-Geeky-Solutions/mindjunkies/build.yml?branch=main&label=CI/CD&logo=github&style=for-the-badge)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
+![DigitalOcean](https://img.shields.io/badge/DigitalOcean-0080FF?style=for-the-badge&logo=digitalocean&logoColor=white)
+
+</div>
+
 
 <div align="center">
 
@@ -106,7 +117,7 @@ Stay updated and dive deeper into the project!
 - [Getting Started](#getting-started)
 - [Development Guidelines](#-development-guidelines)
 - [Testing](#-testing)
-- [CI Integration](#-ci-integration)
+- [CI Integration](#-cicd-pipeline)
 - [Contributing](#-contributing)
 - [Git Workflow](#-git-workflow)
 - [License](#license)
@@ -378,14 +389,42 @@ uv run coverage run -m pytest
 uv run coverage report -m
 ```
 
-### 🔸 CI Integration
-- All tests are run automatically on each push via GitHub Actions.
-- **SonarCloud** also performs static analysis for test coverage and reliability metrics.
-- **Kubernetes** deployment is triggered after successful tests.
-
 ---
 
-Let me know if you'd like these turned into markdown or `.md` files for your `docs/` directory.
+## 🚀 CI/CD Pipeline
+
+BiddyaPeeth employs a robust CI/CD pipeline to ensure seamless integration and deployment using:
+
+- **GitHub Actions**: Automates testing, building, and deployment processes.
+- **Docker**: Containerizes the application for consistent environments.
+- **DigitalOcean Kubernetes**: Manages scalable deployments in a cloud-native environment.
+- **DigitalOcean Container Registry**: Stores and manages Docker images securely.
+
+### 🔄 Workflow Overview
+
+1. **Code Push**: Developers push code to the GitHub repository.
+2. **CI Process**:
+   - Run linting and tests using `pytest`.
+   - Build Docker images.
+   - Push images to DigitalOcean Container Registry.
+3. **CD Process**:
+   - Deploy updated images to DigitalOcean Kubernetes cluster.
+   - Apply Kubernetes manifests for deployment.
+   - Monitor deployment status and rollbacks if necessary.
+
+### 🛠️ Setting Up CI/CD
+
+To set up the CI/CD pipeline: [CI/CD to automate deployments to Kubernetes on DigitalOcean ...](https://dev.to/prkagrawal/cicd-to-automate-deployments-to-kubernetes-on-digitalocean-using-github-actions-4592?utm_source=chatgpt.com)
+
+- **GitHub Secrets**:
+  - `DOCKER_USERNAME`: Your Docker Hub username.
+  - `DOCKER_PASSWORD`: Your Docker Hub password or access token.
+  - `DIGITALOCEAN_ACCESS_TOKEN`: Personal access token for DigitalOcean API.
+  - `KUBE_CONFIG_DATA`: Base64 encoded Kubernetes config file.
+
+- **Workflow File**: Located at `.github/workflows/build.yml`.
+
+For a detailed guide, refer to DigitalOcean's documentation on deploying with GitHub Actions:  [How to Enable Push-to-Deploy on DigitalOcean Kubernetes Using ...](https://docs.digitalocean.com/products/kubernetes/how-to/deploy-using-github-actions/?utm_source=chatgpt.com)
 
 ----------
 
