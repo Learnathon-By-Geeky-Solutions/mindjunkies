@@ -6,6 +6,8 @@ from django.utils.safestring import mark_safe
 from django.views.decorators.http import require_http_methods
 from django.views import View
 import uuid
+import requests
+from django.http import HttpResponse
 
 from mindjunkies.courses.models import Course, CourseCategory, Enrollment, LastVisitedCourse
 from mindjunkies.lecture.models import LastVisitedModule, Lecture
@@ -27,6 +29,12 @@ def get_popular_courses():
         cache.set(cache_key, popular_courses, timeout=60 * 5)
 
     return popular_courses
+
+
+def proxy_pdf(request):
+    pdf_url = "https://blr1.digitaloceanspaces.com/mindjunkies/media/lecture_pdfs/Project_Proposal_for_swe_2.pdf"
+    response = requests.get(pdf_url)
+    return HttpResponse(response.content, content_type='application/pdf')
 
 
 def get_new_courses():

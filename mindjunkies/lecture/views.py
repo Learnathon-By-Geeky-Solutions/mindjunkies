@@ -174,7 +174,7 @@ def lecture_pdf(request: HttpRequest, course_slug: str, module_id: int, lecture_
 
     context = {"course": course, "pdf": pdf, "module": module, "lecture": lecture, }
     return render(request, "lecture/lecture_pdf.html", context)
-
+ 
 
 class CourseObjectMixin:
     """Mixin to get course and check permissions."""
