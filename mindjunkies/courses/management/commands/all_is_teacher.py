@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand
 from mindjunkies.accounts.models import User
 from mindjunkies.dashboard.models import TeacherVerification  # Replace 'your_app' with your app name
 
+
 class Command(BaseCommand):
     help = 'Create TeacherVerification entries for all users and set verified=True'
 

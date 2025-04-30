@@ -14,7 +14,7 @@ from mindjunkies.lecture.models import LastVisitedModule, Lecture
 
 
 def get_popular_courses():
-    cache_key = f"popular_courses"
+    cache_key = "popular_courses"
     popular_courses = cache.get(cache_key)
 
     print("Cache key:", popular_courses)
@@ -31,7 +31,7 @@ def get_popular_courses():
 
 
 def get_new_courses():
-    cache_key = f"new_courses"
+    cache_key = "new_courses"
     new_courses = cache.get(cache_key)
 
     if new_courses is None:
@@ -69,8 +69,6 @@ class HomeView(View):
 
         new_courses = Course.objects.filter(status="published", verified=True).exclude(
             id__in=teacher_course_ids).order_by("-created_at")[:4]
-
-        new_course_ids = get_new_courses()
 
         popular_courses = get_popular_courses()
 

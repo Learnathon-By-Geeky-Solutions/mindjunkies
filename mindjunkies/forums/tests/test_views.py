@@ -532,7 +532,7 @@ class TestLikeViews(BaseForumTestCase):
         self.assertTrue(self.topic.likes.filter(username=self.user.username).exists())
 
         # Test unlike
-        response = LikePostView.as_view()(
+        LikePostView.as_view()(
             request,
             pk=self.topic.id,
         )

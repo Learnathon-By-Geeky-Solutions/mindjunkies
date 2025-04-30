@@ -1,4 +1,4 @@
-from project.settings.base import *
+from project.settings.base import *  # noqa
 from decouple import config, Csv
 
 DEBUG = True

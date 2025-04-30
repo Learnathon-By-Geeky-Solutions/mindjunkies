@@ -345,7 +345,7 @@ def test_form_valid_saves_content_correctly(factory, teacher_user, course, lectu
     request = add_middleware_to_request(request)
     request.user = teacher_user
 
-    form = LecturePDFForm(data={'pdf_title': 'Test PDF'}, files={})
+    LecturePDFForm(data={'pdf_title': 'Test PDF'}, files={})
     view = CreateContentView()
     view.request = request
     view.kwargs = {"format": "attachment", "lecture_id": lecture.id, "course_slug": course.slug}
