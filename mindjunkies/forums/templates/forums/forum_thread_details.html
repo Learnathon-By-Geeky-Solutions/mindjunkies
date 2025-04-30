@@ -84,6 +84,7 @@
             </button>
 
             <!-- Dropdown Menu -->
+            {% if request.user == course.teacher %}
             <div class="dropdown dropdown-end">
                 <label tabindex="-1" for="option" class="btn btn-ghost btn-sm btn-circle">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -98,6 +99,7 @@
                         Edit
                     </button></li>
                     <li>
+                        
                         <form method="post" action="{% url 'delete_topic' course.slug module.id topic.id %}" class="w-full">
                             {% csrf_token %}
                             <button type="submit" class="flex  text-red-600 cursor-pointer w-full text-left  py-2">
@@ -107,10 +109,13 @@
                                 Delete
                             </button>
                         </form>
+                        
                     </li>
                 </ul>
             </div>
+            {% endif %}
         </div>
+        
 
         <!-- Main Reply Form (initially hidden) -->
         <div id="main-reply-form" class="mb-8 hidden">

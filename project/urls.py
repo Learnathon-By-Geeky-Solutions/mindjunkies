@@ -7,6 +7,8 @@ from django.urls import include, path
 
 from mindjunkies.courses.views import category_courses
 
+handler404 = 'project.views.custom_404'
+
 logger = logging.getLogger(__name__)
 logger.debug("Starting URL configuration--------------------------")
 logger.info("URL configuration started----------------------------")
@@ -22,6 +24,7 @@ urlpatterns = [
     path("category/<slug:slug>/", category_courses, name="category_courses"),
     path("payment/", include("mindjunkies.payments.urls")),
     path("forums/", include("mindjunkies.forums.urls")),
+    
 ]
 
 if settings.DEBUG:
