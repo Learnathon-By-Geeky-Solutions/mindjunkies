@@ -298,8 +298,9 @@ Follow these steps to set up the project locally:
 ### Prerequisites
 
 - Python 3.11+
-- uv
+- uv (Python dependency manager)
 - PostgreSQL / SQLite
+- Docker & Docker Compose (Redis, Elasticsearch)
 
 ### Local Development Setup
 
@@ -316,11 +317,20 @@ Follow these steps to set up the project locally:
 3. Start development:
     ```sh
     cp .env.example .env # Modify the environment variables
-    python manage.py migrate
-    python manage.py createsuperuser
-    python manage.py runserver
-    python manage.py tailwind watch
+    docker compose -f docker-compose.elasticsearch_redis.yml up -d # Start Redis and Elasticsearch
+
+    uv run python manage.py migrate # Run migrations
+    uv run python manage.py createsuperuser # Create a superuser
+    uv run python manage.py runserver # Start the Django server
+    uv run python manage.py tailwind watch # Start Tailwind CSS
+
+    #  You can use make commands as well
+    make migrate # Run migrations
+    make createsuperuser # Create a superuser
+    make tailwind # Start Tailwind CSS
+    make runserver # Start the Django server
     ```
+   
 4. Open [http://localhost:8000](http://localhost:8000) in your browser.
 
 ### Using Docker

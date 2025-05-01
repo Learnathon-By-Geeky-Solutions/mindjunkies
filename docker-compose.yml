@@ -32,12 +32,12 @@ services:
     image: redis:latest
     restart: always
     expose:
-      - 6389
+      - 6379
     ports:
-      - "6389:6389"
+      - "6379:6379"
     volumes:
       - redis_data:/data
-    entrypoint: redis-server --appendonly yes --port 6389
+    entrypoint: redis-server --appendonly yes --port 6379
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
